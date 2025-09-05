@@ -81,7 +81,24 @@
 </head>
 <body class="bg-gray-100">
 
-    <div class="flex flex-col md:flex-row h-screen">
+    <!-- Password Modal -->
+    <div id="password-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-sm p-8">
+            <h3 class="text-xl font-bold text-gray-800 mb-4 text-center">인증 필요</h3>
+            <p class="text-gray-600 mb-6 text-center">계속하려면 암호를 입력하세요.</p>
+            <div class="space-y-4">
+                <div>
+                    <label for="password-input" class="sr-only">암호</label>
+                    <input type="password" id="password-input" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder="암호를 입력하세요" autofocus>
+                </div>
+                <button id="password-submit" class="w-full px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all">
+                    확인
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-content" class="flex flex-col md:flex-row h-screen hidden">
         <!-- 왼쪽 패널: 평가지 -->
         <div id="left-panel" class="h-1/2 md:h-full bg-white p-6 lg:p-8 overflow-y-auto shadow-lg" style="flex-basis: 50%;">
             <div class="max-w-full mx-auto">
@@ -231,7 +248,7 @@
             <div class="p-6 text-center">
                 <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100 mb-4">
                      <svg class="h-6 w-6 text-yellow-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                     </svg>
                 </div>
                 <h3 class="text-lg font-medium text-gray-900">경고</h3>
@@ -448,14 +465,20 @@
         }
     });
 
+    // --- START: DOM Element Selections ---
+    // Password Elements
+    const passwordModal = document.getElementById('password-modal');
+    const passwordInput = document.getElementById('password-input');
+    const passwordSubmit = document.getElementById('password-submit');
+    const mainContent = document.getElementById('main-content');
+    
+    // Page Elements
     const evaluatorSelect = document.getElementById('evaluator-select-name');
     const departmentSelect = document.getElementById('department-select');
-    const departmentSelectContainer = document.getElementById('department-select-container');
     const tableHead = document.getElementById('table-head');
     const tableBody = document.getElementById('table-body');
     const tableFoot = document.getElementById('table-foot');
     const pdfViewer = document.getElementById('pdf-viewer');
-    const evaluationTypeSelector = document.getElementById('evaluation-type-selector');
     const evaluationTitle = document.getElementById('evaluation-title');
     const radioButtons = document.querySelectorAll('input[name="evaluation-item"]');
     const exportExcelButton = document.getElementById('export-excel-button');
@@ -475,12 +498,29 @@
     const criteriaBtnFeedback = document.getElementById('criteria-btn-feedback');
     const suggestionTextarea = document.getElementById('suggestion-textarea');
     const charCounter = document.getElementById('char-counter');
-
+    // --- END: DOM Element Selections ---
 
     let isDirty = false;
     let previousEvaluator = '';
     let previousDepartment = '';
     let confirmCallback = null;
+    
+    // --- START: Password Protection Logic ---
+    // 중요: 여기에 원하는 암호를 설정하세요.
+    const CORRECT_PASSWORD = '2025!'; 
+
+    function checkPassword() {
+        const enteredPassword = passwordInput.value;
+        if (enteredPassword === CORRECT_PASSWORD) {
+            // 암호가 맞을 경우
+            passwordModal.classList.add('hidden');
+            mainContent.classList.remove('hidden');
+        } else {
+            // 암호가 틀릴 경우
+            window.location.href = '/index.html'; // 지정된 페이지로 이동
+        }
+    }
+    // --- END: Password Protection Logic ---
 
     // 점수 드롭다운 생성 헬퍼 함수
     function createScoreDropdown(min, max, step = 1) {
@@ -614,7 +654,7 @@
                 <th class="text-sm font-semibold text-gray-600">총점</th>
             `;
             tableHead.appendChild(headerRow);
-             if (selectedDepartment && tasksByDepartment[selectedDepartment]) {
+              if (selectedDepartment && tasksByDepartment[selectedDepartment]) {
                 tasksByDepartment[selectedDepartment].forEach(item => {
                     const row = document.createElement('tr');
                     row.className = "hover:bg-gray-50 evaluation-row";
@@ -744,6 +784,16 @@
         updateTableView();
     }
 
+    // --- START: Event Listeners ---
+    
+    // Password submission event listeners
+    passwordSubmit.addEventListener('click', checkPassword);
+    passwordInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            checkPassword();
+        }
+    });
+
     // 평가위원 선택 시 이벤트 처리
     evaluatorSelect.addEventListener('change', (event) => {
         const selectedValue = event.target.value;
@@ -805,7 +855,6 @@
         const evalTypeRadio = document.querySelector('input[name="evaluation-item"]:checked');
         const evalTypeLabel = evalTypeRadio ? evalTypeRadio.nextElementSibling.textContent : '평가항목';
         const departmentForFilename = department || '전체부서';
-
 
         const excelData = [
             ["2025 부서운영 자체평가 결과"],
@@ -914,6 +963,7 @@
     };
 
     resizer.addEventListener('mousedown', mouseDownHandler);
+    // --- END: Event Listeners ---
 
 
     // 페이지 로드 시 초기화
