@@ -9,11 +9,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* Inter 폰트를 기본으로 사용하고, 한글은 Noto Sans KR로 대체합니다. */
         body {
             font-family: 'Inter', 'Noto Sans KR', sans-serif;
         }
-        /* 스크롤 애니메이션을 위한 클래스 */
         .fade-in {
             opacity: 0;
             transform: translateY(20px);
@@ -23,9 +21,12 @@
             opacity: 1;
             transform: translateY(0);
         }
-        /* 헤더 고정 시 메인 콘텐츠가 가려지지 않도록 패딩 추가 */
         .pt-header {
             padding-top: 64px; /* 헤더 높이만큼 */
+        }
+        /* 암호 입력 모달 스타일 */
+        #password-modal {
+            transition: opacity 0.3s ease;
         }
     </style>
 </head>
@@ -43,7 +44,7 @@
                 <!-- Desktop Navigation -->
                 <nav class="hidden md:flex items-center space-x-8">
                     <a href="gongsi/gongsi_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors">대학정보공시</a>
-                    <a href="buseo/buseo_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors">부서자체평가</a>
+                    <a href="buseo/buseo_pg.html" class="protected-link text-gray-600 hover:text-blue-700 font-medium transition-colors">부서자체평가</a>
                 </nav>
                 <!-- Mobile Menu Button -->
                 <div class="md:hidden">
@@ -60,7 +61,7 @@
         <div id="mobile-menu" class="md:hidden hidden">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                 <a href="gongsi/gongsi_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">대학정보공시</a>
-                <a href="buseo/buseo_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">부서자체평가</a>
+                <a href="buseo/buseo_pg.html" class="protected-link block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">부서자체평가</a>
             </div>
         </div>
     </header>
@@ -69,7 +70,7 @@
         <!-- Hero Section -->
         <section class="relative bg-white">
             <div class="absolute inset-0">
-                <img class="w-full h-full object-cover" src="img/background.png" alt="데이터를 분석하며 협업하는 팀원들의 모습">
+                <img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1556761175-b413da4b2488?q=80&w=2070&auto=format&fit=crop" alt="데이터를 분석하며 협업하는 팀원들의 모습">
                 <div class="absolute inset-0 bg-blue-900/60"></div>
             </div>
             <div class="relative container mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 text-center text-white">
@@ -78,7 +79,7 @@
                 </h1>
                 <div class="mt-10 flex justify-center items-center gap-x-6">
                     <a href="gongsi/gongsi_pg.html" class="rounded-md bg-white/20 px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-white/30 backdrop-blur-sm transition-colors duration-300">대학정보공시 바로가기</a>
-                    <a href="buseo/buseo_pg.html" class="rounded-md bg-white/20 px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-white/30 backdrop-blur-sm transition-colors duration-300">부서자체평가 바로가기</a>
+                    <a href="buseo/buseo_pg.html" class="protected-link rounded-md bg-white/20 px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-white/30 backdrop-blur-sm transition-colors duration-300">부서자체평가 바로가기</a>
                 </div>
             </div>
         </section>
@@ -93,6 +94,21 @@
         </div>
     </footer>
 
+    <!-- Password Modal -->
+    <div id="password-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 hidden opacity-0">
+        <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm mx-4">
+            <h2 class="text-lg font-bold text-gray-800 mb-4">암호 입력</h2>
+            <p class="text-sm text-gray-600 mb-4">접근하려면 암호를 입력해주세요.</p>
+            <input type="password" id="password-input" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="암호">
+            <p id="password-error" class="text-red-500 text-sm mt-2 hidden">암호가 올바르지 않습니다.</p>
+            <div class="mt-6 flex justify-end space-x-3">
+                <button id="cancel-button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">취소</button>
+                <button id="submit-button" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">확인</button>
+            </div>
+        </div>
+    </div>
+
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Mobile menu toggle
@@ -103,38 +119,74 @@
             });
 
             // Close mobile menu on link click
-            const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+            const mobileMenuLinks = mobileMenu.querySelectorAll('a:not(.protected-link)');
             mobileMenuLinks.forEach(link => {
                 link.addEventListener('click', () => {
                     mobileMenu.classList.add('hidden');
                 });
             });
             
-            // Scroll-triggered fade-in animation
-            const faders = document.querySelectorAll('.fade-in');
-            const appearOptions = {
-                threshold: 0.1,
-                rootMargin: "0px 0px -50px 0px"
-            };
-            const appearOnScroll = new IntersectionObserver(function(entries, appearOnScroll) {
-                entries.forEach(entry => {
-                    if (!entry.isIntersecting) {
-                        return;
-                    } else {
-                        entry.target.classList.add('visible');
-                        appearOnScroll.unobserve(entry.target);
-                    }
-                });
-            }, appearOptions);
+            // --- Password Protection Logic ---
+            const protectedLinks = document.querySelectorAll('.protected-link');
+            const modal = document.getElementById('password-modal');
+            const passwordInput = document.getElementById('password-input');
+            const submitButton = document.getElementById('submit-button');
+            const cancelButton = document.getElementById('cancel-button');
+            const passwordError = document.getElementById('password-error');
+            let targetUrl = '';
 
-            faders.forEach(fader => {
-                appearOnScroll.observe(fader);
+            // The SHA-256 hash for "@dhc13001300"
+            const correctHash = '2a85a42b1092543b57f00d4370d0e13768f54714d2a13b0c55f2615bd3578049';
+
+            // Function to hash a string using SHA-256
+            async function sha256(message) {
+                const msgBuffer = new TextEncoder().encode(message);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                return hashHex;
+            }
+
+            // Show modal when a protected link is clicked
+            protectedLinks.forEach(link => {
+                link.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    targetUrl = this.href;
+                    passwordInput.value = '';
+                    passwordError.classList.add('hidden');
+                    modal.classList.remove('hidden');
+                    setTimeout(() => modal.classList.remove('opacity-0'), 10);
+                    passwordInput.focus();
+                });
+            });
+
+            // Hide modal on cancel
+            cancelButton.addEventListener('click', () => {
+                modal.classList.add('opacity-0');
+                setTimeout(() => modal.classList.add('hidden'), 300);
+            });
+
+            // Check password on submit
+            async function checkPassword() {
+                const enteredPassword = passwordInput.value;
+                const enteredHash = await sha256(enteredPassword);
+
+                if (enteredHash === correctHash) {
+                    window.location.href = targetUrl;
+                } else {
+                    passwordError.classList.remove('hidden');
+                    passwordInput.focus();
+                }
+            }
+            
+            submitButton.addEventListener('click', checkPassword);
+            passwordInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    checkPassword();
+                }
             });
         });
     </script>
 </body>
 </html>
-
-
-
 
