@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>중도탈락률 현황 분석보고서</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+        .infographic-header {
+            background-color: #9e0069;
+        }
+        .indicator-card {
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .main-nav-button {
+            transition: all 0.3s ease;
+        }
+        .main-nav-button.active {
+            background-color: #9e0069;
+            color: white;
+        }
+        .sub-tab-button {
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        .sub-tab-button.active {
+            border-color: #9e0069;
+            color: #9e0069;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-4">
+    <div class="max-w-4xl mx-auto bg-white rounded-2xl overflow-hidden shadow-2xl">
+        <header class="infographic-header p-6 text-white text-center relative">
+            <h1 class="text-2xl sm:text-3xl font-bold">2025년 8월 대학정보공시 현황 분석보고서</h1>
+        </header>
+
+        <nav id="main-tab-navigation" class="p-2 bg-gray-100 flex justify-center border-b">
+            <div class="flex space-x-2 bg-gray-200 p-1 rounded-lg">
+                <a href="daegu_health_university.html" class="main-nav-button font-bold py-2 px-6 rounded-md text-sm text-gray-600 hover:bg-gray-300">대구보건대학교</a>
+                <a href="freshman_enrollment.html" class="main-nav-button font-bold py-2 px-6 rounded-md text-sm text-gray-600 hover:bg-gray-300">신입생 충원 현황</a>
+                <a href="enrolled_student_status.html" class="main-nav-button font-bold py-2 px-6 rounded-md text-sm text-gray-600 hover:bg-gray-300">재학생 충원 현황</a>
+                <a href="dropout_rate.html" class="main-nav-button active font-bold py-2 px-6 rounded-md text-sm">중도탈락률</a>
+                <a href="comprehensive_opinion.html" class="main-nav-button font-bold py-2 px-6 rounded-md text-sm text-gray-600 hover:bg-gray-300">종합의견</a>
+            </div>
+        </nav>
+
+        <main>
+            <div id="dropout-rate-sub-tab-navigation" class="p-4 border-b border-gray-200">
+                <nav class="flex space-x-4 overflow-x-auto" aria-label="Tabs">
+                    <button onclick="switchDropoutRateSubTab('dropout_national_junior')" id="dropout-rate-sub-tab-national_junior" class="sub-tab-button active text-base font-medium px-4 py-2 border-b-2">전국 전문대학</button>
+                    <button onclick="switchDropoutRateSubTab('dropout_regional')" id="dropout-rate-sub-tab-regional" class="sub-tab-button text-base font-medium text-gray-500 hover:text-gray-700 px-4 py-2 border-b-2 border-transparent">지역별</button>
+                    <button onclick="switchDropoutRateSubTab('dropout_daekyung')" id="dropout-rate-sub-tab-daekyung" class="sub-tab-button text-base font-medium text-gray-500 hover:text-gray-700 px-4 py-2 border-b-2 border-transparent">대경권</button>
+                    <button onclick="switchDropoutRateSubTab('dropout_daekyung_uni')" id="dropout-rate-sub-tab-daekyung_uni" class="sub-tab-button text-base font-medium text-gray-500 hover:text-gray-700 px-4 py-2 border-b-2 border-transparent">대경권 대학별</button>
+                    <button onclick="switchDropoutRateSubTab('dropout_alliance')" id="dropout-rate-sub-tab-alliance" class="sub-tab-button text-base font-medium text-gray-500 hover:text-gray-700 px-4 py-2 border-b-2 border-transparent">한달빛보건연합대학</button>
+                </nav>
+            </div>
+            
+            <div class="p-6">
+                 <div id="dropout-rate-sub-panel-national_junior" class="dropout-rate-sub-tab-panel">
+                     <div class="space-y-8">
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">전국 전문대학 중도탈락 현황</h2>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-white border border-gray-200 rounded-lg text-sm">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">기준연도</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">재학생 중도탈락 학생 수</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">재학생 중도탈락률 (%)</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">신입생 중도탈락 학생 수</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">신입생 중도탈락률 (%)</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">중도탈락자 중 신입생 비율 (%)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200" id="dropout-national-table-body">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="dropout-national-charts-container">
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">연도별 추이</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div class="indicator-card p-4 rounded-lg"><canvas id="dropoutRateTrendChart"></canvas></div>
+                                <div class="indicator-card p-4 rounded-lg"><canvas id="freshmanDropoutRatioChart"></canvas></div>
+                            </div>
+                        </div>
+                        
+                        <div id="dropout-reasons-charts-container">
+                             <h2 class="text-xl font-bold text-gray-800 mb-4">사유별 중도탈락 현황</h2>
+                             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                 <div class="indicator-card p-4 rounded-lg">
+                                     <h3 class="text-center font-bold mb-2">2022년</h3>
+                                     <canvas id="dropoutReasonChart2022"></canvas>
+                                </div>
+                                 <div class="indicator-card p-4 rounded-lg">
+                                     <h3 class="text-center font-bold mb-2">2023년</h3>
+                                     <canvas id="dropoutReasonChart2023"></canvas>
+                                </div>
+                                 <div class="indicator-card p-4 rounded-lg">
+                                     <h3 class="text-center font-bold mb-2">2024년</h3>
+                                     <canvas id="dropoutReasonChart2024"></canvas>
+                                </div>
+                             </div>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">현황 분석</h2>
+                            <div class="p-5 bg-red-50 border-l-4 border-red-400 rounded-r-lg">
+                                <p class="text-base font-bold text-red-800 mb-2">신입생 중도이탈 심화, 전체 탈락자 감소 속 '착시효과' 경계</p>
+                                <p class="text-sm text-gray-700 leading-relaxed">
+                                    전국 전문대학의 최근 3년간 중도탈락 현황을 보면, 전체 중도탈락 학생 수는 소폭 감소했으나 이는 전체 재학생 수 감소에 따른 것으로 보입니다. 오히려 <span class="font-bold">신입생의 중도탈락률은 9.3%에서 10.0%로 꾸준히 증가</span>하고 있어, 신입생의 학교 적응 및 전공 만족도 문제가 심화되고 있음을 알 수 있습니다.
+                                    <br><br>
+                                    특히 전체 중도탈락자 중 <span class="font-bold">신입생이 차지하는 비율이 32.8%에서 36.9%로 크게 증가</span>한 점은 주목할 만합니다. 이는 대학 입학 후 1년 이내에 학업을 포기하는 학생이 늘고 있다는 의미로, 초기 대학 생활 적응을 위한 대학의 적극적인 지원과 상담 프로그램 강화가 시급해 보입니다.
+                                    <br><br>
+                                    사유별로 보면 '자퇴'가 압도적인 비중을 차지하고 있어, 학생들의 자발적인 학업 포기가 중도탈락의 핵심 원인임을 알 수 있습니다. 이는 전공 불만, 진로 변경 희망 등 다양한 요인이 복합적으로 작용한 결과로 분석됩니다.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="dropout-rate-sub-panel-regional" class="dropout-rate-sub-tab-panel hidden">
+                     <div class="space-y-8">
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">지역별 중도탈락률 현황 (%)</h2>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-white border border-gray-200 rounded-lg text-sm">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th rowspan="2" class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider align-middle">지역</th>
+                                            <th colspan="3" class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-b border-l">재학생 중도탈락률</th>
+                                            <th colspan="3" class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-b border-l">신입생 중도탈락률</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-l">2024</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">2023</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">2022</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-l">2024</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">2023</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">2022</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200" id="dropout-regional-table-body">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="dropout-regional-charts-container">
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">2024년 지역별 현황 비교</h2>
+                            <div class="grid grid-cols-1 gap-8">
+                                <div class="indicator-card p-4 rounded-lg"><canvas id="dropoutRegionalComparisonChart"></canvas></div>
+                            </div>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">현황 분석</h2>
+                            <div class="p-5 bg-orange-50 border-l-4 border-orange-400 rounded-r-lg">
+                                <p class="text-base font-bold text-orange-800 mb-2">제주·충북, 높은 중도탈락률 '위험 신호', 수도권은 신입생 이탈 문제 심각</p>
+                                <p class="text-sm text-gray-700 leading-relaxed">
+                                    2024년 기준, <span class="font-bold">제주 지역의 재학생 중도탈락률(14.2%)과 신입생 중도탈락률(17.7%)은 전국에서 압도적으로 가장 높은 수치</span>를 기록하여 심각한 학생 이탈 문제를 겪고 있음을 보여줍니다. <span class="font-bold">충북(10.7%, 12.4%)</span>과 <span class="font-bold">대전(10.5%, 10.5%)</span> 역시 전체 및 신입생 중도탈락률이 모두 10%를 넘어서며 상위권을 차지했습니다.
+                                    <br><br>
+                                    반면, <span class="font-bold">울산(5.9%)</span>은 전국에서 유일하게 5%대 재학생 중도탈락률을 보이며 가장 안정적인 학생 유지 역량을 보였습니다.
+                                    <br><br>
+                                    특히 주목할 점은 <span class="font-bold">서울</span>입니다. 재학생 중도탈락률은 8.8%로 비교적 양호하지만, <span class="font-bold">신입생 중도탈락률은 12.1%</span>로 전국에서 세 번째로 높아 신입생의 초기 이탈 문제가 심각함을 알 수 있습니다. 이는 수도권 대학의 높은 편입 및 재수 비율과 관련이 깊은 것으로 분석됩니다.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="dropout-rate-sub-panel-daekyung" class="dropout-rate-sub-tab-panel hidden">
+                    <div class="space-y-8">
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">대경권 중도탈락률 현황 (%)</h2>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-white border border-gray-200 rounded-lg text-sm">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th rowspan="2" class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider align-middle">지역</th>
+                                            <th colspan="3" class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-b border-l">재학생 중도탈락률</th>
+                                            <th colspan="3" class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-b border-l">신입생 중도탈락률</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-l">2024</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">2023</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">2022</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-l">2024</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">2023</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">2022</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200" id="dropout-daekyung-table-body">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="dropout-daekyung-charts-container">
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">대경권 연도별 추이</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div class="indicator-card p-4 rounded-lg"><canvas id="dropoutDaekyungTotalRateChart"></canvas></div>
+                                <div class="indicator-card p-4 rounded-lg"><canvas id="dropoutDaekyungFreshmanRateChart"></canvas></div>
+                            </div>
+                        </div>
+                         <div>
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">현황 분석</h2>
+                            <div class="p-5 bg-yellow-50 border-l-4 border-yellow-400 rounded-r-lg">
+                                <p class="text-base font-bold text-yellow-800 mb-2">대구 지역 중도탈락률 감소세, 경북은 소폭 개선</p>
+                                <p class="text-sm text-gray-700 leading-relaxed">
+                                    최근 3년간 대경권의 중도탈락률은 대구와 경북 지역 간에 상이한 양상을 보입니다. <span class="font-bold">대구 지역</span>의 경우 재학생과 신입생 중도탈락률 모두 2023년에 크게 상승했다가 <span class="font-bold">2024년에 다시 하락하며 안정화</span>되는 모습을 보였습니다.
+                                    <br><br>
+                                    반면 <span class="font-bold">경북 지역</span>은 재학생과 신입생 중도탈락률이 3년간 꾸준히 <span class="font-bold">감소하는 긍정적인 추세</span>를 보이고 있습니다. 그럼에도 불구하고 2024년 기준, 재학생 중도탈락률은 여전히 경북(8.7%)이 대구(9.6%)보다 낮은 반면, 신입생 중도탈락률은 두 지역 모두 9.7%로 동일하게 나타나, 신입생의 초기 이탈 문제는 두 지역 모두에게 공통된 과제임을 시사합니다.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="dropout-rate-sub-panel-daekyung_uni" class="dropout-rate-sub-tab-panel hidden">
+                    <div class="space-y-8">
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">대경권 대학별 중도탈락률 현황 (%)</h2>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-white border border-gray-200 rounded-lg text-sm">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th rowspan="2" class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider align-middle">학교</th>
+                                            <th colspan="3" class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-b border-l">재학생 중도탈락률</th>
+                                            <th colspan="3" class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-b border-l">신입생 중도탈락률</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-l">2024</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">2023</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">2022</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-l">2024</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">2023</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">2022</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200" id="dropout-daekyung-uni-table-body">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="dropout-daekyung-uni-charts-container">
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">2024년 대학별 현황 비교</h2>
+                            <div class="grid grid-cols-1 gap-8">
+                                <div class="indicator-card p-4 rounded-lg"><canvas id="dropoutDaekyungUniComparisonChart"></canvas></div>
+                            </div>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">현황 분석</h2>
+                            <div class="p-5 bg-lime-50 border-l-4 border-lime-400 rounded-r-lg">
+                                <p class="text-base font-bold text-lime-800 mb-2">대학별 중도탈락률 격차 심화, '관리 역량'이 관건</p>
+                                <p class="text-sm text-gray-700 leading-relaxed">
+                                    2024년 대경권 전문대학의 중도탈락률은 대학별로 큰 편차를 보였습니다. <span class="font-bold">경북보건대학교</span>는 재학생 중도탈락률 5.7%로 가장 낮은 수치를 기록하며 탁월한 학생 유지 역량을 보여주었고, <span class="font-bold">안동과학대학교(6.6%), 선린대학교(7.6%)</span> 등이 그 뒤를 이었습니다.
+                                    <br><br>
+                                    반면, <span class="font-bold">대구공업대학교</span>는 재학생 중도탈락률이 15.9%에 달해 대경권에서 가장 높았으며, 신입생 중도탈락률 역시 15.6%로 매우 심각한 수준이었습니다. <span class="font-bold">포항대학교(11.6%), 영진전문대학교(11.1%), 대경대학교(12.2%)</span> 등도 10%가 넘는 높은 재학생 중도탈락률을 기록했습니다.
+                                    <br><br>
+                                    <span class="font-bold">대구보건대학교</span>는 7.9%의 재학생 중도탈락률로 비교적 양호한 수준을 유지했으나, 신입생 중도탈락률은 8.5%로 재학생보다 높아 신입생의 초기 이탈 방지를 위한 노력이 필요해 보입니다. 이처럼 대학별 중도탈락률 격차가 심화되는 것은 학생 유치뿐만 아니라, 입학 후 학생들을 어떻게 관리하고 지원하는지가 대학의 중요한 경쟁력이 되었음을 시사합니다.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="dropout-rate-sub-panel-alliance" class="dropout-rate-sub-tab-panel hidden">
+                    <div class="space-y-8">
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">한달빛보건연합대학 중도탈락률 현황 (%)</h2>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-white border border-gray-200 rounded-lg text-sm">
+                                     <thead class="bg-gray-50">
+                                        <tr>
+                                            <th rowspan="2" class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider align-middle">학교</th>
+                                            <th colspan="3" class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-b border-l">재학생 중도탈락률</th>
+                                            <th colspan="3" class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-b border-l">신입생 중도탈락률</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-l">2024</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">2023</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">2022</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-l">2024</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">2023</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">2022</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200" id="dropout-alliance-table-body">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="dropout-alliance-charts-container">
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">연도별 추이 비교</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div class="indicator-card p-4 rounded-lg"><canvas id="dropoutAllianceTotalRateChart"></canvas></div>
+                                <div class="indicator-card p-4 rounded-lg"><canvas id="dropoutAllianceFreshmanRateChart"></canvas></div>
+                            </div>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">현황 분석</h2>
+                            <div class="p-5 bg-purple-50 border-l-4 border-purple-400 rounded-r-lg">
+                                <p class="text-base font-bold text-purple-800 mb-2">대구보건대 중도탈락률 상승세, 타 대학은 안정적 관리</p>
+                                <p class="text-sm text-gray-700 leading-relaxed">
+                                    한달빛보건연합대학 3개교의 중도탈락률은 대학별로 뚜렷한 차이를 보였습니다. <span class="font-bold">대구보건대학교</span>는 재학생과 신입생 중도탈락률이 3년 연속 꾸준히 상승하여 각각 7.9%와 8.5%를 기록했습니다. 이는 연합대학 중 가장 높은 수치로, 학생 이탈 방지를 위한 적극적인 대책 마련이 시급해 보입니다.
+                                    <br><br>
+                                    반면 <span class="font-bold">광주보건대학교</span>는 3년간 6%대의 낮은 중도탈락률을 안정적으로 유지하며 탁월한 학생 관리 역량을 보여주었습니다. <span class="font-bold">대전보건대학교</span>는 소폭의 등락은 있었으나 6~7%대의 비교적 양호한 수준을 유지했습니다.
+                                    <br><br>
+                                    특히 대구보건대학교의 신입생 중도탈락률 상승세는 연합대학 내에서 두드러지는 문제점으로, 신입생의 학교생활 적응과 만족도 제고를 위한 맞춤형 프로그램 개발이 중요 과제로 보입니다.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Comprehensive Opinion Panel -->
+            <div id="main-panel-comprehensive_opinion" class="main-tab-panel hidden">
+                <div class="p-6">
+                    <p class="text-gray-500">종합의견 내용이 여기에 표시됩니다.</p>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <script>
+        let mainTabs, dhcSubTabs, subTabs, enrolledStatusSubTabs, dropoutRateSubTabs;
+        let enrolledRegionalData, enrolledDaekyungUniData, enrolledAllianceData, dhcEnrolledRateData, dropoutRegionalData;
+
+        function switchMainTab(tabKey) {
+            Object.values(mainTabs).forEach(tab => {
+                tab.button.classList.remove('active');
+                tab.panel.classList.remove('active');
+                tab.panel.classList.add('hidden');
+            });
+            const selectedTab = mainTabs[tabKey];
+            selectedTab.button.classList.add('active');
+            selectedTab.panel.classList.add('active');
+            selectedTab.panel.classList.remove('hidden');
+
+            if (tabKey === 'dhc') {
+                switchDhcSubTab('main_indicators');
+            } else if (tabKey === 'enrollment') {
+                switchSubTab('national_junior');
+            } else if (tabKey === 'enrolled_status') {
+                switchEnrolledStatusSubTab('enrolled_national_junior');
+            } else if (tabKey === 'dropout_rate') {
+                switchDropoutRateSubTab('dropout_national_junior');
+            }
+        }
+        
+        function switchDhcSubTab(tabKey) {
+             Object.values(dhcSubTabs).forEach(tab => {
+                tab.button.classList.remove('active');
+                tab.panel.classList.remove('active');
+                tab.panel.classList.add('hidden');
+            });
+            const selectedTab = dhcSubTabs[tabKey];
+            selectedTab.button.classList.add('active');
+            selectedTab.panel.classList.add('active');
+            selectedTab.panel.classList.remove('hidden');
+        }
+
+        function switchSubTab(tabKey) {
+            Object.values(subTabs).forEach(tab => {
+                tab.button.classList.remove('active');
+                tab.panel.classList.remove('active');
+                tab.panel.classList.add('hidden');
+            });
+            const selectedTab = subTabs[tabKey];
+            selectedTab.button.classList.add('active');
+            selectedTab.panel.classList.add('active');
+            selectedTab.panel.classList.remove('hidden');
+        }
+
+        function switchEnrolledStatusSubTab(tabKey) {
+            Object.values(enrolledStatusSubTabs).forEach(tab => {
+                tab.button.classList.remove('active');
+                tab.panel.classList.remove('active');
+                tab.panel.classList.add('hidden');
+            });
+            const selectedTab = enrolledStatusSubTabs[tabKey];
+            selectedTab.button.classList.add('active');
+            selectedTab.panel.classList.add('active');
+            selectedTab.panel.classList.remove('hidden');
+        }
+        
+        function switchDropoutRateSubTab(tabKey) {
+            Object.values(dropoutRateSubTabs).forEach(tab => {
+                tab.button.classList.remove('active');
+                tab.panel.classList.remove('active');
+                tab.panel.classList.add('hidden');
+            });
+            const selectedTab = dropoutRateSubTabs[tabKey];
+            selectedTab.button.classList.add('active');
+            selectedTab.panel.classList.add('active');
+            selectedTab.panel.classList.remove('hidden');
+        }
+
+        // Data and Chart Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            mainTabs = {
+                dhc: { button: document.getElementById('main-tab-dhc'), panel: document.getElementById('main-panel-dhc') },
+                enrollment: { button: document.getElementById('main-tab-enrollment'), panel: document.getElementById('main-panel-enrollment') },
+                enrolled_status: { button: document.getElementById('main-tab-enrolled_status'), panel: document.getElementById('main-panel-enrolled_status') },
+                dropout_rate: { button: document.getElementById('main-tab-dropout_rate'), panel: document.getElementById('main-panel-dropout_rate') },
+                comprehensive_opinion: { button: document.getElementById('main-tab-comprehensive_opinion'), panel: document.getElementById('main-panel-comprehensive_opinion') },
+            };
+            
+            dhcSubTabs = {
+                main_indicators: { button: document.getElementById('dhc-sub-tab-main_indicators'), panel: document.getElementById('dhc-sub-panel-main_indicators') },
+                freshman_rate: { button: document.getElementById('dhc-sub-tab-freshman_rate'), panel: document.getElementById('dhc-sub-panel-freshman_rate') },
+                enrolled_rate: { button: document.getElementById('dhc-sub-tab-enrolled_rate'), panel: document.getElementById('dhc-sub-panel-enrolled_rate') },
+                dropout_rate_dept: { button: document.getElementById('dhc-sub-tab-dropout_rate_dept'), panel: document.getElementById('dhc-sub-panel-dropout_rate_dept') }
+            };
+
+            subTabs = {
+                national_junior: { button: document.getElementById('sub-tab-national_junior'), panel: document.getElementById('sub-panel-national_junior') },
+                regional: { button: document.getElementById('sub-tab-regional'), panel: document.getElementById('sub-panel-regional') },
+                daekyung: { button: document.getElementById('sub-tab-daekyung'), panel: document.getElementById('sub-panel-daekyung') },
+                daekyung_uni: { button: document.getElementById('sub-tab-daekyung_uni'), panel: document.getElementById('sub-panel-daekyung_uni') },
+                alliance: { button: document.getElementById('sub-tab-alliance'), panel: document.getElementById('sub-panel-alliance') }
+            };
+
+            enrolledStatusSubTabs = {
+                enrolled_national_junior: { button: document.getElementById('enrolled-status-sub-tab-national_junior'), panel: document.getElementById('enrolled-status-sub-panel-national_junior') },
+                enrolled_regional: { button: document.getElementById('enrolled-status-sub-tab-regional'), panel: document.getElementById('enrolled-status-sub-panel-regional') },
+                enrolled_daekyung: { button: document.getElementById('enrolled-status-sub-tab-daekyung'), panel: document.getElementById('enrolled-status-sub-panel-daekyung') },
+                enrolled_daekyung_uni: { button: document.getElementById('enrolled-status-sub-tab-daekyung_uni'), panel: document.getElementById('enrolled-status-sub-panel-daekyung_uni') },
+                enrolled_alliance: { button: document.getElementById('enrolled-status-sub-tab-alliance'), panel: document.getElementById('enrolled-status-sub-panel-alliance') }
+            };
+
+            dropoutRateSubTabs = {
+                dropout_national_junior: { button: document.getElementById('dropout-rate-sub-tab-national_junior'), panel: document.getElementById('dropout-rate-sub-panel-national_junior') },
+                dropout_regional: { button: document.getElementById('dropout-rate-sub-tab-regional'), panel: document.getElementById('dropout-rate-sub-panel-regional') },
+                dropout_daekyung: { button: document.getElementById('dropout-rate-sub-tab-daekyung'), panel: document.getElementById('dropout-rate-sub-panel-daekyung') },
+                dropout_daekyung_uni: { button: document.getElementById('dropout-rate-sub-tab-daekyung_uni'), panel: document.getElementById('dropout-rate-sub-panel-daekyung_uni') },
+                dropout_alliance: { button: document.getElementById('dropout-rate-sub-tab-alliance'), panel: document.getElementById('dropout-rate-sub-panel-alliance') }
+            };
+            
+             // 중도탈락률 - 전국 전문대학 데이터 테이블 생성
+            const dropoutNationalData = [
+                { year: 2022, total_students: 45121, total_rate: 8.6, freshman_students: 14815, freshman_rate: 9.3 },
+                { year: 2023, total_students: 44758, total_rate: 9.0, freshman_students: 15340, freshman_rate: 9.8 },
+                { year: 2024, total_students: 42492, total_rate: 8.8, freshman_students: 15683, freshman_rate: 10.0 },
+            ];
+            const dropoutNationalTableBody = document.getElementById('dropout-national-table-body');
+            dropoutNationalData.forEach(d => {
+                const freshman_ratio = (d.freshman_students / d.total_students * 100).toFixed(1);
+                dropoutNationalTableBody.innerHTML += `
+                    <tr>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.year}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.total_students.toLocaleString()}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.total_rate.toFixed(1)}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.freshman_students.toLocaleString()}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.freshman_rate.toFixed(1)}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${freshman_ratio}</td>
+                    </tr>
+                `;
+            });
+
+             // 중도탈락률 - 지역별 데이터 테이블 생성
+            dropoutRegionalData = [
+                { region: '강원', total24: 9.0, total23: 9.0, total22: 8.7, fresh24: 10.4, fresh23: 10.3, fresh22: 10.5 },
+                { region: '경기', total24: 8.4, total23: 8.3, total22: 7.9, fresh24: 8.8, fresh23: 8.4, fresh22: 8.4 },
+                { region: '경남', total24: 7.7, total23: 8.4, total22: 10.8, fresh24: 9.0, fresh23: 8.2, fresh22: 8.4 },
+                { region: '경북', total24: 8.7, total23: 9.0, total22: 9.4, fresh24: 9.7, fresh23: 10.5, fresh22: 10.3 },
+                { region: '광주', total24: 8.7, total23: 8.2, total22: 7.8, fresh24: 10.8, fresh23: 8.7, fresh22: 9.2 },
+                { region: '대구', total24: 9.6, total23: 10.1, total22: 8.9, fresh24: 9.7, fresh23: 10.7, fresh22: 8.7 },
+                { region: '대전', total24: 10.5, total23: 11.0, total22: 11.1, fresh24: 10.5, fresh23: 12.1, fresh22: 11.6 },
+                { region: '부산', total24: 9.7, total23: 11.5, total22: 11.4, fresh24: 10.8, fresh23: 11.6, fresh22: 10.2 },
+                { region: '서울', total24: 8.8, total23: 8.5, total22: 7.9, fresh24: 12.1, fresh23: 11.0, fresh22: 10.5 },
+                { region: '세종', total24: 7.4, total23: 7.2, total22: 5.5, fresh24: 7.8, fresh23: 7.9, fresh22: 4.8 },
+                { region: '울산', total24: 5.9, total23: 6.1, total22: 6.3, fresh24: 6.3, fresh23: 7.2, fresh22: 6.9 },
+                { region: '인천', total24: 8.3, total23: 7.6, total22: 6.8, fresh24: 10.9, fresh23: 9.6, fresh22: 9.2 },
+                { region: '전남', total24: 8.3, total23: 9.9, total22: 8.2, fresh24: 11.2, fresh23: 12.5, fresh22: 9.5 },
+                { region: '전북', total24: 8.5, total23: 9.1, total22: 9.6, fresh24: 9.2, fresh23: 9.8, fresh22: 11.0 },
+                { region: '제주', total24: 14.2, total23: 13.7, total22: 7.5, fresh24: 17.7, fresh23: 13.8, fresh22: 14.1 },
+                { region: '충남', total24: 9.2, total23: 9.9, total22: 8.6, fresh24: 7.6, fresh23: 10.8, fresh22: 7.5 },
+                { region: '충북', total24: 10.7, total23: 9.7, total22: 9.1, fresh24: 12.4, fresh23: 8.9, fresh22: 8.9 },
+            ];
+            const dropoutRegionalTableBody = document.getElementById('dropout-regional-table-body');
+            dropoutRegionalData.sort((a,b) => b.total24 - a.total24);
+            dropoutRegionalData.forEach(d => {
+                dropoutRegionalTableBody.innerHTML += `
+                    <tr>
+                        <td class="px-3 py-2 whitespace-nowrap font-medium text-gray-800">${d.region}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center border-l">${d.total24.toFixed(1)}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.total23.toFixed(1)}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.total22.toFixed(1)}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center border-l">${d.fresh24.toFixed(1)}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.fresh23.toFixed(1)}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.fresh22.toFixed(1)}</td>
+                    </tr>
+                `;
+            });
+            
+            // 모든 차트 생성
+            initializeAllCharts();
+        });
+        
+        function initializeAllCharts() {
+            // 중도탈락률 - 전국 전문대학 차트
+            const dropoutNationalDataObject = {
+                labels: ['2022', '2023', '2024'],
+                totalRate: [8.6, 9.0, 8.8],
+                freshmanRate: [9.3, 9.8, 10.0],
+                freshmanRatio: [32.8, 34.3, 36.9]
+            };
+            new Chart(document.getElementById('dropoutRateTrendChart').getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: dropoutNationalDataObject.labels,
+                    datasets: [
+                        { label: '전체 재학생 중도탈락률 (%)', data: dropoutNationalDataObject.totalRate, borderColor: 'rgba(255, 99, 132, 1)', backgroundColor: 'rgba(255, 99, 132, 0.2)' },
+                        { label: '신입생 중도탈락률 (%)', data: dropoutNationalDataObject.freshmanRate, borderColor: 'rgba(54, 162, 235, 1)', backgroundColor: 'rgba(54, 162, 235, 0.2)' }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { position: 'top' }, title: { display: true, text: '중도탈락률 추이' } },
+                    scales: { y: { min: 8, title: { display: true, text: '중도탈락률 (%)' } } }
+                }
+            });
+            new Chart(document.getElementById('freshmanDropoutRatioChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: dropoutNationalDataObject.labels,
+                    datasets: [{
+                        label: '중도탈락자 중 신입생 비율 (%)',
+                        data: dropoutNationalDataObject.freshmanRatio,
+                        backgroundColor: 'rgba(75, 192, 192, 0.7)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false }, title: { display: true, text: '중도탈락자 중 신입생 비율' } },
+                    scales: { y: { min: 30, title: { display: true, text: '비율 (%)' } } }
+                }
+            });
+            
+            const dropoutReasonData = {
+                labels: ['자퇴', '미복학', '미등록', '기타'],
+                '2022': [32526, 14402, 11533, 1376],
+                '2023': [32706, 14629, 11727, 943],
+                '2024': [32608, 12266, 12183, 1023]
+            };
+            const pieOptions = {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    datalabels: {
+                        formatter: (value, ctx) => {
+                            let sum = 0;
+                            let dataArr = ctx.chart.data.datasets[0].data;
+                            dataArr.map(data => { sum += data; });
+                            let percentage = (value * 100 / sum).toFixed(1) + "%";
+                            return percentage;
+                        },
+                        color: '#fff',
+                    }
+                }
+            };
+            new Chart(document.getElementById('dropoutReasonChart2022').getContext('2d'), { type: 'pie', data: { labels: dropoutReasonData.labels, datasets: [{ data: dropoutReasonData['2022'] }] }, plugins: [ChartDataLabels], options: pieOptions });
+            new Chart(document.getElementById('dropoutReasonChart2023').getContext('2d'), { type: 'pie', data: { labels: dropoutReasonData.labels, datasets: [{ data: dropoutReasonData['2023'] }] }, plugins: [ChartDataLabels], options: pieOptions });
+            new Chart(document.getElementById('dropoutReasonChart2024').getContext('2d'), { type: 'pie', data: { labels: dropoutReasonData.labels, datasets: [{ data: dropoutReasonData['2024'] }] }, plugins: [ChartDataLabels], options: pieOptions });
+
+            const dropoutRegionalDataObject = {
+                labels: dropoutRegionalData.map(d => d.region),
+                totalRate: dropoutRegionalData.map(d => d.total24),
+                freshmanRate: dropoutRegionalData.map(d => d.fresh24),
+            };
+
+            new Chart(document.getElementById('dropoutRegionalComparisonChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: dropoutRegionalDataObject.labels,
+                    datasets: [
+                        { label: '재학생 중도탈락률', data: dropoutRegionalDataObject.totalRate, backgroundColor: 'rgba(255, 99, 132, 0.7)'},
+                        { label: '신입생 중도탈락률', data: dropoutRegionalDataObject.freshmanRate, backgroundColor: 'rgba(54, 162, 235, 0.7)'}
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { position: 'top' }, title: { display: true, text: '2024년 지역별 재학생 및 신입생 중도탈락률' } },
+                    scales: { y: { beginAtZero: true, title: { display: true, text: '중도탈락률 (%)' } } }
+                }
+            });
+            
+            const dropoutDaekyungData = [
+                { region: '경북', total24: 8.7, total23: 9.0, total22: 9.4, fresh24: 9.7, fresh23: 10.5, fresh22: 10.3 },
+                { region: '대구', total24: 9.6, total23: 10.1, total22: 8.9, fresh24: 9.7, fresh23: 10.7, fresh22: 8.7 }
+            ];
+            const dropoutDaekyungTableBody = document.getElementById('dropout-daekyung-table-body');
+            dropoutDaekyungTableBody.innerHTML = '';
+            dropoutDaekyungData.forEach(d => {
+                dropoutDaekyungTableBody.innerHTML += `
+                    <tr>
+                        <td class="px-3 py-2 whitespace-nowrap font-medium text-gray-800">${d.region}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center border-l">${d.total24.toFixed(1)}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.total23.toFixed(1)}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.total22.toFixed(1)}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center border-l">${d.fresh24.toFixed(1)}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.fresh23.toFixed(1)}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.fresh22.toFixed(1)}</td>
+                    </tr>
+                `;
+            });
+            
+            const dropoutDaekyungDataObject = {
+                labels: ['2022', '2023', '2024'],
+                gbTotal: [9.4, 9.0, 8.7],
+                dgTotal: [8.9, 10.1, 9.6],
+                gbFresh: [10.3, 10.5, 9.7],
+                dgFresh: [8.7, 10.7, 9.7],
+            };
+             new Chart(document.getElementById('dropoutDaekyungTotalRateChart').getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: dropoutDaekyungDataObject.labels,
+                    datasets: [
+                        { label: '경북 재학생', data: dropoutDaekyungDataObject.gbTotal, borderColor: 'rgba(255, 99, 132, 1)'},
+                        { label: '대구 재학생', data: dropoutDaekyungDataObject.dgTotal, borderColor: 'rgba(54, 162, 235, 1)'}
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { position: 'top' }, title: { display: true, text: '재학생 중도탈락률 추이' } },
+                    scales: { y: { min: 8, title: { display: true, text: '중도탈락률 (%)' } } }
+                }
+            });
+            new Chart(document.getElementById('dropoutDaekyungFreshmanRateChart').getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: dropoutDaekyungDataObject.labels,
+                    datasets: [
+                        { label: '경북 신입생', data: dropoutDaekyungDataObject.gbFresh, borderColor: 'rgba(255, 159, 64, 1)'},
+                        { label: '대구 신입생', data: dropoutDaekyungDataObject.dgFresh, borderColor: 'rgba(75, 192, 192, 1)'}
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { position: 'top' }, title: { display: true, text: '신입생 중도탈락률 추이' } },
+                    scales: { y: { min: 8, title: { display: true, text: '중도탈락률 (%)' } } }
+                }
+            });
+            
+            const dropoutDaekyungUniData = [
+                { name: '대구보건대학교', total24: 7.9, total23: 7.1, total22: 5.9, fresh24: 8.5, fresh23: 7.7, fresh22: 6.6 },
+                { name: '경북보건대학교', total24: 5.7, total23: 4.7, total22: 5.5, fresh24: 9.1, fresh23: 9.6, fresh22: 8.2 },
+                { name: '경북전문대학교', total24: 5.8, total23: 7.9, total22: 5.1, fresh24: 5.6, fresh23: 6.3, fresh22: 4.9 },
+                { name: '안동과학대학교', total24: 6.6, total23: 6.7, total22: 9.8, fresh24: 5.8, fresh23: 7.8, fresh22: 3.4 },
+                { name: '선린대학교', total24: 7.6, total23: 7.5, total22: 7.6, fresh24: 7.2, fresh23: 9.5, fresh22: 10.3 },
+                { name: '경북과학대학교', total24: 7.9, total23: 10.0, total22: 14.3, fresh24: 10.5, fresh23: 12.9, fresh22: 22.2 },
+                { name: '수성대학교', total24: 8.0, total23: 8.7, total22: 8.9, fresh24: 9.7, fresh23: 9.0, fresh22: 9.8 },
+                { name: '구미대학교', total24: 8.1, total23: 8.9, total22: 7.8, fresh24: 8.0, fresh23: 9.7, fresh22: 8.3 },
+                { name: '영남외국어대학', total24: 8.5, total23: 10.8, total22: 7.1, fresh24: 12.7, fresh23: 16.1, fresh22: 13.0 },
+                { name: '계명문화대학교', total24: 8.7, total23: 12.9, total22: 8.1, fresh24: 7.5, fresh23: 10.7, fresh22: 6.9 },
+                { name: '영남이공대학교', total24: 9.6, total23: 9.2, total22: 8.7, fresh24: 9.0, fresh23: 8.9, fresh22: 8.2 },
+                { name: '성운대학교', total24: 9.7, total23: 11.7, total22: 11.1, fresh24: 13.2, fresh23: 13.2, fresh22: 13.6 },
+                { name: '문경대학교', total24: 9.8, total23: 7.1, total22: 7.6, fresh24: 11.2, fresh23: 9.9, fresh22: 7.4 },
+                { name: '호산대학교', total24: 9.8, total23: 7.5, total22: 9.0, fresh24: 11.0, fresh23: 10.8, fresh22: 10.3 },
+                { name: '대구과학대학교', total24: 10.0, total23: 9.7, total22: 7.3, fresh24: 10.7, fresh23: 12.2, fresh22: 7.4 },
+                { name: '영진전문대학교', total24: 11.1, total23: 11.7, total22: 10.9, fresh24: 10.9, fresh23: 13.6, fresh22: 11.8 },
+                { name: '포항대학교', total24: 11.6, total23: 10.7, total22: 9.1, fresh24: 14.1, fresh23: 10.9, fresh22: 10.0 },
+                { name: '대경대학교', total24: 12.2, total23: 12.9, total22: 14.9, fresh24: 13.7, fresh23: 14.2, fresh22: 12.8 },
+                { name: '대구공업대학교', total24: 15.9, total23: 15.8, total22: 15.7, fresh24: 15.6, fresh23: 15.5, fresh22: 9.7 },
+                { name: '가톨릭상지대학교', total24: 9.5, total23: 8.0, total22: 9.4, fresh24: 8.6, fresh23: 7.1, fresh22: 11.8 }
+            ];
+            const dropoutDaekyungUniTableBody = document.getElementById('dropout-daekyung-uni-table-body');
+            dropoutDaekyungUniTableBody.innerHTML = '';
+            
+            const dhu = dropoutDaekyungUniData.find(d => d.name === '대구보건대학교');
+            let others = dropoutDaekyungUniData.filter(d => d.name !== '대구보건대학교');
+            others.sort((a,b) => a.total24 - b.total24);
+            const sortedData = [dhu, ...others];
+
+            sortedData.forEach(d => {
+                dropoutDaekyungUniTableBody.innerHTML += `
+                    <tr>
+                        <td class="px-3 py-2 whitespace-nowrap font-medium text-gray-800">${d.name}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center border-l">${d.total24.toFixed(1)}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.total23.toFixed(1)}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.total22.toFixed(1)}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center border-l">${d.fresh24.toFixed(1)}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.fresh23.toFixed(1)}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.fresh22.toFixed(1)}</td>
+                    </tr>
+                `;
+            });
+            
+             const dropoutDaekyungUniDataObject = {
+                labels: sortedData.map(d => d.name),
+                totalRate: sortedData.map(d => d.total24),
+                freshmanRate: sortedData.map(d => d.fresh24),
+            };
+
+            new Chart(document.getElementById('dropoutDaekyungUniComparisonChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: dropoutDaekyungUniDataObject.labels,
+                    datasets: [
+                        { label: '재학생 중도탈락률', data: dropoutDaekyungUniDataObject.totalRate, backgroundColor: 'rgba(255, 99, 132, 0.7)'},
+                        { label: '신입생 중도탈락률', data: dropoutDaekyungUniDataObject.freshmanRate, backgroundColor: 'rgba(54, 162, 235, 0.7)'}
+                    ]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    plugins: { legend: { position: 'top' }, title: { display: true, text: '2024년 대경권 대학별 중도탈락률' } },
+                    scales: { y: { ticks: { autoSkip: false } }, x: { beginAtZero: true, title: { display: true, text: '중도탈락률 (%)' } } }
+                }
+            });
+            
+            const dropoutAllianceData = [
+                { name: '광주보건대학교', total24: 6.5, total23: 6.9, total22: 5.4, fresh24: 6.2, fresh23: 6.4, fresh22: 5.2 },
+                { name: '대구보건대학교', total24: 7.9, total23: 7.1, total22: 5.9, fresh24: 8.5, fresh23: 7.7, fresh22: 6.6 },
+                { name: '대전보건대학교', total24: 7.2, total23: 6.6, total22: 6.9, fresh24: 6.9, fresh23: 6.4, fresh22: 5.4 }
+            ];
+            const dropoutAllianceTableBody = document.getElementById('dropout-alliance-table-body');
+            dropoutAllianceData.forEach(d => {
+                dropoutAllianceTableBody.innerHTML += `
+                    <tr>
+                        <td class="px-3 py-2 whitespace-nowrap font-medium text-gray-800">${d.name}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center border-l">${d.total24.toFixed(1)}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.total23.toFixed(1)}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.total22.toFixed(1)}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center border-l">${d.fresh24.toFixed(1)}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.fresh23.toFixed(1)}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.fresh22.toFixed(1)}</td>
+                    </tr>
+                `;
+            });
+
+            const dropoutAllianceDataObject = {
+                labels: ['2022', '2023', '2024'],
+                gwangjuTotal: [5.4, 6.9, 6.5],
+                daeguTotal: [5.9, 7.1, 7.9],
+                daejeonTotal: [6.9, 6.6, 7.2],
+                gwangjuFresh: [5.2, 6.4, 6.2],
+                daeguFresh: [6.6, 7.7, 8.5],
+                daejeonFresh: [5.4, 6.4, 6.9],
+            };
+            new Chart(document.getElementById('dropoutAllianceTotalRateChart').getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: dropoutAllianceDataObject.labels,
+                    datasets: [
+                        { label: '광주보건대 재학생', data: dropoutAllianceDataObject.gwangjuTotal, borderColor: 'rgba(255, 99, 132, 1)'},
+                        { label: '대구보건대 재학생', data: dropoutAllianceDataObject.daeguTotal, borderColor: 'rgba(54, 162, 235, 1)'},
+                        { label: '대전보건대 재학생', data: dropoutAllianceDataObject.daejeonTotal, borderColor: 'rgba(75, 192, 192, 1)'},
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { position: 'top' }, title: { display: true, text: '재학생 중도탈락률 추이' } },
+                    scales: { y: { min: 5, title: { display: true, text: '중도탈락률 (%)' } } }
+                }
+            });
+             new Chart(document.getElementById('dropoutAllianceFreshmanRateChart').getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: dropoutAllianceDataObject.labels,
+                    datasets: [
+                        { label: '광주보건대 신입생', data: dropoutAllianceDataObject.gwangjuFresh, borderColor: 'rgba(255, 99, 132, 1)'},
+                        { label: '대구보건대 신입생', data: dropoutAllianceDataObject.daeguFresh, borderColor: 'rgba(54, 162, 235, 1)'},
+                        { label: '대전보건대 신입생', data: dropoutAllianceDataObject.daejeonFresh, borderColor: 'rgba(75, 192, 192, 1)'},
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { position: 'top' }, title: { display: true, text: '신입생 중도탈락률 추이' } },
+                    scales: { y: { min: 5, title: { display: true, text: '중도탈락률 (%)' } } }
+                }
+            });
+
+        }
+
+    </script>
+</body>
+</html>
+

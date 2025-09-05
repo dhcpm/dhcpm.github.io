@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>신입생 충원 현황 분석보고서</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+        .infographic-header {
+            background-color: #9e0069;
+        }
+        .indicator-card {
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .main-nav-button {
+            transition: all 0.3s ease;
+        }
+        .main-nav-button.active {
+            background-color: #9e0069;
+            color: white;
+        }
+        .sub-tab-button {
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        .sub-tab-button.active {
+            border-color: #9e0069;
+            color: #9e0069;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-4">
+    <div class="max-w-4xl mx-auto bg-white rounded-2xl overflow-hidden shadow-2xl">
+        <header class="infographic-header p-6 text-white text-center relative">
+            <h1 class="text-2xl sm:text-3xl font-bold">2025년 8월 대학정보공시 현황 분석보고서</h1>
+        </header>
+
+        <nav id="main-tab-navigation" class="p-2 bg-gray-100 flex justify-center border-b">
+            <div class="flex space-x-2 bg-gray-200 p-1 rounded-lg">
+                <a href="daegu_health_university.html" class="main-nav-button font-bold py-2 px-6 rounded-md text-sm text-gray-600 hover:bg-gray-300">대구보건대학교</a>
+                <a href="freshman_enrollment.html" class="main-nav-button active font-bold py-2 px-6 rounded-md text-sm">신입생 충원 현황</a>
+                <a href="enrolled_student_status.html" class="main-nav-button font-bold py-2 px-6 rounded-md text-sm text-gray-600 hover:bg-gray-300">재학생 충원 현황</a>
+                <a href="dropout_rate.html" class="main-nav-button font-bold py-2 px-6 rounded-md text-sm text-gray-600 hover:bg-gray-300">중도탈락률</a>
+                <a href="comprehensive_opinion.html" class="main-nav-button font-bold py-2 px-6 rounded-md text-sm text-gray-600 hover:bg-gray-300">종합의견</a>
+            </div>
+        </nav>
+
+        <main>
+            <div id="sub-tab-navigation" class="p-4 border-b border-gray-200">
+                <nav class="flex space-x-4 overflow-x-auto" aria-label="Tabs">
+                    <button onclick="switchSubTab('national_junior')" id="sub-tab-national_junior" class="sub-tab-button active text-base font-medium px-4 py-2 border-b-2">전국 전문대학</button>
+                    <button onclick="switchSubTab('regional')" id="sub-tab-regional" class="sub-tab-button text-base font-medium text-gray-500 hover:text-gray-700 px-4 py-2 border-b-2 border-transparent">지역별</button>
+                    <button onclick="switchSubTab('daekyung')" id="sub-tab-daekyung" class="sub-tab-button text-base font-medium text-gray-500 hover:text-gray-700 px-4 py-2 border-b-2 border-transparent">대경권</button>
+                    <button onclick="switchSubTab('daekyung_uni')" id="sub-tab-daekyung_uni" class="sub-tab-button text-base font-medium text-gray-500 hover:text-gray-700 px-4 py-2 border-b-2 border-transparent">대경권 대학별</button>
+                    <button onclick="switchSubTab('alliance')" id="sub-tab-alliance" class="sub-tab-button text-base font-medium text-gray-500 hover:text-gray-700 px-4 py-2 border-b-2 border-transparent">한달빛보건연합대학</button>
+                </nav>
+            </div>
+
+            <div class="p-6">
+                <!-- Sub Tab Panels -->
+                <div id="sub-panel-national_junior" class="sub-tab-panel">
+                   <div class="space-y-8">
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">주요 지표 현황 (정원내 기준)</h2>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">지표</th>
+                                            <th class="px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">2023</th>
+                                            <th class="px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">2024</th>
+                                            <th class="px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">2025</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200">
+                                        <tr>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">신입생 경쟁률</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">5.7 : 1</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">5.7 : 1</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">5.9 : 1</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">신입생 충원율</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">88.7 %</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">89.9 %</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">91.5 %</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">입학정원</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">150,428 명</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">146,147 명</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">143,157 명</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="charts-container">
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">연도별 추이</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div class="indicator-card p-4 rounded-lg"><canvas id="competitionChart"></canvas></div>
+                                <div class="indicator-card p-4 rounded-lg"><canvas id="fulfillmentChart"></canvas></div>
+                                <div class="indicator-card p-4 rounded-lg md:col-span-2"><canvas id="quotaChart"></canvas></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">현황 분석</h2>
+                            <div class="p-5 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg">
+                                <p class="text-base font-bold text-blue-800 mb-2">정원 감축 속 충원율 상승, 질적 성장 노력 엿보여</p>
+                                <p class="text-sm text-gray-700 leading-relaxed">
+                                    전국 전문대학의 최근 3년간 <span class="font-bold">입학정원이 약 7,300명 감소</span>하는 동안, 신입생 충원율은 오히려 <span class="font-bold">88.7%에서 91.5%로 꾸준히 상승</span>했습니다. 이는 학령인구 감소에 대응하기 위한 대학들의 자발적인 정원 감축 노력이 충원율 안정화에 긍정적인 영향을 미친 것으로 분석됩니다.
+                                    <br><br>
+                                    단순히 양적 충원에 그치지 않고, 입학정원을 시장 수요와 대학의 특성에 맞게 조정하며 질적 성장을 도모하고 있음을 시사합니다. 경쟁률 또한 소폭 상승하여, 전문대학의 교육 경쟁력과 매력도가 유지되고 있는 것으로 보입니다.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <div id="sub-panel-regional" class="sub-tab-panel hidden">
+                    <div class="space-y-8">
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">2025년 지역별 주요 지표 현황 (정원내 기준)</h2>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th rowspan="2" class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider align-middle">지역</th>
+                                            <th colspan="2" class="px-4 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-b border-l">신입생 경쟁률</th>
+                                            <th colspan="2" class="px-4 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-b border-l">신입생 충원율</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="px-4 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-l">2025</th>
+                                            <th class="px-4 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">2024</th>
+                                            <th class="px-4 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-l">2025</th>
+                                            <th class="px-4 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">2024</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200" id="regional-table-body">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="regional-charts-container">
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">지역별 현황 비교</h2>
+                            <div class="grid grid-cols-1 gap-8">
+                                <div class="indicator-card p-4 rounded-lg"><canvas id="regionalFulfillmentChart"></canvas></div>
+                                <div class="indicator-card p-4 rounded-lg"><canvas id="regionalCompetitionChart"></canvas></div>
+                            </div>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">현황 분석</h2>
+                            <div class="p-5 bg-purple-50 border-l-4 border-purple-400 rounded-r-lg">
+                                <p class="text-base font-bold text-purple-800 mb-2">수도권·광역시는 강세, 도 단위는 약세 보이는 양극화 현상</p>
+                                <p class="text-sm text-gray-700 leading-relaxed">
+                                    2025년 신입생 충원율은 지역별로 뚜렷한 양극화 현상을 보입니다. <span class="font-bold">서울(99.2%), 대구(96.4%), 울산(95.9%), 광주(95.1%), 인천(94.7%)</span> 등 주요 광역시와 수도권 지역은 95% 내외의 매우 높은 충원율을 기록하며 강세를 보였습니다.
+                                    <br><br>
+                                    반면, <span class="font-bold">제주(80.1%), 부산(84.4%), 전남(86.0%)</span> 등 일부 지역은 전국 평균(91.5%)을 크게 밑도는 충원율을 보여 지역 간 격차가 심화되고 있음을 알 수 있습니다. 특히 경쟁률에서 <span class="font-bold">서울(8.81:1)과 제주(1.65:1)는 5배 이상 차이</span>를 보여, 수도권 쏠림 현상이 심각한 수준임을 시사합니다. 전반적으로 대부분의 지역에서 충원율은 전년 대비 상승했으나, 이는 경쟁률 하락과 함께 나타나 질적인 측면에서의 위기는 여전한 것으로 분석됩니다.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <div id="sub-panel-daekyung" class="sub-tab-panel hidden">
+                    <div class="space-y-8">
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">대경권 주요 지표 현황 (정원내 기준)</h2>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th rowspan="2" class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider align-middle">지표</th>
+                                            <th colspan="2" class="px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-b border-l">2023</th>
+                                            <th colspan="2" class="px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-b border-l">2024</th>
+                                            <th colspan="2" class="px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-b border-l">2025</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-l">경북</th>
+                                            <th class="px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">대구</th>
+                                            <th class="px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-l">경북</th>
+                                            <th class="px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">대구</th>
+                                            <th class="px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-l">경북</th>
+                                            <th class="px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">대구</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200">
+                                        <tr>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">신입생 경쟁률</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center border-l">3.5 : 1</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">5.7 : 1</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center border-l">3.1 : 1</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">5.3 : 1</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center border-l">3.0 : 1</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">4.9 : 1</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">신입생 충원율</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center border-l">92.8 %</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">96.3 %</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center border-l">92.6 %</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">95.4 %</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center border-l">92.3 %</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">96.4 %</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="daekyung-charts-container">
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">연도별 추이 (대경권)</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div class="indicator-card p-4 rounded-lg"><canvas id="daekyungCompetitionChart"></canvas></div>
+                                <div class="indicator-card p-4 rounded-lg"><canvas id="daekyungFulfillmentChart"></canvas></div>
+                            </div>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">현황 분석</h2>
+                            <div class="p-5 bg-green-50 border-l-4 border-green-400 rounded-r-lg">
+                                <p class="text-base font-bold text-green-800 mb-2">대구 지역 강세, 경북 지역 약세 현상</p>
+                                <p class="text-sm text-gray-700 leading-relaxed">
+                                    대경권 내에서 <span class="font-bold">대구 지역의 신입생 충원율은 95% 이상의 매우 높은 수준</span>을 안정적으로 유지하고 있는 반면, 경북 지역은 92%대로 소폭 하락하는 추세를 보입니다. 이는 대구 지역 대학들의 높은 경쟁력을 보여줍니다.
+                                    <br><br>
+                                    신입생 경쟁률은 대구, 경북 두 지역 모두에서 <span class="font-bold">완만한 하락세</span>를 보이고 있어, 학령인구 감소에 따른 장기적인 신입생 모집의 어려움이 예상됩니다. 다만, 여전히 대구 지역의 경쟁률이 경북 지역에 비해 월등히 높은 상황입니다.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <div id="sub-panel-daekyung_uni" class="sub-tab-panel hidden">
+                    <div class="space-y-8">
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">대경권 대학별 신입생 충원 현황 (정원내)</h2>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-white border border-gray-200 rounded-lg text-sm">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th rowspan="2" class="px-3 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider align-middle">학교</th>
+                                            <th colspan="2" class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-b border-l">신입생 충원율 (%)</th>
+                                            <th colspan="2" class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-b border-l">신입생 경쟁률</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-l">2025</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">2024</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-l">2025</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">2024</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200" id="daekyung-uni-table-body">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="daekyung-uni-charts-container">
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">대학별 지표 비교</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div class="indicator-card p-4 rounded-lg"><canvas id="daekyungUniFulfillmentChart"></canvas></div>
+                                <div class="indicator-card p-4 rounded-lg"><canvas id="daekyungUniCompetitionChart"></canvas></div>
+                            </div>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">현황 분석</h2>
+                            <div class="p-5 bg-teal-50 border-l-4 border-teal-400 rounded-r-lg">
+                                <p class="text-base font-bold text-teal-800 mb-2">충원율 100% 달성 대학 다수, 경쟁률은 양극화 심화</p>
+                                <p class="text-sm text-gray-700 leading-relaxed">
+                                    2025학년도 대경권 전문대학 입시 결과, <span class="font-bold">9개 대학이 충원율 100%를 달성</span>하며 안정적인 신입생 모집 역량을 과시했습니다. 특히 <span class="font-bold">선린대학교</span>는 전년 대비 충원율이 8.6%p 상승하며 가장 눈에 띄는 성장을 보였습니다. 이는 학령인구 감소 위기 속에서도 대학별 특성화 및 교육 경쟁력 강화 노력이 유효했음을 보여줍니다.
+                                    <br><br>
+                                    하지만 경쟁률 측면에서는 양극화가 뚜렷하게 나타났습니다. <span class="font-bold">대구보건대학교(7.0:1)와 영남이공대학교(6.9:1)</span>가 압도적으로 높은 경쟁률을 기록하며 최상위권을 형성한 반면, 다수 대학은 1~3점대의 낮은 경쟁률에 머물렀습니다. 이는 수험생들이 특정 인기 대학 및 학과로 집중되는 '쏠림 현상'이 심화되고 있음을 의미하며, 충원율 100%를 달성했더라도 실질적인 경쟁력 확보에는 어려움을 겪는 대학이 많음을 시사합니다.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <div id="sub-panel-alliance" class="sub-tab-panel hidden">
+                    <div class="space-y-8">
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">한달빛보건연합대학 주요 지표 비교 (정원내)</h2>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-white border border-gray-200 rounded-lg text-sm">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th rowspan="2" class="px-3 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider align-middle">학교</th>
+                                            <th colspan="3" class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-b border-l">모집인원</th>
+                                            <th colspan="3" class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-b border-l">신입생 경쟁률</th>
+                                            <th colspan="3" class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-b border-l">신입생 충원율 (%)</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-l">2025</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">2024</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">증감</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-l">2025</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">2024</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">증감</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider border-l">2025</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">2024</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">증감</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200" id="alliance-table-body">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="alliance-charts-container">
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">대학별 지표 변화 비교</h2>
+                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div class="indicator-card p-4 rounded-lg"><canvas id="allianceFulfillmentChart"></canvas></div>
+                                <div class="indicator-card p-4 rounded-lg"><canvas id="allianceCompetitionChart"></canvas></div>
+                            </div>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">현황 분석</h2>
+                            <div class="p-5 bg-indigo-50 border-l-4 border-indigo-400 rounded-r-lg">
+                                <p class="text-base font-bold text-indigo-800 mb-2">모집인원 감축 전략, 충원율·경쟁률 동반 상승 이끌어</p>
+                                <p class="text-sm text-gray-700 leading-relaxed">
+                                    한달빛보건연합대학 3개교의 2025학년도 신입생 충원 결과는 모집인원 조정 전략이 핵심 변수로 작용했음을 명확히 보여줍니다.
+                                    <br><br>
+                                    <span class="font-bold">대전보건대학교</span>는 모집인원을 90명 대폭 감축하는 과감한 결정을 통해 <span class="font-bold">충원율이 9.7%p 급등</span>하고, 경쟁률까지 0.5p 상승하는 가장 이상적인 성과를 거두었습니다. 이는 학령인구 감소에 대한 가장 효과적인 대응 전략이 '선제적이고 과감한 정원 감축'임을 증명하는 사례입니다.
+                                    <br><br>
+                                    <span class="font-bold">대구보건대학교</span> 역시 소폭의 정원 감축(-8명)으로 충원율이 2.2%p 상승하는 긍정적 효과를 보았으나, 경쟁률은 소폭 하락했습니다. 반면, <span class="font-bold">광주보건대학교</span>는 모집인원을 전년 수준으로 유지한 결과, 충원율과 경쟁률이 모두 하락하여 정원 조정의 중요성을 다시 한번 확인시켜 주었습니다.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script>
+        let subTabs;
+
+        function switchSubTab(tabKey) {
+            Object.values(subTabs).forEach(tab => {
+                tab.button.classList.remove('active');
+                tab.panel.classList.remove('active');
+                tab.panel.classList.add('hidden');
+            });
+            const selectedTab = subTabs[tabKey];
+            selectedTab.button.classList.add('active');
+            selectedTab.panel.classList.add('active');
+            selectedTab.panel.classList.remove('hidden');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            subTabs = {
+                national_junior: { button: document.getElementById('sub-tab-national_junior'), panel: document.getElementById('sub-panel-national_junior') },
+                regional: { button: document.getElementById('sub-tab-regional'), panel: document.getElementById('sub-panel-regional') },
+                daekyung: { button: document.getElementById('sub-tab-daekyung'), panel: document.getElementById('sub-panel-daekyung') },
+                daekyung_uni: { button: document.getElementById('sub-tab-daekyung_uni'), panel: document.getElementById('sub-panel-daekyung_uni') },
+                alliance: { button: document.getElementById('sub-tab-alliance'), panel: document.getElementById('sub-panel-alliance') }
+            };
+
+            switchSubTab('national_junior');
+            
+            const regionalData = [
+                { region: '강원', comp25: 3.54, comp24: 2.95, fulfill25: 90.5, fulfill24: 90.7 }, { region: '경기', comp25: 7.84, comp24: 7.13, fulfill25: 89.6, fulfill24: 85.9 }, { region: '경남', comp25: 4.47, comp24: 4.42, fulfill25: 89.4, fulfill24: 89.3 }, { region: '경북', comp25: 2.98, comp24: 3.08, fulfill25: 92.3, fulfill24: 92.6 }, { region: '광주', comp25: 4.36, comp24: 4.47, fulfill25: 95.1, fulfill24: 93.9 }, { region: '대구', comp25: 4.93, comp24: 5.28, fulfill25: 96.4, fulfill24: 95.4 }, { region: '대전', comp25: 4.56, comp24: 4.48, fulfill25: 89.1, fulfill24: 83.8 }, { region: '부산', comp25: 5.89, comp24: 6.61, fulfill25: 84.4, fulfill24: 86.8 }, { region: '서울', comp25: 8.81, comp24: 8.32, fulfill25: 99.2, fulfill24: 98.8 }, { region: '세종', comp25: 4.04, comp24: 3.43, fulfill25: 92.4, fulfill24: 90.7 }, { region: '울산', comp25: 8.66, comp24: 9.15, fulfill25: 95.9, fulfill24: 94.6 }, { region: '인천', comp25: 7.01, comp24: 6.40, fulfill25: 94.7, fulfill24: 92.3 }, { region: '전남', comp25: 2.00, comp24: 2.18, fulfill25: 86.0, fulfill24: 87.9 }, { region: '전북', comp25: 3.53, comp24: 3.53, fulfill25: 91.8, fulfill24: 88.7 }, { region: '제주', comp25: 1.65, comp24: 1.61, fulfill25: 80.1, fulfill24: 82.5 }, { region: '충남', comp25: 4.46, comp24: 4.57, fulfill25: 92.1, fulfill24: 89.3 }, { region: '충북', comp25: 3.48, comp24: 3.56, fulfill25: 89.8, fulfill24: 85.3 },
+            ];
+            const regionalTableBody = document.getElementById('regional-table-body');
+            regionalData.forEach(d => {
+                regionalTableBody.innerHTML += `
+                    <tr>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-800">${d.region}</td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-700 text-center border-l">${d.comp25.toFixed(2)} : 1</td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-700 text-center">${d.comp24.toFixed(2)} : 1</td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-700 text-center border-l">${d.fulfill25.toFixed(1)} %</td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-700 text-center">${d.fulfill24.toFixed(1)} %</td>
+                    </tr>
+                `;
+            });
+
+            const daekyungUniData = [
+                { name: '호산대학교', fulfill25: 100.0, comp25: 4.1, fulfill24: 100.0, comp24: 4.4 }, { name: '영진전문대학교', fulfill25: 100.0, comp25: 5.9, fulfill24: 100.0, comp24: 5.7 }, { name: '영남이공대학교', fulfill25: 100.0, comp25: 6.9, fulfill24: 100.0, comp24: 7.3 }, { name: '수성대학교', fulfill25: 100.0, comp25: 4.4, fulfill24: 100.0, comp24: 4.8 }, { name: '성운대학교', fulfill25: 100.0, comp25: 1.3, fulfill24: 100.0, comp24: 1.3 }, { name: '대구과학대학교', fulfill25: 100.0, comp25: 4.3, fulfill24: 100.0, comp24: 5.0 }, { name: '대구공업대학교', fulfill25: 100.0, comp25: 2.4, fulfill24: 100.0, comp24: 2.4 }, { name: '구미대학교', fulfill25: 100.0, comp25: 3.8, fulfill24: 100.0, comp24: 4.0 }, { name: '경북과학대학교', fulfill25: 100.0, comp25: 1.9, fulfill24: 100.0, comp24: 2.3 }, { name: '선린대학교', fulfill25: 97.0, comp25: 2.7, fulfill24: 88.4, comp24: 3.0 }, { name: '대구보건대학교', fulfill25: 96.7, comp25: 7.0, fulfill24: 94.5, comp24: 7.7 }, { name: '대경대학교', fulfill25: 95.7, comp25: 3.6, fulfill24: 90.9, comp24: 3.1 }, { name: '경북보건대학교', fulfill25: 94.9, comp25: 5.0, fulfill24: 100.0, comp24: 5.9 }, { name: '가톨릭상지대학교', fulfill25: 94.8, comp25: 3.8, fulfill24: 95.8, comp24: 3.4 }, { name: '계명문화대학교', fulfill25: 94.6, comp25: 4.4, fulfill24: 92.2, comp24: 4.9 }, { name: '안동과학대학교', fulfill25: 90.5, comp25: 3.1, fulfill24: 90.5, comp24: 3.8 }, { name: '경북전문대학교', fulfill25: 81.2, comp25: 3.7, fulfill24: 88.3, comp24: 4.4 }, { name: '포항대학교', fulfill25: 81.2, comp25: 2.3, fulfill24: 88.1, comp24: 2.4 }, { name: '영남외국어대학', fulfill25: 70.9, comp25: 1.9, fulfill24: 77.7, comp24: 1.7 }, { name: '문경대학교', fulfill25: 68.0, comp25: 3.6, fulfill24: 71.6, comp24: 3.4 },
+            ];
+            const daekyungUniTableBody = document.getElementById('daekyung-uni-table-body');
+            daekyungUniData.forEach(d => {
+                daekyungUniTableBody.innerHTML += `
+                    <tr>
+                        <td class="px-3 py-2 whitespace-nowrap font-medium text-gray-800">${d.name}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center border-l">${d.fulfill25.toFixed(1)}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.fulfill24.toFixed(1)}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center border-l">${d.comp25.toFixed(1)}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.comp24.toFixed(1)}</td>
+                    </tr>
+                `;
+            });
+
+            const allianceData = [
+                { name: '대구보건대학교', quota25: 2120, quota24: 2128, comp25: 7.0, comp24: 7.7, fulfill25: 96.7, fulfill24: 94.5 },
+                { name: '대전보건대학교', quota25: 1422, quota24: 1512, comp25: 7.1, comp24: 6.6, fulfill25: 94.2, fulfill24: 84.5 },
+                { name: '광주보건대학교', quota25: 1105, quota24: 1104, comp25: 4.4, comp24: 4.9, fulfill25: 93.4, fulfill24: 94.2 }
+            ];
+            const allianceTableBody = document.getElementById('alliance-table-body');
+            allianceData.forEach(d => {
+                const quotaChange = d.quota25 - d.quota24;
+                const compChange = d.comp25 - d.comp24;
+                const fulfillChange = d.fulfill25 - d.fulfill24;
+                const formatChange = (change) => { const color = change >= 0 ? 'text-blue-600' : 'text-red-600'; const sign = change >= 0 ? '▲' : '▼'; return `<span class="${color} font-bold">${sign} ${Math.abs(change).toLocaleString()}</span>`; };
+                const formatDecimalChange = (change) => { const color = change >= 0 ? 'text-blue-600' : 'text-red-600'; const sign = change >= 0 ? '▲' : '▼'; return `<span class="${color} font-bold">${sign} ${Math.abs(change).toFixed(1)}</span>`; };
+                 allianceTableBody.innerHTML += `
+                    <tr>
+                        <td class="px-3 py-2 whitespace-nowrap font-medium text-gray-800">${d.name}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center border-l">${d.quota25.toLocaleString()}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.quota24.toLocaleString()}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-center">${formatChange(quotaChange)}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center border-l">${d.comp25.toFixed(1)}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.comp24.toFixed(1)}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-center">${formatDecimalChange(compChange)}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center border-l">${d.fulfill25.toFixed(1)}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.fulfill24.toFixed(1)}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-center">${formatDecimalChange(fulfillChange)}</td>
+                    </tr>
+                `;
+            });
+
+            // Chart Initialization
+            new Chart(document.getElementById('competitionChart').getContext('2d'), { type: 'line', data: { labels: ['2023', '2024', '2025'], datasets: [{ label: '신입생 경쟁률 (정원내)', data: [5.7, 5.7, 5.9], backgroundColor: 'rgba(54, 162, 235, 0.2)', borderColor: 'rgba(54, 162, 235, 1)', borderWidth: 2, tension: 0.1, fill: true }] }, options: { responsive: true, plugins: { legend: { position: 'top' }, title: { display: true, text: '신입생 경쟁률 추이' } }, scales: { y: { beginAtZero: false, min: 5, title: { display: true, text: '경쟁률 (:1)' } } } } });
+            new Chart(document.getElementById('fulfillmentChart').getContext('2d'), { type: 'line', data: { labels: ['2023', '2024', '2025'], datasets: [{ label: '신입생 충원율 (정원내)', data: [88.7, 89.9, 91.5], backgroundColor: 'rgba(75, 192, 192, 0.2)', borderColor: 'rgba(75, 192, 192, 1)', borderWidth: 2, tension: 0.1, fill: true }] }, options: { responsive: true, plugins: { legend: { position: 'top' }, title: { display: true, text: '신입생 충원율 추이' } }, scales: { y: { beginAtZero: false, min: 85, title: { display: true, text: '충원율 (%)' } } } } });
+            new Chart(document.getElementById('quotaChart').getContext('2d'), { type: 'bar', data: { labels: ['2023', '2024', '2025'], datasets: [{ label: '입학정원 (A)', data: [150428, 146147, 143157], backgroundColor: 'rgba(255, 99, 132, 0.2)', borderColor: 'rgba(255, 99, 132, 1)', borderWidth: 1 }] }, options: { responsive: true, plugins: { legend: { position: 'top' }, title: { display: true, text: '입학정원 추이' } }, scales: { y: { beginAtZero: false, min: 140000, title: { display: true, text: '정원 (명)' } } } } });
+            new Chart(document.getElementById('regionalFulfillmentChart').getContext('2d'), { type: 'bar', data: { labels: regionalData.map(d=>d.region), datasets: [{ label: '2025년 신입생 충원율 (%)', data: regionalData.map(d=>d.fulfill25), backgroundColor: regionalData.map(region => ['서울', '경기', '인천'].includes(region.region) ? 'rgba(54, 162, 235, 0.6)' : 'rgba(255, 99, 132, 0.6)'), borderColor: regionalData.map(region => ['서울', '경기', '인천'].includes(region.region) ? 'rgba(54, 162, 235, 1)' : 'rgba(255, 99, 132, 1)'), borderWidth: 1 }] }, options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false }, title: { display: true, text: '2025년 지역별 신입생 충원율 (파란색: 수도권)' } }, scales: { x: { min: 75 } } } });
+            new Chart(document.getElementById('regionalCompetitionChart').getContext('2d'), { type: 'bar', data: { labels: regionalData.map(d=>d.region), datasets: [ { label: '2024 경쟁률', data: regionalData.map(d=>d.comp24), backgroundColor: 'rgba(255, 159, 64, 0.5)' }, { label: '2025 경쟁률', data: regionalData.map(d=>d.comp25), backgroundColor: 'rgba(75, 192, 192, 0.5)' } ] }, options: { responsive: true, plugins: { legend: { position: 'top' }, title: { display: true, text: '2024 vs 2025 지역별 신입생 경쟁률' } }, scales: { y: { beginAtZero: true } } } });
+            new Chart(document.getElementById('daekyungCompetitionChart').getContext('2d'), { type: 'line', data: { labels: ['2023', '2024', '2025'], datasets: [ { label: '경북 경쟁률', data: [3.5, 3.1, 3.0], borderColor: 'rgba(255, 99, 132, 1)', backgroundColor: 'rgba(255, 99, 132, 0.2)', borderWidth: 2, tension: 0.1, fill: true }, { label: '대구 경쟁률', data: [5.7, 5.3, 4.9], borderColor: 'rgba(54, 162, 235, 1)', backgroundColor: 'rgba(54, 162, 235, 0.2)', borderWidth: 2, tension: 0.1, fill: true } ] }, options: { responsive: true, plugins: { legend: { position: 'top' }, title: { display: true, text: '신입생 경쟁률 추이 (대경권)' } }, scales: { y: { beginAtZero: false, min: 2.5, title: { display: true, text: '경쟁률 (:1)' } } } } });
+            new Chart(document.getElementById('daekyungFulfillmentChart').getContext('2d'), { type: 'line', data: { labels: ['2023', '2024', '2025'], datasets: [ { label: '경북 충원율', data: [92.8, 92.6, 92.3], borderColor: 'rgba(255, 159, 64, 1)', backgroundColor: 'rgba(255, 159, 64, 0.2)', borderWidth: 2, tension: 0.1, fill: true }, { label: '대구 충원율', data: [96.3, 95.4, 96.4], borderColor: 'rgba(75, 192, 192, 1)', backgroundColor: 'rgba(75, 192, 192, 0.2)', borderWidth: 2, tension: 0.1, fill: true } ] }, options: { responsive: true, plugins: { legend: { position: 'top' }, title: { display: true, text: '신입생 충원율 추이 (대경권)' } }, scales: { y: { beginAtZero: false, min: 90, title: { display: true, text: '충원율 (%)' } } } } });
+            new Chart(document.getElementById('daekyungUniFulfillmentChart').getContext('2d'), { type: 'bar', data: { labels: daekyungUniData.map(d=>d.name), datasets: [{ label: '2025년 신입생 충원율 (%)', data: daekyungUniData.map(d=>d.fulfill25), backgroundColor: 'rgba(75, 192, 192, 0.7)', borderWidth: 1 }] }, options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false }, title: { display: true, text: '2025년 대경권 대학별 신입생 충원율' } }, scales: { x: { min: 60 } } } });
+            new Chart(document.getElementById('daekyungUniCompetitionChart').getContext('2d'), { type: 'bar', data: { labels: daekyungUniData.map(d=>d.name), datasets: [{ label: '2025년 신입생 경쟁률', data: daekyungUniData.map(d=>d.comp25), backgroundColor: 'rgba(54, 162, 235, 0.7)', borderWidth: 1 }] }, options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false }, title: { display: true, text: '2025년 대경권 대학별 신입생 경쟁률' } }, scales: { x: { beginAtZero: true } } } });
+            new Chart(document.getElementById('allianceFulfillmentChart').getContext('2d'), { type: 'bar', data: { labels: allianceData.map(d=>d.name), datasets: [{ label: '2024 충원율', data: allianceData.map(d=>d.fulfill24), backgroundColor: 'rgba(255, 159, 64, 0.7)' }, { label: '2025 충원율', data: allianceData.map(d=>d.fulfill25), backgroundColor: 'rgba(75, 192, 192, 0.7)' }] }, options: { responsive: true, plugins: { legend: { position: 'top' }, title: { display: true, text: '2024 vs 2025 충원율 비교' } }, scales: { y: { min: 80, title: { display: true, text: '충원율 (%)' } } } } });
+            new Chart(document.getElementById('allianceCompetitionChart').getContext('2d'), { type: 'bar', data: { labels: allianceData.map(d=>d.name), datasets: [{ label: '2024 경쟁률', data: allianceData.map(d=>d.comp24), backgroundColor: 'rgba(255, 99, 132, 0.7)' }, { label: '2025 경쟁률', data: allianceData.map(d=>d.comp25), backgroundColor: 'rgba(54, 162, 235, 0.7)' }] }, options: { responsive: true, plugins: { legend: { position: 'top' }, title: { display: true, text: '2024 vs 2025 경쟁률 비교' } }, scales: { y: { beginAtZero: true, title: { display: true, text: '경쟁률 (:1)' } } } } });
+        });
+    </script>
+</body>
+</html>
+
