@@ -3,137 +3,928 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>대구보건대학교 대학성과관리팀</title>
+    <title>2025 부서운영 자체평가 평가지</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SheetJS (js-xlsx) CDN for Excel Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- Google Fonts: Noto Sans KR -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* Inter 폰트를 기본으로 사용하고, 한글은 Noto Sans KR로 대체합니다. */
+        /* 기본 폰트를 Noto Sans KR로 설정 */
         body {
-            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+            font-family: 'Noto Sans KR', 'Inter', sans-serif;
         }
-        /* 스크롤 애니메이션을 위한 클래스 */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        /* 스크롤바 스타일링 */
+        ::-webkit-scrollbar {
+            width: 8px;
         }
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
         }
-        /* 헤더 고정 시 메인 콘텐츠가 가려지지 않도록 패딩 추가 */
-        .pt-header {
-            padding-top: 64px; /* 헤더 높이만큼 */
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        /* 테이블 스타일 */
+        .evaluation-table th, .evaluation-table td {
+            padding: 0.75rem 1rem; /* 12px 16px */
+            text-align: left;
+            vertical-align: middle;
+        }
+        .evaluation-table th {
+            background-color: #f9fafb; /* bg-gray-50 */
+            white-space: normal; /* 긴 헤더 텍스트 줄바꿈 허용 */
+            word-break: keep-all; /* 한글 단어 깨짐 방지 */
+        }
+        .evaluation-table a {
+            color: #2563eb; /* text-blue-600 */
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .evaluation-table a:hover {
+            color: #1d4ed8; /* text-blue-800 */
+            text-decoration: underline;
+        }
+        .evaluation-table select {
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            border: 1px solid #d1d5db;
+        }
+        /* 비활성화된 라디오 버튼 스타일 */
+        input[type="radio"]:disabled + label {
+            color: #9ca3af; /* text-gray-400 */
+        }
+        input[type="radio"]:disabled:checked + label {
+            color: #1f2937; /* text-gray-800 */
+            font-weight: 600; /* semibold */
+        }
+        .disabled-radio-container {
+            background-color: #f9fafb; /* bg-gray-50 */
+        }
+        /* 모달 스타일 */
+        .modal {
+            transition: opacity 0.3s ease;
+        }
+        /* 화면 비율 조절 핸들 스타일 */
+        #resizer {
+            flex-shrink: 0;
+            cursor: col-resize;
+            z-index: 10;
         }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body class="bg-gray-100">
 
-    <!-- Header -->
-    <header id="header" class="bg-white/80 backdrop-blur-lg shadow-sm fixed top-0 left-0 right-0 z-50 transition-all duration-300">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <!-- Logo and Team Name -->
-                <div class="flex-shrink-0 flex items-center">
-                    <img class="h-8 w-auto" src="img/logo.png" alt="대구보건대학교 로고">
-                    <a href="#" class="ml-3 text-xl font-bold text-gray-800 hover:text-blue-700">대학성과관리팀</a>
+    <div class="flex flex-col md:flex-row h-screen">
+        <!-- 왼쪽 패널: 평가지 -->
+        <div id="left-panel" class="h-1/2 md:h-full bg-white p-6 lg:p-8 overflow-y-auto shadow-lg" style="flex-basis: 50%;">
+            <div class="max-w-full mx-auto">
+                <!-- 헤더 -->
+                <header class="mb-8 flex justify-between items-start">
+                    <div>
+                        <h1 class="text-2xl lg:text-3xl font-bold text-gray-800">2025 부서운영 자체평가 평가지</h1>
+                        <p class="text-md text-gray-500 mt-1">(2024학년도 기준)</p>
+                    </div>
+                    <div class="flex space-x-2">
+                        <a href="menu/평가지 사용 매뉴얼.html" target="_blank" rel="noopener noreferrer" class="px-5 py-2 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400">
+                            매뉴얼
+                        </a>
+                        <a href="https://nbsc.dhc.ac.kr" target="_blank" rel="noopener noreferrer" class="px-5 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            대학성과관리시스템
+                        </a>
+                    </div>
+                </header>
+
+                <!-- 평가자 정보 -->
+                <div class="mb-8">
+                    <label for="evaluator-select-name" class="block text-lg font-semibold text-gray-700 mb-2">평가위원</label>
+                    <select id="evaluator-select-name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow bg-white">
+                        <option value="">평가위원을 선택하세요</option>
+                    </select>
                 </div>
-                <!-- Desktop Navigation -->
-                <nav class="hidden md:flex items-center space-x-8">
-                    <a href="gongsi/gongsi_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors">대학정보공시</a>
-                    <a href="buseo/buseo_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors">부서자체평가</a>
-                </nav>
-                <!-- Mobile Menu Button -->
-                <div class="md:hidden">
-                    <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
-                        <span class="sr-only">메뉴 열기</span>
-                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
+
+                <!-- 평가항목 선택 -->
+                <div class="mb-8">
+                    <h2 class="text-lg font-semibold text-gray-700 mb-4">평가항목 선택</h2>
+                    <fieldset id="evaluation-type-selector" class="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
+                        <div class="flex-1 flex items-center justify-center p-3 border border-gray-200 rounded-lg disabled-radio-container">
+                            <input id="item-plan" type="radio" name="evaluation-item" value="plan" class="h-5 w-5 text-blue-600 border-gray-300 focus:ring-blue-500" disabled>
+                            <label for="item-plan" class="ml-2 block text-md font-medium">평가항목 2 (계획)</label>
+                        </div>
+                        <div class="flex-1 flex items-center justify-center p-3 border border-gray-200 rounded-lg disabled-radio-container">
+                            <input id="item-performance" type="radio" name="evaluation-item" value="performance" class="h-5 w-5 text-blue-600 border-gray-300 focus:ring-blue-500" disabled>
+                            <label for="item-performance" class="ml-2 block text-md font-medium">평가항목 3 (수행도)</label>
+                        </div>
+                        <div class="flex-1 flex items-center justify-center p-3 border border-gray-200 rounded-lg disabled-radio-container">
+                            <input id="item-feedback" type="radio" name="evaluation-item" value="feedback" class="h-5 w-5 text-blue-600 border-gray-300 focus:ring-blue-500" disabled>
+                            <label for="item-feedback" class="ml-2 block text-md font-medium">평가항목 5 (환류도)</label>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <!-- 평가 목록 -->
+                <div id="evaluation-section">
+                    <h2 id="evaluation-title" class="text-lg font-semibold text-gray-700 mb-4">평가항목 세부내용</h2>
+                    <div class="flex items-end space-x-4">
+                        <div id="department-select-container" class="flex-1">
+                            <label for="department-select" class="block text-sm font-medium text-gray-600 mb-1">부서 선택</label>
+                            <select id="department-select" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow bg-white">
+                                <option value="">부서를 선택하세요</option>
+                            </select>
+                        </div>
+                        <div id="prev-year-plan-container" class="hidden">
+                            <a id="prev-year-plan-button" href="#" target="_blank" rel="noopener noreferrer" class="px-4 py-3 text-sm font-semibold rounded-lg transition-colors">
+                                [전년도 개선방안]
+                            </a>
+                        </div>
+                    </div>
+                    <p class="text-red-600 font-bold text-sm mt-2 mb-4">[부서별 점수 입력 후 반드시 엑셀저장을 누른 후 다음 부서를 평가하세요]</p>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white border border-gray-200 rounded-lg evaluation-table">
+                            <thead id="table-head">
+                                <!-- 테이블 헤더가 여기에 동적으로 추가됩니다. -->
+                            </thead>
+                            <tbody id="table-body" class="divide-y divide-gray-200">
+                                <!-- 테이블 내용이 여기에 동적으로 추가됩니다. -->
+                            </tbody>
+                            <tfoot id="table-foot" class="bg-gray-100 font-bold">
+                                <!-- 총계 및 평균이 여기에 동적으로 추가됩니다. -->
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- 평가방법 및 배점기준 -->
+                <div id="criteria-section" class="mt-8">
+                    <h2 class="text-lg font-semibold text-gray-700 mb-4">평가방법 및 배점기준</h2>
+                    <div class="flex space-x-2">
+                        <a id="criteria-btn-plan" href="menu/평가항목2.html" target="_blank" rel="noopener noreferrer" class="hidden px-5 py-2 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700 transition-colors">
+                            평가항목 2
+                        </a>
+                        <a id="criteria-btn-performance" href="menu/평가항목3.html" target="_blank" rel="noopener noreferrer" class="hidden px-5 py-2 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700 transition-colors">
+                            평가항목 3
+                        </a>
+                        <a id="criteria-btn-feedback" href="menu/평가항목5.html" target="_blank" rel="noopener noreferrer" class="hidden px-5 py-2 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700 transition-colors">
+                            평가항목 5
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 제언사항 입력 -->
+                <div id="suggestion-section" class="mt-8">
+                    <h2 class="text-lg font-semibold text-gray-700 mb-4">제언사항</h2>
+                    <textarea id="suggestion-textarea" maxlength="1000" class="w-full h-32 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" placeholder="부서 운영에 대한 제언사항을 1000자 이내로 입력해주세요."></textarea>
+                    <div class="text-right text-sm text-gray-500 mt-1">
+                        <span id="char-counter">0</span> / 1000
+                    </div>
+                </div>
+
+                <!-- 엑셀 저장 버튼 -->
+                <div class="mt-8 text-right">
+                    <button id="export-excel-button" class="px-8 py-3 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all">
+                        엑셀저장
                     </button>
                 </div>
             </div>
         </div>
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="md:hidden hidden">
-            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <a href="gongsi/gongsi_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">대학정보공시</a>
-                <a href="buseo/buseo_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">부서자체평가</a>
-            </div>
-        </div>
-    </header>
 
-    <main class="pt-header">
-        <!-- Hero Section -->
-        <section class="relative bg-white">
-            <div class="absolute inset-0">
-                <img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1556761175-b413da4b2488?q=80&w=2070&auto=format&fit=crop" alt="데이터를 분석하며 협업하는 팀원들의 모습">
-                <div class="absolute inset-0 bg-blue-900/60"></div>
-            </div>
-            <div class="relative container mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 text-center text-white">
-                 <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-snug">
-                    대학성과관리팀은 체계적인 성과관리시스템을 통한<br class="hidden sm:block"> 대학 경영력 강화와 인적 역량강화를 통한<br class="hidden sm:block"> 지속 가능한 발전을 추구합니다.
-                </h1>
-                <div class="mt-10 flex justify-center items-center gap-x-6">
-                    <a href="gongsi/gongsi_pg.html" class="rounded-md bg-white/10 px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-white/20 backdrop-blur-sm transition-colors duration-300">대학정보공시 바로가기</a>
-                    <a href="buseo/buseo_pg.html" class="rounded-md bg-white/10 px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-white/20 backdrop-blur-sm transition-colors duration-300">부서자체평가 바로가기</a>
+        <!-- 화면 비율 조절 핸들 -->
+        <div id="resizer" class="w-2 bg-gray-200 hover:bg-blue-500 transition-colors"></div>
+
+        <!-- 오른쪽 패널: PDF 뷰어 -->
+        <div id="right-panel" class="flex-1 h-1/2 md:h-full">
+            <iframe id="pdf-viewer" src="2024 부서운영결과보고서 통합본.pdf" class="w-full h-full border-l border-gray-200" title="부서운영결과보고서 PDF">
+                <p>현재 브라우저는 PDF를 지원하지 않습니다. <a href="2024 부서운영결과보고서 통합본.pdf">PDF 파일을 다운로드</a>하여 확인해주세요.</p>
+            </iframe>
+        </div>
+    </div>
+
+    <!-- 알림 모달 -->
+    <div id="alert-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4 hidden z-50">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-sm">
+            <div class="p-6 text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                    <svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900">알림</h3>
+                <div class="mt-2">
+                    <p id="alert-message" class="text-sm text-gray-500"></p>
                 </div>
             </div>
-        </section>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white">
-        <div class="container mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center">
-            <p>&copy; 2025 Daegu Health College. All Rights Reserved.</p>
-            <p class="text-sm text-gray-400 mt-2">대학성과관리팀</p>
+            <div class="p-4 bg-gray-50 text-center">
+                <button id="alert-ok-button" class="px-6 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700">확인</button>
+            </div>
         </div>
-    </footer>
+    </div>
+    
+    <!-- 확인 모달 -->
+    <div id="confirm-modal" class="modal fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4 hidden z-50">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-sm">
+            <div class="p-6 text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100 mb-4">
+                     <svg class="h-6 w-6 text-yellow-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900">경고</h3>
+                <div class="mt-2">
+                    <p id="confirm-message" class="text-sm text-gray-500"></p>
+                </div>
+            </div>
+            <div class="p-4 bg-gray-50 text-center flex justify-center space-x-4">
+                <button id="confirm-yes-button" class="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700">예</button>
+                <button id="confirm-no-button" class="px-6 py-2 bg-gray-300 text-gray-800 font-semibold rounded-lg hover:bg-gray-400">아니오</button>
+            </div>
+        </div>
+    </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Mobile menu toggle
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
-            const mobileMenu = document.getElementById('mobile-menu');
-            mobileMenuButton.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-            });
 
-            // Close mobile menu on link click
-            const mobileMenuLinks = mobileMenu.querySelectorAll('a');
-            mobileMenuLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    mobileMenu.classList.add('hidden');
+<script>
+    // 제공된 업무 목록 데이터
+    const taskData = `
+교무지원팀,양영은,수업시간 관리,13
+교무지원팀,양영은,강의평가,19
+교무지원팀,양영은,성적처리,24
+교무지원팀,김서연,학사학위 전공심화과정 운영 활성화,28
+교무지원팀,김서연,강사 인사 관리,34
+교무지원팀,권은지,일반 제증명,40
+교무지원팀,임선희,학적관리 및 학사제도 개선,44
+교수학습원격지원센터,박보현,국가면허 완전정복,72
+교수학습원격지원센터,박보현,전공 특화 학습역량 지원,78
+교수학습원격지원센터,김효덕,자기개발형 학습역량 강화 지원,83
+교수학습원격지원센터,김효덕,협력적 학습역량강화 지원,91
+교수학습원격지원센터,이다영,교육 연구 지원,95
+교수학습원격지원센터,이다영,교수 지원,103
+교수학습원격지원센터,김진희,기초학습 역량 지원,116
+교수학습원격지원센터,김진희,DHC 우수학생 클럽,124
+교수학습원격지원센터,전권일,스마트 교육 지원체제 및 원격교육 질 관리 체제 구축,128
+교수학습원격지원센터,장우영,학습관리시스템(LMS) 구축·운영,139
+교양교육운영팀,서혜연,정규학기 교양교육 수업운영 및 지원,159
+교양교육운영팀,최석윤,대학 교양교육 운영 정책 추진 및 지역사회 연계 교양교육 확산,164
+국제교류팀,백윤미,외국인학생 유치 및 관리,181
+국제교류팀,백윤미,외국인 프로그램,186
+국제교류팀,서철배,해외대학 발굴 및 양해각서 체결,189
+국제교육팀,한동호,2024 국제협력선도대학 육성지원사업(ODA) 3차년도 [인도네시아 치과기공전공 교육역량강화],203
+국제교육팀,강밀란,"[혁신지원사업] 취업지향 외국어 교육 강화, DHC K-Edu 교육과정 운영 확대, 글로벌 맞춤형 OET(Occupational English Test) 과정 ",213
+국제교육팀,강밀란,"[혁신지원사업] 글로벌 헬스케어 리더양성, 글로벌 보건직업역량 Growing, 글로벌맞춤형 해외취업역량 Growing ",218
+국제교육팀,최홍준,해외취업 정부지원사업업무,222
+국제교육팀,최홍준,해외어학연수실습 사업 및 해외교류프로그램,228
+기획예산팀,김은경,학과조정 및 정원조정,246
+기획예산팀,어정주,예산 및 추가경정예산 편성,253
+기획예산팀,전희진,효율적인 예산 통제 및 재정운영의 평가와 개선,258
+대구임상시뮬레이션센터,서보경,기본소생술 일반인 과정 교육,273
+대구임상시뮬레이션센터,서보경,다학제간 가상병원 프로그램,274
+대구임상시뮬레이션센터,서보경,한국전문소생교육,275
+대구임상시뮬레이션센터,정현정,기본소생술 의료인 과정 교육,276
+대구임상시뮬레이션센터,정현정,지역민 대상 구조 및 응급처치 교육,277
+대구임상시뮬레이션센터,정현정,지역사회 기여 일반인 심폐소생술 교육,278
+대외협력팀,김예슬,대학 브랜드 이미지 제고를 위한 홍보 업무,290
+대외협력팀,정준혁,학생홍보대사 선발 및 운영,301
+대학성과관리팀,권진환,재정(재정진단) 및 기본요건(기관평가인증) 진단 평가 지표 관리,321
+대학성과관리팀,홍지연,교직원 직무역량강화 및 업적평가 관리,325
+대학성과관리팀,김동균,"대학 성과지표 총괄 관리 (대학정보공시, 요구도 및 만족도) ",338
+대학성과관리팀,최은실,교원 임용,350
+도서운영팀,김종호,교내논문집 발간,368
+도서운영팀,송규호,DHC독서클럽운영,370
+방사선안전관리센터,고종경,방사선작업종사자 관리,386
+방사선안전관리센터,박정혜,방사선작업종사자(학생) 피폭선량관리,398
+보건실,음수정,보건·의료 서비스 제공,416
+보건실,음수정,감염병 예방·관리,421
+보건융합교육센터,백우영,보건통합 교과 및 비교과 교육과정 운영,436
+산학경영지원팀,홍순표,산학협력단 직원 역량강화 교육,452
+산학경영지원팀,안연정,수입원 다각화를 위한 지원,453
+산학기획연구팀,이효은,교내학술연구관리,465
+산학기획연구팀,박나리,2024학년도 산학협력 협의체 네트워크 강화 프로그램,466
+생활관운영팀,박현일,생활관 소방계획(업그레이드) 수립 및 시행,479
+생활관운영팀,박현일,생활관 관생 심리상담 실시 및 관리,481
+생활관운영팀,박현일,생활관 시설 안전관리(노후시설 교체공사 및 시설관리),485
+생활관운영팀,박현일,생활관 관생모집 업무개발(방학(잔류) 모집 및 입시연계 모집계획 수립 및 적용),489
+입학팀,최준열,온·오프라인 입시홍보 강화를 통한 신입생 유치,508
+입학팀,조민주,편입학 모집,519
+입학팀,유장식,입학 제도 개선 및 입학전형기본계획 수립을 통한 신입생 충원율 제고,524
+입학홍보전략팀,임시하,SNS 대학 대표 채널 운영을 통한 온라인 홍보 활성화,541
+입학홍보전략팀,강민혁,SNS 콘텐츠 제작,544
+입학홍보전략팀,강민혁,대학역사 기록물(사진/영상) 제작 및 보관,545
+입학홍보전략팀,임시하,보건특화캠퍼스 체제정비,547
+재무팀,한희정,지출업무,561
+재무팀,한희정,결산업무,565
+재무팀,장우혁,등록금(분할) 수납 및 등록,569
+재무팀,장우혁,수입 업무,571
+재무팀,홍성현,급여지급,573
+재무팀,홍성현,연말정산,577
+전산지원센터,임경규,정보보안시스템 관리,594
+전산지원센터,임경규,정보자산 관리,598
+전산지원센터,임경규,정보통신망 관리,603
+전산지원센터,음나미,"학사행정시스템, 입학전형시스템 개발 및 관리(음나미) ",607
+전산지원센터,김회군,"학사행정시스템, 입학전형시스템 개발 및 관리(김회군) ",615
+전산지원센터,김회군,대학홈페이지관리(김회군),626
+전산지원센터,이윤구,개인정보 보호 및 학사정보 보호(이윤구),630
+직업교육혁신센터,박주하,"교육과정 개발(교육과정 관리 지원체제, 교육과정 정책, 교육과정 개발) ",650
+직업교육혁신센터,박주하,교육과정 운영(핵심역량 및 직무능력 성취도 평가체제),658
+직업교육혁신센터,박주하,교육과정 평가 및 질관리,662
+직업교육혁신센터,최희선,교육과정 운영(비교과 통합 인증제),666
+직업교육혁신센터,이호준,핵심역량기반 교육과정 혁신 교육 및 워크숍,675
+직업교육혁신센터,이호준,현장직무수행능력평가,680
+직업교육혁신센터,이호준,지역사회 연계 인성리더십 교육 확산,686
+직업교육혁신센터,최희선,직업교육형 대표 교과목 인증제 운영 및 확산,691
+총무팀,이은미,기록물 관리,720
+총무팀,최요하,안전관리,723
+총무팀,김민수,건축물 관리,729
+총무팀,윤창수,소모품 구매 입찰 및 계약,732
+총무팀,정성호,전기시설관리,736
+총무팀,강진석,조경관리,742
+총무팀,강민수,기자재 구입 입찰 및 계약,744
+총무팀,정우진,설비시설관리,747
+총무팀,정우진,소방시설관리,749
+총무팀,정우진,환경시설관리,751
+총무팀,최수영,공사 입찰 및 계약,753
+총무팀,최수영,용역 입찰 및 계약,755
+총무팀,임구순,고등교육기관 교육기본통계조사,757
+평생교육학사지원팀,김미경,일반과정 업무,773
+평생교육학사지원팀,이유진,외부위탁교육과정,781
+평생교육학사지원팀,정석현,학점은행제 업무,787
+평생교육학사지원팀,정석현,학교 밖 교육연계 꿈창작 캠퍼스 운영 (교육청 위탁과정),793
+평생교육학사지원팀,정석현,특별과정(방문간호조무사) 업무,798
+학생복지지원팀,김도현,학생과의 소통강화를 통한 건전한 흡연문화 개선,818
+학생복지지원팀,신영근,장학제도 접촉경로 확대,821
+학생복지지원팀,신영근,장학금 지급 업무 흐름에 대한 구성원들의 교육 실시,823
+학생복지지원팀,김현희,국가근로 장학금 운영 확대,825
+학생복지지원팀,홍순표,장애학생 복지지원,827
+학생복지지원팀,홍순표,봉사프로그램 활성화,829
+학생상담센터,박정애,마음 건강한 대학생활을 위한 전문상담 및 교육지원,844
+학생상담센터,박정애,인권의식 고취 및 인권역량 강화를 위한 교육 지원,856
+학생상담센터,방수정,전주기적(Life cycle) 진로 지도 시스템 확립 및 강화,860
+학생상담센터,방수정,지역사회 연계 진로체험,873
+학생취업지원팀,김보경,정부지원사업 업무(지역연계 취·창업캠프_지자체 참여 진로 설계 취창업역량 강화 교육),894
+학생취업지원팀,서범석,"정부지원사업 업무(융햡역량걍화 자격증 완전정복, 맞춤형 취업역량강화 프로그램) ",898
+학생취업지원팀,서범석,"정부지원사업 업무(융햡역량걍화 자격증 완전정복, 맞춤형 취업역량강화 프로그램) ",901
+학생취업지원팀,김기형,"통계관리(취업통계조사 및 관리, 학생자격증조사 및 관리) ",904
+학생취업지원팀,김보경,"정부지원사업 업무(취업경진대회, 유튜브크리에이터양성과정, 취업생태계 조성을 위한 취업캠프) ",907
+학생취업지원팀,김기형,취업생태계 조성을 위한 산업체 방문관리 프로그램,913
+학생취업지원팀,김기형,제3회 고등학생 창작요리 경연대회,915
+현장실습지원센터,이창문,현장(임상)실습 교육,926
+    `.trim();
+
+    // 총평 관련 데이터
+    const overallEvaluationData = `
+교무지원팀,총평,55
+교수학습원격지원센터,총평,145
+교양교육운영팀,총평,170
+국제교류팀,총평,192
+국제교육팀,총평,235
+기획예산팀,총평,262
+대구임상시뮬레이션센터,총평,280
+대외협력팀,총평,307
+대학성과관리팀,총평,355
+도서운영팀,총평,374
+방사선안전관리센터,총평,405
+보건실,총평,425
+보건융합교육센터,총평,442
+산학경영지원팀,총평,455
+산학기획연구팀,총평,468
+생활관운영팀,총평,495
+입학팀,총평,530
+입학홍보전략팀,총평,550
+재무팀,총평,582
+전산지원센터,총평,637
+직업교육혁신센터,총평,699
+총무팀,총평,760
+평생교육학사지원팀,총평,802
+학생복지지원팀,총평,832
+학생상담센터,총평,880
+학생취업지원팀,총평,916
+현장실습지원센터,총평,937
+    `.trim();
+
+    const tasksByDepartment = {};
+    const overallEvalsByDepartment = {};
+
+    // 평가위원과 평가항목 매핑
+    const evaluatorMapping = {
+        '정세훈': 'plan',
+        '김경돈': 'plan',
+        '이종혁': 'plan',
+        '이영은': 'performance',
+        '권순혜': 'performance',
+        '이윤희': 'performance',
+        '이윤구': 'feedback',
+        '표창우': 'feedback',
+        '민동기': 'feedback',
+        '김동균': 'feedback'
+    };
+
+    // 데이터 파싱 함수
+    const parseCSV = (dataString) => {
+        const lines = dataString.split('\n');
+        const records = [];
+        lines.forEach(line => {
+            const parts = line.match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g) || [];
+            records.push(parts.map(part => part.replace(/"/g, '')));
+        });
+        return records;
+    };
+
+    // 업무 데이터 그룹화
+    parseCSV(taskData).forEach(([department, person, task, page]) => {
+        if (department) {
+            if (!tasksByDepartment[department]) tasksByDepartment[department] = [];
+            tasksByDepartment[department].push({ person, task, page });
+        }
+    });
+
+    // 총평 데이터 그룹화
+    parseCSV(overallEvaluationData).forEach(([department, task, page]) => {
+        if (department) {
+            if (!overallEvalsByDepartment[department]) overallEvalsByDepartment[department] = [];
+            overallEvalsByDepartment[department].push({ task, page });
+        }
+    });
+
+    const evaluatorSelect = document.getElementById('evaluator-select-name');
+    const departmentSelect = document.getElementById('department-select');
+    const departmentSelectContainer = document.getElementById('department-select-container');
+    const tableHead = document.getElementById('table-head');
+    const tableBody = document.getElementById('table-body');
+    const tableFoot = document.getElementById('table-foot');
+    const pdfViewer = document.getElementById('pdf-viewer');
+    const evaluationTypeSelector = document.getElementById('evaluation-type-selector');
+    const evaluationTitle = document.getElementById('evaluation-title');
+    const radioButtons = document.querySelectorAll('input[name="evaluation-item"]');
+    const exportExcelButton = document.getElementById('export-excel-button');
+    const alertModal = document.getElementById('alert-modal');
+    const alertMessage = document.getElementById('alert-message');
+    const alertOkButton = document.getElementById('alert-ok-button');
+    const confirmModal = document.getElementById('confirm-modal');
+    const confirmMessage = document.getElementById('confirm-message');
+    const confirmYesButton = document.getElementById('confirm-yes-button');
+    const confirmNoButton = document.getElementById('confirm-no-button');
+    const resizer = document.getElementById('resizer');
+    const leftPanel = document.getElementById('left-panel');
+    const prevYearPlanContainer = document.getElementById('prev-year-plan-container');
+    const prevYearPlanButton = document.getElementById('prev-year-plan-button');
+    const criteriaBtnPlan = document.getElementById('criteria-btn-plan');
+    const criteriaBtnPerformance = document.getElementById('criteria-btn-performance');
+    const criteriaBtnFeedback = document.getElementById('criteria-btn-feedback');
+    const suggestionTextarea = document.getElementById('suggestion-textarea');
+    const charCounter = document.getElementById('char-counter');
+
+
+    let isDirty = false;
+    let previousEvaluator = '';
+    let previousDepartment = '';
+    let confirmCallback = null;
+
+    // 점수 드롭다운 생성 헬퍼 함수
+    function createScoreDropdown(min, max, step = 1) {
+        let options = '<option value="0">선택</option>';
+        for (let i = min; i <= max; i = i + step) {
+            let value = step < 1 ? i.toFixed(1) : i;
+            options += `<option value="${value}">${value}</option>`;
+        }
+        return `<select class="w-24 p-1 border rounded-md score-select">${options}</select>`;
+    }
+    
+    // 특정 점수 배열로 드롭다운 생성 헬퍼 함수
+    function createCustomScoreDropdown(scores) {
+        let options = '<option value="0">선택</option>';
+        scores.forEach(score => {
+            options += `<option value="${score}">${score}</option>`;
+        });
+        return `<select class="w-24 p-1 border rounded-md score-select">${options}</select>`;
+    }
+
+    // 평가위원 드롭다운 채우기
+    function populateEvaluators() {
+        const evaluators = Object.keys(evaluatorMapping);
+        evaluators.forEach(evaluator => {
+            const option = document.createElement('option');
+            option.value = evaluator;
+            option.textContent = evaluator;
+            evaluatorSelect.appendChild(option);
+        });
+    }
+
+    // 부서 선택 드롭다운 채우기
+    function populateDepartments() {
+        const departments = Object.keys(tasksByDepartment);
+        departmentSelect.innerHTML = '<option value="">부서를 선택하세요</option>'; // 초기화
+        departments.forEach(department => {
+            const option = document.createElement('option');
+            option.value = department;
+            option.textContent = department;
+            departmentSelect.appendChild(option);
+        });
+        previousDepartment = departmentSelect.value;
+    }
+
+    // 테이블 뷰 업데이트
+    function updateTableView() {
+        const selectedDepartment = departmentSelect.value;
+        const selectedEvalType = document.querySelector('input[name="evaluation-item"]:checked')?.value;
+        
+        // "전년도 개선방안" 버튼 관련 로직
+        if (selectedEvalType === 'plan') {
+            prevYearPlanContainer.classList.remove('hidden');
+            if (selectedDepartment) {
+                prevYearPlanButton.classList.remove('bg-gray-300', 'text-gray-500', 'pointer-events-none', 'cursor-not-allowed');
+                prevYearPlanButton.classList.add('bg-indigo-500', 'text-white', 'hover:bg-indigo-600');
+                prevYearPlanButton.href = `pdf/${selectedDepartment}_전년도 개선방안.pdf`;
+            } else {
+                prevYearPlanButton.classList.add('bg-gray-300', 'text-gray-500', 'pointer-events-none', 'cursor-not-allowed');
+                prevYearPlanButton.classList.remove('bg-indigo-500', 'text-white', 'hover:bg-indigo-600');
+                prevYearPlanButton.href = '#';
+            }
+        } else {
+            prevYearPlanContainer.classList.add('hidden');
+        }
+
+        // 평가방법 및 배점기준 버튼 가시성 제어
+        criteriaBtnPlan.classList.add('hidden');
+        criteriaBtnPerformance.classList.add('hidden');
+        criteriaBtnFeedback.classList.add('hidden');
+        if (selectedEvalType === 'plan') {
+            criteriaBtnPlan.classList.remove('hidden');
+        } else if (selectedEvalType === 'performance') {
+            criteriaBtnPerformance.classList.remove('hidden');
+        } else if (selectedEvalType === 'feedback') {
+            criteriaBtnFeedback.classList.remove('hidden');
+        }
+
+        tableHead.innerHTML = '';
+        tableBody.innerHTML = '';
+        tableFoot.innerHTML = '';
+        suggestionTextarea.value = '';
+        charCounter.textContent = '0';
+        isDirty = false; 
+
+        if (!selectedEvalType) {
+            evaluationTitle.textContent = '평가항목 세부내용';
+            return;
+        }
+
+        let headerRow = document.createElement('tr');
+
+        if (selectedEvalType === 'plan') {
+            evaluationTitle.textContent = '평가항목 세부내용';
+            headerRow.innerHTML = `
+                <th class="text-sm font-semibold text-gray-600">부서명</th>
+                <th class="text-sm font-semibold text-gray-600">담당자</th>
+                <th class="text-sm font-semibold text-gray-600">업무명</th>
+                <th class="text-sm font-semibold text-gray-600">페이지</th>
+                <th class="text-sm font-semibold text-gray-600">개선계획의<br>적극성<br>(4~8점)</th>
+                <th class="text-sm font-semibold text-gray-600">계획의 구체성과<br>적정성<br>(6~12점)</th>
+                <th class="text-sm font-semibold text-gray-600">총점</th>
+            `;
+            tableHead.appendChild(headerRow);
+
+            if (selectedDepartment && tasksByDepartment[selectedDepartment]) {
+                tasksByDepartment[selectedDepartment].forEach((item, index) => {
+                    const row = document.createElement('tr');
+                    row.className = "hover:bg-gray-50 evaluation-row";
+                    row.innerHTML = `
+                        <td class="text-sm text-gray-700">${selectedDepartment}</td>
+                        <td class="text-sm text-gray-700">${item.person}</td>
+                        <td class="text-sm text-gray-700" style="white-space: normal;"><a href="#" onclick="goToPdfPage(${item.page}); return false;">${item.task}</a></td>
+                        <td class="text-sm text-gray-700">${item.page}</td>
+                        <td>${createScoreDropdown(4, 8)}</td>
+                        <td>${createScoreDropdown(6, 12)}</td>
+                        <td class="text-sm font-bold total-score">0.0</td>
+                    `;
+                    tableBody.appendChild(row);
                 });
-            });
-            
-            // Scroll-triggered fade-in animation
-            const faders = document.querySelectorAll('.fade-in');
-            const appearOptions = {
-                threshold: 0.1,
-                rootMargin: "0px 0px -50px 0px"
-            };
-            const appearOnScroll = new IntersectionObserver(function(entries, appearOnScroll) {
-                entries.forEach(entry => {
-                    if (!entry.isIntersecting) {
-                        return;
-                    } else {
-                        entry.target.classList.add('visible');
-                        appearOnScroll.unobserve(entry.target);
-                    }
+            }
+        } else if (selectedEvalType === 'performance') {
+            evaluationTitle.textContent = '평가항목 세부내용';
+             headerRow.innerHTML = `
+                <th class="text-sm font-semibold text-gray-600">부서명</th>
+                <th class="text-sm font-semibold text-gray-600">담당자</th>
+                <th class="text-sm font-semibold text-gray-600">업무명</th>
+                <th class="text-sm font-semibold text-gray-600">페이지</th>
+                <th class="text-sm font-semibold text-gray-600">성실도<br>(6~15점)</th>
+                <th class="text-sm font-semibold text-gray-600">문제분석 (2.5~5점)</th>
+                <th class="text-sm font-semibold text-gray-600">개선노력 (2.5~5점)</th>
+                <th class="text-sm font-semibold text-gray-600">총점</th>
+            `;
+            tableHead.appendChild(headerRow);
+             if (selectedDepartment && tasksByDepartment[selectedDepartment]) {
+                tasksByDepartment[selectedDepartment].forEach(item => {
+                    const row = document.createElement('tr');
+                    row.className = "hover:bg-gray-50 evaluation-row";
+                    row.innerHTML = `
+                        <td class="text-sm text-gray-700">${selectedDepartment}</td>
+                        <td class="text-sm text-gray-700">${item.person}</td>
+                        <td class="text-sm text-gray-700" style="white-space: normal;"><a href="#" onclick="goToPdfPage(${item.page}); return false;">${item.task}</a></td>
+                        <td class="text-sm text-gray-700">${item.page}</td>
+                        <td>${createScoreDropdown(6, 15)}</td>
+                        <td>${createCustomScoreDropdown([2.5, 3, 4, 5])}</td>
+                        <td>${createCustomScoreDropdown([2.5, 3, 4, 5])}</td>
+                        <td class="text-sm font-bold total-score">0.0</td>
+                    `;
+                    tableBody.appendChild(row);
                 });
-            }, appearOptions);
+            }
 
-            faders.forEach(fader => {
-                appearOnScroll.observe(fader);
+        } else if (selectedEvalType === 'feedback') {
+            evaluationTitle.textContent = '부서별 총평';
+            headerRow.innerHTML = `
+                <th class="text-sm font-semibold text-gray-600">부서명</th>
+                <th class="text-sm font-semibold text-gray-600">업무명</th>
+                <th class="text-sm font-semibold text-gray-600">페이지</th>
+                <th class="text-sm font-semibold text-gray-600">우수사항<br>(4~8점)</th>
+                <th class="text-sm font-semibold text-gray-600">미흡사항<br>(3~7점)</th>
+                <th class="text-sm font-semibold text-gray-600">환류방안의<br>적정성<br>(6~15점)</th>
+                <th class="text-sm font-semibold text-gray-600">총점</th>
+            `;
+            tableHead.appendChild(headerRow);
+
+            if (selectedDepartment && overallEvalsByDepartment[selectedDepartment]) {
+                overallEvalsByDepartment[selectedDepartment].forEach(item => {
+                    const row = document.createElement('tr');
+                    row.className = "hover:bg-gray-50 evaluation-row";
+                    row.innerHTML = `
+                        <td class="text-sm text-gray-700">${selectedDepartment}</td>
+                        <td class="text-sm text-gray-700"><a href="#" onclick="goToPdfPage(${item.page}); return false;">${item.task}</a></td>
+                        <td class="text-sm text-gray-700">${item.page}</td>
+                        <td>${createScoreDropdown(4, 8)}</td>
+                        <td>${createScoreDropdown(3, 7)}</td>
+                        <td>${createScoreDropdown(6, 15)}</td>
+                        <td class="text-sm font-bold total-score">0.0</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            }
+        }
+        addScoreCalculationListeners();
+        updateTableFooter();
+    }
+    
+    // 테이블 푸터 업데이트 (총계, 평균)
+    function updateTableFooter() {
+        const totalScoreCells = document.querySelectorAll('.total-score');
+        const colCount = tableHead.querySelector('tr')?.children.length || 1;
+        let sum = 0;
+        
+        totalScoreCells.forEach(cell => {
+            sum += parseFloat(cell.textContent) || 0;
+        });
+        
+        const average = totalScoreCells.length > 0 ? (sum / totalScoreCells.length) : 0;
+        
+        tableFoot.innerHTML = `
+            <tr>
+                <td colspan="${colCount - 1}" class="text-right font-semibold pr-4">총계</td>
+                <td class="font-bold">${sum.toFixed(1)}</td>
+            </tr>
+            <tr>
+                <td colspan="${colCount - 1}" class="text-right font-semibold pr-4">평균</td>
+                <td class="font-bold">${average.toFixed(2)}</td>
+            </tr>
+        `;
+    }
+
+    // 총점 계산 이벤트 리스너 추가
+    function addScoreCalculationListeners() {
+        const rows = document.querySelectorAll('.evaluation-row');
+        rows.forEach(row => {
+            const scoreSelects = row.querySelectorAll('.score-select');
+            const totalScoreCell = row.querySelector('.total-score');
+
+            scoreSelects.forEach(select => {
+                select.addEventListener('change', () => {
+                    isDirty = true;
+                    let total = 0;
+                    scoreSelects.forEach(s => {
+                        total += parseFloat(s.value) || 0;
+                    });
+                    totalScoreCell.textContent = total.toFixed(1);
+                    updateTableFooter(); // 점수 변경 시 총계/평균 업데이트
+                });
             });
         });
-    </script>
+    }
+
+    // PDF 뷰어 페이지 이동 (전역 스코프로 이동)
+    window.goToPdfPage = function(pageNumber) {
+        if (pdfViewer) {
+            pdfViewer.src = `2024 부서운영결과보고서 통합본.pdf#page=${pageNumber}`;
+        }
+    }
+    
+    // 알림/확인 모달 표시 함수
+    function showCustomAlert(message) {
+        alertMessage.textContent = message;
+        alertModal.classList.remove('hidden');
+    }
+
+    function showCustomConfirm(message, callback) {
+        confirmMessage.textContent = message;
+        confirmModal.classList.remove('hidden');
+        confirmCallback = callback;
+    }
+
+    // 평가위원 변경 처리 함수
+    function handleEvaluatorChange(selectedValue) {
+        const evalType = evaluatorMapping[selectedValue];
+        radioButtons.forEach(radio => radio.checked = false);
+        if (evalType) {
+            const radioToSelect = document.querySelector(`input[name="evaluation-item"][value="${evalType}"]`);
+            if (radioToSelect) {
+                radioToSelect.checked = true;
+            }
+        }
+        departmentSelect.value = ''; // 부서 선택 초기화
+        updateTableView();
+    }
+
+    // 평가위원 선택 시 이벤트 처리
+    evaluatorSelect.addEventListener('change', (event) => {
+        const selectedValue = event.target.value;
+        if (isDirty) {
+            showCustomConfirm('평가위원을 변경하면 기존입력이 모두 초기화 됩니다.', (confirmed) => {
+                if (confirmed) {
+                    handleEvaluatorChange(selectedValue);
+                    previousEvaluator = selectedValue;
+                } else {
+                    evaluatorSelect.value = previousEvaluator;
+                }
+            });
+        } else {
+            handleEvaluatorChange(selectedValue);
+            previousEvaluator = selectedValue;
+        }
+    });
+
+    // 부서 선택 시 이벤트 처리
+    departmentSelect.addEventListener('change', (event) => {
+        if (isDirty) {
+            showCustomConfirm('저장되지 않은 점수와 제언사항이 사라집니다. 계속하시겠습니까?', (confirmed) => {
+                if (confirmed) {
+                    previousDepartment = event.target.value;
+                    updateTableView();
+                } else {
+                    departmentSelect.value = previousDepartment;
+                }
+            });
+        } else {
+            previousDepartment = event.target.value;
+            updateTableView();
+        }
+    });
+
+    // 엑셀 저장 버튼 클릭 이벤트
+    exportExcelButton.addEventListener('click', () => {
+        // 1. 유효성 검사
+        let allScoresEntered = true;
+        const scoreSelects = document.querySelectorAll('.score-select');
+        if (scoreSelects.length === 0) {
+            showCustomAlert('평가할 항목이 없습니다.');
+            return;
+        }
+        scoreSelects.forEach(select => {
+            if (select.value === "0" || select.value === "") {
+                allScoresEntered = false;
+            }
+        });
+
+        if (!allScoresEntered) {
+            showCustomAlert('모든 항목의 점수를 입력해야 합니다.');
+            return;
+        }
+
+        // 2. 데이터 수집
+        const evaluator = evaluatorSelect.value;
+        const department = departmentSelect.value;
+        const evalTypeRadio = document.querySelector('input[name="evaluation-item"]:checked');
+        const evalTypeLabel = evalTypeRadio ? evalTypeRadio.nextElementSibling.textContent : '평가항목';
+        const departmentForFilename = department || '전체부서';
+
+
+        const excelData = [
+            ["2025 부서운영 자체평가 결과"],
+            [],
+            ["평가위원", evaluator],
+            ["평가부서", departmentForFilename],
+            ["평가항목", evalTypeLabel],
+            []
+        ];
+        
+        const headerElements = tableHead.querySelectorAll('th');
+        const headers = Array.from(headerElements).map(th => th.innerText.replace(/\n/g, ' '));
+        excelData.push(headers);
+
+        const rows = tableBody.querySelectorAll('tr');
+        rows.forEach(row => {
+            const rowData = [];
+            const cells = row.querySelectorAll('td');
+            cells.forEach((cell, index) => {
+                if (cell.querySelector('select')) {
+                    rowData.push(cell.querySelector('select').value);
+                } else {
+                    rowData.push(cell.textContent);
+                }
+            });
+            excelData.push(rowData);
+        });
+        
+        // 총계, 평균 데이터 추가
+        const footerRows = tableFoot.querySelectorAll('tr');
+        if (footerRows.length > 0) {
+            excelData.push([]); // 빈 줄 추가
+            footerRows.forEach(row => {
+                const rowData = [];
+                const cells = row.querySelectorAll('td');
+                cells.forEach(cell => {
+                    rowData.push(cell.textContent);
+                });
+                excelData.push(rowData);
+            });
+        }
+
+        // 제언사항 데이터 추가
+        const suggestionText = suggestionTextarea.value;
+        if (suggestionText) {
+            excelData.push([]); // 빈 줄 추가
+            excelData.push(["제언사항"]);
+            excelData.push([suggestionText]);
+        }
+
+
+        // 3. 엑셀 파일 생성 및 다운로드
+        const fileName = `${evalTypeLabel}_${departmentForFilename}_${evaluator}.xlsx`;
+        const worksheet = XLSX.utils.aoa_to_sheet(excelData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, '평가결과');
+        XLSX.writeFile(workbook, fileName);
+        isDirty = false; // 저장 후 초기화
+    });
+
+    // 모달 닫기 이벤트
+    alertOkButton.addEventListener('click', () => alertModal.classList.add('hidden'));
+    confirmYesButton.addEventListener('click', () => {
+        confirmModal.classList.add('hidden');
+        if (confirmCallback) confirmCallback(true);
+    });
+    confirmNoButton.addEventListener('click', () => {
+        confirmModal.classList.add('hidden');
+        if (confirmCallback) confirmCallback(false);
+    });
+    
+    // 제언사항 글자 수 카운터
+    suggestionTextarea.addEventListener('input', () => {
+        const currentLength = suggestionTextarea.value.length;
+        charCounter.textContent = currentLength;
+        isDirty = true;
+    });
+
+    // 화면 비율 조절 로직
+    const mouseDownHandler = function (e) {
+        e.preventDefault();
+        const startX = e.clientX;
+        const startWidth = leftPanel.getBoundingClientRect().width;
+
+        const mouseMoveHandler = function (e) {
+            const dx = e.clientX - startX;
+            const newLeftWidth = startWidth + dx;
+            const containerWidth = resizer.parentElement.getBoundingClientRect().width;
+            
+            // 최소/최대 너비 제약 (예: 20% ~ 80%)
+            const minWidth = containerWidth * 0.2;
+            const maxWidth = containerWidth * 0.8;
+
+            if (newLeftWidth > minWidth && newLeftWidth < maxWidth) {
+                leftPanel.style.flexBasis = `${newLeftWidth}px`;
+            }
+        };
+
+        const mouseUpHandler = function () {
+            document.removeEventListener('mousemove', mouseMoveHandler);
+            document.removeEventListener('mouseup', mouseUpHandler);
+        };
+
+        document.addEventListener('mousemove', mouseMoveHandler);
+        document.addEventListener('mouseup', mouseUpHandler);
+    };
+
+    resizer.addEventListener('mousedown', mouseDownHandler);
+
+
+    // 페이지 로드 시 초기화
+    document.addEventListener('DOMContentLoaded', () => {
+        populateEvaluators();
+        previousEvaluator = evaluatorSelect.value;
+        populateDepartments();
+        updateTableView(); 
+    });
+
+</script>
+
 </body>
 </html>
-
-
-
