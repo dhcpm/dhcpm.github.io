@@ -135,17 +135,8 @@
             const passwordError = document.getElementById('password-error');
             let targetUrl = '';
 
-            // The SHA-256 hash for "@dhc13001300"
-            const correctHash = '2a85a42b1092543b57f00d4370d0e13768f54714d2a13b0c55f2615bd3578049';
-
-            // Function to hash a string using SHA-256
-            async function sha256(message) {
-                const msgBuffer = new TextEncoder().encode(message);
-                const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-                const hashArray = Array.from(new Uint8Array(hashBuffer));
-                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-                return hashHex;
-            }
+            // This is a simplified check for compatibility.
+            const correctPassword = '@dhc13001300';
 
             // Show modal when a protected link is clicked
             protectedLinks.forEach(link => {
@@ -167,12 +158,15 @@
             });
 
             // Check password on submit
-            async function checkPassword() {
+            function checkPassword() {
                 const enteredPassword = passwordInput.value;
-                const enteredHash = await sha256(enteredPassword);
-
-                if (enteredHash === correctHash) {
-                    window.location.href = targetUrl;
+                
+                if (enteredPassword === correctPassword) {
+                    // The original navigation `window.location.href = targetUrl;` fails in some
+                    // sandboxed environments because the targetUrl is a relative path.
+                    // To fix this, we resolve the relative path into a full, absolute URL
+                    // which is a valid value for window.location.href.
+                    window.location.href = new URL(targetUrl, window.location.href).href;
                 } else {
                     passwordError.classList.remove('hidden');
                     passwordInput.focus();
