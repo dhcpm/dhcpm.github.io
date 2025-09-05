@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>평가방법 및 배점기준</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Noto Sans KR', 'Inter', sans-serif;
+        }
+        h1, h2, h3, h4, h5 {
+            font-family: 'Noto Sans KR', 'Inter', sans-serif;
+            font-weight: 700;
+        }
+        .table-header {
+            background-color: #f9fafb; /* gray-50 */
+            font-weight: 600;
+            color: #1f2937; /* gray-800 */
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.07);
+            border: 1px solid #e5e7eb; /* gray-200 */
+        }
+        .section-icon {
+            width: 28px;
+            height: 28px;
+            color: #3b82f6; /* blue-500 */
+        }
+        /* Tab styles */
+        .tab-button {
+            transition: all 0.3s ease;
+        }
+        .tab-button.active {
+            border-color: #3b82f6; /* blue-500 */
+            color: #3b82f6;
+            background-color: #eff6ff; /* blue-50 */
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+        <!-- Header -->
+        <header class="text-center my-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">평가방법 및 배점기준</h1>
+        </header>
+
+        <!-- Tab Navigation -->
+        <div class="mb-8 border-b border-gray-200">
+            <nav class="flex flex-wrap -mb-px" aria-label="Tabs">
+                <button class="tab-button active text-sm sm:text-base whitespace-nowrap border-b-2 font-medium px-4 py-3 text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="tab1">
+                    평가항목 1 (10점)
+                </button>
+                <button class="tab-button text-sm sm:text-base whitespace-nowrap border-b-2 font-medium px-4 py-3 text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="tab2">
+                    평가항목 2 (20점)
+                </button>
+                <button class="tab-button text-sm sm:text-base whitespace-nowrap border-b-2 font-medium px-4 py-3 text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="tab3">
+                    평가항목 3 (25점)
+                </button>
+                <button class="tab-button text-sm sm:text-base whitespace-nowrap border-b-2 font-medium px-4 py-3 text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="tab4">
+                    평가항목 4 (15점)
+                </button>
+                <button class="tab-button text-sm sm:text-base whitespace-nowrap border-b-2 font-medium px-4 py-3 text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="tab5">
+                    평가항목 5 (30점)
+                </button>
+            </nav>
+        </div>
+
+        <!-- Tab Content -->
+        <main>
+            <!-- Tab 1: 평가항목 1 -->
+            <div id="tab1" class="tab-content active">
+                <section class="card p-6 md:p-8">
+                    <div class="flex items-center mb-6">
+                        <svg class="section-icon mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                        <h2 class="text-2xl font-bold">평가항목 1. 성과지표 목표값 설정의 적절성 (10점)</h2>
+                    </div>
+                    <div class="space-y-8">
+                        <div class="p-4 bg-gray-50 rounded-lg border"><h3 class="text-lg font-semibold mb-2 text-gray-800">가. 기본 원칙</h3><ul class="list-disc list-inside space-y-1 text-gray-700"><li>목표값 설정의 적절성은 목표 달성 여부를 우선적으로 판단합니다.</li><li>과거 실적(최근 3년) 및 추이를 반영하여 목표값 설정의 도전성을 평가합니다.</li><li>정성적 평가, 예외사항, 특정 지표의 권역 평균 이상 달성 시 점수를 상향 조정할 수 있습니다.</li></ul></div>
+                        <div class="p-4 bg-gray-50 rounded-lg border"><h3 class="text-lg font-semibold mb-3 text-gray-800">나. 유의사항</h3><ul class="list-disc list-inside space-y-3 text-gray-700"><li>지표의 방향성(상향/하향)에 따라 평가를 달리합니다.</li><li>과거 실적이 이미 높은 수준인 경우(예: 비율지표 98% 이상, 만족도 4.8점 이상), 전년도와 동일 수준 목표도 만점으로 인정될 수 있습니다.</li><li><strong class="text-red-600">평가 제외 지표 (9개):</strong> 교육비환원율, 교사확보율, 등록금의존율, 장학금지급률, 학점관리지수, 전임교원 확보율, 학생 인당 실험실습비, 학생 인당 자료구입비, 재정운영수익률.<br><span class="text-sm text-gray-500 pl-4">(사유: 부서 자체 노력만으로 개선이 어렵거나 외부 요인에 크게 영향을 받는 지표)</span></li><li><strong class="text-blue-600">권역 평균 상회 시 최고점 평가 지표 (4개):</strong> 신입생 충원율, 재학생 충원율(정원내), 중도탈락률, 졸업생 충원율.</li></ul></div>
+                        <div><h3 class="text-lg font-semibold mb-4 text-gray-800">다. 배점 기준</h3><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"><div class="p-4 border rounded-lg bg-white"><h4 class="font-bold text-center mb-3 text-base">최근 3년간 실적</h4><table class="w-full text-sm text-left border-collapse"><thead><tr class="table-header"><th class="p-2 border">배점</th><th class="p-2 border">목표값 설정</th></tr></thead><tbody><tr><td class="p-2 border text-center font-bold">10</td><td class="p-2 border">달성(100%≤) & 3년 평균 초과</td></tr><tr><td class="p-2 border text-center font-bold">9</td><td class="p-2 border">달성(100%≤) & 3년 평균 동등</td></tr><tr><td class="p-2 border text-center font-bold">8</td><td class="p-2 border">달성(100%≤) & 3년 평균 미만</td></tr><tr><td class="p-2 border text-center font-bold">7</td><td class="p-2 border">미달(&lt;100%) & 3년 평균 초과</td></tr><tr><td class="p-2 border text-center font-bold">6</td><td class="p-2 border">미달(&lt;100%) & 3년 평균 동등</td></tr><tr><td class="p-2 border text-center font-bold">5</td><td class="p-2 border">미달(&lt;100%) & 3년 평균 미만</td></tr></tbody></table></div><div class="p-4 border rounded-lg bg-white"><h4 class="font-bold text-center mb-3 text-base">최근 2년간 실적</h4><table class="w-full text-sm text-left border-collapse"><thead><tr class="table-header"><th class="p-2 border">배점</th><th class="p-2 border">목표값 설정</th></tr></thead><tbody><tr><td class="p-2 border text-center font-bold">10</td><td class="p-2 border">달성(100%≤) & 2년 평균 초과</td></tr><tr><td class="p-2 border text-center font-bold">9</td><td class="p-2 border">달성(100%≤) & 2년 평균 동등</td></tr><tr><td class="p-2 border text-center font-bold">8</td><td class="p-2 border">달성(100%≤) & 2년 평균 미만</td></tr><tr><td class="p-2 border text-center font-bold">7</td><td class="p-2 border">미달(&lt;100%) & 2년 평균 초과</td></tr><tr><td class="p-2 border text-center font-bold">6</td><td class="p-2 border">미달(&lt;100%) & 2년 평균 동등</td></tr><tr><td class="p-2 border text-center font-bold">5</td><td class="p-2 border">미달(&lt;100%) & 2년 평균 미만</td></tr></tbody></table></div><div class="p-4 border rounded-lg bg-white"><h4 class="font-bold text-center mb-3 text-base">전년도 1년 실적</h4><table class="w-full text-sm text-left border-collapse"><thead><tr class="table-header"><th class="p-2 border">배점</th><th class="p-2 border">목표값 설정</th></tr></thead><tbody><tr><td class="p-2 border text-center font-bold">10</td><td class="p-2 border">달성(100%≤) & 전년 실적 초과</td></tr><tr><td class="p-2 border text-center font-bold">9</td><td class="p-2 border">달성(100%≤) & 전년 실적 동등</td></tr><tr><td class="p-2 border text-center font-bold">8</td><td class="p-2 border">달성(100%≤) & 전년 실적 미만</td></tr><tr><td class="p-2 border text-center font-bold">7</td><td class="p-2 border">미달(&lt;100%) & 전년 실적 초과</td></tr><tr><td class="p-2 border text-center font-bold">6</td><td class="p-2 border">미달(&lt;100%) & 전년 실적 동등</td></tr><tr><td class="p-2 border text-center font-bold">5</td><td class="p-2 border">미달(&lt;100%) & 전년 실적 미만</td></tr></tbody></table></div></div><div class="mt-6 p-4 border rounded-lg bg-white text-center"><h4 class="font-bold text-base mb-2">신규 지표 또는 최근 실적 없음</h4><p class="text-sm text-gray-600">전체 부서의 전년도 평균 점수를 반영하여 평가합니다.</p></div></div>
+                    </div>
+                </section>
+            </div>
+            <!-- Tab 2: 평가항목 2 -->
+            <div id="tab2" class="tab-content">
+                <section class="card p-6 md:p-8">
+                    <div class="flex items-center mb-6">
+                        <svg class="section-icon mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        <h2 class="text-2xl font-bold">평가항목 2. 부서업무 계획의 타당성 (20점)</h2>
+                    </div>
+                    <div class="space-y-8">
+                        <div class="p-4 bg-gray-50 rounded-lg border"><h3 class="text-lg font-semibold mb-2 text-gray-800">가. 기본 원칙</h3><ul class="list-disc list-inside space-y-1 text-gray-700"><li>부서의 업무나 사업(프로그램)의 계획이 적절한지를 판단합니다.</li><li>계획이 성과지표나 부서의 실적 관리를 위한 적절한 정책, 사업, 업무, 프로그램 등으로 구성되어 있는지 판단합니다.</li></ul></div>
+                        <div class="p-4 bg-gray-50 rounded-lg border"><h3 class="text-lg font-semibold mb-3 text-gray-800">나. 유의사항</h3><ul class="list-disc list-inside space-y-3 text-gray-700"><li><strong>개선계획의 적극성 (8점)</strong><ul class="list-decimal list-inside ml-4 mt-2 space-y-1"><li>전년도 총평의 개선방안의 내용을 참고하여 평가합니다.</li><li>계획에 전년도 개선방안에 대한 문제점 분석과 계획을 별도로 분석하였다면 개선계획의 적극성이 더 높은 것으로 평가합니다.</li></ul></li><li><strong>계획의 구체성과 적정성 (12점):</strong><ul class="list-decimal list-inside ml-4 mt-2 space-y-1"><li>P-D-C-A 절차가 운영계획서 내에 명확히 표기되어 있는지 확인합니다.</li><li>담당자별 운영계획 프로그램 수는 1~2개로 통합 권고되었으므로, 하나의 프로그램에 여러 세부 계획이 포함될 수 있습니다.</li></ul></li></ul></div>
+                        <div><h3 class="text-lg font-semibold mb-4 text-gray-800">다. 배점 기준</h3><div class="space-y-8"><div class="p-4 border rounded-lg bg-white"><h4 class="font-bold text-center mb-3 text-base">②-1. 개선계획의 적극성 (8점)</h4><table class="w-full text-sm text-left border-collapse"><thead><tr class="table-header"><th class="p-3 border">배점</th><th class="p-3 border">평가기준</th></tr></thead><tbody><tr><td class="p-3 border text-center font-bold">8</td><td class="p-3 border">전년도 총평 "향후 개선방안" 내용이 당해연도 운영계획서에 **모두 반영**되고 문제점 분석과 함께 구체적으로 개선 계획을 작성함.</td></tr><tr><td class="p-3 border text-center font-bold">7</td><td class="p-3 border">전년도 총평 "향후 개선방안" 내용이 당해연도 운영계획서에 **일부 반영**되고 문제점 분석과 함께 구체적으로 개선 계획을 작성함.</td></tr><tr><td class="p-3 border text-center font-bold">6</td><td class="p-3 border">전년도 총평 "향후 개선방안" 내용이 **일부 반영**되었고, 현안(문제점) 분석 없이 개선 계획이 수립된 경우.</td></tr><tr><td class="p-3 border text-center font-bold">5</td><td class="p-3 border">전년도 총평 "향후 개선방안" 내용이 **반영되지 않고** 당해연도 개선계획이 수립된 경우.</td></tr><tr><td class="p-3 border text-center font-bold">4</td><td class="p-3 border">전년도 총평 "향후 개선방안" 내용이 반영되지 않고 **당해연도 개선계획 내용도 없는 경우.**</td></tr></tbody></table><div class="mt-3 p-3 bg-blue-50 border-l-4 border-blue-400 text-sm text-blue-800"><strong>신규 작성부서:</strong> 전년도 개선방안이 없으므로, 현안/문제점 분석 내용과 이에 대한 구체적 계획이 작성되었으면 배점에 따라 평가합니다. (부서명칭 변경은 해당 안됨)</div></div><div class="p-4 border rounded-lg bg-white"><h4 class="font-bold text-center mb-3 text-base">②-2. 계획의 구체성과 적정성 (12점)</h4><table class="w-full text-sm text-left border-collapse"><thead><tr class="table-header"><th class="p-3 border">배점</th><th class="p-3 border">평가기준</th></tr></thead><tbody><tr><td class="p-3 border text-center font-bold">12</td><td class="p-3 border">추진과제, 시기, 방법, 대상, 예산 등 계획이 **구체적**이고 제3자가 충분히 참조할 수 있으며, P-D-C-A 절차가 명확하고 정량적/정성적 기대성과가 내용에 부합함.</td></tr><tr><td class="p-3 border text-center font-bold">11</td><td class="p-3 border">계획이 **어느 정도 구체적**이고 제3자가 충분히 이해할 수 있으며, P-D-C-A 절차가 명확하고 정량적/정성적 기대성과가 작성됨.</td></tr><tr><td class="p-3 border text-center font-bold">10</td><td class="p-3 border">계획을 **간략하게 기술**하였고, P-D-C-A 절차가 명확하게 표기되어 있음.</td></tr><tr><td class="p-3 border text-center font-bold">9</td><td class="p-3 border">추진과제, 방법 등 **일부만 간략하게 명시**하고 추진시기가 불명확함.</td></tr><tr><td class="p-3 border text-center font-bold">8</td><td class="p-3 border">추진과제 등 **타이틀 정도만 간단하게 명시**함.</td></tr><tr><td class="p-3 border text-center font-bold">7</td><td class="p-3 border">계획은 기술했으나 내용의 **구체성이 낮고** 해당 부서 운영과 관련 없음.</td></tr><tr><td class="p-3 border text-center font-bold">6</td><td class="p-3 border">계획을 **기술하지 않았거나 매우 미비함.**</td></tr></tbody></table></div></div></div>
+                    </div>
+                </section>
+            </div>
+            <!-- Tab 3: 평가항목 3 -->
+            <div id="tab3" class="tab-content">
+                <section class="card p-6 md:p-8">
+                    <div class="flex items-center mb-6">
+                        <svg class="section-icon mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        <h2 class="text-2xl font-bold">평가항목 3. 부서업무 추진계획의 수행도 (25점)</h2>
+                    </div>
+                    <div class="space-y-8">
+                        <div><h3 class="text-lg font-semibold mb-4 text-gray-800">가. 배점 기준</h3><div class="space-y-8"><div class="p-4 border rounded-lg bg-white"><h4 class="font-bold text-lg mb-3 text-gray-800">③-1. 성실도 (15점)</h4><p class="text-gray-700 mb-4">추진계획에 따라 성실하게 수행하였는지의 여부, 실행내역(추진내용, 추진성과, 참여인원, 소요예산, 추진결과 등), 실적 증빙자료(첨부파일), 정량적·정성적 성과도출 등 추진실적의 구체성을 평가하고, 내용중 P-D-C-A 절차별 수행결과가 구체적으로 표기 되어 있는지를 평가함.</p><table class="w-full text-sm text-center border-collapse"><thead><tr class="table-header"><th class="p-3 border">성실도 (15점)</th><th class="p-3 border">매우우수</th><th class="p-3 border">우수</th><th class="p-3 border">보통</th><th class="p-3 border">미흡</th><th class="p-3 border">매우미흡</th></tr></thead><tbody><tr><td class="p-3 border font-bold">배점</td><td class="p-3 border">15~14</td><td class="p-3 border">13~12</td><td class="p-3 border">11~10</td><td class="p-3 border">9~8</td><td class="p-3 border">7~6</td></tr></tbody></table><div class="mt-3 p-3 bg-gray-50 border-l-4 border-gray-400 text-sm text-gray-800"><p>※ P-D-C-A 절차별 수행결과가 작성여부를 평가함</p><p>※ 증빙자료는 문서 첨부 외 기안문의 경우 문서 목록 첨부도 가능하도록 안내하여 문서 목록 제출의 경우에도 증빙자료가 있는 것으로 평가함.</p></div></div><div class="p-4 border rounded-lg bg-white"><h4 class="font-bold text-lg mb-3 text-gray-800">③-2. 문제분석 (5점)</h4><p class="text-gray-700 mb-4">『수행 후 문제점 분석 및 보완사항』의 내용 평가</p><table class="w-full text-sm text-center border-collapse"><thead><tr class="table-header"><th class="p-3 border">문제분석 (5점)</th><th class="p-3 border">매우우수</th><th class="p-3 border">우수</th><th class="p-3 border">보통</th><th class="p-3 border">미흡</th></tr></thead><tbody><tr><td class="p-3 border font-bold">배점</td><td class="p-3 border">5</td><td class="p-3 border">4</td><td class="p-3 border">3</td><td class="p-3 border">2.5</td></tr></tbody></table><div class="mt-3 p-3 bg-blue-50 border-l-4 border-blue-400 text-sm text-blue-800"><strong>※ 유의사항:</strong> 추진계획을 성실히 달성하고 수행실적이 매우 우수한 사업이나 업무의 경우 문제점이나 보완사항이 없을 수 있음. (이런 경우, 수상이력, 기사 등 우수성을 입증할 내용이 작성되어 있거나, 관련 증빙자료가 있다면 우수성을 인정할 수 있고 관련 자료가 없는 경우는 인정하지 않음.)</div></div><div class="p-4 border rounded-lg bg-white"><h4 class="font-bold text-lg mb-3 text-gray-800">③-3. 개선노력 (5점)</h4><p class="text-gray-700 mb-4">『개선방안 및 환류계획』 노력을 평가</p><table class="w-full text-sm text-center border-collapse"><thead><tr class="table-header"><th class="p-3 border">개선노력 (5점)</th><th class="p-3 border">매우우수</th><th class="p-3 border">우수</th><th class="p-3 border">보통</th><th class="p-3 border">미흡</th></tr></thead><tbody><tr><td class="p-3 border font-bold">배점</td><td class="p-3 border">5</td><td class="p-3 border">4</td><td class="p-3 border">3</td><td class="p-3 border">2.5</td></tr></tbody></table><div class="mt-3 p-3 bg-blue-50 border-l-4 border-blue-400 text-sm text-blue-800"><strong>※ 유의사항:</strong> 추진계획을 성실히 달성하고 수행실적이 매우 우수한 사업이나 업무의 경우 개선 노력이 없을 수 있음. (이런 경우, 수상이력, 기사 등 우수성을 입증할 내용이 작성되어 있거나, 관련 증빙자료가 있다면 우수성을 인정할 수 있고 관련 자료가 없는 경우는 인정하지 않음.)</div></div></div></div>
+                    </div>
+                </section>
+            </div>
+            <!-- Tab 4: 평가항목 4 -->
+            <div id="tab4" class="tab-content">
+                <section class="card p-6 md:p-8">
+                    <div class="flex items-center mb-6">
+                        <svg class="section-icon mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg>
+                        <h2 class="text-2xl font-bold">평가항목 4. 성과지표 목표값 달성도 (15점)</h2>
+                    </div>
+                    <div class="space-y-8">
+                        <div class="p-4 bg-gray-50 rounded-lg border"><h3 class="text-lg font-semibold mb-2 text-gray-800">가. 기본 원칙</h3><ul class="list-disc list-inside space-y-1 text-gray-700"><li>목표값 달성도에 따라 점수를 배점합니다.</li><li>성과지표의 목표값과 결과값의 차이가 상당한 경우에는 해당 부서의 확인과정을 거쳐 정성적 평가점수를 추가할 수 있습니다.</li></ul></div>
+                        <div class="p-4 bg-gray-50 rounded-lg border"><h3 class="text-lg font-semibold mb-3 text-gray-800">나. 유의사항</h3><ol class="list-decimal list-inside space-y-3 text-gray-700"><li><strong>일부 성과지표는 평가에서 제외</strong><ul class="list-disc list-inside ml-4 mt-2 space-y-1"><li><strong>제외지표(8개):</strong> 교육비환원율, 교사확보율, 등록금의존율, 장학금지급률, 학점관리지수, 전임교원 확보율, 학생 인당 실험실습비, 학생 인당 자료구입비, 재정운영수익률</li><li><strong>제외사유:</strong> 기관평가인증, 대학기본역량진단 등 교육부 주관 평가에서 특정 값을 요구하는 지표로, 매년 상향이 어렵거나 대학 환경/재정 여건에 따라 변경되어 현실적으로 관리가 어려움.</li></ul></li><li><strong>일부 성과지표의 달성도는 설정한 목표값이 아닌 권역평균을 기준으로 평가함</strong><ul class="list-disc list-inside ml-4 mt-2 space-y-1"><li><strong>관련지표(4개):</strong> 재학생 충원율(정원내), 중도탈락률, 신입생 충원율, 졸업생 취업률</li></ul></li><li><strong>지표의 방향성 (상향/하향)에 따라 평가를 달리함.</strong></li></ol></div>
+                        <div><h3 class="text-lg font-semibold mb-4 text-gray-800">다. 배점 기준</h3><div class="space-y-8"><div class="p-4 border rounded-lg bg-white"><h4 class="font-bold text-center mb-3 text-base">④. 목표값 달성도 (15점)</h4><table class="w-full text-sm text-left border-collapse"><thead><tr class="table-header"><th class="p-3 border">배점</th><th class="p-3 border">평가기준 (달성률)</th></tr></thead><tbody><tr><td class="p-3 border text-center font-bold">15</td><td class="p-3 border">100% 이상</td></tr><tr><td class="p-3 border text-center font-bold">14</td><td class="p-3 border">90% 이상 ~ 100% 미만</td></tr><tr><td class="p-3 border text-center font-bold">13</td><td class="p-3 border">80% 이상 ~ 90% 미만</td></tr><tr><td class="p-3 border text-center font-bold">12</td><td class="p-3 border">70% 이상 ~ 80% 미만</td></tr><tr><td class="p-3 border text-center font-bold">11</td><td class="p-3 border">60% 이상 ~ 70% 미만</td></tr><tr><td class="p-3 border text-center font-bold">10</td><td class="p-3 border">50% 이상 ~ 60% 미만</td></tr><tr><td class="p-3 border text-center font-bold">9</td><td class="p-3 border">40% 이상 ~ 50% 미만</td></tr><tr><td class="p-3 border text-center font-bold">8</td><td class="p-3 border">1% 이상 ~ 40% 미만</td></tr></tbody></table></div></div></div>
+                    </div>
+                </section>
+            </div>
+            <!-- Tab 5: 평가항목 5 -->
+            <div id="tab5" class="tab-content">
+                <section class="card p-6 md:p-8">
+                    <div class="flex items-center mb-6">
+                        <svg class="section-icon mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path></svg>
+                        <h2 class="text-2xl font-bold">평가항목 5. 문제분석 및 환류도 (30점)</h2>
+                    </div>
+                    <div class="space-y-8">
+                        <div><h3 class="text-lg font-semibold mb-4 text-gray-800">가. 배점 기준</h3><div class="space-y-8"><div class="p-4 border rounded-lg bg-white"><h4 class="font-bold text-lg mb-3 text-gray-800">⑤-1. 종합평가의 충실성 (15점)</h4><div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div><h5 class="font-semibold text-center mb-2">⑤-1-1. 우수사항 (8점)</h5><p class="text-sm text-gray-600 mb-2 text-center">총평에서 작성한 『우수사항』의 분석여부와 내용의 적절성 등을 평가</p><table class="w-full text-sm text-center border-collapse"><thead><tr class="table-header"><th class="p-2 border">매우우수</th><th class="p-2 border">우수</th><th class="p-2 border">보통</th><th class="p-2 border">미흡</th><th class="p-2 border">매우미흡</th></tr></thead><tbody><tr><td class="p-2 border">8</td><td class="p-2 border">7</td><td class="p-2 border">6</td><td class="p-2 border">5</td><td class="p-2 border">4</td></tr></tbody></table></div><div><h5 class="font-semibold text-center mb-2">⑤-1-2. 미흡사항 (7점)</h5><p class="text-sm text-gray-600 mb-2 text-center">총평에서 작성한 『미흡사항』의 분석여부와 내용의 적절성 등을 평가</p><table class="w-full text-sm text-center border-collapse"><thead><tr class="table-header"><th class="p-2 border">매우우수</th><th class="p-2 border">우수</th><th class="p-2 border">보통</th><th class="p-2 border">미흡</th><th class="p-2 border">매우미흡</th></tr></thead><tbody><tr><td class="p-2 border">7</td><td class="p-2 border">6</td><td class="p-2 border">5</td><td class="p-2 border">4</td><td class="p-2 border">3</td></tr></tbody></table></div></div><div class="mt-4 p-3 bg-blue-50 border-l-4 border-blue-400 text-sm text-blue-800"><strong>※ 유의사항:</strong> 추진계획을 성실히 달성하고 수행실적이 매우 우수한 사업이나 업무의 경우 문제점이나 보완사항이 없을 수 있음. (이런 경우, 수상이력, 기사 등 우수성을 입증할 내용이 작성되어 있거나, 관련 증빙자료가 있다면 우수성을 인정할 수 있고 관련 자료가 없는 경우는 인정하지 않음.)</div></div><div class="p-4 border rounded-lg bg-white"><h4 class="font-bold text-lg mb-3 text-gray-800">⑤-2. 환류방안의 적정성 (15점) : 향후 개선방안</h4><p class="text-gray-700 mb-4">총평에서 작성한 『향후 개선방안』의 분석여부와 내용의 적절성 등을 평가</p><table class="w-full text-sm text-left border-collapse"><thead><tr class="table-header"><th class="p-3 border">배점</th><th class="p-3 border">평가기준</th></tr></thead><tbody><tr><td class="p-3 border text-center font-bold">15~14</td><td class="p-3 border">문제점 개선을 위한 개선방안을 구체적으로 작성<br>- 개선행위(사업, 전략 제시 / 개선행위 실천을 위한 개선방법, 시기, 대상, 피드백 방법 등을 작성</td></tr><tr><td class="p-3 border text-center font-bold">13~12</td><td class="p-3 border">문제점 개선을 위한 개선방안을 구체적으로 작성<br>- 개선행위(사업, 전략) 제시 / 개선행위 실천을 위한 방법을 간략히 작성 혹은 미정</td></tr><tr><td class="p-3 border text-center font-bold">11~10</td><td class="p-3 border">문제점 개선을 위한 개선방안을 간략하게 작성<br>- 개선행위(사업, 전략) 제시 / 실천을 위한 개선방법 등 작성</td></tr><tr><td class="p-3 border text-center font-bold">9~8</td><td class="p-3 border">문제점 개선을 위한 개선방안을 간략하게 작성 : 개선행위(사업, 전략)만 제시</td></tr><tr><td class="p-3 border text-center font-bold">7~6</td><td class="p-3 border">원인분석 후 문제점 개선과 연관성이 없는 내용 작성</td></tr></tbody></table><div class="mt-3 p-3 bg-blue-50 border-l-4 border-blue-400 text-sm text-blue-800"><strong>※ 유의사항:</strong> 추진계획을 성실히 달성하고 수행실적이 매우 우수한 사업이나 업무의 경우 문제점이나 보완사항이 없을 경우 관련 수상이력 혹은 기사 등 증빙자료가 있어야 하며, 환류계획은 반드시 작성되어야 함.</div></div></div></div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="text-center mt-16 py-6 border-t border-gray-200">
+            <p class="text-sm text-gray-500">&copy; 2025 Your Company. All Rights Reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        const tabs = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const target = document.getElementById(tab.dataset.tab);
+
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                tabContents.forEach(c => c.classList.remove('active'));
+                target.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

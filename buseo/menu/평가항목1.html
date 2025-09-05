@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>평가항목 1. 성과지표 목표값 설정의 적절성 (10점)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Noto Sans KR', 'Inter', sans-serif;
+        }
+        h1, h2, h3, h4 {
+            font-family: 'Noto Sans KR', 'Inter', sans-serif;
+            font-weight: 700;
+        }
+        .table-header {
+            background-color: #f9fafb; /* gray-50 */
+            font-weight: 600;
+            color: #1f2937; /* gray-800 */
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.07);
+            transition: all 0.3s ease;
+            border: 1px solid #e5e7eb; /* gray-200 */
+        }
+        .card:hover {
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1);
+            transform: translateY(-3px);
+        }
+        .nav-link {
+            transition: all 0.2s ease;
+        }
+        .nav-link:hover {
+            color: #1d4ed8; /* blue-700 */
+            transform: translateY(-1px);
+        }
+        .section-icon {
+            width: 28px;
+            height: 28px;
+            color: #3b82f6; /* blue-500 */
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Sticky Navigation -->
+    <nav class="sticky top-0 bg-white/80 backdrop-blur-lg z-50 shadow-sm">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="text-lg font-bold text-gray-800">평가 지침서</div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#target-setting" class="nav-link text-gray-600 font-medium">목표설정 기준</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+        <!-- Header -->
+        <header class="text-center my-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">평가항목 1. 성과지표 목표값 설정의 적절성 (10점)</h1>
+        </header>
+
+        <main class="space-y-16">
+            <!-- Section 4: 성과지표 목표값 설정의 적절성 -->
+            <section id="target-setting" class="card p-6 md:p-8">
+                <div class="flex items-center mb-6">
+                    <svg class="section-icon mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                    <h2 class="text-2xl font-bold">성과지표 목표값 설정의 적절성 (10점)</h2>
+                </div>
+                <div class="space-y-8">
+                    <div class="p-4 bg-gray-50 rounded-lg border">
+                        <h3 class="text-lg font-semibold mb-2 text-gray-800">가. 기본 원칙</h3>
+                        <ul class="list-disc list-inside space-y-1 text-gray-700">
+                            <li>목표값 설정의 적절성은 목표 달성 여부를 우선적으로 판단합니다.</li>
+                            <li>과거 실적(최근 3년) 및 추이를 반영하여 목표값 설정의 도전성을 평가합니다.</li>
+                            <li>정성적 평가, 예외사항, 특정 지표의 권역 평균 이상 달성 시 점수를 상향 조정할 수 있습니다.</li>
+                        </ul>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg border">
+                        <h3 class="text-lg font-semibold mb-3 text-gray-800">나. 유의사항</h3>
+                        <ul class="list-disc list-inside space-y-3 text-gray-700">
+                            <li>지표의 방향성(상향/하향)에 따라 평가를 달리합니다.</li>
+                            <li>과거 실적이 이미 높은 수준인 경우(예: 비율지표 98% 이상, 만족도 4.8점 이상), 전년도와 동일 수준 목표도 만점으로 인정될 수 있습니다.</li>
+                            <li><strong class="text-red-600">평가 제외 지표 (9개):</strong> 교육비환원율, 교사확보율, 등록금의존율, 장학금지급률, 학점관리지수, 전임교원 확보율, 학생 인당 실험실습비, 학생 인당 자료구입비, 재정운영수익률.
+                                <br><span class="text-sm text-gray-500 pl-4">(사유: 부서 자체 노력만으로 개선이 어렵거나 외부 요인에 크게 영향을 받는 지표)</span>
+                            </li>
+                            <li><strong class="text-blue-600">권역 평균 상회 시 최고점 평가 지표 (4개):</strong> 신입생 충원율, 재학생 충원율(정원내), 중도탈락률, 졸업생 충원율.</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4 text-gray-800">다. 배점 기준</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- 3년 실적 기준 -->
+                            <div class="p-4 border rounded-lg bg-white"><h4 class="font-bold text-center mb-3 text-base">최근 3년간 실적</h4><table class="w-full text-sm text-left border-collapse"><thead><tr class="table-header"><th class="p-2 border">배점</th><th class="p-2 border">목표값 설정</th></tr></thead><tbody><tr><td class="p-2 border text-center font-bold">10</td><td class="p-2 border">달성(100%≤) & 3년 평균 초과</td></tr><tr><td class="p-2 border text-center font-bold">9</td><td class="p-2 border">달성(100%≤) & 3년 평균 동등</td></tr><tr><td class="p-2 border text-center font-bold">8</td><td class="p-2 border">달성(100%≤) & 3년 평균 미만</td></tr><tr><td class="p-2 border text-center font-bold">7</td><td class="p-2 border">미달(&lt;100%) & 3년 평균 초과</td></tr><tr><td class="p-2 border text-center font-bold">6</td><td class="p-2 border">미달(&lt;100%) & 3년 평균 동등</td></tr><tr><td class="p-2 border text-center font-bold">5</td><td class="p-2 border">미달(&lt;100%) & 3년 평균 미만</td></tr></tbody></table></div>
+                            <!-- 2년 실적 기준 -->
+                            <div class="p-4 border rounded-lg bg-white"><h4 class="font-bold text-center mb-3 text-base">최근 2년간 실적</h4><table class="w-full text-sm text-left border-collapse"><thead><tr class="table-header"><th class="p-2 border">배점</th><th class="p-2 border">목표값 설정</th></tr></thead><tbody><tr><td class="p-2 border text-center font-bold">10</td><td class="p-2 border">달성(100%≤) & 2년 평균 초과</td></tr><tr><td class="p-2 border text-center font-bold">9</td><td class="p-2 border">달성(100%≤) & 2년 평균 동등</td></tr><tr><td class="p-2 border text-center font-bold">8</td><td class="p-2 border">달성(100%≤) & 2년 평균 미만</td></tr><tr><td class="p-2 border text-center font-bold">7</td><td class="p-2 border">미달(&lt;100%) & 2년 평균 초과</td></tr><tr><td class="p-2 border text-center font-bold">6</td><td class="p-2 border">미달(&lt;100%) & 2년 평균 동등</td></tr><tr><td class="p-2 border text-center font-bold">5</td><td class="p-2 border">미달(&lt;100%) & 2년 평균 미만</td></tr></tbody></table></div>
+                            <!-- 1년 실적 기준 -->
+                            <div class="p-4 border rounded-lg bg-white"><h4 class="font-bold text-center mb-3 text-base">전년도 1년 실적</h4><table class="w-full text-sm text-left border-collapse"><thead><tr class="table-header"><th class="p-2 border">배점</th><th class="p-2 border">목표값 설정</th></tr></thead><tbody><tr><td class="p-2 border text-center font-bold">10</td><td class="p-2 border">달성(100%≤) & 전년 실적 초과</td></tr><tr><td class="p-2 border text-center font-bold">9</td><td class="p-2 border">달성(100%≤) & 전년 실적 동등</td></tr><tr><td class="p-2 border text-center font-bold">8</td><td class="p-2 border">달성(100%≤) & 전년 실적 미만</td></tr><tr><td class="p-2 border text-center font-bold">7</td><td class="p-2 border">미달(&lt;100%) & 전년 실적 초과</td></tr><tr><td class="p-2 border text-center font-bold">6</td><td class="p-2 border">미달(&lt;100%) & 전년 실적 동등</td></tr><tr><td class="p-2 border text-center font-bold">5</td><td class="p-2 border">미달(&lt;100%) & 전년 실적 미만</td></tr></tbody></table></div>
+                        </div>
+                        <div class="mt-6 p-4 border rounded-lg bg-white text-center">
+                            <h4 class="font-bold text-base mb-2">신규 지표 또는 최근 실적 없음</h4>
+                            <p class="text-sm text-gray-600">전체 부서의 전년도 평균 점수를 반영하여 평가합니다.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="text-center mt-16 py-6 border-t border-gray-200">
+            <p class="text-sm text-gray-500">&copy; 2025 Your Company. All Rights Reserved.</p>
+        </footer>
+    </div>
+
+</body>
+</html>
