@@ -267,15 +267,15 @@
                 <div id="dhc-sub-panel-freshman_rate" class="dhc-sub-tab-panel hidden">
                     <div class="space-y-8">
                          <div>
-                            <h2 class="text-xl font-bold text-gray-800 mb-4">신입생 충원 현황 (충원율, 경쟁률, 모집인원 2025학년도 정원내기준)</h2>
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">신입생 충원 현황 (충원율, 경쟁률, 모집인원)</h2>
                             <div class="overflow-x-auto">
                                 <table class="min-w-full bg-white border border-gray-200 rounded-lg text-sm">
                                     <thead class="bg-gray-50">
                                         <tr>
                                             <th class="px-3 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">학과(모집단위)</th>
                                             <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">신입생 충원율(%)</th>
-                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">신입생 경쟁률</th>
                                             <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">모집인원</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">신입생 경쟁률</th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-200" id="dhc-department-table-body">
@@ -289,20 +289,33 @@
                                 <canvas id="dhcDepartmentChart"></canvas>
                             </div>
                         </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">현황 분석</h2>
+                            <div class="p-5 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg">
+                                <p class="text-base font-bold text-blue-800 mb-2">보건계열 학과 강세 뚜렷, 일부 학과 충원율 부진으로 양극화 현상 보여</p>
+                                <p class="text-sm text-gray-700 leading-relaxed">
+                                    대부분의 학과가 100%에 가까운 신입생 충원율을 달성한 것은 대학의 강력한 브랜드 경쟁력을 보여주는 긍정적인 신호입니다. 특히 <span class="font-bold">간호학과, 물리치료학과, 응급구조학과</span> 등 핵심 보건계열 학과들은 매우 높은 경쟁률을 기록하며 수험생들의 높은 선호도를 입증했습니다.
+                                    <br><br>
+                                    하지만 일부 학과에서는 충원율이 <span class="font-bold">60%대</span>에 머물러 학과 간 경쟁력 편차가 나타나고 있습니다. 이는 대학 전체의 균형 있는 발전을 위해 충원율이 낮은 학과에 대한 원인 분석과 경쟁력 강화 전략이 필요함을 시사합니다.
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div id="dhc-sub-panel-enrolled_rate" class="dhc-sub-tab-panel hidden">
                      <div class="space-y-8">
                          <div>
-                            <h2 class="text-xl font-bold text-gray-800 mb-4">학과별 재학생 충원율 (2025.4.1 정원내 기준)</h2>
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">학과별 재학생 충원율 (2025.4.1 기준)</h2>
                             <div class="overflow-x-auto">
                                 <table class="min-w-full bg-white border border-gray-200 rounded-lg text-sm">
-                                    <thead class="bg-gray-50">
+                                     <thead class="bg-gray-50">
                                         <tr>
                                             <th class="px-3 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">학과</th>
-                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">재학생 충원율(%)</th>
-                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">재학생 수</th>
-                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">편제정원</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">재학생 충원율(%)<br>(정원내)</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">학생정원</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">재학생(정원내)</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">재학생(정원외-일반)</th>
+                                            <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">재학생(정원외-전공심화)</th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-200" id="dhc-enrolled-rate-table-body">
@@ -380,6 +393,7 @@
         function switchDhcSubTab(tabKey) {
             Object.values(dhcSubTabs).forEach(tab => {
                 tab.button.classList.remove('active');
+                tab.panel.classList.remove('active');
                 tab.panel.classList.add('hidden');
             });
             const selectedTab = dhcSubTabs[tabKey];
@@ -406,22 +420,49 @@
             const dhcDepartmentData = [
                 { name: '간호학과', fulfill: 100.0, comp: 16.5, quota: 200.0 }, { name: '글로벌호텔조리학과', fulfill: 63.3, comp: 4.6, quota: 30.0 }, { name: '물리치료학과', fulfill: 100.0, comp: 15.2, quota: 160.0 }, { name: '바이오헬스융합학과', fulfill: 68.0, comp: 0.8, quota: 50.0 }, { name: '반려동물보건관리학과', fulfill: 96.0, comp: 6.7, quota: 50.0 }, { name: '방사선학과', fulfill: 100.0, comp: 6.5, quota: 240.0 }, { name: '보건행정학과', fulfill: 90.0, comp: 4.3, quota: 80.0 }, { name: '뷰티코디네이션학과', fulfill: 100.0, comp: 7.1, quota: 88.0 }, { name: '사회복지학과', fulfill: 100.0, comp: 4.0, quota: 90.0 }, { name: '소방안전관리학과', fulfill: 100.0, comp: 3.8, quota: 50.0 }, { name: '스포츠재활학과', fulfill: 100.0, comp: 7.4, quota: 50.0 }, { name: '식품영양학과(2년제)', fulfill: 100.0, comp: 4.7, quota: 35.0 }, { name: '안경광학과', fulfill: 100.0, comp: 2.8, quota: 60.0 }, { name: '언어치료학과', fulfill: 100.0, comp: 3.3, quota: 45.0 }, { name: '유아교육학과', fulfill: 100.0, comp: 4.3, quota: 50.0 }, { name: '응급구조학과', fulfill: 100.0, comp: 14.3, quota: 30.0 }, { name: '임상병리학과', fulfill: 100.0, comp: 4.6, quota: 240.0 }, { name: '작업치료학과', fulfill: 100.0, comp: 5.4, quota: 72.0 }, { name: '치기공학과', fulfill: 87.3, comp: 3.1, quota: 220.0 }, { name: '치위생학과', fulfill: 100.0, comp: 6.8, quota: 200.0 }, { name: '호텔제과제빵학과', fulfill: 100.0, comp: 7.5, quota: 40.0 }, { name: '환경보건학과', fulfill: 90.0, comp: 2.5, quota: 40.0 }
             ];
+            // Sort data for table
+            const sortedTableData = [...dhcDepartmentData].sort((a, b) => b.fulfill - a.fulfill || b.quota - b.quota || b.comp - a.comp);
             const dhcDeptTableBody = document.getElementById('dhc-department-table-body');
             dhcDeptTableBody.innerHTML = '';
-            dhcDepartmentData.forEach(d => {
+            sortedTableData.forEach(d => {
                 dhcDeptTableBody.innerHTML += `
                     <tr>
                         <td class="px-3 py-2 whitespace-nowrap font-medium text-gray-800">${d.name}</td>
                         <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.fulfill.toFixed(1)}</td>
-                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.comp.toFixed(1)} : 1</td>
                         <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.quota.toFixed(0)}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.comp.toFixed(1)} : 1</td>
                     </tr>
                 `;
             });
-            
+             // Sort data for chart
+            const sortedChartData = [...dhcDepartmentData].sort((a,b) => b.fulfill - a.fulfill);
+            const dhcDeptDataObject = { labels: sortedChartData.map(d => d.name), fulfill: sortedChartData.map(d => d.fulfill), comp: sortedChartData.map(d => d.comp) };
+            new Chart(document.getElementById('dhcDepartmentChart').getContext('2d'), { type: 'bar', data: { labels: dhcDeptDataObject.labels, datasets: [ { label: '신입생 충원율 (%)', data: dhcDeptDataObject.fulfill, backgroundColor: 'rgba(75, 192, 192, 0.7)', yAxisID: 'y' }, { label: '신입생 경쟁률', data: dhcDeptDataObject.comp, type: 'line', borderColor: 'rgba(255, 99, 132, 1)', yAxisID: 'y1' } ] }, options: { scales: { x: { ticks: { autoSkip: false, maxRotation: 90, minRotation: 45 } }, y: { beginAtZero: true, min: 60 }, y1: { position: 'right', grid: { drawOnChartArea: false } } } } });
+
             // Data and table generation for enrolled rate
             const dhcEnrolledRateData = [
-                { name: '사회복지학과', rate: 102.8, quota: 180.0, student: 185.0 }, { name: '소방안전관리학과', rate: 96.4, quota: 111.0, student: 107.0 }, { name: '방사선학과', rate: 95.1, quota: 720.0, student: 685.0 }, { name: '식품영양학과(2년제)', rate: 94.3, quota: 70.0, student: 66.0 }, { name: '간호학과', rate: 94.2, quota: 762.0, student: 718.0 }, { name: '호텔제과제빵학과', rate: 93.8, quota: 80.0, student: 75.0 }, { name: '스포츠재활학과', rate: 93.0, quota: 100.0, student: 93.0 }, { name: '물리치료학과', rate: 92.5, quota: 480.0, student: 444.0 }, { name: '임상병리학과', rate: 89.9, quota: 720.0, student: 647.0 }, { name: '유아교육학과', rate: 88.0, quota: 150.0, student: 132.0 }, { name: '뷰티코디네이션학과', rate: 87.6, quota: 178.0, student: 156.0 }, { name: '언어치료학과', rate: 86.7, quota: 135.0, student: 117.0 }, { name: '치위생학과', rate: 86.2, quota: 600.0, student: 517.0 }, { name: '반려동물보건관리학과', rate: 86.0, quota: 100.0, student: 86.0 }, { name: '환경보건학과', rate: 82.5, quota: 80.0, student: 66.0 }, { name: '바이오헬스융합학과', rate: 76.8, quota: 95.0, student: 73.0 }, { name: '보건행정학과', rate: 75.4, quota: 240.0, student: 181.0 }, { name: '안경광학과', rate: 75.3, quota: 186.0, student: 140.0 }, { name: '작업치료학과', rate: 73.6, quota: 216.0, student: 159.0 }, { name: '응급구조학과', rate: 70.0, quota: 60.0, student: 42.0 }, { name: '치기공학과', rate: 69.1, quota: 660.0, student: 456.0 }, { name: '글로벌호텔조리학과', rate: 52.9, quota: 70.0, student: 37.0 },
+                { name: '사회복지학과', rate: 102.8, quota: 180, student: 185, nonQuotaGeneral: 69, nonQuotaAdvanced: 30 },
+                { name: '소방안전관리학과', rate: 96.4, quota: 111, student: 107, nonQuotaGeneral: 1, nonQuotaAdvanced: 0 },
+                { name: '방사선학과', rate: 95.1, quota: 720, student: 685, nonQuotaGeneral: 104, nonQuotaAdvanced: 57 },
+                { name: '식품영양학과(2년제)', rate: 94.2, quota: 70, student: 66, nonQuotaGeneral: 38, nonQuotaAdvanced: 0 },
+                { name: '간호학과', rate: 93.9, quota: 762, student: 718, nonQuotaGeneral: 429, nonQuotaAdvanced: 0 },
+                { name: '호텔제과제빵학과', rate: 93.8, quota: 80, student: 75, nonQuotaGeneral: 9, nonQuotaAdvanced: 0 },
+                { name: '스포츠재활학과', rate: 93.0, quota: 100, student: 93, nonQuotaGeneral: 42, nonQuotaAdvanced: 0 },
+                { name: '물리치료학과', rate: 92.5, quota: 480, student: 444, nonQuotaGeneral: 140, nonQuotaAdvanced: 80 },
+                { name: '임상병리학과', rate: 92.0, quota: 704, student: 647, nonQuotaGeneral: 40, nonQuotaAdvanced: 66 },
+                { name: '유아교육학과', rate: 88.9, quota: 150, student: 132, nonQuotaGeneral: 1, nonQuotaAdvanced: 25 },
+                { name: '뷰티코디네이션학과', rate: 87.6, quota: 178, student: 156, nonQuotaGeneral: 4, nonQuotaAdvanced: 27 },
+                { name: '언어치료학과', rate: 86.7, quota: 135, student: 117, nonQuotaGeneral: 10, nonQuotaAdvanced: 32 },
+                { name: '치위생학과', rate: 86.2, quota: 600, student: 517, nonQuotaGeneral: 26, nonQuotaAdvanced: 20 },
+                { name: '반려동물보건관리학과', rate: 86.0, quota: 100, student: 86, nonQuotaGeneral: 12, nonQuotaAdvanced: 0 },
+                { name: '환경보건학과', rate: 83.0, quota: 80, student: 66, nonQuotaGeneral: 0, nonQuotaAdvanced: 0 },
+                { name: '바이오헬스융합학과', rate: 76.8, quota: 95, student: 73, nonQuotaGeneral: 0, nonQuotaAdvanced: 0 },
+                { name: '보건행정학과', rate: 75.4, quota: 240, student: 181, nonQuotaGeneral: 4, nonQuotaAdvanced: 20 },
+                { name: '안경광학과', rate: 75.3, quota: 186, student: 140, nonQuotaGeneral: 5, nonQuotaAdvanced: 12 },
+                { name: '작업치료학과', rate: 73.6, quota: 216, student: 159, nonQuotaGeneral: 9, nonQuotaAdvanced: 20 },
+                { name: '응급구조학과', rate: 70.0, quota: 60, student: 42, nonQuotaGeneral: 3, nonQuotaAdvanced: 0 },
+                { name: '치기공학과', rate: 69.1, quota: 660, student: 456, nonQuotaGeneral: 17, nonQuotaAdvanced: 44 },
+                { name: '글로벌호텔조리학과', rate: 52.9, quota: 70, student: 37, nonQuotaGeneral: 2, nonQuotaAdvanced: 0 }
             ];
             const dhcEnrolledRateTableBody = document.getElementById('dhc-enrolled-rate-table-body');
             dhcEnrolledRateTableBody.innerHTML = '';
@@ -430,8 +471,10 @@
                     <tr>
                         <td class="px-3 py-2 whitespace-nowrap font-medium text-gray-800">${d.name}</td>
                         <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.rate.toFixed(1)}</td>
-                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.student.toLocaleString()}</td>
                         <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.quota.toLocaleString()}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.student.toLocaleString()}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.nonQuotaGeneral.toLocaleString()}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 text-center">${d.nonQuotaAdvanced.toLocaleString()}</td>
                     </tr>
                 `;
             });
@@ -442,6 +485,7 @@
             ];
             const dhcDropoutRateTableBody = document.getElementById('dhc-dropout-rate-table-body');
             dhcDropoutRateTableBody.innerHTML = '';
+            dhcDropoutRateData.sort((a,b) => b.rate24 - a.rate24);
             dhcDropoutRateData.forEach(d => {
                 dhcDropoutRateTableBody.innerHTML += `
                     <tr>
@@ -454,9 +498,6 @@
 
 
             // Chart Creations
-            const dhcDeptDataObject = { labels: dhcDepartmentData.map(d => d.name), fulfill: dhcDepartmentData.map(d => d.fulfill), comp: dhcDepartmentData.map(d => d.comp) };
-            new Chart(document.getElementById('dhcDepartmentChart').getContext('2d'), { type: 'bar', data: { labels: dhcDeptDataObject.labels, datasets: [ { label: '신입생 충원율 (%)', data: dhcDeptDataObject.fulfill, backgroundColor: 'rgba(75, 192, 192, 0.7)', yAxisID: 'y' }, { label: '신입생 경쟁률', data: dhcDeptDataObject.comp, type: 'line', borderColor: 'rgba(255, 99, 132, 1)', yAxisID: 'y1' } ] }, options: { scales: { y: { beginAtZero: true }, y1: { position: 'right', grid: { drawOnChartArea: false } } } } });
-
             const dhcEnrolledRateDataObject = { labels: dhcEnrolledRateData.map(d => d.name), rate: dhcEnrolledRateData.map(d => d.rate) };
             new Chart(document.getElementById('dhcEnrolledRateChart').getContext('2d'), { type: 'bar', data: { labels: dhcEnrolledRateDataObject.labels, datasets: [{ label: '재학생 충원율 (%)', data: dhcEnrolledRateDataObject.rate, backgroundColor: 'rgba(139, 92, 246, 0.7)' }] }, options: { indexAxis: 'y', scales: { x: { min: 50 } } } });
         
