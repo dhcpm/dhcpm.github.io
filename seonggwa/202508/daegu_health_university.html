@@ -389,17 +389,44 @@
     </div>
     <script>
         let dhcSubTabs;
+        let autoTabInterval = null;
+        let mouseMoveTimeout = null;
+        let dhcTabKeys = [];
+        let currentDhcTabIndex = 0;
+        const AUTO_SWITCH_DELAY = 10000; // 10초
+        const MOUSE_INACTIVITY_DELAY = 5000; // 5초
 
         function switchDhcSubTab(tabKey) {
             Object.values(dhcSubTabs).forEach(tab => {
                 tab.button.classList.remove('active');
-                tab.panel.classList.remove('active');
                 tab.panel.classList.add('hidden');
             });
             const selectedTab = dhcSubTabs[tabKey];
             selectedTab.button.classList.add('active');
-            selectedTab.panel.classList.add('active');
             selectedTab.panel.classList.remove('hidden');
+            
+            currentDhcTabIndex = dhcTabKeys.indexOf(tabKey);
+            resetMouseMoveTimer(); 
+        }
+
+        function startAutoTabCycle() {
+            if (autoTabInterval) clearInterval(autoTabInterval);
+            autoTabInterval = setInterval(() => {
+                currentDhcTabIndex = (currentDhcTabIndex + 1) % dhcTabKeys.length;
+                const nextTabKey = dhcTabKeys[currentDhcTabIndex];
+                switchDhcSubTab(nextTabKey);
+            }, AUTO_SWITCH_DELAY);
+        }
+
+        function stopAutoTabCycle() {
+            clearInterval(autoTabInterval);
+            autoTabInterval = null;
+        }
+
+        function resetMouseMoveTimer() {
+            stopAutoTabCycle();
+            clearTimeout(mouseMoveTimeout);
+            mouseMoveTimeout = setTimeout(startAutoTabCycle, MOUSE_INACTIVITY_DELAY);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -410,9 +437,13 @@
                 dropout_rate_dept: { button: document.getElementById('dhc-sub-tab-dropout_rate_dept'), panel: document.getElementById('dhc-sub-panel-dropout_rate_dept') }
             };
             
+            dhcTabKeys = Object.keys(dhcSubTabs);
             switchDhcSubTab('main_indicators');
             
             initializeAllDhcCharts();
+
+            document.addEventListener('mousemove', resetMouseMoveTimer);
+            startAutoTabCycle();
         });
         
         function initializeAllDhcCharts() {
