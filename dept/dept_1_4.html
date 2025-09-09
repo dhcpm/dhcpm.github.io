@@ -27,17 +27,17 @@
             <div class="flex items-center justify-between h-16">
                 <!-- Logo and Team Name -->
                 <div class="flex-shrink-0 flex items-center">
-                    <img class="h-8 w-auto" src="../img/logo.png" alt="대구보건대학교 로고">
+                    <img class="h-8 w-auto" src="https://placehold.co/100x40/FFFFFF/000000?text=LOGO" alt="대구보건대학교 로고">
                     <a href="../index.html" class="ml-3 text-xl font-bold text-gray-800 hover:text-blue-700">대학성과관리팀</a>
                 </div>
                 <!-- Desktop Navigation -->
                 <nav class="hidden md:flex items-center space-x-5">
-                    <a href="../gongsi/gongsi_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">대학정보공시</a>
-                    <a href="../buseo/buseo_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">부서자체평가</a>
-                    <a href="../seonggwa/seonggwa_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">성과분석</a>
-                    <a href="../survey/survey_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">교육수요자 만족도 조사</a>
-                    <a href="../dept/dept_pg.html" class="text-blue-600 font-bold text-sm">부서운영</a>
-                    <a href="../edu/edu_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">교육</a>
+                    <a href="#" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">대학정보공시</a>
+                    <a href="#" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">부서자체평가</a>
+                    <a href="#" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">성과분석</a>
+                    <a href="#" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">교육수요자 만족도 조사</a>
+                    <a href="#" class="text-blue-600 font-bold text-sm">부서운영</a>
+                    <a href="#" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">교육</a>
                 </nav>
                 <!-- Mobile Menu Button -->
                 <div class="md:hidden">
@@ -53,12 +53,12 @@
         <!-- Mobile Menu -->
         <div id="mobile-menu" class="md:hidden hidden">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <a href="../gongsi/gongsi_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">대학정보공시</a>
-                <a href="../buseo/buseo_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">부서자체평가</a>
-                <a href="../seonggwa/seonggwa_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">성과분석</a>
-                <a href="../survey/survey_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">교육수요자 만족도 조사</a>
-                <a href="../dept/dept_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-blue-700 bg-blue-50">부서운영</a>
-                <a href="../edu/edu_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">교육</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">대학정보공시</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">부서자체평가</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">성과분석</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">교육수요자 만족도 조사</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-blue-700 bg-blue-50">부서운영</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">교육</a>
             </div>
         </div>
     </header>
@@ -284,12 +284,13 @@
                     target: headers.indexOf('2024목표'),
                     performanceAvg: headers.indexOf('실적평균'),
                     notes: headers.indexOf('특이사항'),
-                    adequacy: headers.indexOf('목표값 설정의 적절성')
+                    adequacy: headers.indexOf('목표값 설정의 적절성'),
+                    regionalAvg: headers.indexOf('권역평균값')
                 };
 
                 if (Object.values(indices).some(index => index === -1)) {
                     console.error("하나 이상의 필수 열을 테이블 헤더에서 찾을 수 없습니다:", indices);
-                    alert("적절성 계산에 필요한 열(예: 2024 달성률, 실적평균)을 찾을 수 없습니다. 파일 헤더를 확인해주세요.");
+                    alert("적절성 계산에 필요한 열(예: 2024 달성률, 실적평균, 권역평균값)을 찾을 수 없습니다. 파일 헤더를 확인해주세요.");
                     return;
                 }
 
@@ -306,24 +307,31 @@
                     
                     const achievementRate = parseNumber(cells[indices.rate].textContent);
                     const target2024 = parseNumber(cells[indices.target].textContent);
-                    const performanceAvg = parseNumber(cells[indices.performanceAvg].textContent);
-                    
                     let score = 0;
+                    let comparisonValue = 0;
 
+                    // '특이사항'에 '권역평균'이 있는지에 따라 비교 대상을 결정합니다.
+                    if (notes.includes('권역평균')) {
+                        comparisonValue = parseNumber(cells[indices.regionalAvg].textContent);
+                    } else {
+                        comparisonValue = parseNumber(cells[indices.performanceAvg].textContent);
+                    }
+
+                    // 점수 산정 로직
                     if (achievementRate >= 100) {
-                        if (target2024 > performanceAvg) {
+                        if (target2024 > comparisonValue) {
                             score = 10;
-                        } else if (target2024 === performanceAvg) {
+                        } else if (target2024 === comparisonValue) {
                             score = 9;
-                        } else { // target2024 < performanceAvg
+                        } else {
                             score = 8;
                         }
                     } else { // achievementRate < 100
-                        if (target2024 > performanceAvg) {
+                        if (target2024 > comparisonValue) {
                             score = 7;
-                        } else if (target2024 === performanceAvg) {
+                        } else if (target2024 === comparisonValue) {
                             score = 6;
-                        } else { // target2024 < performanceAvg
+                        } else {
                             score = 5;
                         }
                     }
