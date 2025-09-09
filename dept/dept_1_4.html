@@ -97,6 +97,14 @@
                 </div>
             </div>
 
+            <!-- Filter Dropdown Section -->
+            <div id="filter-container" class="hidden px-6 pb-4 border-b border-gray-200">
+                <label for="department-filter" class="text-sm font-medium text-gray-700 mr-2 align-middle">부서 검색:</label>
+                <select id="department-filter" class="inline-block w-auto max-w-xs text-base border-gray-300 focus:outline-none focus:ring-blue-600 focus:border-blue-600 sm:text-sm rounded-md shadow-sm">
+                    <option value="all">전체 부서</option>
+                </select>
+            </div>
+
             <!-- 테이블 컨테이너 (스크롤 가능) -->
             <div class="overflow-x-auto">
                 <table class="min-w-full text-sm text-left text-gray-700">
@@ -170,6 +178,9 @@
                 tableBody.innerHTML = '';
 
                 const lines = csvData.trim().split('\n');
+                
+                populateDepartmentFilter(lines); // 드롭다운 채우기
+
                 if (lines.length === 0 || (lines.length === 1 && lines[0].trim() === '')) {
                     return; // 데이터가 없으면 아무것도 하지 않음
                 }
@@ -198,6 +209,80 @@
                         row.appendChild(td);
                     });
                     tableBody.appendChild(row);
+                });
+            }
+
+            /**
+             * 업로드된 데이터에서 부서 목록을 추출하여 필터 드롭다운을 채웁니다.
+             */
+            function populateDepartmentFilter(lines) {
+                const filterContainer = document.getElementById('filter-container');
+                const departmentFilter = document.getElementById('department-filter');
+                departmentFilter.innerHTML = '<option value="all">전체 부서</option>'; // 옵션 초기화
+
+                if (!lines || lines.length <= 1) { // 헤더만 있거나 데이터가 없는 경우
+                    filterContainer.classList.add('hidden');
+                    return;
+                }
+
+                const headers = lines[0].split(',');
+                const departmentIndex = headers.indexOf('부서명');
+
+                if (departmentIndex === -1) {
+                    console.warn("'부서명' 열을 찾을 수 없어 필터 기능을 비활성화합니다.");
+                    filterContainer.classList.add('hidden');
+                    return;
+                }
+
+                const departments = new Set();
+                for (let i = 1; i < lines.length; i++) { // 헤더를 제외하고 반복
+                    if (lines[i].trim() === '') continue;
+                    const cells = parseCsvLine(lines[i].trim());
+                    if (cells.length > departmentIndex && cells[departmentIndex]) {
+                        departments.add(cells[departmentIndex].trim());
+                    }
+                }
+
+                Array.from(departments).sort().forEach(dept => {
+                    const option = document.createElement('option');
+                    option.value = dept;
+                    option.textContent = dept;
+                    departmentFilter.appendChild(option);
+                });
+
+                if (departments.size > 0) {
+                    filterContainer.classList.remove('hidden');
+                } else {
+                    filterContainer.classList.add('hidden');
+                }
+            }
+
+            /**
+             * 드롭다운 선택에 따라 테이블 행을 필터링합니다.
+             */
+            function filterTableByDepartment() {
+                const filterValue = document.getElementById('department-filter').value;
+                const tableBody = document.getElementById('table-body');
+                if (!tableBody) return;
+                const rows = tableBody.querySelectorAll('tr');
+
+                const tableHeader = document.querySelector('#table-header tr');
+                if (!tableHeader) return;
+                const headers = Array.from(tableHeader.querySelectorAll('th')).map(th => th.textContent.trim());
+                const departmentIndex = headers.indexOf('부서명');
+
+                if (departmentIndex === -1) return; // 부서명 열이 없으면 필터링 불가
+
+                rows.forEach(row => {
+                    const departmentCell = row.querySelectorAll('td')[departmentIndex];
+                    if (departmentCell) {
+                        const departmentName = departmentCell.textContent.trim();
+                        if (filterValue === 'all' || departmentName === filterValue) {
+                            row.style.display = ''; // 행 보이기 (기본값으로)
+                        } else {
+                            row.style.display = 'none'; // 행 숨기기
+                        }
+                    }
                 });
             }
             
@@ -280,6 +365,7 @@
 
                 const headers = Array.from(tableHeader.querySelectorAll('th')).map(th => th.textContent.trim());
                 const indices = {
+                    indicatorStandard: headers.indexOf('지표기준'),
                     rate: headers.indexOf('2024 달성률'),
                     target: headers.indexOf('2024목표'),
                     performanceAvg: headers.indexOf('실적평균'),
@@ -290,7 +376,7 @@
 
                 if (Object.values(indices).some(index => index === -1)) {
                     console.error("하나 이상의 필수 열을 테이블 헤더에서 찾을 수 없습니다:", indices);
-                    alert("적절성 계산에 필요한 열(예: 2024 달성률, 실적평균, 권역평균값)을 찾을 수 없습니다. 파일 헤더를 확인해주세요.");
+                    alert("적절성 계산에 필요한 열(예: 지표기준, 2024 달성률, 실적평균)을 찾을 수 없습니다. 파일 헤더를 확인해주세요.");
                     return;
                 }
 
@@ -305,12 +391,12 @@
                         return; 
                     }
                     
+                    const indicatorStandard = cells[indices.indicatorStandard].textContent.trim();
                     const achievementRate = parseNumber(cells[indices.rate].textContent);
                     const target2024 = parseNumber(cells[indices.target].textContent);
                     let score = 0;
                     let comparisonValue = 0;
 
-                    // '특이사항'에 '권역평균'이 있는지에 따라 비교 대상을 결정합니다.
                     if (notes.includes('권역평균')) {
                         comparisonValue = parseNumber(cells[indices.regionalAvg].textContent);
                     } else {
@@ -318,21 +404,25 @@
                     }
 
                     // 점수 산정 로직
-                    if (achievementRate >= 100) {
-                        if (target2024 > comparisonValue) {
-                            score = 10;
-                        } else if (target2024 === comparisonValue) {
-                            score = 9;
+                    if (indicatorStandard === '상향') {
+                        if (achievementRate >= 100) {
+                            if (target2024 > comparisonValue) score = 10;
+                            else if (target2024 === comparisonValue) score = 9;
+                            else score = 8;
                         } else {
-                            score = 8;
+                            if (target2024 > comparisonValue) score = 7;
+                            else if (target2024 === comparisonValue) score = 6;
+                            else score = 5;
                         }
-                    } else { // achievementRate < 100
-                        if (target2024 > comparisonValue) {
-                            score = 7;
-                        } else if (target2024 === comparisonValue) {
-                            score = 6;
+                    } else if (indicatorStandard === '하향') {
+                        if (achievementRate >= 100) {
+                            if (target2024 < comparisonValue) score = 10; // 반대 로직
+                            else if (target2024 === comparisonValue) score = 9;
+                            else score = 8; // 반대 로직
                         } else {
-                            score = 5;
+                            if (target2024 < comparisonValue) score = 7; // 반대 로직
+                            else if (target2024 === comparisonValue) score = 6;
+                            else score = 5; // 반대 로직
                         }
                     }
                     
@@ -479,24 +569,22 @@
                 }
             }
             
-            // 기존 코드와 달리, DOMContentLoaded 내에서 모든 것을 실행합니다.
+            // 이벤트 리스너 연결
             createTable();
             document.getElementById('calculate-btn').addEventListener('click', calculateAchievementRate);
             document.getElementById('calculate-adequacy-btn').addEventListener('click', calculateAdequacy);
             document.getElementById('calculate-achievement-level-btn').addEventListener('click', calculateAchievementLevel);
             document.getElementById('export-btn').addEventListener('click', exportToExcel);
-
             document.getElementById('refresh-btn').addEventListener('click', () => {
                 location.reload();
             });
+            document.getElementById('department-filter').addEventListener('change', filterTableByDepartment);
 
             const uploadBtn = document.getElementById('upload-btn');
             const fileInput = document.getElementById('file-input');
-
             uploadBtn.addEventListener('click', () => {
                 fileInput.click();
             });
-
             fileInput.addEventListener('change', handleFileUpload);
 
         });
