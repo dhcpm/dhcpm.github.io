@@ -87,6 +87,9 @@
                         <button id="calculate-achievement-level-btn" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-200 ease-in-out transform hover:scale-105">
                             달성도 계산
                         </button>
+                        <button id="calculate-average-btn" class="bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-200 ease-in-out transform hover:scale-105">
+                            평균값 산출
+                        </button>
                         <button id="export-btn" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-200 ease-in-out transform hover:scale-105">
                             결과 반출
                         </button>
@@ -490,6 +493,80 @@
                     cells[indices.level].textContent = score;
                 });
             }
+
+            /**
+             * '적절성'과 '달성도'의 평균을 계산하여 '평가제외' 항목에 채웁니다.
+             */
+            function calculateAndFillAverages() {
+                const tableHeader = document.querySelector('#table-header tr');
+                if (!tableHeader) {
+                    alert("데이터가 없습니다. 먼저 파일을 업로드해주세요.");
+                    return;
+                }
+                const tableBody = document.getElementById('table-body');
+                const rows = tableBody.querySelectorAll('tr');
+
+                const headers = Array.from(tableHeader.querySelectorAll('th')).map(th => th.textContent.trim());
+                const indices = {
+                    notes: headers.indexOf('특이사항'),
+                    adequacy: headers.indexOf('목표값 설정의 적절성'),
+                    level: headers.indexOf('목표값 달성도')
+                };
+
+                if (Object.values(indices).some(index => index === -1)) {
+                    console.error("하나 이상의 필수 열을 테이블 헤더에서 찾을 수 없습니다:", indices);
+                    alert("평균 계산에 필요한 열(특이사항, 적절성, 달성도)을 찾을 수 없습니다.");
+                    return;
+                }
+
+                const parseNumber = (text) => parseFloat(String(text).replace(/,/g, ''));
+
+                let adequacySum = 0;
+                let adequacyCount = 0;
+                let levelSum = 0;
+                let levelCount = 0;
+
+                // 1. 평균 계산 (평가제외가 아닌 항목들 대상)
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    const notes = cells[indices.notes].textContent.trim();
+
+                    if (!notes.includes('평가제외')) {
+                        const adequacyScore = parseNumber(cells[indices.adequacy].textContent);
+                        if (!isNaN(adequacyScore)) {
+                            adequacySum += adequacyScore;
+                            adequacyCount++;
+                        }
+
+                        const levelScore = parseNumber(cells[indices.level].textContent);
+                        if (!isNaN(levelScore)) {
+                            levelSum += levelScore;
+                            levelCount++;
+                        }
+                    }
+                });
+                
+                if (adequacyCount === 0 || levelCount === 0) {
+                    alert("평균을 계산할 유효한 데이터가 없습니다.");
+                    return;
+                }
+
+                const adequacyAverage = (adequacySum / adequacyCount).toFixed(2);
+                const levelAverage = (levelSum / levelCount).toFixed(2);
+                
+                // 2. 계산된 평균을 '평가제외' 항목에 입력
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    const notes = cells[indices.notes].textContent.trim();
+                    
+                    if (notes.includes('평가제외')) {
+                        cells[indices.adequacy].textContent = adequacyAverage;
+                        cells[indices.level].textContent = levelAverage;
+                    }
+                });
+                
+                alert(`평균값 산출이 완료되었습니다.\n- 적절성 평균: ${adequacyAverage}\n- 달성도 평균: ${levelAverage}`);
+            }
             
             /**
              * 현재 테이블 데이터를 엑셀 파일로 내보냅니다.
@@ -574,6 +651,7 @@
             document.getElementById('calculate-btn').addEventListener('click', calculateAchievementRate);
             document.getElementById('calculate-adequacy-btn').addEventListener('click', calculateAdequacy);
             document.getElementById('calculate-achievement-level-btn').addEventListener('click', calculateAchievementLevel);
+            document.getElementById('calculate-average-btn').addEventListener('click', calculateAndFillAverages);
             document.getElementById('export-btn').addEventListener('click', exportToExcel);
             document.getElementById('refresh-btn').addEventListener('click', () => {
                 location.reload();
