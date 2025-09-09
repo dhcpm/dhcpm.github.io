@@ -90,6 +90,9 @@
                         <button id="export-btn" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-200 ease-in-out transform hover:scale-105">
                             결과 반출
                         </button>
+                        <button id="refresh-btn" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-200 ease-in-out transform hover:scale-105">
+                            새로고침
+                        </button>
                     </div>
                 </div>
             </div>
@@ -474,6 +477,10 @@
             document.getElementById('calculate-adequacy-btn').addEventListener('click', calculateAdequacy);
             document.getElementById('calculate-achievement-level-btn').addEventListener('click', calculateAchievementLevel);
             document.getElementById('export-btn').addEventListener('click', exportToExcel);
+
+            document.getElementById('refresh-btn').addEventListener('click', () => {
+                location.reload();
+            });
 
             const uploadBtn = document.getElementById('upload-btn');
             const fileInput = document.getElementById('file-input');
