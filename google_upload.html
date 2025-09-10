@@ -38,7 +38,7 @@
             </div>
             <div class="file-input-wrapper">
                 <span>파일 선택</span>
-                <input type="file" name="myFile" id="myFile">
+                <input type="file" name="myFile" id="myFile" multiple>
             </div>
             <div id="fileName">선택된 파일이 없습니다.</div>
             <button type="submit" id="submitButton" disabled>업로드</button>
@@ -68,8 +68,6 @@
             const res = await fetch(SCRIPT_URL, {
                 method: 'POST',
                 headers: {
-                    // CORS preflight(사전 확인) 요청을 피하기 위해 Content-Type을 'text/plain'으로 명시적으로 설정합니다.
-                    // Google Apps Script는 이 Content-Type으로 전송된 JSON 문자열을 잘 파싱합니다.
                     'Content-Type': 'text/plain;charset=utf-8',
                 },
                 body: JSON.stringify({ action, ...payload })
@@ -123,8 +121,13 @@
 
         fileInput.addEventListener('change', () => {
             const fileNameDiv = document.getElementById('fileName');
-            if (fileInput.files && fileInput.files.length > 0) {
-                fileNameDiv.textContent = fileInput.files[0].name;
+            const files = fileInput.files;
+
+            if (files && files.length > 1) {
+                fileNameDiv.textContent = `${files.length}개의 파일이 선택되었습니다.`;
+                submitButton.disabled = false;
+            } else if (files && files.length === 1) {
+                fileNameDiv.textContent = files[0].name;
                 submitButton.disabled = false;
             } else {
                 fileNameDiv.textContent = '선택된 파일이 없습니다.';
@@ -135,8 +138,9 @@
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const selectedFolderId = folderSelect.value;
+            const files = fileInput.files;
 
-            if (!selectedFolderId || fileInput.files.length === 0) {
+            if (!selectedFolderId || files.length === 0) {
                 statusDiv.textContent = "폴더와 파일을 모두 선택해주세요.";
                 statusDiv.style.color = "red";
                 return;
@@ -144,45 +148,62 @@
 
             submitButton.disabled = true;
             spinner.style.display = 'block';
-            statusDiv.textContent = '파일을 업로드하는 중입니다...';
-            statusDiv.style.color = "#333";
+            
+            const totalFiles = files.length;
+            let successCount = 0;
+            let errorCount = 0;
 
-            try {
-                const file = fileInput.files[0];
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = async (event) => {
-                    const fileData = {
-                        fileName: file.name,
-                        mimeType: file.type,
-                        data: event.target.result.substr(event.target.result.indexOf(',') + 1)
-                    };
-                    const response = await callAppsScript('uploadFile', { fileData, folderId: selectedFolderId });
-                    onUploadSuccess(response);
-                };
-            } catch (error) {
-                onUploadFailure(error);
+            for (let i = 0; i < totalFiles; i++) {
+                const file = files[i];
+                try {
+                    statusDiv.textContent = `(${i + 1}/${totalFiles}) '${file.name}' 업로드 중...`;
+                    statusDiv.style.color = "#333";
+
+                    const fileData = await new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.readAsDataURL(file);
+                        reader.onload = (event) => {
+                            resolve({
+                                fileName: file.name,
+                                mimeType: file.type,
+                                data: event.target.result.substr(event.target.result.indexOf(',') + 1)
+                            });
+                        };
+                        reader.onerror = (error) => reject(error);
+                    });
+                    
+                    await callAppsScript('uploadFile', { fileData, folderId: selectedFolderId });
+                    successCount++;
+
+                } catch (error) {
+                    errorCount++;
+                    console.error(`'${file.name}' 업로드 실패:`, error);
+                }
             }
+
+            spinner.style.display = 'none';
+            let finalMessage = `총 ${totalFiles}개 파일 중 ${successCount}개 업로드 성공.`;
+            if (errorCount > 0) {
+                finalMessage += ` (${errorCount}개 실패)`;
+                statusDiv.style.color = "orange";
+            } else {
+                statusDiv.style.color = "green";
+            }
+            statusDiv.textContent = finalMessage;
+            
+            setTimeout(() => {
+                resetForm();
+                statusDiv.textContent = '';
+            }, 5000);
         });
-
-        function onUploadSuccess(response) {
-            statusDiv.textContent = response;
-            statusDiv.style.color = "green";
-            resetForm();
-        }
-
-        function onUploadFailure(error) {
-            statusDiv.textContent = "업로드 실패: " + error.message;
-            statusDiv.style.color = "red";
-            resetForm();
-        }
-
+        
         function resetForm() {
             form.reset();
-            spinner.style.display = 'none';
             submitButton.disabled = true;
             document.getElementById('fileName').textContent = '선택된 파일이 없습니다.';
-            folderSelect.selectedIndex = 0;
+            if (folderSelect.options.length > 0) {
+              folderSelect.selectedIndex = 0;
+            }
         }
     </script>
 </body>
