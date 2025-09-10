@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <base target="_top">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 500px;
+        }
+        h1 {
+            color: #1a73e8;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        #uploadForm {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            cursor: pointer;
+            padding: 12px 25px;
+            background-color: #e8f0fe;
+            border-radius: 8px;
+            color: #1967d2;
+            font-weight: 500;
+            margin-bottom: 20px;
+            border: 2px dashed #1a73e8;
+            width: 100%;
+        }
+        .file-input-wrapper input[type=file] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+        #fileName {
+            margin-top: 10px;
+            font-style: italic;
+            color: #5f6368;
+        }
+        button {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            opacity: 0.5;
+        }
+        button:not(:disabled) {
+            opacity: 1;
+        }
+        button:not(:disabled):hover {
+            background-color: #185abc;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+        button:disabled {
+            cursor: not-allowed;
+            background-color: #d2e3fc;
+        }
+        #status {
+            margin-top: 25px;
+            font-size: 16px;
+            min-height: 24px;
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border-left-color: #1a73e8;
+            animation: spin 1s ease infinite;
+            display: none;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Google 드라이브 파일 업로더</h1>
+        <form id="uploadForm">
+            <div class="file-input-wrapper">
+                <span>파일 선택</span>
+                <input type="file" name="myFile" id="myFile" onchange="updateFileName(this)">
+            </div>
+            <div id="fileName">선택된 파일이 없습니다.</div>
+            <button type="submit" id="submitButton" disabled>업로드</button>
+        </form>
+        <div id="status"></div>
+        <div class="spinner" id="spinner"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('uploadForm');
+        const fileInput = document.getElementById('myFile');
+        const submitButton = document.getElementById('submitButton');
+        const statusDiv = document.getElementById('status');
+        const spinner = document.getElementById('spinner');
+
+        function updateFileName(input) {
+            const fileNameDiv = document.getElementById('fileName');
+            if (input.files && input.files.length > 0) {
+                fileNameDiv.textContent = input.files[0].name;
+                submitButton.disabled = false;
+            } else {
+                fileNameDiv.textContent = '선택된 파일이 없습니다.';
+                submitButton.disabled = true;
+            }
+        }
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            if (fileInput.files.length === 0) {
+                statusDiv.textContent = "업로드할 파일을 선택해주세요.";
+                statusDiv.style.color = "red";
+                return;
+            }
+            
+            submitButton.disabled = true;
+            spinner.style.display = 'block';
+            statusDiv.textContent = '파일을 업로드하는 중입니다...';
+            statusDiv.style.color = "#333";
+            
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const fileData = {
+                    fileName: file.name,
+                    mimeType: file.type,
+                    // 데이터 URL에서 base64 부분만 추출합니다.
+                    data: e.target.result.substr(e.target.result.indexOf(',') + 1)
+                };
+                google.script.run
+                    .withSuccessHandler(onUploadSuccess)
+                    .withFailureHandler(onUploadFailure)
+                    .uploadFileToDrive(fileData);
+            };
+
+            // 파일을 데이터 URL(Base64 인코딩)로 읽습니다.
+            reader.readAsDataURL(file);
+        });
+
+        function onUploadSuccess(response) {
+            statusDiv.textContent = response;
+            statusDiv.style.color = "green";
+            resetForm();
+        }
+
+        function onUploadFailure(error) {
+            statusDiv.textContent = "업로드 실패: " + error.message;
+            statusDiv.style.color = "red";
+            resetForm();
+        }
+        
+        function resetForm() {
+            form.reset();
+            spinner.style.display = 'none';
+            submitButton.disabled = true;
+            document.getElementById('fileName').textContent = '선택된 파일이 없습니다.';
+        }
+    </script>
+</body>
+</html>
+
