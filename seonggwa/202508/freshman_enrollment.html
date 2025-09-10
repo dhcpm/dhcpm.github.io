@@ -81,16 +81,22 @@
                                     </thead>
                                     <tbody class="divide-y divide-gray-200">
                                         <tr>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">신입생 경쟁률</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">신입생 경쟁률</th>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">5.7 : 1</td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">5.7 : 1</td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">5.9 : 1</td>
                                         </tr>
                                         <tr>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">신입생 충원율</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">신입생 충원율 (전국)</td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">88.7 %</td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">89.9 %</td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">91.5 %</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">신입생 충원율 (대구보건대학교)</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">97.4 %</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">94.5 %</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">97.4 %</td>
                                         </tr>
                                         <tr>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">입학정원</td>
@@ -100,6 +106,7 @@
                                         </tr>
                                     </tbody>
                                 </table>
+                                 <p class="text-xs text-gray-500 mt-2 text-right">※ 대구보건대학교 충원율은 전문기술석사과정 제외 기준</p>
                             </div>
                         </div>
 
@@ -119,7 +126,7 @@
                                 <p class="text-sm text-gray-700 leading-relaxed">
                                     전국 전문대학의 최근 3년간 <span class="font-bold">입학정원이 약 7,300명 감소</span>하는 동안, 신입생 충원율은 오히려 <span class="font-bold">88.7%에서 91.5%로 꾸준히 상승</span>했습니다. 이는 학령인구 감소에 대응하기 위한 대학들의 자발적인 정원 감축 노력이 충원율 안정화에 긍정적인 영향을 미친 것으로 분석됩니다.
                                     <br><br>
-                                    단순히 양적 충원에 그치지 않고, 입학정원을 시장 수요와 대학의 특성에 맞게 조정하며 질적 성장을 도모하고 있음을 시사합니다. 경쟁률 또한 소폭 상승하여, 전문대학의 교육 경쟁력과 매력도가 유지되고 있는 것으로 보입니다.
+                                    대구보건대학교는 <span class="font-bold">95% 내외의 높은 충원율을 꾸준히 기록</span>하며 전국 평균을 크게 상회하는 우수한 성과를 보이고 있습니다. 이는 대학의 높은 브랜드 경쟁력과 교육 만족도를 입증하는 결과입니다.
                                 </p>
                             </div>
                         </div>
@@ -335,6 +342,13 @@
     </div>
     <script>
         let subTabs;
+        let autoTabInterval = null;
+        let mouseMoveTimeout = null;
+        let subTabKeys = [];
+        let currentSubTabIndex = 0;
+        const AUTO_SWITCH_DELAY = 10000; // 10초
+        const MOUSE_INACTIVITY_DELAY = 5000; // 5초
+
 
         function switchSubTab(tabKey) {
             Object.values(subTabs).forEach(tab => {
@@ -346,6 +360,29 @@
             selectedTab.button.classList.add('active');
             selectedTab.panel.classList.add('active');
             selectedTab.panel.classList.remove('hidden');
+
+            currentSubTabIndex = subTabKeys.indexOf(tabKey);
+            resetMouseMoveTimer(); 
+        }
+
+        function startAutoTabCycle() {
+            if (autoTabInterval) clearInterval(autoTabInterval);
+            autoTabInterval = setInterval(() => {
+                currentSubTabIndex = (currentSubTabIndex + 1) % subTabKeys.length;
+                const nextTabKey = subTabKeys[currentSubTabIndex];
+                switchSubTab(nextTabKey);
+            }, AUTO_SWITCH_DELAY);
+        }
+
+        function stopAutoTabCycle() {
+            clearInterval(autoTabInterval);
+            autoTabInterval = null;
+        }
+
+        function resetMouseMoveTimer() {
+            stopAutoTabCycle();
+            clearTimeout(mouseMoveTimeout);
+            mouseMoveTimeout = setTimeout(startAutoTabCycle, MOUSE_INACTIVITY_DELAY);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -356,6 +393,7 @@
                 daekyung_uni: { button: document.getElementById('sub-tab-daekyung_uni'), panel: document.getElementById('sub-panel-daekyung_uni') },
                 alliance: { button: document.getElementById('sub-tab-alliance'), panel: document.getElementById('sub-panel-alliance') }
             };
+            subTabKeys = Object.keys(subTabs);
 
             switchSubTab('national_junior');
             
@@ -421,7 +459,7 @@
 
             // Chart Initialization
             new Chart(document.getElementById('competitionChart').getContext('2d'), { type: 'line', data: { labels: ['2023', '2024', '2025'], datasets: [{ label: '신입생 경쟁률 (정원내)', data: [5.7, 5.7, 5.9], backgroundColor: 'rgba(54, 162, 235, 0.2)', borderColor: 'rgba(54, 162, 235, 1)', borderWidth: 2, tension: 0.1, fill: true }] }, options: { responsive: true, plugins: { legend: { position: 'top' }, title: { display: true, text: '신입생 경쟁률 추이' } }, scales: { y: { beginAtZero: false, min: 5, title: { display: true, text: '경쟁률 (:1)' } } } } });
-            new Chart(document.getElementById('fulfillmentChart').getContext('2d'), { type: 'line', data: { labels: ['2023', '2024', '2025'], datasets: [{ label: '신입생 충원율 (정원내)', data: [88.7, 89.9, 91.5], backgroundColor: 'rgba(75, 192, 192, 0.2)', borderColor: 'rgba(75, 192, 192, 1)', borderWidth: 2, tension: 0.1, fill: true }] }, options: { responsive: true, plugins: { legend: { position: 'top' }, title: { display: true, text: '신입생 충원율 추이' } }, scales: { y: { beginAtZero: false, min: 85, title: { display: true, text: '충원율 (%)' } } } } });
+            new Chart(document.getElementById('fulfillmentChart').getContext('2d'), { type: 'line', data: { labels: ['2023', '2024', '2025'], datasets: [{ label: '신입생 충원율 (전국)', data: [88.7, 89.9, 91.5], borderColor: 'rgba(75, 192, 192, 1)', backgroundColor: 'rgba(75, 192, 192, 0.2)' }, { label: '신입생 충원율 (대구보건대학교)', data: [97.4, 94.5, 97.4], borderColor: 'rgba(255, 99, 132, 1)', backgroundColor: 'rgba(255, 99, 132, 0.2)' }] }, options: { responsive: true, plugins: { legend: { position: 'top' }, title: { display: true, text: '신입생 충원율 추이' } }, scales: { y: { beginAtZero: false, min: 85, title: { display: true, text: '충원율 (%)' } } } } });
             new Chart(document.getElementById('quotaChart').getContext('2d'), { type: 'bar', data: { labels: ['2023', '2024', '2025'], datasets: [{ label: '입학정원 (A)', data: [150428, 146147, 143157], backgroundColor: 'rgba(255, 99, 132, 0.2)', borderColor: 'rgba(255, 99, 132, 1)', borderWidth: 1 }] }, options: { responsive: true, plugins: { legend: { position: 'top' }, title: { display: true, text: '입학정원 추이' } }, scales: { y: { beginAtZero: false, min: 140000, title: { display: true, text: '정원 (명)' } } } } });
             new Chart(document.getElementById('regionalFulfillmentChart').getContext('2d'), { type: 'bar', data: { labels: regionalData.map(d=>d.region), datasets: [{ label: '2025년 신입생 충원율 (%)', data: regionalData.map(d=>d.fulfill25), backgroundColor: regionalData.map(region => ['서울', '경기', '인천'].includes(region.region) ? 'rgba(54, 162, 235, 0.6)' : 'rgba(255, 99, 132, 0.6)'), borderColor: regionalData.map(region => ['서울', '경기', '인천'].includes(region.region) ? 'rgba(54, 162, 235, 1)' : 'rgba(255, 99, 132, 1)'), borderWidth: 1 }] }, options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false }, title: { display: true, text: '2025년 지역별 신입생 충원율 (파란색: 수도권)' } }, scales: { x: { min: 75 } } } });
             new Chart(document.getElementById('regionalCompetitionChart').getContext('2d'), { type: 'bar', data: { labels: regionalData.map(d=>d.region), datasets: [ { label: '2024 경쟁률', data: regionalData.map(d=>d.comp24), backgroundColor: 'rgba(255, 159, 64, 0.5)' }, { label: '2025 경쟁률', data: regionalData.map(d=>d.comp25), backgroundColor: 'rgba(75, 192, 192, 0.5)' } ] }, options: { responsive: true, plugins: { legend: { position: 'top' }, title: { display: true, text: '2024 vs 2025 지역별 신입생 경쟁률' } }, scales: { y: { beginAtZero: true } } } });
@@ -431,6 +469,9 @@
             new Chart(document.getElementById('daekyungUniCompetitionChart').getContext('2d'), { type: 'bar', data: { labels: daekyungUniData.map(d=>d.name), datasets: [{ label: '2025년 신입생 경쟁률', data: daekyungUniData.map(d=>d.comp25), backgroundColor: 'rgba(54, 162, 235, 0.7)', borderWidth: 1 }] }, options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false }, title: { display: true, text: '2025년 대경권 대학별 신입생 경쟁률' } }, scales: { x: { beginAtZero: true } } } });
             new Chart(document.getElementById('allianceFulfillmentChart').getContext('2d'), { type: 'bar', data: { labels: allianceData.map(d=>d.name), datasets: [{ label: '2024 충원율', data: allianceData.map(d=>d.fulfill24), backgroundColor: 'rgba(255, 159, 64, 0.7)' }, { label: '2025 충원율', data: allianceData.map(d=>d.fulfill25), backgroundColor: 'rgba(75, 192, 192, 0.7)' }] }, options: { responsive: true, plugins: { legend: { position: 'top' }, title: { display: true, text: '2024 vs 2025 충원율 비교' } }, scales: { y: { min: 80, title: { display: true, text: '충원율 (%)' } } } } });
             new Chart(document.getElementById('allianceCompetitionChart').getContext('2d'), { type: 'bar', data: { labels: allianceData.map(d=>d.name), datasets: [{ label: '2024 경쟁률', data: allianceData.map(d=>d.comp24), backgroundColor: 'rgba(255, 99, 132, 0.7)' }, { label: '2025 경쟁률', data: allianceData.map(d=>d.comp25), backgroundColor: 'rgba(54, 162, 235, 0.7)' }] }, options: { responsive: true, plugins: { legend: { position: 'top' }, title: { display: true, text: '2024 vs 2025 경쟁률 비교' } }, scales: { y: { beginAtZero: true, title: { display: true, text: '경쟁률 (:1)' } } } } });
+
+            document.addEventListener('mousemove', resetMouseMoveTimer);
+            startAutoTabCycle();
         });
     </script>
 </body>
