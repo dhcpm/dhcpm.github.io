@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10월 공시일정 및 입력절차</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            padding-top: 4rem; /* Add padding for the fixed header */
+        }
+        /* 탭 콘텐츠 기본 숨김 */
+        .tab-content {
+            display: none;
+        }
+        /* 활성 탭 콘텐츠 보임 */
+        .tab-content.active {
+            display: block;
+        }
+        /* 테이블 헤더 고정 및 정렬 커서 스타일 */
+        thead th {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            cursor: pointer; /* 클릭 가능함을 나타내는 커서 */
+            user-select: none; /* 텍스트 선택 방지 */
+        }
+        /* 정렬 아이콘 스타일 */
+        .sort-icon {
+            display: inline-block;
+            width: 1em;
+            text-align: center;
+        }
+        /* 사용자 등록 가이드 화살표 스타일 */
+        .flow-arrow::after {
+            content: '▼';
+            font-size: 1.5rem;
+            color: #3b82f6; /* Tailwind blue-500 */
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+            display: block;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Header -->
+    <header id="header" class="bg-white/80 backdrop-blur-lg shadow-sm fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo and Team Name -->
+                <div class="flex-shrink-0 flex items-center">
+                    <img class="h-8 w-auto" src="../img/logo.png" alt="대구보건대학교 로고">
+                    <a href="../index.html" class="ml-3 text-xl font-bold text-gray-800 hover:text-blue-700">대학성과관리팀</a>
+                </div>
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex items-center space-x-5">
+                    <a href="../gongsi/gongsi_pg.html" class="text-blue-700 font-bold transition-colors text-sm">대학정보공시</a>
+                    <a href="../buseo/buseo_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">부서자체평가</a>
+                    <a href="../seonggwa/seonggwa_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">성과분석</a>
+                    <a href="../survey/survey_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">교육수요자 만족도 조사</a>
+                    <a href="../dept/dept_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">부서운영</a>
+                    <a href="../edu/edu_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">교육</a>
+                </nav>
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
+                        <span class="sr-only">메뉴 열기</span>
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="../gongsi/gongsi_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-blue-700 bg-blue-50">대학정보공시</a>
+                <a href="../buseo/buseo_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">부서자체평가</a>
+                <a href="../seonggwa/seonggwa_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">성과분석</a>
+                <a href="../survey/survey_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">교육수요자 만족도 조사</a>
+                <a href="../dept/dept_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">부서운영</a>
+                <a href="../edu/edu_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">교육</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mx-auto px-4 py-8 md:py-12">
+        
+        <header class="text-center mb-10 md:mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">10월 공시일정 및 입력절차</h1>
+        </header>
+
+        <main class="bg-white rounded-lg shadow-lg">
+            <!-- Tab Navigation -->
+            <div class="border-b border-gray-200">
+                <nav class="flex flex-wrap -mb-px" aria-label="Tabs">
+                    <button class="tab-button active-tab" data-tab="tab-schedule">10월 공시일정</button>
+                    <button class="tab-button" data-tab="tab-personnel">담당자 및 확인자</button>
+                    <button class="tab-button" data-tab="tab-faq">FAQ</button>
+                    <button class="tab-button" data-tab="tab-register">사용자등록</button>
+                    <button class="tab-button" data-tab="tab-resources">관련자료</button>
+                </nav>
+            </div>
+
+            <div class="p-6 md:p-8">
+                <!-- Tab Content: 10월 공시일정 -->
+                <div id="tab-schedule" class="tab-content active">
+                     <section class="mb-8">
+                        <h2 class="text-2xl font-semibold text-blue-700 border-l-4 border-blue-700 pl-3 mb-4">공시 개요</h2>
+                        <p class="text-gray-700 leading-relaxed">
+                            2025년 10월 대학정보공시는 각 대학의 학생, 교원, 재정 등 핵심 운영 현황을 공시하는 중요한 절차입니다.
+                            공시되는 정보는 학생, 학부모, 산업체 등 교육 수요자에게 중요한 판단 근거를 제공하며, 대학의 투명성을 높이는 데 기여합니다.
+                            아래 일정을 참고하시어 업무에 차질이 없도록 준비해 주시기 바랍니다.
+                        </p>
+                        <div class="mt-4 p-4 bg-yellow-100 border border-yellow-300 rounded-md text-yellow-800">
+                            <strong>참고:</strong> 아래 일정은 예상 일정이며, 공식적인 세부 일정은 대학알리미 공지사항을 반드시 확인하시기 바랍니다.
+                        </div>
+                    </section>
+                    <section class="mb-10">
+                        <h2 class="text-2xl font-semibold text-blue-700 border-l-4 border-blue-700 pl-3 mb-4">주요 공지사항</h2>
+                        <div class="space-y-6 text-gray-700 bg-gray-50 p-6 rounded-lg border border-gray-200">
+                            <div>
+                                <p class="leading-relaxed">
+                                    2025년 10월 정보공시 일정을 안내하오니 해당 부서에서는 공시 안내문과 지침서를 확인하신 후 공시내용을 정확하게 입력하여 주시기 바랍니다. <strong class="text-red-600">변경된 10월 공시항목 지침 내용을 공시항목 담당자는 반드시 필독하여 주시기 바랍니다.</strong>
+                                </p>
+                            </div>
+                            <div class="p-4 bg-blue-100 border border-blue-300 rounded-md text-blue-800">
+                                <strong>✔️ 체크리스트 제출 방식 변경 안내:</strong> 대학정보공시 지침서 및 시스템 개선에 따라 체크리스트는 대학알리미 입력시스템에서 정보공시 항목 '입력완료' 및 '확인완료' 시 체크하도록 변경되었습니다. (제출서류 확인)
+                            </div>
+                            <div>
+                                <p class="leading-relaxed">
+                                    2025년 10월 대학정보공시 담당자 및 확인자 명단을 확인하신 후, 대학정보공시 입력시스템 미등록자는 가입 절차에 따라 가입 및 등록을 완료하고 총괄담당자에게 승인 요청을 진행해 주십시오.
+                                </p>
+                            </div>
+                            <div class="pt-4 border-t border-gray-200">
+                                <h3 class="text-lg font-semibold text-gray-800 mb-3">▣ 전년대비 변경사항</h3>
+                                <div class="space-y-4">
+                                    <div>
+                                        <h4 class="font-semibold">가. 제출서류 변경</h4>
+                                        <p class="ml-4">내부기안문 스캔본 제출 (종합정보시스템 – 업무협조전 이용)</p>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold">나. 내부 기안문의 증빙자료 변경</h4>
+                                        <div class="ml-4 mt-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div class="bg-red-100 p-3 rounded-md border border-red-200">
+                                                <p class="font-bold text-red-700">기존</p>
+                                                <p>공시화면 인쇄 및 출력자료</p>
+                                            </div>
+                                            <div class="bg-green-100 p-3 rounded-md border border-green-200">
+                                                <p class="font-bold text-green-700">변경</p>
+                                                <ul class="list-disc list-inside mt-1">
+                                                    <li>원자료 (파일대체 가능)</li>
+                                                    <li>내부기안문 + 자료</li>
+                                                    <li>종합정보시스템 자료</li>
+                                                    <li>회의록 사본, 관련 파일 등</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section>
+                        <h2 class="text-2xl font-semibold text-blue-700 border-l-4 border-blue-700 pl-3 mb-6">부서별 공시 항목 및 일정</h2>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead class="bg-gray-100">
+                                    <tr>
+                                        <th class="p-4 border-b-2 border-gray-200 font-bold text-gray-700">관련 부서</th>
+                                        <th class="p-4 border-b-2 border-gray-200 font-bold text-gray-700">주요 공시 항목</th>
+                                        <th class="p-4 border-b-2 border-gray-200 font-bold text-gray-700">연계 기관</th>
+                                        <th class="p-4 border-b-2 border-gray-200 font-bold text-gray-700 text-center">주요 일정</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="p-4 border-b border-gray-200 align-top font-semibold">교무지원팀</td>
+                                        <td class="p-4 border-b border-gray-200 align-top">12-나-3. 대학 강의 공개 현황</td>
+                                        <td class="p-4 border-b border-gray-200 align-top">한국교육학술정보원,<br>국가평생교육진흥원</td>
+                                        <td class="p-4 border-b border-gray-200 text-center align-middle" rowspan="16">
+                                            <ul class="list-none space-y-2">
+                                                <li><strong>연계자료 확인:</strong><br>9.15(월)</li>
+                                                <li class="pt-2"><strong>연계자료 수정:</strong><br>9.15(월) ~ 9.23(화) 17시</li>
+                                                <li class="pt-2"><strong>서류제출 및 최종완료:</strong><br>9.25(목) 17시</li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50"><td class="p-4 border-b border-gray-200 align-top font-semibold">도서운영팀</td><td class="p-4 border-b border-gray-200 align-top">13-가. 장서 보유 및 도서관 예산 현황</td><td class="p-4 border-b border-gray-200 align-top">한국교육학술정보원</td></tr>
+                                    <tr class="hover:bg-gray-50"><td class="p-4 border-b border-gray-200 align-top font-semibold" rowspan="4">총무팀</td><td class="p-4 border-b border-gray-200 align-top">14-다. 고지(校地) 확보 현황</td><td class="p-4 border-b border-gray-200 align-top">한국사학진흥재단</td></tr>
+                                    <tr class="hover:bg-gray-50"><td class="p-4 border-b border-gray-200 align-top">14-라. 교사(校舍)시설 확보 현황</td><td class="p-4 border-b border-gray-200 align-top">한국사학진흥재단</td></tr>
+                                    <tr class="hover:bg-gray-50"><td class="p-4 border-b border-gray-200 align-top">14-하-1. 실험·실습실 안전관리 현황</td><td class="p-4 border-b border-gray-200 align-top">한국교육시설안전원</td></tr>
+                                    <tr class="hover:bg-gray-50"><td class="p-4 border-b border-gray-200 align-top">14-하-2. 시설 안전관리 현황</td><td class="p-4 border-b border-gray-200 align-top">한국교육시설안전원</td></tr>
+                                    <tr class="hover:bg-gray-50"><td class="p-4 border-b border-gray-200 align-top font-semibold" rowspan="4">생활관운영팀</td><td class="p-4 border-b border-gray-200 align-top">14-마-1. 기숙사 수용 현황</td><td class="p-4 border-b border-gray-200 align-top" rowspan="4">한국사학진흥재단</td></tr>
+                                    <tr class="hover:bg-gray-50"><td class="p-4 border-b border-gray-200 align-top">14-마-2-(2). 기숙사 운영 결과(사립 행복민자)</td></tr>
+                                    <tr class="hover:bg-gray-50"><td class="p-4 border-b border-gray-200 align-top">14-마-2-(4). 기숙사 운영 결과(사립직영)</td></tr>
+                                    <tr class="hover:bg-gray-50"><td class="p-4 border-b border-gray-200 align-top">14-마-3. 기숙사비 납부제도 현황</td></tr>
+                                    <tr class="hover:bg-gray-50"><td class="p-4 border-b border-gray-200 align-top font-semibold" rowspan="2">법인사무국</td><td class="p-4 border-b border-gray-200 align-top">14-바-1. 수익용 기본재산 확보 현황</td><td class="p-4 border-b border-gray-200 align-top" rowspan="2">한국사학진흥재단</td></tr>
+                                    <tr class="hover:bg-gray-50"><td class="p-4 border-b border-gray-200 align-top">14-바-2. 법정부담금 부담 현황</td></tr>
+                                    <tr class="hover:bg-gray-50"><td class="p-4 border-b border-gray-200 align-top font-semibold" rowspan="2">인권센터</td><td class="p-4 border-b border-gray-200 align-top">14-타. 성폭력·성희롱·성매매 및 가정폭력 예방교육 실시 현황<p class="mt-2 text-xs text-red-600 font-medium">※ 여성가족부(14-타) 조사항목의 경우 원자료 수정 불가<br>(관련: 대학정보공시센터-889(‘25.2.10).,‘대학정보공시 14-타. 관련 입력 안내’)</p></td><td class="p-4 border-b border-gray-200 align-top">여성가족부</td></tr>
+                                    <tr class="hover:bg-gray-50"><td class="p-4 border-b border-gray-200 align-top">14-파. 인권 보호 및 성희롱·성폭력 대응 전담 조직위 운명 현황</td><td class="p-4 border-b border-gray-200 align-top">교육부, 대교협</td></tr>
+                                    <tr class="hover:bg-gray-50"><td class="p-4 border-b border-gray-200 align-top font-semibold">전산지원센터</td><td class="p-4 border-b border-gray-200 align-top">14-하-3. 정보보안 및 개인정보보호 수준 진단</td><td class="p-4 border-b border-gray-200 align-top">한국교육학술정보원</td></tr>
+                                    <tr class="hover:bg-gray-50"><td class="p-4 border-b border-gray-200 align-top font-semibold">학생복지지원팀</td><td class="p-4 border-b border-gray-200 align-top">14-하-4. 안전관리 계획 및 안전사고 보험(공제) 현황</td><td class="p-4 border-b border-gray-200 align-top">학교안전공제중앙회</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                    <section class="mt-10">
+                        <h2 class="text-2xl font-semibold text-blue-700 border-l-4 border-blue-700 pl-3 mb-6">부서 서류 제출 안내</h2>
+                        <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 text-gray-700">
+                            <ul class="space-y-3">
+                                <li><strong>제출서류 항목:</strong> 공시자료 제출 기안문 스캔본과 관련 증빙자료</li>
+                                <li><strong>제출기한:</strong> <span class="font-bold text-red-600">2025.9.25(목) 13시까지</span></li>
+                                <li><strong>문의:</strong> 대학성과관리팀 (내선 294번 총괄담당자)</li>
+                            </ul>
+                            <div class="text-right mt-8 font-semibold text-lg text-gray-800">
+                                <p>대학성과관리팀장 김 제 호</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Tab Content: 담당자 및 확인자 -->
+                <div id="tab-personnel" class="tab-content">
+                    <h2 class="text-2xl font-semibold text-blue-700 border-l-4 border-blue-700 pl-3 mb-4">2025년 대학정보공시 입력담당자 및 확인자</h2>
+                    <p class="mt-2 mb-8 text-md text-gray-500">2025년도 대학정보공시 항목 목록입니다. (열 제목을 클릭하여 정렬할 수 있습니다.)</p>
+                    <div class="bg-gray-50 p-4 rounded-lg mb-8 border">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="searchInput" class="block text-sm font-medium text-gray-700 mb-1">통합 검색</label>
+                                <input type="text" id="searchInput" onkeyup="updateDisplay()" placeholder="부서, 항목, 담당자 등 검색..." class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                            </div>
+                            <div>
+                                <label for="period-filter-select" class="block text-sm font-medium text-gray-700 mb-1">공시시기 선택</label>
+                                <select id="period-filter-select" onchange="updateDisplay()" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition appearance-none bg-white bg-no-repeat bg-right-4" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C/polyline%3E%3C/svg%3E'); padding-right: 2.5rem;">
+                                    <!-- Options are generated by JavaScript -->
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="shadow-lg rounded-lg overflow-hidden border border-gray-200">
+                        <div class="overflow-x-auto">
+                            <table id="dataTable" class="min-w-full bg-white">
+                                <thead class="bg-gray-100 text-gray-700">
+                                    <tr>
+                                        <th class="text-left py-3 px-4 uppercase font-semibold text-sm" onclick="sortTable('부서')">부서<span id="sort-icon-부서" class="sort-icon"></span></th>
+                                        <th class="text-left py-3 px-4 uppercase font-semibold text-sm" onclick="sortTable('항목')">대학정보공시 항목<span id="sort-icon-항목" class="sort-icon"></span></th>
+                                        <th class="text-center py-3 px-4 uppercase font-semibold text-sm" onclick="sortTable('시기')">공시시기<span id="sort-icon-시기" class="sort-icon"></span></th>
+                                        <th class="text-center py-3 px-4 uppercase font-semibold text-sm" onclick="sortTable('년도')">공시년도<span id="sort-icon-년도" class="sort-icon"></span></th>
+                                        <th class="text-center py-3 px-4 uppercase font-semibold text-sm" onclick="sortTable('담당자')">입력담당자<span id="sort-icon-담당자" class="sort-icon"></span></th>
+                                        <th class="text-center py-3 px-4 uppercase font-semibold text-sm" onclick="sortTable('확인자')">확인자<span id="sort-icon-확인자" class="sort-icon"></span></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-gray-700">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="tab-faq" class="tab-content">
+                    <h2 class="text-2xl font-semibold text-blue-700 border-l-4 border-blue-700 pl-3 mb-4">자주 묻는 질문 (FAQ)</h2>
+                    <p class="mb-6 text-gray-600">대학정보공시 관련 자주 묻는 질문과 답변을 PDF 문서로 정리했습니다. 아래에서 바로 확인하거나 다운로드하여 보실 수 있습니다.</p>
+                    
+                    <div class="mb-6 text-center">
+                        <a href="https://dhcpm.github.io/gongsi/pdf/2025_10_FAQ.pdf" download="2025년_10월_대학정보공시_FAQ.pdf" class="inline-block bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition-colors duration-300 shadow-md">
+                            PDF 다운로드
+                        </a>
+                    </div>
+
+                    <div class="border rounded-lg overflow-hidden shadow-lg">
+                        <iframe src="https://dhcpm.github.io/gongsi/pdf/2025_10_FAQ.pdf" style="width:100%; height:800px;" frameborder="0">
+                            <p>PDF를 표시할 수 없습니다. <a href="https://dhcpm.github.io/gongsi/pdf/2025_10_FAQ.pdf">여기에서 다운로드</a>하여 확인하세요.</p>
+                        </iframe>
+                    </div>
+                </div>
+                
+                <!-- Tab Content: 사용자등록 -->
+                <div id="tab-register" class="tab-content">
+                     <section id="user-selection" class="bg-gray-50 rounded-2xl shadow-lg p-6 md:p-8 mb-12 text-center border">
+                        <h3 class="text-2xl font-bold mb-4 text-gray-800">어떤 도움이 필요하신가요?</h3>
+                        <p class="text-gray-600 mb-6">담당자 유형을 선택하시면 해당 절차로 안내해 드립니다.</p>
+                        <div class="flex flex-col md:flex-row justify-center gap-4">
+                            <a onclick="scrollToSection('new-user-guide')" class="bg-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300 cursor-pointer">
+                                <span class="block text-xl">신규 담당자</span>
+                                <span class="block text-sm opacity-80">처음 오셨나요?</span>
+                            </a>
+                            <a onclick="scrollToSection('existing-user-guide')" class="bg-gray-200 text-blue-800 font-bold py-3 px-6 rounded-lg shadow-md hover:bg-gray-300 transition-all duration-300 cursor-pointer">
+                                <span class="block text-xl">기존 담당자</span>
+                                <span class="block text-sm opacity-80">인증서 갱신</span>
+                            </a>
+                        </div>
+                    </section>
+                    
+                    <section id="new-user-guide" class="mb-12">
+                        <div class="bg-white rounded-2xl p-6 md:p-8">
+                            <h3 class="text-2xl font-bold text-center mb-2 text-blue-700">신규 담당자 인증서 발급 절차</h3>
+                            <p class="text-center text-gray-600 mb-10">신규 담당자는 4단계 과정을 통해 인증서를 발급받고 시스템 권한을 얻게 됩니다. 아래 절차를 순서대로 따라주세요.</p>
+                            
+                            <div class="flex flex-col items-center">
+                                <div class="w-full max-w-md bg-blue-50 rounded-xl shadow-md p-6 mb-4 border border-blue-200">
+                                     <h4 class="font-bold text-xl text-blue-800"><span class="font-black text-2xl mr-2">1</span>EPKI 발급 신청</h4>
+                                     <p class="mt-2 text-gray-700">종합정보시스템에서 '교육부 인증서 신청' 메뉴를 통해 신청서를 작성하고 결재를 완료합니다. 임시 비밀번호(숫자 8자리)를 반드시 기억하세요.</p>
+                                </div>
+                                <div class="flow-arrow"></div>
+                                <div class="w-full max-w-md bg-blue-50 rounded-xl shadow-md p-6 mb-4 border border-blue-200">
+                                     <h4 class="font-bold text-xl text-blue-800"><span class="font-black text-2xl mr-2">2</span>E-mail 확인 및 발급</h4>
+                                     <p class="mt-2 text-gray-700">신청 시 등록한 이메일로 수신된 '참조인가코드안내'를 확인하고, 인증서 발급 페이지에서 임시 비밀번호를 입력하여 PC 또는 USB에 인증서를 저장합니다.</p>
+                                </div>
+                                <div class="flow-arrow"></div>
+                                <div class="w-full max-w-md bg-blue-50 rounded-xl shadow-md p-6 mb-4 border border-blue-200">
+                                    <h4 class="font-bold text-xl text-blue-800"><span class="font-black text-2xl mr-2">3</span>대학알리미 회원가입</h4>
+                                    <p class="mt-2 text-gray-700">대학알리미 사이트에서 '업무담당자 로그인' → '사용자등록'을 클릭하고, 발급받은 인증서로 본인 인증 후 회원정보를 입력합니다.</p>
+                                </div>
+                                <div class="flow-arrow"></div>
+                                <div class="w-full max-w-md bg-blue-50 rounded-xl shadow-md p-6 border border-blue-200">
+                                    <h4 class="font-bold text-xl text-blue-800"><span class="font-black text-2xl mr-2">4</span>권한 부여 요청</h4>
+                                    <p class="mt-2 text-gray-700">회원가입 완료 후, 대학 내 정보공시 총괄 담당자(예: 대학성과관리팀)에게 연락하여 공시 항목에 대한 담당자 권한 부여를 요청합니다.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="existing-user-guide" class="mb-12 flex justify-center">
+                        <div class="bg-white rounded-2xl p-6 md:p-8 w-full max-w-2xl">
+                             <h3 class="text-2xl font-bold text-center mb-2 text-blue-700">기존 담당자 인증서 갱신</h3>
+                             <p class="text-center text-gray-600 mb-10">인증서 만료일이 다가오는 경우, 간단한 절차를 통해 갱신할 수 있습니다.</p>
+                             <div class="flex flex-col items-center">
+                                 <div class="w-full max-w-md bg-gray-50 rounded-xl shadow-md p-6 mb-4 border">
+                                     <h4 class="font-bold text-xl text-blue-800"><span class="font-black text-2xl mr-2">1</span>인증센터 접속</h4>
+                                     <p class="mt-2 text-gray-700">'교육부 행정전자서명인증센터' (epki.go.kr) 홈페이지에 접속합니다.</p>
+                                 </div>
+                                 <div class="flow-arrow"></div>
+                                 <div class="w-full max-w-md bg-gray-50 rounded-xl shadow-md p-6 mb-4 border">
+                                     <h4 class="font-bold text-xl text-blue-800"><span class="font-black text-2xl mr-2">2</span>갱신 진행</h4>
+                                     <p class="mt-2 text-gray-700">'인증서 갱신' 메뉴를 클릭하고, 현재 사용 중인 인증서 암호를 입력하여 갱신을 완료합니다.</p>
+                                 </div>
+                             </div>
+                        </div>
+                    </section>
+                    
+                    <section id="important-notes" class="bg-white rounded-2xl p-6 md:p-8">
+                        <h3 class="text-2xl font-bold text-center mb-8 text-blue-700">꼭 기억하세요!</h3>
+                        <ul class="space-y-4 max-w-md mx-auto">
+                             <li class="flex items-start">
+                                 <span class="text-2xl mr-4 text-blue-600">🔑</span>
+                                 <div>
+                                     <h4 class="font-bold">비밀번호 관리</h4>
+                                     <p class="text-gray-600">인증서 비밀번호는 타인에게 노출되지 않도록 주의하며, 분실 시 재발급 절차를 진행해야 합니다.</p>
+                                 </div>
+                             </li>
+                             <li class="flex items-start">
+                                 <span class="text-2xl mr-4 text-blue-600">🚫</span>
+                                 <div>
+                                     <h4 class="font-bold">대리 신청 금지</h4>
+                                     <p class="text-gray-600">인증서 신규 발급은 반드시 본인이 직접 신청해야 하며, 대리 신청은 불가능합니다.</p>
+                                 </div>
+                             </li>
+                              <li class="flex items-start">
+                                 <span class="text-2xl mr-4 text-blue-600">📞</span>
+                                 <div>
+                                     <h4 class="font-bold">권한 부여 확인</h4>
+                                     <p class="text-gray-600">신규 등록 후 총괄 담당자에게 권한 부여를 요청하고, 정상적으로 부여되었는지 꼭 확인하세요.</p>
+                                 </div>
+                             </li>
+                        </ul>
+                    </section>
+                    <footer class="text-center mt-12 text-sm text-gray-500">
+                        <p class="font-semibold text-base text-gray-700 mb-2">기타 자세한 사항은 첨부파일 - 업무메뉴얼 챕터2를 참고해 주세요.</p>
+                        <p>본 인포그래픽은 대학정보공시 담당자 매뉴얼을 기반으로 제작되었습니다.</p>
+                    </footer>
+                </div>
+
+                <div id="tab-resources" class="tab-content"><h2 class="text-2xl font-semibold text-gray-800">관련자료</h2>
+                    <p class="mt-4 text-gray-600">
+                        <a href="../gongsi/pdf/2025manual.pdf" target="_blank" class="inline-block bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition-colors duration-300 shadow-md">
+                        2025 업무메뉴얼 다운로드
+                        </a>
+                        <a href="../gongsi/pdf/2025_10.hwp" target="_blank" class="inline-block bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition-colors duration-300 shadow-md">
+                        기안문 양식 다운로드
+                        </a>
+                    </p>
+                </div>
+            </div>
+
+            <div class="p-6 md:p-8 border-t border-gray-200">
+                 <section class="text-center">
+                     <a href="https://www.academyinfo.go.kr" target="_blank" class="inline-block bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition-colors duration-300 shadow-md">
+                        대학알리미 공식 홈페이지 바로가기
+                    </a>
+                </section>
+            </div>
+        </main>
+
+        <footer class="text-center mt-10 text-gray-500 text-sm">
+            <p>&copy; 2025 University Information Center. All rights reserved.</p>
+        </footer>
+
+    </div>
+
+    <style>
+        .tab-button { padding: 1rem 1.5rem; cursor: pointer; border: none; background: none; font-size: 1rem; font-weight: 500; color: #4B5563; border-bottom: 2px solid transparent; transition: color 0.2s ease-in-out, border-color 0.2s ease-in-out; }
+        .tab-button:hover { color: #1D4ED8; }
+        .tab-button.active-tab { color: #1D4ED8; border-bottom-color: #1D4ED8; }
+    </style>
+
+    <script>
+        // 전역 스코프에 함수를 정의하여 onclick에서 접근 가능하게 함
+        window.updateDisplay = function() {};
+        window.sortTable = function(key) {};
+        window.scrollToSection = function(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                const parentTab = section.closest('.tab-content');
+                if (parentTab && parentTab.id === 'tab-register') {
+                     section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Tab functionality
+            const tabs = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const target = document.getElementById(tab.dataset.tab);
+
+                    tabs.forEach(t => t.classList.remove('active-tab'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+
+                    tab.classList.add('active-tab');
+                    target.classList.add('active');
+                });
+            });
+
+            // Data and functions for the personnel tab table
+            const data = [
+                { "부서": "대학성과관리팀", "항목": "11-가-1. 학교 발전계획 및 특성화 계획[PDF]", "시기": "수시", "년도": 2025, "담당자": "권진환", "확인자": "김제호" },
+                { "부서": "대학성과관리팀", "항목": "14-자-1. 대학 자체 평가 결과[PDF]", "시기": "수시", "년도": 2025, "담당자": "권진환", "확인자": "김제호" },
+                { "부서": "대학성과관리팀", "항목": "14-자-2. 대학별 평가 인증 현황", "시기": "수시", "년도": 2025, "담당자": "권진환", "확인자": "김제호" },
+                { "부서": "학생복지지원팀", "항목": "14-하-4. 안전관리 계획 및 안전사고 보험(공제) 현황", "시기": "10월", "년도": 2025, "담당자": "김도현", "확인자": "김도현" },
+                { "부서": "교무지원팀", "항목": "14-차. 강사 강의료", "시기": "8월", "년도": 2025, "담당자": "김서연", "확인자": "김길수" },
+                { "부서": "최고위과정운영팀", "항목": "8-바-5. 교비회계 적립금 운용계획서[PDF]", "시기": "6월", "년도": 2025, "담당자": "박다온", "확인자": "박상수" },
+                { "부서": "인권센터", "항목": "14-타. 성폭력·성희롱·성매매 및 가정폭력 예방교육 실시 현황", "시기": "10월", "년도": 2025, "담당자": "박정애", "확인자": "박정애" },
+                { "부서": "인권센터", "항목": "14-파. 인권 보호 및 성희롱·성폭력 대응 전담 조직의 운영 현황", "시기": "10월", "년도": 2025, "담당자": "박정애", "확인자": "박정애" },
+                { "부서": "생활관운영팀", "항목": "14-마-1. 기숙사 수용 현황", "시기": "10월", "년도": 2025, "담당자": "박현일", "확인자": "박현일" },
+                { "부서": "생활관운영팀", "항목": "14-마-2-(2). 기숙사 운영 결과(사립_행복_민자)", "시기": "10월", "년도": 2025, "담당자": "박현일", "확인자": "박현일" },
+                { "부서": "생활관운영팀", "항목": "14-마-2-(4). 기숙사 운영 결과(사립_직영)", "시기": "10월", "년도": 2025, "담당자": "박현일", "확인자": "박현일" },
+                { "부서": "생활관운영팀", "항목": "14-마-3. 기숙사비 납부제도 현황", "시기": "10월", "년도": 2025, "담당자": "박현일", "확인자": "박현일" },
+                { "부서": "국제교류팀", "항목": "4-바-1. 외국 학생 현황", "시기": "8월", "년도": 2025, "담당자": "백윤미", "확인자": "김경돈" },
+                { "부서": "국제교류팀", "항목": "4-바-2. 외국 학생 중도탈락 현황", "시기": "8월", "년도": 2025, "담당자": "백윤미", "확인자": "김경돈" },
+                { "부서": "도서운영팀", "항목": "13-가. 장서 보유 및 도서관 예산 현황", "시기": "10월", "년도": 2025, "담당자": "송규호", "확인자": "김종호" },
+                { "부서": "학생복지지원팀", "항목": "12-다-1. 장학금 수혜 현황", "시기": "8월", "년도": 2025, "담당자": "신영근", "확인자": "김도현" },
+                { "부서": "학생복지지원팀", "항목": "12-다-2. 학자금 대출 현황", "시기": "8월", "년도": 2025, "담당자": "신영근", "확인자": "김도현" },
+                { "부서": "산학경영지원팀", "항목": "8-자-1. 현금예산서(예산)", "시기": "6월", "년도": 2025, "담당자": "안연정", "확인자": "홍순표" },
+                { "부서": "산학경영지원팀", "항목": "8-자-2. 현금흐름표(결산)", "시기": "8월", "년도": 2025, "담당자": "안연정", "확인자": "홍순표" },
+                { "부서": "산학경영지원팀", "항목": "8-자-3. 운영(손익) 계산서", "시기": "8월", "년도": 2025, "담당자": "안연정", "확인자": "홍순표" },
+                { "부서": "산학경영지원팀", "항목": "8-자-4. 재무상태표", "시기": "8월", "년도": 2025, "담당자": "안연정", "확인자": "홍순표" },
+                { "부서": "산학경영지원팀", "항목": "12-카-3. 학교기업 운영현황", "시기": "6월", "년도": 2025, "담당자": "안연정", "확인자": "홍순표" },
+                { "부서": "비서팀", "항목": "8-타. 대학의 장, 이사장 및 상근(常勤) 이사의 업무추진비 사용 현황", "시기": "8월", "년도": 2025, "담당자": "안유빈", "확인자": "이미희" },
+                { "부서": "교무지원팀", "항목": "1-가. 학교규칙 및 그 밖에 학교운영에 관한 각종 규정[PDF]", "시기": "수시", "년도": 2025, "담당자": "양영은", "확인자": "김길수" },
+                { "부서": "교무지원팀", "항목": "2-가-1. 전공과목 성적 분포", "시기": "8월", "년도": 2025, "담당자": "양영은", "확인자": "김길수" },
+                { "부서": "교무지원팀", "항목": "2-가-2. 교양과목 성적 분포", "시기": "8월", "년도": 2025, "담당자": "양영은", "확인자": "김길수" },
+                { "부서": "교무지원팀", "항목": "2-가-3. 교직과목 성적 분포", "시기": "8월", "년도": 2025, "담당자": "양영은", "확인자": "김길수" },
+                { "부서": "교무지원팀", "항목": "2-가-4. 졸업생의 졸업성적 분포", "시기": "8월", "년도": 2025, "담당자": "양영은", "확인자": "김길수" },
+                { "부서": "교무지원팀", "항목": "12-나-1. 학생 규모별 강좌수", "시기": "8월", "년도": 2025, "담당자": "양영은", "확인자": "김길수" },
+                { "부서": "교무지원팀", "항목": "12-나-2. 교원 강의 담당 비율", "시기": "8월", "년도": 2025, "담당자": "양영은", "확인자": "김길수" },
+                { "부서": "교무지원팀", "항목": "12-나-3. 대학 강의 공개 현황", "시기": "10월", "년도": 2025, "담당자": "양영은", "확인자": "김길수" },
+                { "부서": "교무지원팀", "항목": "12-카-2. 캡스톤 디자인(창의적 설계) 운영 현황", "시기": "6월", "년도": 2025, "담당자": "양영은", "확인자": "김길수" },
+                { "부서": "교무지원팀", "항목": "12-카-4-(1). 계약학과 설치 운영 현황", "시기": "6월", "년도": 2025, "담당자": "양영은", "확인자": "김길수" },
+                { "부서": "교무지원팀", "항목": "12-카-4-(2). 주문식 교육과정 설치 운영 현황", "시기": "6월", "년도": 2025, "담당자": "양영은", "확인자": "김길수" },
+                { "부서": "기획예산팀", "항목": "8-차-1. 등록금 현황", "시기": "4월, 8월", "년도": 2025, "담당자": "어정주", "확인자": "최우순" },
+                { "부서": "기획예산팀", "항목": "9-나-2. 학생 1인당 교육비(사립대학)", "시기": "8월", "년도": 2025, "담당자": "어정주", "확인자": "최우순" },
+                { "부서": "입학팀", "항목": "3-가-1. 신입생 모집요강[PDF]", "시기": "수시, 8월", "년도": 2025, "담당자": "유장식", "확인자": "이창훈" },
+                { "부서": "입학팀", "항목": "3-가-2. 편입생 모집요강[PDF]", "시기": "수시", "년도": 2025, "담당자": "유장식", "확인자": "이창훈" },
+                { "부서": "입학팀", "항목": "4-가. 입학전형 유형별 선발 결과", "시기": "6월", "년도": 2025, "담당자": "유장식", "확인자": "이창훈" },
+                { "부서": "입학팀", "항목": "4-나. 기회균형 선발 결과", "시기": "6월", "년도": 2025, "담당자": "유장식", "확인자": "이창훈" },
+                { "부서": "입학팀", "항목": "4-다. 신입생 충원 현황", "시기": "8월", "년도": 2025, "담당자": "유장식", "확인자": "이창훈" },
+                { "부서": "입학팀", "항목": "4-라-2. 편입학 선발 결과", "시기": "8월", "년도": 2025, "담당자": "유장식", "확인자": "이창훈" },
+                { "부서": "입학팀", "항목": "4-자. 신입생의 출신 고등학교 유형별 현황", "시기": "6월", "년도": 2025, "담당자": "유장식", "확인자": "이창훈" },
+                { "부서": "산학기획연구팀", "항목": "12-가. 연구비 수혜 실적", "시기": "8월", "년도": 2025, "담당자": "이송희", "확인자": "이태희" },
+                { "부서": "산학기획연구팀", "항목": "12-거. 기술지주회사 운영 현황", "시기": "6월", "년도": 2025, "담당자": "이송희", "확인자": "이태희" },
+                { "부서": "산학기획연구팀", "항목": "12-차. 공동활용 연구장비 운영 현황", "시기": "6월", "년도": 2025, "담당자": "이송희", "확인자": "이태희" },
+                { "부서": "산학기획연구팀", "항목": "12-타. 기술이전 수입료 및 계약 실적", "시기": "6월", "년도": 2025, "담당자": "이송희", "확인자": "이태희" },
+                { "부서": "산학기획연구팀", "항목": "12-파. 특허 출원 및 등록 실적", "시기": "6월", "년도": 2025, "담당자": "이송희", "확인자": "이태희" },
+                { "부서": "산학기획연구팀", "항목": "13-나. 대학 부설 연구소 현황", "시기": "8월", "년도": 2025, "담당자": "이송희", "확인자": "이태희" },
+                { "부서": "법인사무국", "항목": "8-라. 예·결산(합산재무제표) 현황", "시기": "6월, 8월", "년도": 2025, "담당자": "이영미", "확인자": "조태영" },
+                { "부서": "법인사무국", "항목": "8-마-1. 자금예산서(예산)", "시기": "6월", "년도": 2025, "담당자": "이영미", "확인자": "조태영" },
+                { "부서": "법인사무국", "항목": "8-마-2. 자금계산서(결산)", "시기": "8월", "년도": 2025, "담당자": "이영미", "확인자": "조태영" },
+                { "부서": "법인사무국", "항목": "8-마-2-(1). 감사증명서[PDF]", "시기": "8월", "년도": 2025, "담당자": "이영미", "확인자": "조태영" },
+                { "부서": "법인사무국", "항목": "8-마-3. 운영(손익) 계산서", "시기": "8월", "년도": 2025, "담당자": "이영미", "확인자": "조태영" },
+                { "부서": "법인사무국", "항목": "8-마-4. 재무상태표", "시기": "8월", "년도": 2025, "담당자": "이영미", "확인자": "조태영" },
+                { "부서": "법인사무국", "항목": "8-마-5. 법인회계 적립금 운용계획서[PDF]", "시기": "6월", "년도": 2025, "담당자": "이영미", "확인자": "조태영" },
+                { "부서": "법인사무국", "항목": "10-가. 위반 내용 및 조치 결과", "시기": "수시", "년도": 2025, "담당자": "이영미", "확인자": "조태영" },
+                { "부서": "법인사무국", "항목": "14-가. 정관[PDF]", "시기": "수시", "년도": 2025, "담당자": "이영미", "확인자": "조태영" },
+                { "부서": "법인사무국", "항목": "14-나. 법인의 임원 현황", "시기": "수시", "년도": 2025, "담당자": "이영미", "확인자": "조태영" },
+                { "부서": "법인사무국", "항목": "14-바-1. 수익용 기본재산 확보 현황", "시기": "10월", "년도": 2025, "담당자": "이영미", "확인자": "조태영" },
+                { "부서": "법인사무국", "항목": "14-바-2. 법정부담금 부담 현황", "시기": "10월", "년도": 2025, "담당자": "이영미", "확인자": "조태영" },
+                { "부서": "창업성장지원센터", "항목": "12-하-1-(1). 교원의 창업 및 창업지원 현황", "시기": "6월", "년도": 2025, "담당자": "이은정", "확인자": "김기철" },
+                { "부서": "학생복지지원팀", "항목": "12-마. 대학의 사회봉사 역량", "시기": "4월", "년도": 2025, "담당자": "이정훈", "확인자": "이정훈" },
+                { "부서": "장애학생지원센터", "항목": "14-카. 장애학생지원체제 구축 및 운영 현황", "시기": "8월", "년도": 2025, "담당자": "이정훈", "확인자": "이진환" },
+                { "부서": "학생취업지원팀", "항목": "5-나. 졸업생의 진학 현황", "시기": "별도", "년도": 2025, "담당자": "이종성", "확인자": "김기형" },
+                { "부서": "학생취업지원팀", "항목": "5-다. 졸업생의 취업 현황", "시기": "별도", "년도": 2025, "담당자": "이종성", "확인자": "김기형" },
+                { "부서": "현장실습지원센터", "항목": "12-카-1. 현장실습 운영 현황", "시기": "6월", "년도": 2025, "담당자": "이창문", "확인자": "박도현" },
+                { "부서": "전산지원센터", "항목": "14-하-3. 정보보안 및 개인정보보호 수준 진단", "시기": "10월", "년도": 2025, "담당자": "임경규", "확인자": "이윤구" },
+                { "부서": "총무팀", "항목": "14-다. 교지(校地) 확보 현황", "시기": "10월", "년도": 2025, "담당자": "임구순", "확인자": "권영석" },
+                { "부서": "총무팀", "항목": "14-라. 교사(校舍)시설 확보 현황", "시기": "10월", "년도": 2025, "담당자": "임구순", "확인자": "권영석" },
+                { "부서": "교무지원팀", "항목": "4-라-1. 재학생 충원율", "시기": "8월", "년도": 2025, "담당자": "임선희", "확인자": "김길수" },
+                { "부서": "교무지원팀", "항목": "4-마. 재적 학생 현황", "시기": "8월", "년도": 2025, "담당자": "임선희", "확인자": "김길수" },
+                { "부서": "교무지원팀", "항목": "4-사. 중도탈락 학생 현황", "시기": "8월", "년도": 2025, "담당자": "임선희", "확인자": "김길수" },
+                { "부서": "교무지원팀", "항목": "4-아. 학사학위 전공심화과정 학생 현황", "시기": "8월", "년도": 2025, "담당자": "임선희", "확인자": "김길수" },
+                { "부서": "교무지원팀", "항목": "5-가. 졸업생 현황", "시기": "8월", "년도": 2025, "담당자": "임선희", "확인자": "김길수" },
+                { "부서": "직업교육콘텐츠연구센터", "항목": "12-바. 대학의 원격강좌 현황", "시기": "6월", "년도": 2025, "담당자": "장우영", "확인자": "전권일" },
+                { "부서": "재무팀", "항목": "8-차-2. 등록금 납부제도 현황", "시기": "4월, 8월", "년도": 2025, "담당자": "장우혁", "확인자": "권순혜" },
+                { "부서": "기획예산팀", "항목": "8-바-1-(1). 교비회계(통합)", "시기": "6월", "년도": 2025, "담당자": "전희진", "확인자": "최우순" },
+                { "부서": "기획예산팀", "항목": "8-바-1-(2). 등록금회계", "시기": "6월", "년도": 2025, "담당자": "전희진", "확인자": "최우순" },
+                { "부서": "기획예산팀", "항목": "8-바-1-(2)-1. 잉여금처리 원칙[PDF]", "시기": "6월", "년도": 2025, "담당자": "전희진", "확인자": "최우순" },
+                { "부서": "기획예산팀", "항목": "8-바-1-(3). 비등록금회계", "시기": "6월", "년도": 2025, "담당자": "전희진", "확인자": "최우순" },
+                { "부서": "기획예산팀", "항목": "9-가-1. 등록금 산정근거[PDF]", "시기": "4월, 8월", "년도": 2025, "담당자": "전희진", "확인자": "최우순" },
+                { "부서": "기획예산팀", "항목": "9-가-2. 등록금심의위원회 회의록[PDF]", "시기": "수시", "년도": 2025, "담당자": "전희진", "확인자": "최우순" },
+                { "부서": "총무팀", "항목": "14-하-1. 실험·실습실 안전관리 현황", "시기": "10월", "년도": 2025, "담당자": "최요하", "확인자": "권영석" },
+                { "부서": "총무팀", "항목": "14-하-2. 시설 안전관리 현황", "시기": "10월", "년도": 2025, "담당자": "최요하", "확인자": "권영석" },
+                { "부서": "입학팀", "항목": "8-카-1-(1). 입학 전형료 수입 현황", "시기": "8월", "년도": 2025, "담당자": "최준열", "확인자": "이창훈" },
+                { "부서": "입학팀", "항목": "8-카-1-(2). 입학전형 관련 지출 현황", "시기": "8월", "년도": 2025, "담당자": "최준열", "확인자": "이창훈" },
+                { "부서": "입학팀", "항목": "8-카-2. 입학전형료 산정근거[PDF]", "시기": "8월", "년도": 2025, "담당자": "최준열", "확인자": "이창훈" },
+                { "부서": "국제교육팀", "항목": "12-라-2. 외국대학과 학점 교류 현황", "시기": "8월", "년도": 2025, "담당자": "최홍준", "확인자": "최병환" },
+                { "부서": "재무팀", "항목": "8-바-2-(1). 교비회계(통합)", "시기": "8월", "년도": 2025, "담당자": "한희정", "확인자": "권순혜" },
+                { "부서": "재무팀", "항목": "8-바-2-(2). 등록금회계", "시기": "8월", "년도": 2025, "담당자": "한희정", "확인자": "권순혜" },
+                { "부서": "재무팀", "항목": "8-바-2-(3). 비등록금회계", "시기": "8월", "년도": 2025, "담당자": "한희정", "확인자": "권순혜" },
+                { "부서": "재무팀", "항목": "8-바-3-(1). 교비회계(통합)", "시기": "8월", "년도": 2025, "담당자": "한희정", "확인자": "권순혜" },
+                { "부서": "재무팀", "항목": "8-바-3-(2). 등록금회계", "시기": "8월", "년도": 2025, "담당자": "한희정", "확인자": "권순혜" },
+                { "부서": "재무팀", "항목": "8-바-3-(3). 비등록금회계", "시기": "8월", "년도": 2025, "담당자": "한희정", "확인자": "권순혜" },
+                { "부서": "재무팀", "항목": "8-바-4-(1). 교비회계(통합)", "시기": "8월", "년도": 2025, "담당자": "한희정", "확인자": "권순혜" },
+                { "부서": "재무팀", "항목": "8-바-4-(2). 등록금회계", "시기": "8월", "년도": 2025, "담당자": "한희정", "확인자": "권순혜" },
+                { "부서": "재무팀", "항목": "8-바-4-(3). 비등록금회계", "시기": "8월", "년도": 2025, "담당자": "한희정", "확인자": "권순혜" },
+                { "부서": "재무팀", "항목": "8-사. 적립금 현황", "시기": "8월", "년도": 2025, "담당자": "한희정", "확인자": "권순혜" },
+                { "부서": "재무팀", "항목": "8-아. 기부금 현황", "시기": "8월", "년도": 2025, "담당자": "한희정", "확인자": "권순혜" },
+                { "부서": "창업교육팀", "항목": "12-하-1-(2). 학생의 창업 및 창업지원 현황", "시기": "6월", "년도": 2025, "담당자": "홍유정", "확인자": "유채형" },
+                { "부서": "창업교육팀", "항목": "12-하-2. 창업교육 지원 현황", "시기": "6월", "년도": 2025, "담당자": "홍유정", "확인자": "유채형" },
+                { "부서": "대학성과관리팀", "항목": "6-가-1. 전체 교원 대비 전임교원 현황", "시기": "8월", "년도": 2025, "담당자": "홍지연", "확인자": "김제호" },
+                { "부서": "대학성과관리팀", "항목": "6-가-2. 전체 신규 전임교원 현황", "시기": "8월", "년도": 2025, "담당자": "홍지연", "확인자": "김제호" },
+                { "부서": "대학성과관리팀", "항목": "6-나-(1). 전임교원 1인당 학생 수 및 전임교원 확보율(전문대학, 기능대학)", "시기": "8월", "년도": 2025, "담당자": "홍지연", "확인자": "김제호" },
+                { "부서": "대학성과관리팀", "항목": "6-다-1. 국가별 외국인 전임교원 현황", "시기": "8월", "년도": 2025, "담당자": "홍지연", "확인자": "김제호" },
+                { "부서": "대학성과관리팀", "항목": "6-다-2. 전공계열별 외국인 전임교원 현황", "시기": "8월", "년도": 2025, "담당자": "홍지연", "확인자": "김제호" },
+                { "부서": "산학기획연구팀", "항목": "7-가. 전임교원의 연구 실적", "시기": "8월", "년도": 2025, "담당자": "이송희", "확인자": "이태희" },
+                { "부서": "대학성과관리팀", "항목": "12-사. 산학협력 친화형 교원 인사 운영 현황[PDF]", "시기": "6월", "년도": 2025, "담당자": "홍지연", "확인자": "김제호" },
+                { "부서": "대학성과관리팀", "항목": "12-아. 산업체 경력 전임교원 현황", "시기": "6월", "년도": 2025, "담당자": "홍지연", "확인자": "김제호" },
+                { "부서": "대학성과관리팀", "항목": "14-사. 직원 현황", "시기": "8월", "년도": 2025, "담당자": "홍지연", "확인자": "김제호" }
+            ];
+
+            const tableBody = document.querySelector('#dataTable tbody');
+            let sortState = { key: '부서', direction: 'asc' };
+
+            function maskName(name) {
+                if (typeof name !== 'string' || name.length <= 1) return name;
+                if (name.length === 2) return name[0] + '*';
+                const middleIndex = Math.floor(name.length / 2);
+                return name.substring(0, middleIndex) + '*' + name.substring(middleIndex + 1);
+            }
+
+            function renderTable(dataToRender) {
+                const personnelTableBody = document.querySelector('#tab-personnel #dataTable tbody');
+                if (!personnelTableBody) return;
+
+                personnelTableBody.innerHTML = '';
+                if (dataToRender.length === 0) {
+                    personnelTableBody.innerHTML = `<tr><td colspan="6" class="text-center py-4">검색 결과가 없습니다.</td></tr>`;
+                    return;
+                }
+                dataToRender.forEach(item => {
+                    const row = `
+                        <tr class="border-b border-gray-200 hover:bg-blue-50 transition duration-150 ease-in-out">
+                            <td class="py-3 px-4">${item.부서}</td>
+                            <td class="py-3 px-4">${item.항목}</td>
+                            <td class="text-center py-3 px-4">${item.시기}</td>
+                            <td class="text-center py-3 px-4">${item.년도}</td>
+                            <td class="text-center py-3 px-4">${maskName(item.담당자)}</td>
+                            <td class="text-center py-3 px-4">${maskName(item.확인자)}</td>
+                        </tr>
+                    `;
+                    personnelTableBody.innerHTML += row;
+                });
+            }
+
+            function updateSortIcons() {
+                document.querySelectorAll('#tab-personnel .sort-icon').forEach(span => span.innerHTML = '');
+                const iconSpan = document.getElementById(`sort-icon-${sortState.key}`);
+                if (iconSpan) {
+                    iconSpan.innerHTML = sortState.direction === 'asc' ? ' ▲' : ' ▼';
+                }
+            }
+            
+            window.updateDisplay = function() {
+                const textFilterInput = document.getElementById('searchInput');
+                const periodSelect = document.getElementById('period-filter-select');
+                if (!textFilterInput || !periodSelect) return;
+
+                const textFilter = textFilterInput.value.toUpperCase();
+                const periodFilter = periodSelect.value;
+                
+                let displayData = data.filter(item => {
+                    const periodMatch = (periodFilter === '전체') || item.시기.includes(periodFilter);
+                    const textMatch = Object.values(item).join(' ').toUpperCase().includes(textFilter);
+                    return periodMatch && textMatch;
+                });
+
+                displayData.sort((a, b) => {
+                    const valA = a[sortState.key];
+                    const valB = b[sortState.key];
+                    let comparison = 0;
+                    if (typeof valA === 'number' && typeof valB === 'number') {
+                        comparison = valA - valB;
+                    } else {
+                        comparison = String(valA).localeCompare(String(valB));
+                    }
+                    return sortState.direction === 'desc' ? comparison * -1 : comparison;
+                });
+
+                renderTable(displayData);
+                updateSortIcons();
+            }
+
+            window.sortTable = function(key) {
+                if (sortState.key === key) {
+                    sortState.direction = sortState.direction === 'asc' ? 'desc' : 'asc';
+                } else {
+                    sortState.key = key;
+                    sortState.direction = 'asc';
+                }
+                updateDisplay();
+            }
+
+            function initializePage() {
+                const periodSelect = document.getElementById('period-filter-select');
+                if(periodSelect && periodSelect.options.length === 0){
+                    const periods = ['전체', '4월', '6월', '8월', '10월', '별도', '수시'];
+                    periods.forEach((period) => {
+                        const option = document.createElement('option');
+                        option.value = period;
+                        option.textContent = period;
+                        periodSelect.appendChild(option);
+                    });
+                }
+                updateDisplay();
+            }
+
+            initializePage();
+            
+            // Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if(mobileMenuButton) {
+                mobileMenuButton.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+
