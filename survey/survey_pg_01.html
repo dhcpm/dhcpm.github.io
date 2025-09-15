@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>업데이트 안내 - 대구보건대학교 대학성과관리팀</title>
+    <title>재학생 만족도 설문문항 의견 수렴 - 대구보건대학교 대학성과관리팀</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
@@ -14,6 +15,15 @@
         }
         .pt-header {
             padding-top: 64px; /* 헤더 높이만큼 */
+        }
+        #table-container th {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .form-textarea {
+            min-height: 80px;
         }
     </style>
 </head>
@@ -33,7 +43,7 @@
                     <a href="../gongsi/gongsi_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">대학정보공시</a>
                     <a href="../buseo/buseo_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">부서자체평가</a>
                     <a href="../seonggwa/seonggwa_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">성과분석</a>
-                    <a href="../survey/survey_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">교육수요자 만족도 조사</a>
+                    <a href="../survey/survey_pg.html" class="text-blue-600 font-bold transition-colors text-sm">교육수요자 만족도 조사</a>
                     <a href="../dept/dept_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">부서운영</a>
                     <a href="../edu/edu_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">교육</a>
                 </nav>
@@ -64,27 +74,99 @@
     <main class="pt-header flex-grow">
         <div class="bg-white">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-                <div class="text-center">
-                    <h1 class="text-3xl font-bold text-gray-900 sm:text-4xl">페이지 업데이트 안내</h1>
-                    <p class="mt-4 text-lg text-gray-600">
-                        
-                        가능한 빠른 시일 내에 새로운 모습으로 찾아뵙겠습니다.
+                <div class="text-center mb-12">
+                    <h1 class="text-4xl font-bold text-gray-900 sm:text-5xl">재학생 만족도 설문문항 의견수렴(부서)</h1>
+                    <p class="mt-4 text-xl text-gray-600">
+                        설문 문항 목록을 확인하고 수정하세요.
                     </p>
-                    <p class="mt-2 text-lg text-gray-600">이용에 불편을 드려 죄송합니다.</p>
+                </div>
 
-                    <div class="mt-10 flex justify-center items-center space-x-8">
-                        <div class="w-48 h-48">
-                            
-                        </div>
-                        <div class="w-40 h-40">
-                            
+                <!-- 업무 순서 Section -->
+                <div class="mb-12">
+                    <div class="max-w-5xl mx-auto p-6 bg-gray-50 border border-gray-200 rounded-lg">
+                        <h2 class="text-xl font-semibold text-center text-gray-800 mb-5">업무 순서</h2>
+                        <div class="flex flex-col md:flex-row items-center justify-center gap-y-4 gap-x-2 text-center text-gray-700">
+                            <div class="flex-1 min-w-[150px] p-2">
+                                <span class="text-lg font-bold text-blue-600">Step 1</span>
+                                <p class="mt-1">관련부서 선택</p>
+                            </div>
+                            <div class="text-2xl text-gray-300 font-light">&gt;</div>
+                            <div class="flex-1 min-w-[150px] p-2">
+                                <span class="text-lg font-bold text-blue-600">Step 2</span>
+                                <p class="mt-1">문항검토</p>
+                            </div>
+                            <div class="text-2xl text-gray-300 font-light">&gt;</div>
+                            <div class="flex-1 min-w-[150px] p-2">
+                                <span class="text-lg font-bold text-blue-600">Step 3</span>
+                                <p class="mt-1">수정구분 선택</p>
+                            </div>
+                            <div class="text-2xl text-gray-300 font-light">&gt;</div>
+                            <div class="flex-1 min-w-[150px] p-2">
+                                <span class="text-lg font-bold text-blue-600">Step 4</span>
+                                <p class="mt-1">수정내용 입력<br><span class="text-xs">(수정, 추가 시)</span></p>
+                            </div>
+                            <div class="text-2xl text-gray-300 font-light">&gt;</div>
+                            <div class="flex-1 min-w-[150px] p-2">
+                                <span class="text-lg font-bold text-blue-600">Step 5</span>
+                                <p class="mt-1">반출</p>
+                            </div>
+                             <div class="text-2xl text-gray-300 font-light">&gt;</div>
+                            <div class="flex-1 min-w-[150px] p-2">
+                                <span class="text-lg font-bold text-blue-600">Step 6</span>
+                                <p class="mt-1">업무협조전 제출<br><span class="text-xs">(대학성과관리팀)</span></p>
+                            </div>
                         </div>
                     </div>
-                    
-                    <div class="mt-12">
-                        <a href="../index.html" class="inline-block bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors">
-                            메인으로 돌아가기
-                        </a>
+                </div>
+                
+                <!-- Top Controls Section -->
+                <div id="controls-container" class="mb-8">
+                    <div class="max-w-2xl mx-auto flex items-end space-x-4">
+                        <div class="flex-grow">
+                            <label for="department-filter" class="block text-base font-bold text-gray-700">관련부서를 선택해 주세요</label>
+                            <select id="department-filter" name="department-filter" class="form-select mt-1 block w-full pl-3 pr-10 py-2.5 text-base">
+                                <!-- Options will be populated by JavaScript -->
+                            </select>
+                        </div>
+                        <button id="add-question-btn" class="px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition ease-in-out duration-150 whitespace-nowrap disabled:bg-gray-400 disabled:cursor-not-allowed">
+                            + 문항 추가
+                        </button>
+                        <button id="export-btn" class="px-4 py-2.5 bg-green-600 text-white font-semibold rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition ease-in-out duration-150 whitespace-nowrap disabled:bg-gray-400 disabled:cursor-not-allowed">
+                            반출
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Table Section -->
+                <div id="table-container" class="relative overflow-x-auto shadow-lg sm:rounded-lg">
+                    <table class="w-full text-base text-left text-gray-600">
+                        <thead class="text-sm text-gray-700 uppercase bg-gray-100">
+                            <tr>
+                                <th scope="col" class="px-6 py-4">영역</th>
+                                <th scope="col" class="px-6 py-4">세부 항목</th>
+                                <th scope="col" class="px-6 py-4">문항 번호</th>
+                                <th scope="col" class="px-6 py-4">문항구분</th>
+                                <th scope="col" class="px-6 py-4 w-1/4">설문 문항</th>
+                                <th scope="col" class="px-6 py-4">관련부서</th>
+                                <th scope="col" class="px-6 py-4 w-[12%]">수정구분</th>
+                                <th scope="col" class="px-6 py-4 w-1/3">수정내용</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Bottom Controls Section -->
+                <div id="bottom-controls-container" class="mt-8">
+                    <div class="flex items-center justify-center space-x-4">
+                        <button id="add-question-btn-bottom" class="px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition ease-in-out duration-150 whitespace-nowrap disabled:bg-gray-400 disabled:cursor-not-allowed">
+                            + 문항 추가
+                        </button>
+                        <button id="export-btn-bottom" class="px-4 py-2.5 bg-green-600 text-white font-semibold rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition ease-in-out duration-150 whitespace-nowrap disabled:bg-gray-400 disabled:cursor-not-allowed">
+                            반출
+                        </button>
                     </div>
                 </div>
             </div>
@@ -107,7 +189,324 @@
             mobileMenuButton.addEventListener('click', () => {
                 mobileMenu.classList.toggle('hidden');
             });
+            
+            const departmentFilter = document.getElementById('department-filter');
+            const tableBody = document.querySelector('#table-container tbody');
+
+            // Button Elements
+            const addQuestionBtn = document.getElementById('add-question-btn');
+            const exportBtn = document.getElementById('export-btn');
+            const addQuestionBtnBottom = document.getElementById('add-question-btn-bottom');
+            const exportBtnBottom = document.getElementById('export-btn-bottom');
+
+            const fullSurveyData = `응답자 특성	-	SQ1	기본정보	귀하께서 졸업한 고등학교의 유형(이전학력)은 무엇입니까?	대학성과관리팀
+응답자 특성	-	SQ2	기본정보	귀하께서 우리대학을 선택한 가장 큰 이유는 무엇입니까?	대학성과관리팀
+교육	A. 전공 교육과정	1	만족도	전공 교육과정은 사회 및 산업환경의 변화와 우리 대학 및 학과의 교육목표를 적절히 반영하고 있다.	교무지원팀
+교육	A. 전공 교육과정	2	만족도	취업 분야의 지식과 기술을 충실히 반영하고 있다.	교무지원팀
+교육	A. 전공 교육과정	3	만족도	"전공 수업 외에 전공 능력을 넓힐 수 있는 프로그램이 개설되어 있으며, 이러한 프로그램이 전공 역량 향상에 도움이 된다."	교무지원팀
+교육	A. 전공 교육과정	4	만족도	"전공 과목의 수업 내용, 방법, 평가 방식 등에 대해 만족하며, 담당 교수와의 소통이 원활하게 이루어지고 있다."	교무지원팀
+교육	A. 전공 교육과정	5	만족도	"전공 수업을 통해 자신의 역량 발달과 취업 역량, 진로 개발에 실질적인 도움이 되었다."	교무지원팀
+교육	A. 전공 교육과정	6	만족도	전반적으로 전공 교육과정과 수업이 학생들의 학습 요구와 목표를 충족시키고 있다.	교무지원팀
+교육	B. 교양 교육과정	1	만족도	사회 및 산업환경의 변화와 미래 직업의 인성과 소양을 기를 수 있도록 개설되었다.	교양교육운영팀
+교육	B. 교양 교육과정	2	만족도	"학생들의 관심과 필요를 반영하여 개설된 교양 과목과, 정규 교과 수업 외에 교양을 넓힐 수 있다."	교양교육운영팀
+교육	B. 교양 교육과정	3	만족도	"교양 과목의 시간표 배정, 수업 환경, 수업 내용, 방법, 평가 방식 등에 대해 전반적으로 만족한다."	교양교육운영팀
+교육	B. 교양 교육과정	4	만족도	교양 과목 담당 교수와의 소통이 원활하게 이루어지고 있다.	교양교육운영팀
+교육	B. 교양 교육과정	5	만족도	교양 과목 수업을 통해 자신의 역량 개발에 실질적인 도움이 되었다.	교양교육운영팀
+학생역량프로그램	C. 교수학습지원센터	C0	기본정보	"귀하는 교수학습지원센터 프로그램에 참여한 적이 있습니까? (ex. 기초학습 향상, 국가시험 지원, 공직역량강화반, 학습능력향상 지원 프로그램 등)"	교수학습지원센터
+학생역량프로그램	C. 교수학습지원센터	각 항목	선택적 만족/요구도	학습법 특강 프로그램	교수학습지원센터
+학생역량프로그램	C. 교수학습지원센터	각 항목	선택적 만족/요구도	학습법 코칭 프로그램	교수학습지원센터
+학생역량프로그램	C. 교수학습지원센터	각 항목	선택적 만족/요구도	전공적응 튜터링 프로그램	교수학습지원센터
+학생역량프로그램	C. 교수학습지원센터	각 항목	선택적 만족/요구도	"국가시험 프로그램 (특강, 모의고사, 스터디)"	교수학습지원센터
+학생역량프로그램	C. 교수학습지원센터	각 항목	선택적 만족/요구도	전공 특화 학습역량 지원 프로그램 (학과별 전공향상 프로그램 운영)	교수학습지원센터
+학생역량프로그램	C. 교수학습지원센터	각 항목	선택적 만족/요구도	DHC 우수학생클럽 지원 프로그램	교수학습지원센터
+학생역량프로그램	C. 교수학습지원센터	각 항목	선택적 만족/요구도	"기초학습프로그램 (기초학습 평가, 눈높이 중재교육)"	교수학습지원센터
+학생역량프로그램	C. 교수학습지원센터	각 항목	선택적 만족/요구도	"학습법 경진대회 프로그램 (노트필기, 학습노하우 쉐어링, 우수강의 에세이)"	교수학습지원센터
+학생역량프로그램	C. 교수학습지원센터	각 항목	선택적 만족/요구도	사제지간 멘토링 프로그램	교수학습지원센터
+학생역량프로그램	D. LMS 만족도	1	만족도	"LMS(원격강의실 사이트)는 모바일, PC 환경에서 안정적으로 접속된다."	직업교육콘텐츠연구센터
+학생역량프로그램	D. LMS 만족도	2	만족도	출석체크 및 출결내역 확인이 편리하다.	직업교육콘텐츠연구센터
+학생역량프로그램	D. LMS 만족도	3	만족도	강의실은 학습 현황 및 진도 파악이 용이하도록 구성되어 있다.	직업교육콘텐츠연구센터
+학생역량프로그램	D. LMS 만족도	4	만족도	학습자료 열람 및 다운로드 속도는 적절하다(평균 3초 이내).	직업교육콘텐츠연구센터
+학생역량프로그램	D. LMS 만족도	5	만족도	"과제, 토론, 팀플 등 학습활동 참여가 편리하다."	직업교육콘텐츠연구센터
+학생역량프로그램	D. LMS 만족도	6	만족도	퀴즈/시험 응시 방법이 편리하다.	직업교육콘텐츠연구센터
+학생역량프로그램	D. LMS 만족도	7	만족도	과제제출 및 시험일정 등 공지사항 알람이 원활하다.	직업교육콘텐츠연구센터
+학생역량프로그램	D. LMS 만족도	8	만족도	"이메일, 쪽지 등 교수와 상호작용할 수 있는 적절한 기능을 제공하고 있다."	직업교육콘텐츠연구센터
+학생역량프로그램	D. LMS 만족도	9	만족도	"오프라인 수업과 비교했을 때, 과제/토론/팀플 등 학습활동 피드백 확인 및 문의가 편리하다."	직업교육콘텐츠연구센터
+학생역량프로그램	D. LMS 만족도	10	만족도	"오프라인 수업과 비교했을 때, 퀴즈/시험 결과 확인 및 정정 요청이 편리하다."	직업교육콘텐츠연구센터
+학생역량프로그램	D. LMS 만족도	D2	요구도	(LMS 요구도) LMS 기능 중 가장 개선이 시급한 것을 우선순위대로 3가지 선택해주시기 바랍니다.	직업교육콘텐츠연구센터
+학생역량프로그램	D. LMS 만족도	D3	요구도	(LMS 요구도) 다양한 학습활동 기능 중 가장 개선이 시급한 것은 무엇입니까?	직업교육콘텐츠연구센터
+학생역량프로그램	D. LMS 만족도	D4	요구도	(LMS 요구도) LMS 이용편리성 및 강의의 질 제고 등을 위해 필요한 지원사항이 있다면 구체적으로 기입해주시기 바랍니다.	직업교육콘텐츠연구센터
+시설 및 서비스	E. 교육기본시설	1	만족도	"교육시설이 안전하게 관리되고 있으며, 정기적인 점검과 유지보수가 이루어지고 있다."	총무팀
+시설 및 서비스	E. 교육기본시설	2	만족도	"강의실, 실습실 등 학습공간이 충분하며, 기자재와 장비가 잘 갖추어지고 청결하게 관리되고 있다."	총무팀
+시설 및 서비스	E. 교육기본시설	3	만족도	"소화기, 구급약품 등 안전물품이 적절히 배치되어 있고, 시설 전체가 청결하게 유지되고 있다."	총무팀
+시설 및 서비스	E. 교육기본시설	4	만족도	"도서관 홈페이지와 모바일에서 전자책 등 다양한 전자 자료가 제공되며, 도서관 PC와 인터넷 환경이 편리하게 구축되어 있다. 열람좌석도 충분하다."	도서운영팀
+시설 및 서비스	E. 교육기본시설	5	만족도	"전반적으로 시설이 깨끗하고, 학습과 실습, 연구에 적합한 환경이 조성되어 있다."	총무팀
+시설 및 서비스	F. 교육지원시설	1	만족도	"편의시설(휴게실, 체육시설 등)을 적절하게 갖추고 있다."	총무팀
+시설 및 서비스	F. 교육지원시설	2	만족도	보건시설을 적절하게 갖추고 있다.	보건실
+시설 및 서비스	F. 교육지원시설	3	만족도	장애학생 및 다문화 가족 학생의 편의시설 및 정보가 적절하게 제공되고 있다.	장애학생지원센터
+시설 및 서비스	F. 교육지원시설	4	만족도	교내식당의 직원들은 이용자에게 친절하게 대해준다.	총무팀
+시설 및 서비스	F. 교육지원시설	5	만족도	교내식당은 청결하게 관리되고 있다.	총무팀
+시설 및 서비스	F. 교육지원시설	6	만족도	교내식당의 메뉴는 가격대비 그 구성과 맛에 만족한다.	총무팀
+시설 및 서비스	F. 교육지원시설	7	만족도	대학의 복지시설이 적절하게 제공되고 있다.	총무팀
+시설 및 서비스	F. 교육지원시설	8	만족도	대학의 복지시설은 쾌적하게 유지 관리되고 있다.	총무팀
+시설 및 서비스	G. 정보자원 이용	1	만족도	대학 인터넷 서비스(속도 및 품질)는 충분히 제공되고 있다.	전산지원센터
+시설 및 서비스	G. 정보자원 이용	2	만족도	"종합정보시스템(학사, 현장 중심 교육 과정, 학생경력)의 서비스는 충분히 제공되고 있다."	전산지원센터
+시설 및 서비스	G. 정보자원 이용	3	만족도	"대학 홈페이지 서비스(디자인, 접근성, 컨텐츠)는 충분히 제공되고 있다."	전산지원센터
+시설 및 서비스	G. 정보자원 이용	4	만족도	"학과 홈페이지 서비스(디자인, 접근성, 컨텐츠)는 충분히 제공되고 있다."	전산지원센터
+대학구성원	H. 교원	1	만족도	교수는 강의 준비와 내용이 체계적이고 최신 트렌드를 반영한다.	교원
+대학구성원	H. 교원	2	만족도	교수는 학생들과 친밀한 관계를 유지하며 적극적으로 참여를 유도한다.	교원
+대학구성원	H. 교원	3	만족도	교수는 전공 분야에 대한 전문지식을 갖추고 있으며 강의 시간과 규정을 잘 준수한다.	교원
+대학구성원	H. 교원	4	만족도	교수는 학생들의 학습 이해를 돕기 위해 강의 계획서와 실험실습 계획서를 명확히 제공한다.	교원
+대학구성원	H. 교원	5	만족도	교수는 적절하게 면담 및 취업지도를 하고 있다.	교원
+대학구성원	I. 직원/조교	1	만족도	행정업무와 관련하여 직원/조교는 학생의 입장에서 설명하려고 노력한다.	직원
+대학구성원	I. 직원/조교	2	만족도	행정직원은 요청한 업무에 대해 친절하게 대응해준다.	직원
+대학구성원	I. 직원/조교	3	만족도	학과 내 조교는 요청한 업무에 대해 친절하게 대응해준다.	직원
+대학구성원	I. 직원/조교	4	만족도	요청한 행정서비스 처리는 신속하고 정확하게 처리되고 있다.	직원
+대학구성원	I. 직원/조교	5	만족도	행정직원은 담당업무에 대해 숙련된 모습을 보인다.	직원
+학생지원	J. 학생지원	1	만족도	학과의 선/후배 및 동기들과 원만한 관계를 유지하고 있다.	학생복지지원팀
+학생지원	J. 학생지원	2	만족도	대학에서 운영하고 있는 장학금 종류는 적절하다.	학생복지지원팀
+학생지원	J. 학생지원	3	만족도	대학에서 운영하고 있는 교내장학금 금액에 대해 만족한다.	학생복지지원팀
+학생지원	J. 학생지원	4	만족도	대학의 장학금 지급 방식(일정 포함)에 대해 만족한다.	학생복지지원팀
+학생지원	K. 학생활동지원	1	만족도	지도교수의 상담 및 지도는 대학생활에 도움이 되었다.	학생상담센터
+학생지원	K. 학생활동지원	2	만족도	나의 역량을 개발하는데 필요한 프로그램이 제공되었다.	대구보건대학교
+학생지원	K. 학생활동지원	3	만족도	"학생회, 동아리 등 다양한 학생자치활동이 운영중이다."	학생복지지원팀
+학생상담센터	L. 참여 요구도	각 항목	요구도	신입생 대상 학교적응 관련 프로그램	학생상담센터
+학생상담센터	L. 참여 요구도	각 항목	요구도	개인상담(진로 및 취업상담)	학생상담센터
+학생상담센터	L. 참여 요구도	각 항목	요구도	적성·직업 흥미검사 실시 및 결과해석 상담	학생상담센터
+학생상담센터	L. 참여 요구도	각 항목	요구도	진로 탐색 프로그램(전공 안에서 나에게 맞는 직업찾기)	학생상담센터
+학생상담센터	L. 참여 요구도	각 항목	요구도	개인상담(고민상담)	학생상담센터
+학생상담센터	L. 참여 요구도	각 항목	요구도	성격유형검사	학생상담센터
+학생상담센터	L. 참여 요구도	각 항목	요구도	의사소통역량강화 집단상담(그룹별 상담프로그램 진행)	학생상담센터
+학생상담센터	L. 참여 요구도	각 항목	요구도	"퍼스널컬러, 미술치료, 반려화분만들기"	학생상담센터
+학생상담센터	M. 의견수렴	M1	기본정보	학교 내에 상담센터(미래관 1층)가 있다는 것을 알고 있습니까?	학생상담센터
+학생상담센터	M. 의견수렴	M2	기본정보	상담센터에서 실시하는 프로그램에 참여한 적이 있습니까?	학생상담센터
+학생상담센터	M. 의견수렴	M3	기본정보	학생상담센터는 어떤 경로로 알게 되었습니까?	학생상담센터
+학생상담센터	N. 만족도 조사	1	만족도	상담센터에서 운영하는 프로그램에 대해 전반적으로 만족한다.	학생상담센터
+학생상담센터	N. 만족도 조사	2	만족도	"상담센터(미래관 1층) 시설과 공간(상담실, 소강의실)에 만족한다."	학생상담센터
+학생상담센터	N. 만족도 조사	3	만족도	상담 진행 시 학생의 입장에서 이해하며 친절하게 응대하고 있다.	학생상담센터
+산학협력	O. 취업지원	1	만족도	우리 대학의 취업지원 프로그램이 학생들의 취업 준비에 도움이 되도록 적절하게 개설되어 있다.	학생취업지원팀
+산학협력	O. 취업지원	2	만족도	우리 대학의 진로탐색 프로그램(진로적성검사 등)이 학생들의 진로 탐색에 효과적으로 운영되고 있다.	학생취업지원팀
+산학협력	O. 취업지원	3	만족도	각종 자격증 정보가 학생들에게 적절하게 제공되고 있다.	학생취업지원팀
+산학협력	O. 취업지원	4	만족도	각종 국가시험 면허증 정보가 학생들에게 적절하게 제공되고 있다.	교수학습지원센터
+산학협력	O. 취업지원	5	만족도	"채용 정보(학교 추천, 외부 공고 등)가 학생들에게 적절하게 제공되고 있다."	학생취업지원팀
+산학협력	O. 취업지원	6	만족도	우리 대학의 취업지원 프로그램이 학생들의 요구를 반영하며 효율적으로 운영되고 있다.	학생취업지원팀
+산학협력	P. 현장실습	1	만족도	현장실습에 대한 지원/운영이 원활하다.	현장실습지원센터
+산학협력	P. 현장실습	2	만족도	"현장실습 업체는 우리대학을 잘 알고 있으며, 필요한 교육내용을 충실히 제공하고 있다."	현장실습지원센터
+산학협력	P. 현장실습	3	만족도	"현장 중심 교육 과정 및 현장직무 프로그램(실습, 인턴십, 견학, 탐방 등)은 현장 적응력 및 실무능력 향상에 도움이 된다."	현장실습지원센터
+산학협력	P. 현장실습	4	만족도	우리대학은 다양한 산업체와 면밀한 협력관계를 갖추고 있다.	현장실습지원센터
+산학협력	Q. 창업지원	1	만족도	우리 대학의 창업지원 프로그램은 다양하게 개설되어 있다.	창업교육센터
+산학협력	Q. 창업지원	2	만족도	창업지원 프로그램은 효율적으로 운영되고 있다.	창업교육센터
+산학협력	Q. 창업지원	3	만족도	창업지원 프로그램 내용은 취업 및 창업 준비에 도움이 된다.	창업교육센터
+사회봉사/국제화	R. 사회봉사	1	만족도	"대학의 사회봉사 프로그램(전공연계, 헌혈축제, 해외, 농촌, 의료, 교육, 지역행사 지원 등의 봉사활동)에 대해 알고 있다."	한달빛봉사단
+사회봉사/국제화	R. 사회봉사	2	만족도	대학의 사회봉사 프로그램 운영이 원활하게 이루어지고 있다.	한달빛봉사단
+사회봉사/국제화	R. 사회봉사	3	만족도	대학은 사회봉사 프로그램에 적극적인 지원을 하고 있다.	한달빛봉사단
+사회봉사/국제화	R. 사회봉사	4	만족도	대학에서 사회봉사 프로그램을 운영한다면 참여할 의향이 있다.	한달빛봉사단
+사회봉사/국제화	S. 국제화	1	만족도	"재학 중 교환학생, 어학연수, 현장실습을 위해 해외대학에 다녀올 의향이 있다."	국제교육팀
+사회봉사/국제화	S. 국제화	2	만족도	"대학은 해외 교환학생, 어학연수, 현장실습 지원정보(일정, 자격기준 등)를 제공하는 것을 알고 있다."	국제교육팀
+사회봉사/국제화	S. 국제화	3	만족도	"대학은 국제화 관련 다양한 프로그램(외국어강좌, 리더양성캠프, 해외취업 등)을 제공하고 있다."	국제교육팀
+사회봉사/국제화	S. 국제화	4	만족도	외국인 유학생 수 증가는 우리대학의 글로벌화에 긍정적이라고 생각한다.	국제교육팀
+전반적 만족도	T. 전반적 만족도	1	만족도	우리 대학에 대한 자부심과 애교심이 있다.	대구보건대학교
+전반적 만족도	T. 전반적 만족도	2	만족도	"우리 대학이 우수한 인재를 양성하며, 홍보에 노력한다."	대구보건대학교
+전반적 만족도	T. 전반적 만족도	3	만족도	나는 우리 대학에 전반적으로 만족한다.	대구보건대학교
+전반적 만족도	T. 전반적 만족도	4	만족도	우리 학과에 대한 자부심과 애교심이 있다.	대구보건대학교
+전반적 만족도	T. 전반적 만족도	5	만족도	"우리 학과는 우수한 인재를 양성하며, 홍보에 노력한다."	대구보건대학교
+전반적 만족도	T. 전반적 만족도	6	만족도	나는 우리 학과에 전반적으로 만족한다.	학과
+전반적 만족도	T. 전반적 만족도	T1	만족도	귀하께서는 졸업할 때까지 우리 대학에 다닐 의향은 어느정도 입니까?	대구보건대학교
+전반적 만족도	T. 전반적 만족도	T2	추천도	"본인과 가까운 지인이 전문대학 진학 희망 시, 대구보건대학교를 추천할 생각이 있습니까?"	대구보건대학교
+대학 발전 계획	U. 대학 발전	U0	기본정보	귀하께서는 본교의 비전 및 발전목표에 대해 얼마나 알고 계십니까?	대학성과관리팀
+대학 발전 계획	U. 대학 발전	1	만족도	"우리대학은 미래수요 맞춤 교육과정 운영, 학사제도 유연화 등을 통해 교육 역량을 강화하고 있다."	대학성과관리팀
+대학 발전 계획	U. 대학 발전	2	만족도	우리대학은 국내외 유수 대학과의 네트워크를 견고히 함으로써 글로벌 인재 양성을 위한 노력을 하고 있다.	대학성과관리팀
+대학 발전 계획	U. 대학 발전	3	만족도	우리대학은 학생들의 취·창업경쟁력을 강화하고자 맞춤형 진로상담 및 경력개발을 지원하고 있다.	대학성과관리팀
+대학 발전 계획	U. 대학 발전	4	만족도	우리대학은 스마트 관리 시스템을 통해 학생 중심의 친환경 안전 캠퍼스를 구축하고 있다.	대학성과관리팀
+대학 발전 계획	U. 대학 발전	5	만족도	우리대학은 실용학문 역량을 강화하고자 산학협력 고도화 및 지역사회 친화형 프로그램을 활성화하고 있다.	대학성과관리팀
+대학 발전 계획	U. 대학 발전	6	만족도	우리 대학의 발전목표는 명확하고 구체적이다.	대학성과관리팀
+대학 발전 계획	U. 대학 발전	7	만족도	우리 대학의 발전목표는 현재의 주요 교육정책 및 미래산업 등을 균형 있게 잘 반영하고 있다.	대학성과관리팀
+대학 발전 계획	U. 대학 발전	8	만족도	우리 대학의 발전목표는 여러 방식을 통하여 수시로 구성원에게 공유되고 있다.	대학성과관리팀
+대학 발전 계획	U. 대학 발전	9	만족도	우리 대학은 발전목표 달성을 위해 지속적으로 노력하고 있다.	대학성과관리팀
+혁신지원사업	V. 혁신지원사업	1	만족도	"프로그램 안내(일정, 교육내용 등)에 대해 만족한다."	혁신지원사업운영팀
+혁신지원사업	V. 혁신지원사업	2	만족도	"프로그램의 실시 횟수와 운영방식이 적절하며, 내용이 알기 쉽고 명확하게 전달된다."	혁신지원사업운영팀
+혁신지원사업	V. 혁신지원사업	3	만족도	"프로그램이 적극적인 참여 유도를 위해 적절하게 운영되고, 담당 강사가 충분한 지식과 기술을 갖추고 있으며, 학생의 입장을 이해하고 맞춤형 지도를 지원한다."	혁신지원사업운영팀
+혁신지원사업	V. 혁신지원사업	4	만족도	"프로그램이 교육부 혁신지원사업의 목적에 부합하며, 개인역량(기초지식, 인성 등) 증진과 취·창업역량 강화를 돕는다."	혁신지원사업운영팀
+혁신지원사업	V. 혁신지원사업	5	만족도	"프로그램 이용 후 만족도가 높으며, 추천 및 재참여 의향이 있다."	혁신지원사업운영팀
+혁신지원사업	V. 혁신지원사업	V1	만족도	혁신지원사업 프로그램 참여를 통해 가장 향상된 역량(능력)은 무엇입니까?	혁신지원사업운영팀
+혁신지원사업	V. 혁신지원사업	V2	요구도	다음 중 우리대학에서 혁신이 가장 필요하다고 생각되는 분야는 무엇입니까?	혁신지원사업운영팀
+혁신지원사업	V. 혁신지원사업	V3	요구도	우리 대학의 혁신지원사업 프로그램 중 추가 개설 혹은 확대가 가장 필요하다고 생각하시는 영역 2가지를 선택해주시기 바랍니다.	혁신지원사업운영팀
+혁신지원사업	V. 혁신지원사업	V4	요구도	향후 개발될 혁신지원사업 프로그램은 어떤 형태로 개발되는 것이 가장 효과적이라고 생각하십니까?	혁신지원사업운영팀
+혁신지원사업	V. 혁신지원사업	V5	요구도	추후 혁신지원사업에 제안하는 프로그램이 있다면 무엇이든 좋으니 제안해 주시기 바랍니다.	혁신지원사업운영팀
+건의사항	W. 건의사항	-	요구도	학교에 대한 건의사항 및 요구사항이 있다면 자유롭게 말씀해 주십시오.	대구보건대학교`.split('\n').map(line => line.split('\t'));
+
+            const renderTable = (data) => {
+                tableBody.innerHTML = '';
+                let currentArea = null;
+
+                data.forEach(row => {
+                    if (!row || row.length < 1) return;
+
+                    const area = row[0] ? String(row[0]).trim() : '';
+                    if (area && area !== currentArea) {
+                        currentArea = area;
+                        const groupHeaderRow = document.createElement('tr');
+                        groupHeaderRow.className = 'bg-blue-100 border-y border-blue-200';
+                        groupHeaderRow.innerHTML = `<td colspan="8" class="px-6 py-4 font-bold text-blue-900 text-lg">${currentArea}</td>`;
+                        tableBody.appendChild(groupHeaderRow);
+                    }
+
+                    const newRow = document.createElement('tr');
+                    newRow.className = 'bg-white border-b hover:bg-gray-50';
+                    
+                    let rowHtml = '';
+                    for(let i=0; i<6; i++) {
+                        rowHtml += `<td class="px-6 py-5 text-gray-800 text-base leading-relaxed">${row[i] || ''}</td>`;
+                    }
+
+                    const options = ['유지', '삭제', '수정'];
+                    let optionsHtml = '';
+                    options.forEach(opt => {
+                        optionsHtml += `<option value="${opt}">${opt}</option>`;
+                    });
+                    rowHtml += `<td class="px-6 py-5">
+                        <select class="form-select modification-type-select">${optionsHtml}</select>
+                    </td>`;
+
+                    rowHtml += `<td class="px-6 py-5">
+                        <textarea class="form-textarea modification-content-input" disabled placeholder="'수정' 선택 시 활성화"></textarea>
+                    </td>`;
+
+                    newRow.innerHTML = rowHtml;
+                    tableBody.appendChild(newRow);
+                });
+            };
+
+            const populateDepartmentFilter = () => {
+                const departments = new Set();
+                fullSurveyData.forEach(row => {
+                    if (row && row[5]) { // Column 5 is '관련부서'
+                        departments.add(row[5].trim());
+                    }
+                });
+
+                departmentFilter.innerHTML = '<option value="all">전체 부서</option>';
+                const sortedDepartments = Array.from(departments).sort();
+                sortedDepartments.forEach(dept => {
+                    const option = document.createElement('option');
+                    option.value = dept;
+                    option.textContent = dept;
+                    departmentFilter.appendChild(option);
+                });
+            };
+            
+            const updateButtonStates = () => {
+                const selectedDept = departmentFilter.value;
+                const isAllSelected = selectedDept === 'all';
+                addQuestionBtn.disabled = isAllSelected;
+                exportBtn.disabled = isAllSelected;
+                addQuestionBtnBottom.disabled = isAllSelected;
+                exportBtnBottom.disabled = isAllSelected;
+            };
+
+            departmentFilter.addEventListener('change', () => {
+                const selectedDept = departmentFilter.value;
+                let filteredData;
+
+                if (selectedDept === 'all') {
+                    filteredData = fullSurveyData;
+                } else {
+                    filteredData = fullSurveyData.filter(row => row && row[5] && row[5].trim() === selectedDept);
+                }
+                renderTable(filteredData);
+                updateButtonStates();
+            });
+            
+            const addQuestionAction = () => {
+                const newRow = document.createElement('tr');
+                newRow.className = 'bg-yellow-50 border-b hover:bg-yellow-100';
+
+                const selectedDept = departmentFilter.value;
+
+                newRow.innerHTML = `
+                    <td class="px-6 py-5 text-gray-500">-</td>
+                    <td class="px-6 py-5 text-gray-500">-</td>
+                    <td class="px-6 py-5 text-gray-500">-</td>
+                    <td class="px-6 py-5 text-gray-500">-</td>
+                    <td class="px-6 py-5 text-gray-500">-</td>
+                    <td class="px-6 py-5 text-gray-800 text-base leading-relaxed">${selectedDept}</td>
+                    <td class="px-6 py-5">
+                        <select class="form-select modification-type-select" disabled>
+                            <option value="추가" selected>추가</option>
+                        </select>
+                    </td>
+                    <td class="px-6 py-5">
+                        <textarea class="form-textarea modification-content-input" placeholder="추가할 설문 문항 내용을 입력하세요"></textarea>
+                    </td>
+                `;
+                tableBody.appendChild(newRow);
+                newRow.querySelector('.modification-content-input').focus();
+            };
+
+            const exportAction = () => {
+                const departmentName = departmentFilter.value;
+                if (departmentName === 'all') return;
+
+                const headers = ["영역", "세부 항목", "문항 번호", "문항구분", "설문 문항", "관련부서", "수정구분", "수정내용"];
+                const dataForExport = [headers];
+
+                for (const row of tableBody.children) {
+                    if (row.querySelector('td[colspan="8"]')) continue; // Skip group headers
+
+                    const rowData = [];
+                    const tds = row.querySelectorAll('td');
+                    
+                    for (let i = 0; i < 6; i++) {
+                        rowData.push(tds[i].textContent.trim());
+                    }
+                    
+                    const select = tds[6].querySelector('select');
+                    rowData.push(select.value);
+                    
+                    const textarea = tds[7].querySelector('textarea');
+                    rowData.push(textarea.value);
+
+                    dataForExport.push(rowData);
+                }
+
+                const ws = XLSX.utils.aoa_to_sheet(dataForExport);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, '설문문항 수정요청');
+
+                const fileName = `${departmentName}_재학생만족도 설문문항 수정요청.xlsx`;
+                XLSX.writeFile(wb, fileName);
+            };
+
+            addQuestionBtn.addEventListener('click', addQuestionAction);
+            addQuestionBtnBottom.addEventListener('click', addQuestionAction);
+            exportBtn.addEventListener('click', exportAction);
+            exportBtnBottom.addEventListener('click', exportAction);
+
+            // Initial setup
+            populateDepartmentFilter();
+            renderTable(fullSurveyData);
+            updateButtonStates();
+
+
+            // Table interaction logic
+            tableBody.addEventListener('change', function(event) {
+                if (event.target && event.target.classList.contains('modification-type-select')) {
+                    const select = event.target;
+                    const selectedValue = select.value;
+                    const contentInput = select.closest('tr').querySelector('.modification-content-input');
+
+                    if (contentInput) {
+                        if (selectedValue === '수정') {
+                            contentInput.disabled = false;
+                            contentInput.focus();
+                        } else {
+                            contentInput.disabled = true;
+                            contentInput.value = '';
+                        }
+                    }
+                }
+            });
         });
     </script>
 </body>
 </html>
+
