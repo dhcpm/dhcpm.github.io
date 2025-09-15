@@ -64,30 +64,83 @@
     <main class="pt-header flex-grow">
         <div class="bg-white">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-                <div class="text-center max-w-5xl mx-auto">
-                    <h1 class="text-3xl font-bold text-gray-900 sm:text-4xl">교육수요자 만족도 조사</h1>
-                    <p class="mt-4 text-lg text-gray-600">
-                        원하시는 조사 페이지로 이동해주세요.
-                    </p>
+                <div class="max-w-5xl mx-auto">
+                    <div class="text-center">
+                        <h1 class="text-3xl font-bold text-gray-900 sm:text-4xl">교육수요자 만족도 조사</h1>
+                        <p class="mt-4 text-lg text-gray-600">
+                            원하시는 조사 페이지로 이동해주세요.
+                        </p>
+                    </div>
 
-                    <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
-                        <!-- 재학생 설문지 의견수렴 -->
-                        <a href="../survey/survey_pg_01.html" class="group block p-8 bg-blue-50 rounded-2xl shadow-sm hover:shadow-xl hover:bg-white transition-all duration-300 border border-transparent hover:border-blue-200">
-                            <h2 class="text-2xl font-bold text-blue-800">재학생 설문지 의견수렴</h2>
-                            <p class="mt-2 text-gray-600">재학생 대상 설문조사 및 의견수렴 페이지로 이동합니다.</p>
-                            <div class="mt-4 font-semibold text-blue-600 group-hover:underline">
-                                바로가기 &rarr;
-                            </div>
-                        </a>
+                    <!-- 의견수렴 Section -->
+                    <div class="mt-12 text-left">
+                        <h2 class="text-2xl font-bold text-gray-800 border-b-2 border-gray-200 pb-3 mb-6">의견수렴</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <!-- 재학생 만족도 설문지 의견수렴 (부서) -->
+                            <a href="../survey/survey_pg_01.html" class="group block p-8 bg-blue-50 rounded-2xl shadow-sm hover:shadow-xl hover:bg-white transition-all duration-300 border border-transparent hover:border-blue-200">
+                                <h3 class="text-2xl font-bold text-blue-800">재학생 만족도 설문지 의견수렴 (부서)</h3>
+                                <p class="mt-2 text-gray-600">부서 관련 재학생 만족도 설문조사 및 의견수렴 페이지로 이동합니다.</p>
+                                <div class="mt-4 font-semibold text-blue-600 group-hover:underline">
+                                    바로가기 &rarr;
+                                </div>
+                            </a>
+                             <!-- 재학생 만족도 설문지 의견수렴 (기타) -->
+                            <a href="../survey/survey_pg_06.html" class="group block p-8 bg-sky-50 rounded-2xl shadow-sm hover:shadow-xl hover:bg-white transition-all duration-300 border border-transparent hover:border-sky-200">
+                                <h3 class="text-2xl font-bold text-sky-800">재학생 만족도 설문지 의견수렴 (기타)</h3>
+                                <p class="mt-2 text-gray-600">기타 의견수렴을 위한 재학생 만족도 설문조사 페이지로 이동합니다.</p>
+                                <div class="mt-4 font-semibold text-sky-600 group-hover:underline">
+                                    바로가기 &rarr;
+                                </div>
+                            </a>
+                        </div>
+                    </div>
 
-                        <!-- 산업체 만족도 조사 대상자 선정 -->
-                        <a href="../survey/survey_pg_02.html" class="group block p-8 bg-green-50 rounded-2xl shadow-sm hover:shadow-xl hover:bg-white transition-all duration-300 border border-transparent hover:border-green-200">
-                            <h2 class="text-2xl font-bold text-green-800">산업체 만족도 조사 대상자 선정</h2>
-                            <p class="mt-2 text-gray-600">산업체 만족도 조사 대상자 선정 페이지로 이동합니다.</p>
-                            <div class="mt-4 font-semibold text-green-600 group-hover:underline">
-                                바로가기 &rarr;
-                            </div>
-                        </a>
+                    <!-- 만족도 조사 Section -->
+                    <div class="mt-12 text-left">
+                        <h2 class="text-2xl font-bold text-gray-800 border-b-2 border-gray-200 pb-3 mb-6">만족도 조사</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            <!-- 산업체 만족도 조사 대상자 선정 (학과용) -->
+                            <a href="../survey/survey_pg_02.html" class="group block p-8 bg-green-50 rounded-2xl shadow-sm hover:shadow-xl hover:bg-white transition-all duration-300 border border-transparent hover:border-green-200">
+                                <h3 class="text-2xl font-bold text-green-800">산업체 만족도 조사 대상자 선정 (학과용)</h3>
+                                <p class="mt-2 text-gray-600">산업체 만족도 조사 대상자 선정 페이지로 이동합니다.</p>
+                                <div class="mt-4 font-semibold text-green-600 group-hover:underline">
+                                    바로가기 &rarr;
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- 요구도 조사 Section -->
+                    <div class="mt-12 text-left">
+                        <h2 class="text-2xl font-bold text-gray-800 border-b-2 border-gray-200 pb-3 mb-6">요구도 조사</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            <!-- 재학생 FGI(심층면담) 요구도 조사 신청 -->
+                            <a href="../survey/survey_pg_03.html" class="group block p-8 bg-purple-50 rounded-2xl shadow-sm hover:shadow-xl hover:bg-white transition-all duration-300 border border-transparent hover:border-purple-200">
+                                <h3 class="text-2xl font-bold text-purple-800">재학생 FGI 요구도 조사 신청</h3>
+                                <p class="mt-2 text-gray-600">재학생 FGI(심층면담) 요구도 조사 신청 페이지로 이동합니다.</p>
+                                <div class="mt-4 font-semibold text-purple-600 group-hover:underline">
+                                    바로가기 &rarr;
+                                </div>
+                            </a>
+
+                            <!-- 교직원 FGI(심층면담) 요구도 조사 신청 -->
+                            <a href="../survey/survey_pg_04.html" class="group block p-8 bg-yellow-50 rounded-2xl shadow-sm hover:shadow-xl hover:bg-white transition-all duration-300 border border-transparent hover:border-yellow-200">
+                                <h3 class="text-2xl font-bold text-yellow-800">교직원 FGI 요구도 조사 신청</h3>
+                                <p class="mt-2 text-gray-600">교직원 FGI(심층면담) 요구도 조사 신청 페이지로 이동합니다.</p>
+                                <div class="mt-4 font-semibold text-yellow-600 group-hover:underline">
+                                    바로가기 &rarr;
+                                </div>
+                            </a>
+
+                            <!-- 산업체 FGI(심층면담) 요구도 조사 신청 -->
+                            <a href="../survey/survey_pg_05.html" class="group block p-8 bg-rose-50 rounded-2xl shadow-sm hover:shadow-xl hover:bg-white transition-all duration-300 border border-transparent hover:border-rose-200">
+                                <h3 class="text-2xl font-bold text-rose-800">산업체 FGI 요구도 조사 신청</h3>
+                                <p class="mt-2 text-gray-600">산업체 FGI(심층면담) 요구도 조사 신청 페이지로 이동합니다.</p>
+                                <div class="mt-4 font-semibold text-rose-600 group-hover:underline">
+                                    바로가기 &rarr;
+                                </div>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
