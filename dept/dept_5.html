@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>부서자체평가 평가지 (환류도) - 대구보건대학교 대학성과관리팀</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+        }
+        .pt-header {
+            padding-top: 64px; /* 헤더 높이만큼 */
+        }
+        .modal-content {
+            max-height: 80vh;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <header id="header" class="bg-white/80 backdrop-blur-lg shadow-sm fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo and Team Name -->
+                <div class="flex-shrink-0 flex items-center">
+                    <img class="h-8 w-auto" src="../img/logo.png" alt="대구보건대학교 로고">
+                    <a href="../index.html" class="ml-3 text-xl font-bold text-gray-800 hover:text-blue-700">대학성과관리팀</a>
+                </div>
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex items-center space-x-5">
+                    <a href="../gongsi/gongsi_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">대학정보공시</a>
+                    <a href="../buseo/buseo_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">부서자체평가</a>
+                    <a href="../seonggwa/seonggwa_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">성과분석</a>
+                    <a href="../survey/survey_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">교육수요자 만족도 조사</a>
+                    <a href="../dept/dept_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">부서운영</a>
+                    <a href="../edu/edu_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">교육</a>
+                </nav>
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
+                        <span class="sr-only">메뉴 열기</span>
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="../gongsi/gongsi_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">대학정보공시</a>
+                <a href="../buseo/buseo_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">부서자체평가</a>
+                <a href="../seonggwa/seonggwa_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">성과분석</a>
+                <a href="../survey/survey_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">교육수요자 만족도 조사</a>
+                <a href="../dept/dept_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">부서운영</a>
+                <a href="../edu/edu_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">교육</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-header flex-grow">
+        <div class="bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                <div class="text-center">
+                    <h1 class="text-3xl font-bold text-gray-900 sm:text-4xl">부서자체평가 평가지(평가항목 5)</h1>
+                    <p class="mt-4 text-lg text-gray-600">평가 결과가 담긴 엑셀(CSV, XLSX) 파일을 업로드하여 결과를 확인하세요.</p>
+                </div>
+
+                <!-- File Upload Section -->
+                <div class="mt-10 max-w-lg mx-auto">
+                    <div id="upload-box" class="flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                        <div class="space-y-1 text-center">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <div class="flex text-sm text-gray-600">
+                                <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                                    <span>파일들 업로드</span>
+                                    <input id="file-upload" name="file-upload" type="file" class="sr-only" accept=".csv, .xlsx, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" multiple>
+                                </label>
+                                <p class="pl-1">또는 파일들을 드래그하세요.</p>
+                            </div>
+                            <p id="file-name" class="text-xs text-gray-500">CSV 또는 XLSX 파일 (최대 20개)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Result Controls Container -->
+                <div id="result-controls-container" class="mt-12 hidden">
+                     <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-md">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-semibold text-gray-800">업로드 결과</h2>
+                            <button id="clear-button" class="text-sm bg-red-500 text-white font-bold py-2 px-3 rounded-lg hover:bg-red-600 transition-colors">
+                                목록 지우기
+                            </button>
+                        </div>
+                        <p id="upload-status" class="text-center text-gray-600 mb-6"></p>
+                        <div class="flex justify-center space-x-4">
+                            <button id="view-scores-button" class="w-full bg-blue-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-600 transition-colors">평가점수 보기</button>
+                            <button id="view-suggestions-button" class="w-full bg-green-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>제언사항 보기</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Modal -->
+    <div id="data-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+        <div class="relative top-20 mx-auto p-5 border w-full max-w-6xl shadow-lg rounded-md bg-white">
+            <div class="mt-3">
+                 <div class="flex justify-between items-center mb-4">
+                    <h3 id="modal-title" class="text-xl leading-6 font-medium text-gray-900">데이터 보기</h3>
+                    <div class="flex items-center space-x-4">
+                         <button id="export-excel-button" class="bg-teal-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-teal-600 transition-colors text-sm">
+                            Excel 반출
+                        </button>
+                        <button id="modal-close-button" class="text-gray-400 hover:text-gray-600">
+                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div id="modal-content" class="modal-content overflow-y-auto">
+                    <!-- Table will be injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white">
+        <div class="container mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-sm">&copy; 2025 Daegu Health College. All Rights Reserved.</p>
+            <p class="text-xs text-gray-400 mt-2">대학성과관리팀</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // --- Global State ---
+            let allScores = [];
+            let allSuggestions = [];
+            let scoreHeaders = null;
+            let processedFileCount = 0;
+            let currentModalDataForExport = [];
+
+            // --- DOM Elements ---
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const hamburgerIcon = document.getElementById('hamburger-icon');
+            const closeIcon = document.getElementById('close-icon');
+            const fileUploadInput = document.getElementById('file-upload');
+            const fileNameDisplay = document.getElementById('file-name');
+            const uploadBox = document.getElementById('upload-box');
+            const resultControlsContainer = document.getElementById('result-controls-container');
+            const uploadStatus = document.getElementById('upload-status');
+            const clearButton = document.getElementById('clear-button');
+            const viewScoresButton = document.getElementById('view-scores-button');
+            const viewSuggestionsButton = document.getElementById('view-suggestions-button');
+            const modal = document.getElementById('data-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalContent = document.getElementById('modal-content');
+            const modalCloseButton = document.getElementById('modal-close-button');
+            const exportExcelButton = document.getElementById('export-excel-button');
+
+
+            // --- Event Listeners ---
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                hamburgerIcon.classList.toggle('hidden');
+                closeIcon.classList.toggle('hidden');
+            });
+
+            fileUploadInput.addEventListener('change', (e) => handleFiles(e.target.files));
+
+            uploadBox.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadBox.classList.add('border-blue-500', 'bg-blue-50');
+            });
+            uploadBox.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                uploadBox.classList.remove('border-blue-500', 'bg-blue-50');
+            });
+            uploadBox.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadBox.classList.remove('border-blue-500', 'bg-blue-50');
+                handleFiles(e.dataTransfer.files);
+            });
+            
+            clearButton.addEventListener('click', () => {
+                allScores = [];
+                allSuggestions = [];
+                scoreHeaders = null;
+                processedFileCount = 0;
+                currentModalDataForExport = [];
+                resultControlsContainer.classList.add('hidden');
+                fileNameDisplay.textContent = 'CSV 또는 XLSX 파일 (최대 20개)';
+                fileUploadInput.value = ''; 
+            });
+
+            viewScoresButton.addEventListener('click', () => {
+                 const extraCols = { '평가항목': 'evaluationItem', '평가위원': 'evaluator' };
+                 generateTable('전체 평가점수', scoreHeaders, allScores, extraCols);
+                 openModal();
+            });
+
+            viewSuggestionsButton.addEventListener('click', () => {
+                const headers = ['부서명', '제언사항', '평가항목', '평가위원'];
+                generateTable('전체 제언사항', headers, allSuggestions, {});
+                openModal();
+            });
+            
+            exportExcelButton.addEventListener('click', () => {
+                if (currentModalDataForExport.length === 0) {
+                    alert('내보낼 데이터가 없습니다.');
+                    return;
+                }
+                const worksheet = XLSX.utils.json_to_sheet(currentModalDataForExport);
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+                const fileName = `${modalTitle.textContent.replace(/\s/g, '_')}.xlsx`;
+                XLSX.writeFile(workbook, fileName);
+            });
+
+            modalCloseButton.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) { closeModal(); }
+            });
+
+            // --- Modal Functions ---
+            function openModal() { modal.classList.remove('hidden'); }
+            function closeModal() { modal.classList.add('hidden'); }
+            
+            // --- Core Logic ---
+            const handleFiles = (files) => {
+                if (!files || files.length === 0) {
+                    alert('파일을 선택해주세요.');
+                    return;
+                }
+                if (files.length > 20) {
+                    alert('한 번에 최대 20개의 파일만 업로드할 수 있습니다.');
+                    return;
+                }
+
+                fileNameDisplay.textContent = `${files.length}개의 파일 처리 중...`;
+
+                const fileReadPromises = Array.from(files).map(file => {
+                    return new Promise((resolve, reject) => {
+                        const fileExtension = file.name.split('.').pop().toLowerCase();
+                        if (fileExtension === 'csv') {
+                            Papa.parse(file, {
+                                encoding: "EUC-KR",
+                                complete: (results) => resolve(results.data),
+                                error: (err) => reject(new Error(`CSV 파싱 오류: ${file.name}`))
+                            });
+                        } else if (fileExtension === 'xlsx') {
+                            const reader = new FileReader();
+                            reader.onload = (e) => {
+                                try {
+                                    const data = new Uint8Array(e.target.result);
+                                    const workbook = XLSX.read(data, { type: 'array' });
+                                    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                                    resolve(XLSX.utils.sheet_to_json(worksheet, { header: 1 }));
+                                } catch (err) {
+                                    reject(new Error(`XLSX 처리 오류: ${file.name}`));
+                                }
+                            };
+                            reader.onerror = () => reject(new Error(`파일 읽기 오류: ${file.name}`));
+                            reader.readAsArrayBuffer(file);
+                        } else {
+                            reject(new Error(`지원하지 않는 파일 형식: ${file.name}`));
+                        }
+                    });
+                });
+
+                Promise.all(fileReadPromises)
+                    .then(allFilesData => {
+                        allFilesData.forEach(processAndStoreData);
+                        updateControls();
+                        fileNameDisplay.textContent = 'CSV 또는 XLSX 파일 (최대 20개)';
+                    })
+                    .catch(error => {
+                        console.error("파일 처리 중 오류 발생:", error);
+                        alert(error.message);
+                        fileNameDisplay.textContent = '오류 발생. 다시 시도해주세요.';
+                    });
+            };
+
+            const processAndStoreData = (data) => {
+                if (!data || data.length < 7) return;
+
+                processedFileCount++;
+                let evaluator = 'N/A', evaluationItem = 'N/A', department = 'N/A';
+                for (const row of data) {
+                    if (row && row[0]) {
+                        const key = String(row[0]).trim();
+                        const value = row[1] ? String(row[1]).trim() : 'N/A';
+                        if (key === '평가위원') evaluator = value;
+                        if (key === '평가항목') evaluationItem = value;
+                        if (key === '평가부서') department = value;
+                    }
+                }
+                
+                let scoreHeaderIndex = data.findIndex(row => row && String(row[0]).trim() === '부서명');
+                let suggestionHeaderIndex = data.findIndex(row => row && String(row[0]).trim() === '제언사항');
+                
+                if (scoreHeaderIndex > -1) {
+                    if (!scoreHeaders) scoreHeaders = data[scoreHeaderIndex];
+                    let scoreEndIndex = suggestionHeaderIndex > -1 ? suggestionHeaderIndex : data.length;
+                    for (let i = scoreHeaderIndex + 1; i < scoreEndIndex; i++) {
+                        const row = data[i];
+                        if (!row || !row[0] || String(row[0]).trim() === '총계' || row.length === 0) break;
+                        allScores.push({ rowData: row, evaluationItem, evaluator });
+                    }
+                }
+
+                if (suggestionHeaderIndex > -1) {
+                    let suggestionTextLines = [];
+                    for (let i = suggestionHeaderIndex + 1; i < data.length; i++) {
+                        const row = data[i];
+                        if (!row || !row[0] || String(row[0]).trim() === '') break;
+                        suggestionTextLines.push(String(row[0]).trim());
+                    }
+
+                    if (suggestionTextLines.length > 0) {
+                        const fullSuggestionText = suggestionTextLines.join('\n');
+                        allSuggestions.push({
+                            department: department,
+                            suggestion: fullSuggestionText,
+                            evaluationItem: evaluationItem,
+                            evaluator: evaluator
+                        });
+                    }
+                }
+            };
+
+            const updateControls = () => {
+                if (processedFileCount === 0) return;
+
+                uploadStatus.textContent = `총 ${processedFileCount}개의 파일이 로드되었습니다. (평가점수: ${allScores.length}건, 제언사항: ${allSuggestions.length}건)`;
+                
+                if (allSuggestions.length > 0) {
+                    viewSuggestionsButton.disabled = false;
+                } else {
+                    viewSuggestionsButton.disabled = true;
+                }
+                
+                resultControlsContainer.classList.remove('hidden');
+            };
+
+            const generateTable = (title, headers, data, extraCols) => {
+                modalTitle.textContent = title;
+                modalContent.innerHTML = '';
+                currentModalDataForExport = [];
+
+                if (!headers || data.length === 0) {
+                    modalContent.innerHTML = '<p class="text-center text-gray-500">표시할 데이터가 없습니다.</p>';
+                    return;
+                }
+
+                const tableWrapper = document.createElement('div');
+                tableWrapper.className = 'overflow-x-auto';
+                
+                const table = document.createElement('table');
+                table.className = 'min-w-full divide-y divide-gray-200';
+                
+                const thead = document.createElement('thead');
+                thead.className = 'bg-gray-100';
+                const headerRow = document.createElement('tr');
+
+                let headerHtml = '';
+                let allDisplayHeaders = [...headers];
+                if (title !== '전체 제언사항') {
+                    Object.keys(extraCols).forEach(key => allDisplayHeaders.push(key));
+                }
+
+                allDisplayHeaders.forEach(h => {
+                    headerHtml += `<th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">${h}</th>`;
+                });
+
+                headerRow.innerHTML = headerHtml;
+                thead.appendChild(headerRow);
+
+                const tbody = document.createElement('tbody');
+                tbody.className = 'bg-white divide-y divide-gray-200';
+                data.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-gray-50';
+                    let rowHtml = '';
+                    const exportRow = {};
+
+                    if (title === '전체 제언사항') {
+                        rowHtml += `<td class="px-6 py-4 text-sm text-gray-800">${item.department || ''}</td>`;
+                        rowHtml += `<td class="px-6 py-4 text-sm text-gray-800 whitespace-pre-line">${item.suggestion || ''}</td>`;
+                        rowHtml += `<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 font-medium">${item.evaluationItem || ''}</td>`;
+                        rowHtml += `<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 font-medium">${item.evaluator || ''}</td>`;
+
+                        exportRow['부서명'] = item.department || '';
+                        exportRow['제언사항'] = item.suggestion || '';
+                        exportRow['평가항목'] = item.evaluationItem || '';
+                        exportRow['평가위원'] = item.evaluator || '';
+                    } else {
+                        item.rowData.forEach((cell, index) => {
+                            rowHtml += `<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">${cell || ''}</td>`;
+                            exportRow[headers[index]] = cell || '';
+                        });
+                        Object.entries(extraCols).forEach(([key, valueKey]) => {
+                            rowHtml += `<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 font-medium">${item[valueKey]}</td>`;
+                             exportRow[key] = item[valueKey];
+                        });
+                    }
+
+                    tr.innerHTML = rowHtml;
+                    tbody.appendChild(tr);
+                    currentModalDataForExport.push(exportRow);
+                });
+
+                table.appendChild(thead);
+                table.appendChild(tbody);
+                tableWrapper.appendChild(table);
+                modalContent.appendChild(tableWrapper);
+            };
+        });
+    </script>
+</body>
+</html>
+
