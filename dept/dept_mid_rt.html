@@ -38,13 +38,13 @@
 
             <!-- 문서명 -->
             <div>
-                <label for="document-title" class="block text-sm font-medium text-gray-700 mb-1">문서명 (결재 기안문의 제목)</label>
+                <label for="document-title" class="block text-sm font-medium text-gray-700 mb-1">문서명 (기안문 제목)</label>
                 <input type="text" id="document-title" name="document-title" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out" placeholder="2025학년도 대학성과관리팀 부서 자체 중간평가 결과보고">
             </div>
 
             <!-- 문서번호 -->
             <div>
-                <label for="document-number" class="block text-sm font-medium text-gray-700 mb-1">문서번호 (예시 대학성과관리팀-0000, (2025.9.1))</label>
+                <label for="document-number" class="block text-sm font-medium text-gray-700 mb-1">문서번호 (예시 대학성과관리팀-0000 (2025.9.1))</label>
                 <input type="text" id="document-number" name="document-number" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out" placeholder="대학성과관리팀-0000 (2025.9.19)">
             </div>
 
@@ -102,8 +102,7 @@
                 <li>중간평가 주체는 자동으로 입력됩니다.</li>
                 <li>위원회 개최여부는 중간평가 주체가 '위원회'일 경우만 표시됩니다.</li>
                 <li>위원회 미개최 시 사유를 입력합니다.</li>
-                <li>'엑셀 파일로 저장' 버튼을 클릭합니다.</li>
-                <li>저장된 파일을 종합정보시스템 - 업무협조전으로 제출합니다.</li>
+                <li>'엑셀 파일로 저장' 버튼을 클릭하고, 저장된 엑셀 파일을 kimdg82@dhc.ac.kr로 제출합니다.</li>
             </ol>
         </div>
 
@@ -215,6 +214,7 @@
             try {
                 await createAndDownloadExcel(data);
                 displayMessage('success', '엑셀 파일이 성공적으로 생성되어 다운로드되었습니다.');
+                
                 form.reset();
                 // 폼 리셋 후 UI 상태 초기화
                 document.querySelector('input[name="evaluator"][value="department"]').checked = false;
