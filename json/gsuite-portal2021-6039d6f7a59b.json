@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "gsuite-portal2021",
+  "private_key_id": "6039d6f7a59b70cb905b39bdda5000f5fa5642b7",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDy2+dpJNcHGFXy\nobs45yErUZeBST3uzbRpzM+K47F6amyvER2Ggac7fv+MFqakmWrl/SoeefeHqcd+\nr0xOGAHOPWjz4Mr8DCUrWIOANVZxkpqBgeY6+w3wYKowR/d8IlzfPAko1mmb5PLH\nKP5kMETgoJlzucTXBIlaPPZdEX9o5buDE5RFOJOTMMhsQBw4vwUHk4KBs41lh+JO\n+EzeAm2EDB0t1/+ETapxyryuUsBMOtHEj3uI6uiGwfdXq0wDRmavo5KgPOf2gU+F\nkVLAurv84ZluNepk/zjvBOkAMQ9dPrrq62EXkA5zYtNU+qiCCJJ5XYBOPVUJtOF1\nd+UkTUd5AgMBAAECggEAA8Srz/Z+pGin/Q3Bm23Ygt7n4fEXac2WJQN/4fqfT8fV\nWBysOEMbIcCfNez6+LqerVlFT7BJLHQ1XgiohFNhRBmdcsdJG1GKAGmtOF0qRgO0\n5t5f2VcgcCBaTr+NRbOLkFyN1/u3tRcw1t2SxxNE0Cw41o1FZh4Ujm9jVdWBUwP5\nLJO3bfiLLcMpas7WJpqtAk75bArcjewvP6lr69mGANp8+vgGqVClm1t02U1YSV0/\n3lq2P3DFJXRrJmeDnPkTQDi7gcriC2ySJxRN7FTiP2bvGkxAgcCN1PM8t+RLchAC\nFKx9QaBk5yGYL4Bvkz3xIqtkPbfHXOfM3uoEaBoybwKBgQD+qdWIo70zbIfp/eFY\nAe/SHVydJC3BB4l3CCLjU0FRTRa5QPxJdB+h2pHKM1s9TEuKCf0kr83FZpkmYuWL\nQc3usMVQvsN69E4c67eOtS/DmAgCDKf2U/cSPuDRl4F74mIkio8Jodkya2osUEwL\nPuFosBFqPfRj4cPxl9hXEV1GTwKBgQD0IjWcNDNO/maJQCscMi+cF4sOyJcHSE12\nxRxf/pAxEDrizF8NhLDxiQV6+EoLNhSsk6CHFmaMdv8ikUfOXPcrDNgv1e5lCjea\ncs+vfkhaW+VsHl+/mtR0Hoj4sS068tJ7OpSnfKhY81QaV/sFLiqVQVYLCVtZCKAE\nZad427NrtwKBgDmTajyvUFptAjmL9cOxBGiLzOGWSWXn71NjGogszYq1FBskLyXo\nRDKSuP1vKQSt2DJIWdxOhwZHUP7VwzH92bJKcwHzbzzAOVzeiiyQmFDvcXgNJnhR\nuX19i9S3HUZGA4xhaz9xQSreEC4epWKxf8Lsc7OCeFuQsn1PqFDfEyiPAoGAIhAD\n2t+NqR/lvpCtcymtauH+DPn/2IxGAqRN6Tbjd3UEQlCxknlJFuo/UYEDE71f9RRD\n+ZUuibqwrmoG0sw10FPidgorUP2z9GDAiYPdJH5d7E/wnBNGQU1hXxGZdfgbVgY+\nZ4AFHSQWP/a2l2pxlpGfJ7sOe8WwTezBCSPeTNECgYEA1eTHamva5q0TpyMWBWG3\nKUOVCY5xElahZ6ED5SXxJqmhCvbKCyr/UbF6Wq2VJJeG3GqcKXi4VTbeSrJXvUjF\nPAL6ImIxpiBOUK24Eg8Gh+hs9+4u91zzw30KpvVkXskg8sbcPcjVNCNvzSq98w29\n54ZbPWJVVztda0a+7IjjJ8Y=\n-----END PRIVATE KEY-----\n",
+  "client_email": "dhc-drive-upload@gsuite-portal2021.iam.gserviceaccount.com",
+  "client_id": "114667084292795766441",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/dhc-drive-upload%40gsuite-portal2021.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
