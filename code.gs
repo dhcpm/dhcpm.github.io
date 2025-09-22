@@ -9,7 +9,7 @@
 
 // 1. [필수] 파일을 업로드할 Google 드라이브 폴더의 ID를 입력하세요.
 //    - 이 값은 실제 본인의 구글 드라이브 폴더 ID로 변경해야 합니다.
-//    - 폴더 URL이 'https://https://drive.google.com/drive/u/0/folders/0AOTkW335xLryUk9PVA' 라면
+//    - 폴더 URL이 'https://https://drive.google.com/drive/u/0/folders/129TP7o91oBP0qrcab7i0FZRoE8nmwWpP' 라면
 //      'ABCDEFG12345'가 폴더 ID입니다.
 const FOLDER_ID = "1oSXlx_MhAssw8jDssubpe9DG4LKb1Rm3"; // <-- !!! 본인의 폴더 ID로 꼭 수정해주세요 !!!
 
