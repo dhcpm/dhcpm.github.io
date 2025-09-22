@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>부서운영 중간평가 결과 제출</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SheetJS (xlsx) library for Excel generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        select:required:invalid { color: #6B7280; }
+        option[value=""][disabled] { display: none; }
+        option { color: #111827; }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen py-12">
+
+    <div class="w-full max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-8 md:p-12">
+        <div class="text-center mb-10">
+            <h1 class="text-3xl font-bold text-gray-800">부서운영 중간평가 결과 제출</h1>
+            <p class="text-gray-500 mt-2">필요한 정보를 입력하고 엑셀 파일을 생성하여 저장하세요.</p>
+            <p class="text-red-600 font-semibold mt-4 text-lg">제출기한 : 2025.9.26(금)까지</p>
+        </div>
+
+        <form id="evaluation-form" class="space-y-6">
+            <!-- 부서명 드롭다운 -->
+            <div>
+                <label for="department-name" class="block text-sm font-medium text-gray-700 mb-1">부서명</label>
+                <select id="department-name" name="department-name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out bg-white">
+                    <option value="" disabled selected>부서를 선택하세요</option>
+                </select>
+            </div>
+
+            <!-- 문서명 -->
+            <div>
+                <label for="document-title" class="block text-sm font-medium text-gray-700 mb-1">문서명</label>
+                <input type="text" id="document-title" name="document-title" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out" placeholder="2025학년도 대학성과관리팀 부서 자체 중간평가 결과보고">
+            </div>
+
+            <!-- 문서번호 -->
+            <div>
+                <label for="document-number" class="block text-sm font-medium text-gray-700 mb-1">문서번호</label>
+                <input type="text" id="document-number" name="document-number" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out" placeholder="대학성과관리팀-0000 (2025.9.19)">
+            </div>
+
+            <!-- 중간평가 주체 -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">중간평가 주체</label>
+                <div class="flex items-center space-x-4 mt-2 p-2 bg-gray-100 rounded-md">
+                    <label class="flex items-center">
+                        <input type="radio" name="evaluator" value="department" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300" disabled>
+                        <span class="ml-2 text-gray-500">부서 자체</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="radio" name="evaluator" value="committee" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300" disabled>
+                        <span class="ml-2 text-gray-500">위원회</span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- 위원회 개최여부 -->
+            <div id="committee-status-container" class="hidden">
+                <label class="block text-sm font-medium text-gray-700 mb-1">위원회 개최여부</label>
+                <div class="flex items-center space-x-4 mt-2">
+                    <label class="flex items-center">
+                        <input type="radio" name="committee-status" value="held" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                        <span class="ml-2 text-gray-800">개최</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="radio" name="committee-status" value="not_held" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                        <span class="ml-2 text-gray-800">미개최</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- 위원회 미개최 사유 -->
+            <div id="reason-container" class="hidden">
+                <label for="reason" class="block text-sm font-medium text-gray-700 mb-1">위원회 미개최 사유</label>
+                <textarea id="reason" name="reason" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out" placeholder="위원회가 개최되지 않은 경우 사유를 입력하세요."></textarea>
+            </div>
+
+            <!-- 제출 버튼 -->
+            <div class="pt-4">
+                <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 transition-transform transform hover:scale-105 duration-300 ease-in-out">
+                    엑셀 파일로 저장
+                </button>
+            </div>
+        </form>
+
+        <!-- 작성 및 제출 방법 안내 -->
+        <div class="mt-10 p-6 bg-gray-50 rounded-lg border border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">작성 및 제출 방법</h2>
+            <ol class="list-decimal list-inside space-y-2 text-gray-600">
+                <li>부서명을 선택합니다.</li>
+                <li>문서명 (기안문 제목)을 입력합니다.</li>
+                <li>발급받은 문서번호를 입력합니다.</li>
+                <li>중간평가 주체는 자동으로 입력됩니다.</li>
+                <li>위원회 개최여부는 중간평가 주체가 '위원회'일 경우만 표시됩니다.</li>
+                <li>위원회 미개최 시 사유를 입력합니다.</li>
+                <li>'엑셀 파일로 저장' 버튼을 클릭합니다.</li>
+                <li>저장된 파일을 종합정보시스템 - 업무협조전으로 제출합니다.</li>
+            </ol>
+        </div>
+
+        <!-- 결과 메시지 표시 영역 -->
+        <div id="result-message" class="mt-8 p-4 rounded-lg text-center hidden"></div>
+    </div>
+
+    <script>
+        const departmentData = {
+            committee: ['교무지원팀', '교수학습지원센터', '교양교육운영팀', '국제교류팀', '국제교육팀', '대구임상시뮬레이션센터', '도서운영팀', '방사선안전관리센터', '보건융합교육센터', '인권센터', '직업교육콘텐츠연구센터', '직업교육혁신센터', '평생교육학사지원팀', '학생복지지원팀', '학생상담센터', '학생취업지원팀', '현장실습지원센터'],
+            department: ['감사실', '기획예산팀', '대외협력팀', '대학성과관리팀', '보건실', '산학경영지원팀', '산학기획연구팀', '생활관운영팀', '입학팀', '입학홍보전략팀', '재무팀', '전산지원센터', '총무팀', '장애학생지원센터', '한달빛봉사단']
+        };
+
+        const form = document.getElementById('evaluation-form');
+        const departmentSelect = document.getElementById('department-name');
+        const documentTitleInput = document.getElementById('document-title');
+        const documentNumberInput = document.getElementById('document-number');
+        const reasonContainer = document.getElementById('reason-container');
+        const reasonTextarea = document.getElementById('reason');
+        const resultMessage = document.getElementById('result-message');
+        const committeeStatusContainer = document.getElementById('committee-status-container');
+        const committeeStatusRadios = document.querySelectorAll('input[name="committee-status"]');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const allDepartments = [...departmentData.committee, ...departmentData.department].sort((a, b) => a.localeCompare(b, 'ko'));
+            allDepartments.forEach(dept => {
+                const option = document.createElement('option');
+                option.value = dept;
+                option.textContent = dept;
+                departmentSelect.appendChild(option);
+            });
+        });
+
+        departmentSelect.addEventListener('change', (event) => {
+            const selectedDept = event.target.value;
+            const radioDept = document.querySelector('input[name="evaluator"][value="department"]');
+            const radioCommittee = document.querySelector('input[name="evaluator"][value="committee"]');
+
+            // Reset UI states
+            committeeStatusContainer.classList.add('hidden');
+            reasonContainer.classList.add('hidden');
+            reasonTextarea.required = false;
+            committeeStatusRadios.forEach(r => { r.checked = false; r.required = false; });
+            
+            const documentTitle = `2025학년도 ${selectedDept} 부서 자체 중간평가 결과보고`;
+            documentTitleInput.value = documentTitle;
+            documentNumberInput.value = `${selectedDept} - `;
+
+            if (departmentData.department.includes(selectedDept)) {
+                radioDept.checked = true;
+                radioCommittee.checked = false;
+            } else if (departmentData.committee.includes(selectedDept)) {
+                radioDept.checked = false;
+                radioCommittee.checked = true;
+                committeeStatusContainer.classList.remove('hidden');
+                committeeStatusRadios.forEach(r => r.required = true);
+            } else {
+                 radioDept.checked = false;
+                 radioCommittee.checked = false;
+                 documentTitleInput.value = '';
+                 documentNumberInput.value = '';
+            }
+        });
+
+        committeeStatusRadios.forEach(radio => {
+            radio.addEventListener('change', (event) => {
+                if (event.target.value === 'not_held') {
+                    reasonContainer.classList.remove('hidden');
+                    reasonTextarea.required = true;
+                } else {
+                    reasonContainer.classList.add('hidden');
+                    reasonTextarea.required = false;
+                }
+            });
+        });
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            
+            const evaluatorValue = document.querySelector('input[name="evaluator"]:checked')?.value;
+            if (!evaluatorValue) {
+                displayMessage('error', '부서를 먼저 선택해주세요.');
+                return;
+            }
+
+            displayMessage('processing', '엑셀 파일을 생성 중입니다...');
+
+            const formData = new FormData(form);
+            const committeeStatusValue = formData.get('committee-status');
+
+            // 모든 항목을 포함하는 기본 데이터 구조 생성
+            const data = {
+                '부서명': formData.get('department-name'),
+                '문서명': formData.get('document-title'),
+                '문서번호': formData.get('document-number'),
+                '중간평가 주체': evaluatorValue === 'department' ? '부서 자체' : '위원회',
+                '위원회 개최여부': '',
+                '위원회 미개최 사유': '',
+            };
+            
+            // '위원회'일 경우에만 관련 데이터 채우기
+            if (evaluatorValue === 'committee') {
+                data['위원회 개최여부'] = committeeStatusValue === 'held' ? '개최' : (committeeStatusValue === 'not_held' ? '미개최' : '');
+                if (committeeStatusValue === 'not_held') {
+                    data['위원회 미개최 사유'] = formData.get('reason');
+                }
+            }
+            
+            try {
+                await createAndDownloadExcel(data);
+                displayMessage('success', '엑셀 파일이 성공적으로 생성되어 다운로드되었습니다.');
+                form.reset();
+                // 폼 리셋 후 UI 상태 초기화
+                document.querySelector('input[name="evaluator"][value="department"]').checked = false;
+                document.querySelector('input[name="evaluator"][value="committee"]').checked = false;
+                committeeStatusContainer.classList.add('hidden');
+                reasonContainer.classList.add('hidden');
+                committeeStatusRadios.forEach(r => r.required = false);
+
+            } catch (error) {
+                 console.error('Excel creation failed:', error);
+                 displayMessage('error', `엑셀 파일 생성 중 오류가 발생했습니다: ${error.message}`);
+            }
+        });
+
+        function createAndDownloadExcel(data) {
+            return new Promise((resolve, reject) => {
+                try {
+                    const pageTitle = document.title;
+
+                    // 1. 헤더와 데이터 행을 준비
+                    const headers = Object.keys(data);
+                    const dataRow = Object.values(data);
+
+                    // 2. 최종 엑셀 데이터를 구성 (제목, 빈 줄, 헤더, 내용)
+                    const excelData = [
+                        [pageTitle],      // 제목
+                        [],               // 빈 줄
+                        headers,          // 헤더
+                        dataRow           // 데이터
+                    ];
+                    
+                    // 3. 2차원 배열로부터 워크시트 생성
+                    const worksheet = XLSX.utils.aoa_to_sheet(excelData);
+
+                    // 4. 제목 셀 병합 (A1부터 마지막 헤더 열까지)
+                    const numColumns = headers.length;
+                    if (numColumns > 1) {
+                        worksheet['!merges'] = [
+                            { s: { r: 0, c: 0 }, e: { r: 0, c: numColumns - 1 } }
+                        ];
+                    }
+                    
+                    // 5. 열 너비 설정 (각 열에 맞게 조정)
+                     worksheet['!cols'] = [
+                        { wch: 20 }, // 부서명
+                        { wch: 60 }, // 문서명
+                        { wch: 30 }, // 문서번호
+                        { wch: 20 }, // 중간평가 주체
+                        { wch: 20 }, // 위원회 개최여부
+                        { wch: 60 }  // 위원회 미개최 사유
+                    ];
+
+                    const workbook = XLSX.utils.book_new();
+                    XLSX.utils.book_append_sheet(workbook, worksheet, '제출된 평가 결과');
+
+                    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+                    const fileName = `부서운영중간평가_${data['부서명']}_${today}.xlsx`;
+
+                    // 파일 다운로드 트리거
+                    XLSX.writeFile(workbook, fileName);
+
+                    resolve();
+                } catch (e) {
+                    reject(e);
+                }
+            });
+        }
+
+        function displayMessage(type, text) {
+            resultMessage.className = 'mt-8 p-4 rounded-lg text-center'; // 클래스 초기화
+            
+            if (type === 'success') {
+                resultMessage.classList.add('bg-green-100', 'text-green-800');
+            } else if (type === 'error') {
+                resultMessage.classList.add('bg-red-100', 'text-red-800');
+            } else { // 'processing'
+                resultMessage.classList.add('bg-blue-100', 'text-blue-800');
+            }
+            
+            resultMessage.textContent = text;
+            resultMessage.classList.remove('hidden');
+
+            // Hide the message after 3 seconds
+            setTimeout(() => {
+                resultMessage.classList.add('hidden');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
+
