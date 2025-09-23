@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>평가 결과 분석 v4 - 대구보건대학교 대학성과관리팀</title>
+    <title>평가 결과 분석 - 대구보건대학교 대학성과관리팀</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -56,7 +56,7 @@
                     <a href="../buseo/buseo_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">부서자체평가</a>
                     <a href="../seonggwa/seonggwa_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">성과분석</a>
                     <a href="../survey/survey_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">교육수요자 만족도 조사</a>
-                    <a href="../dept/dept_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">부서운영</a>
+                    <a href="../dept/dept_pg.html" class="text-blue-600 font-bold text-sm">부서운영</a>
                     <a href="../edu/edu_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">교육</a>
                 </nav>
                 <!-- Mobile Menu Button -->
@@ -77,7 +77,7 @@
                 <a href="../buseo/buseo_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">부서자체평가</a>
                 <a href="../seonggwa/seonggwa_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">성과분석</a>
                 <a href="../survey/survey_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">교육수요자 만족도 조사</a>
-                <a href="../dept/dept_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">부서운영</a>
+                <a href="../dept/dept_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-blue-700 bg-blue-50">부서운영</a>
                 <a href="../edu/edu_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">교육</a>
             </div>
         </div>
@@ -358,6 +358,7 @@
             }
 
             function performAnalysis() {
+                // Department Analysis
                 const deptAggregates = {};
                 parsedData.forEach(row => {
                     const dept = row['부서명'];
@@ -379,18 +380,37 @@
                         }
                     });
                 });
+
                 departmentAnalysis = Object.keys(deptAggregates).map(dept => {
                     const result = { '부서명': dept };
+                    let totalSum = 0;
                     allAnalysisColumns.forEach(col => {
                         const total = deptAggregates[dept].totals[col];
                         const count = deptAggregates[dept].counts[col];
-                        result[col] = count > 0 ? total / count : 0;
+                        const average = count > 0 ? total / count : 0;
+                        result[col] = average;
+                        totalSum += average;
                     });
+                    result['총점'] = totalSum;
                     return result;
-                }).sort((a, b) => a['부서명'].localeCompare(b['부서명']));
+                });
 
-                const departmentAverageMap = new Map(departmentAnalysis.map(d => [d['부서명'], d]));
+                departmentAnalysis.sort((a, b) => b['총점'] - a['총점']);
+                departmentAnalysis.forEach((dept, index) => {
+                    dept['순위'] = (index > 0 && dept['총점'] === departmentAnalysis[index - 1]['총점'])
+                        ? departmentAnalysis[index - 1]['순위']
+                        : index + 1;
+                });
 
+                const departmentAverageMap = new Map();
+                departmentAnalysis.forEach(d => {
+                    const averages = {};
+                    allAnalysisColumns.forEach(col => averages[col] = d[col]);
+                    departmentAverageMap.set(d['부서명'], averages);
+                });
+
+
+                // Person Analysis
                 if (hasPersonColumn) {
                     const personAggregates = {};
                     parsedData.forEach(row => {
@@ -416,13 +436,24 @@
                     });
                     personAnalysis = Object.values(personAggregates).map(agg => {
                         const result = { '부서명': agg['부서명'], '담당자': agg['담당자'] };
+                        let totalSum = 0;
                         const departmentAverages = departmentAverageMap.get(agg['부서명']);
                         allAnalysisColumns.forEach(col => {
                             const total = agg.totals[col], count = agg.counts[col];
                             let personAverage = count > 0 ? total / count : 0;
-                            result[col] = (personAverage === 0 && departmentAverages) ? departmentAverages[col] : personAverage;
+                            const finalAverage = (personAverage === 0 && departmentAverages) ? departmentAverages[col] : personAverage;
+                            result[col] = finalAverage;
+                            totalSum += finalAverage;
                         });
+                        result['총점'] = totalSum;
                         return result;
+                    });
+                    
+                    personAnalysis.sort((a, b) => b['총점'] - a['총점']);
+                    personAnalysis.forEach((person, index) => {
+                        person['순위'] = (index > 0 && person['총점'] === personAnalysis[index - 1]['총점'])
+                            ? personAnalysis[index - 1]['순위']
+                            : index + 1;
                     });
                 }
             }
@@ -430,7 +461,8 @@
             // --- Rendering ---
             function populateDepartmentSelector() {
                 departmentSelector.innerHTML = '<option value="">-- 부서 선택 --</option>';
-                departmentAnalysis.forEach(dept => {
+                const sortedDepts = [...departmentAnalysis].sort((a, b) => a['부서명'].localeCompare(b['부서명']));
+                sortedDepts.forEach(dept => {
                     departmentSelector.add(new Option(dept['부서명'], dept['부서명']));
                 });
                 departmentSelector.value = '';
@@ -542,25 +574,41 @@
 
             function updateUIVisibility() {
                 personViewBtn.style.display = hasPersonColumn ? 'inline-block' : 'none';
-                currentView = 'department';
+                currentView = 'dept';
                 setActiveButton(deptViewBtn);
                 setActiveTab(tabTransform);
             }
 
             function renderTable() {
-                const data = { 'department': departmentAnalysis, 'person': personAnalysis, 'combined': parsedData }[currentView] || [];
-                const headers = data.length > 0 ? Object.keys(data[0]) : [];
-
-                if (currentView === 'department' && headers.includes('부서명')) headers.unshift(...headers.splice(headers.indexOf('부서명'), 1));
-                if (currentView === 'person' && headers.includes('부서명') && headers.includes('담당자')) headers.unshift(...headers.splice(headers.indexOf('담당자'), 1), ...headers.splice(headers.indexOf('부서명'), 1));
+                let data, headers;
+                switch (currentView) {
+                    case 'dept':
+                        data = departmentAnalysis;
+                        headers = ['부서명', ...allAnalysisColumns, '총점', '순위'];
+                        break;
+                    case 'person':
+                        data = personAnalysis;
+                        headers = ['부서명', '담당자', ...allAnalysisColumns, '총점', '순위'];
+                        break;
+                    case 'combined':
+                        data = parsedData;
+                        headers = data.length > 0 ? Object.keys(data[0]) : [];
+                        break;
+                    default:
+                        data = []; headers = [];
+                }
                 
                 resultsThead.innerHTML = `<tr>${headers.map(h => `<th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider whitespace-nowrap">${h}</th>`).join('')}</tr>`;
-                resultsTbody.innerHTML = data.map(row => `<tr>${headers.map(h => {
-                    const val = row[h];
-                    const isNumeric = typeof val === 'number';
-                    const displayValue = (currentView !== 'combined' && isNumeric) ? val.toFixed(2) : (val || '');
-                    return `<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 ${isNumeric ? 'text-right' : 'text-left'}">${displayValue}</td>`;
-                }).join('')}</tr>`).join('');
+                
+                resultsTbody.innerHTML = data.map(row => 
+                    `<tr>${headers.map(h => {
+                        const val = row[h];
+                        const isNumeric = typeof val === 'number';
+                        const displayValue = (currentView !== 'combined' && isNumeric && h !== '순위') ? val.toFixed(2) : (val !== undefined ? val : '');
+                        const cellClass = (isNumeric || h === '순위') ? 'text-right' : 'text-left';
+                        return `<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 ${cellClass}">${displayValue}</td>`;
+                    }).join('')}</tr>`
+                ).join('');
             }
 
             function setActiveButton(activeBtn) {
@@ -588,15 +636,16 @@
             [tabTransform, tabSummary].forEach(tab => tab.addEventListener('click', () => setActiveTab(tab)));
             
             exportBtn.addEventListener('click', () => {
-                const data = { 'department': departmentAnalysis, 'person': personAnalysis, 'combined': parsedData }[currentView] || [];
-                if (data.length === 0) { alert('반출할 데이터가 없습니다.'); return; }
-                const processedData = data.map(row => {
-                    if (currentView === 'combined') return row;
-                    const newRow = {};
-                    for(const key in row) newRow[key] = typeof row[key] === 'number' ? parseFloat(row[key].toFixed(2)) : row[key];
-                    return newRow;
-                });
-                const worksheet = XLSX.utils.json_to_sheet(processedData);
+                let dataToExport;
+                switch(currentView) {
+                    case 'dept': dataToExport = departmentAnalysis; break;
+                    case 'person': dataToExport = personAnalysis; break;
+                    case 'combined': dataToExport = parsedData; break;
+                    default: dataToExport = [];
+                }
+                if (dataToExport.length === 0) { alert('반출할 데이터가 없습니다.'); return; }
+                
+                const worksheet = XLSX.utils.json_to_sheet(dataToExport);
                 const workbook = XLSX.utils.book_new();
                 XLSX.utils.book_append_sheet(workbook, worksheet, "Analysis Results");
                 XLSX.writeFile(workbook, `${currentView}_analysis_export.xlsx`);
