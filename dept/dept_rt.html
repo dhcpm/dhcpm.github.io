@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>평가 결과 분석 - 대구보건대학교 대학성과관리팀</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+        }
+        .pt-header {
+            padding-top: 64px; /* 헤더 높이만큼 */
+        }
+        .file-input-label {
+            cursor: pointer;
+        }
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fade-in 0.3s ease-out forwards;
+        }
+        .tab-button-active {
+            border-color: #3b82f6;
+            color: #3b82f6;
+            font-weight: 600;
+        }
+        .tab-button-inactive {
+            border-color: transparent;
+            color: #4b5563;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <header id="header" class="bg-white/80 backdrop-blur-lg shadow-sm fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo and Team Name -->
+                <div class="flex-shrink-0 flex items-center">
+                    <img class="h-8 w-auto" src="../img/logo.png" alt="대구보건대학교 로고">
+                    <a href="../index.html" class="ml-3 text-xl font-bold text-gray-800 hover:text-blue-700">대학성과관리팀</a>
+                </div>
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex items-center space-x-5">
+                    <a href="../gongsi/gongsi_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">대학정보공시</a>
+                    <a href="../buseo/buseo_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">부서자체평가</a>
+                    <a href="../seonggwa/seonggwa_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">성과분석</a>
+                    <a href="../survey/survey_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">교육수요자 만족도 조사</a>
+                    <a href="../dept/dept_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">부서운영</a>
+                    <a href="../edu/edu_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">교육</a>
+                </nav>
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
+                        <span class="sr-only">메뉴 열기</span>
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="../gongsi/gongsi_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">대학정보공시</a>
+                <a href="../buseo/buseo_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">부서자체평가</a>
+                <a href="../seonggwa/seonggwa_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">성과분석</a>
+                <a href="../survey/survey_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">교육수요자 만족도 조사</a>
+                <a href="../dept/dept_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">부서운영</a>
+                <a href="../edu/edu_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">교육</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-header flex-grow">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-10">
+                    <h1 class="text-3xl font-bold text-gray-900 sm:text-4xl">평가 데이터 분석</h1>
+                    <p class="mt-4 text-lg text-gray-600">서로 다른 양식의 엑셀(.xlsx) 파일을 통합하여 동적으로 분석합니다.</p>
+                </div>
+
+                <!-- File Upload Section -->
+                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg mb-10">
+                    <div class="flex flex-col sm:flex-row items-center gap-4">
+                        <label for="file-input" id="file-drop-zone" class="file-input-label flex-grow w-full p-4 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:border-blue-500 transition">
+                            <div id="file-display-area" class="text-center">
+                                <div id="file-prompt">
+                                    <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                        <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                    <span class="mt-2 block font-medium">클릭 또는 드래그하여 파일 선택</span>
+                                </div>
+                                <div id="file-list" class="mt-2 space-y-2 text-sm text-left"></div>
+                            </div>
+                        </label>
+                        <input type="file" id="file-input" class="hidden" accept=".xlsx, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" multiple>
+                        <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto self-stretch">
+                            <button id="analyze-btn" class="w-full sm:w-auto bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition-colors shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center flex-grow" disabled>
+                                분석 시작
+                            </button>
+                            <button id="reset-btn" class="w-full sm:w-auto bg-gray-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-600 transition-colors shadow-md hidden flex items-center justify-center">
+                                초기화
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Results Section -->
+                <div id="results-container" class="hidden">
+                    <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+                        <div id="view-toggle-buttons" class="flex flex-wrap items-center gap-2 p-1 bg-gray-200 rounded-lg">
+                            <button id="combined-view-btn" class="px-4 py-2 text-sm font-semibold rounded-md text-gray-600">통합 데이터</button>
+                            <button id="dept-view-btn" class="px-4 py-2 text-sm font-semibold rounded-md text-gray-600">부서별 분석</button>
+                            <button id="person-view-btn" class="px-4 py-2 text-sm font-semibold rounded-md text-gray-600">담당자별 분석</button>
+                        </div>
+                        <button id="export-btn" class="w-full sm:w-auto bg-green-600 text-white font-semibold py-2 px-5 rounded-lg hover:bg-green-700 transition-colors shadow-sm flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            현재 목록 반출
+                        </button>
+                    </div>
+                    <div id="results-display" class="bg-white p-2 sm:p-4 rounded-xl shadow-lg">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead id="results-thead" class="bg-gray-100"></thead>
+                                <tbody id="results-tbody" class="bg-white divide-y divide-gray-200"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Validation Process Section -->
+                <div id="validation-container" class="hidden mt-10">
+                     <div class="text-center mb-6">
+                        <h2 id="validation-title" class="text-2xl font-bold text-gray-800">데이터 분석 과정</h2>
+                        <p class="mt-2 text-md text-gray-500">아래 드롭다운에서 부서를 선택하여 상세 분석 과정을 확인하세요.</p>
+                    </div>
+                    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4">
+                        <div class="w-full sm:w-auto sm:max-w-xs">
+                             <label for="department-selector" class="block text-sm font-medium text-gray-700">분석할 부서 선택:</label>
+                             <select id="department-selector" name="department-selector" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                             </select>
+                        </div>
+                         <button id="pdf-download-btn" class="w-full sm:w-auto bg-red-600 text-white font-semibold py-2 px-5 rounded-lg hover:bg-red-700 transition-colors shadow-sm flex items-center gap-2 disabled:bg-gray-400" disabled>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            PDF로 다운로드
+                        </button>
+                    </div>
+                    <div class="border-b border-gray-200">
+                        <nav id="process-tabs" class="-mb-px flex space-x-8" aria-label="Tabs">
+                            <button id="tab-transform" type="button" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">데이터 변환 과정</button>
+                            <button id="tab-summary" type="button" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">최종 평균 산출 과정</button>
+                        </nav>
+                    </div>
+                    <div id="validation-display" class="mt-5">
+                        <div id="tab-transform-content" class="space-y-4"></div>
+                        <div id="tab-summary-content" class="space-y-4 hidden"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white">
+        <div class="container mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center">
+            <p>&copy; 2025 Daegu Health College. All Rights Reserved.</p>
+            <p class="text-sm text-gray-400 mt-2">대학성과관리팀</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Element Definitions
+            const fileInput = document.getElementById('file-input');
+            const fileDropZone = document.getElementById('file-drop-zone');
+            const filePrompt = document.getElementById('file-prompt');
+            const fileList = document.getElementById('file-list');
+            const analyzeBtn = document.getElementById('analyze-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const resultsContainer = document.getElementById('results-container');
+            const combinedViewBtn = document.getElementById('combined-view-btn');
+            const deptViewBtn = document.getElementById('dept-view-btn');
+            const personViewBtn = document.getElementById('person-view-btn');
+            const exportBtn = document.getElementById('export-btn');
+            const resultsThead = document.getElementById('results-thead');
+            const resultsTbody = document.getElementById('results-tbody');
+            const validationContainer = document.getElementById('validation-container');
+            const validationTitle = document.getElementById('validation-title');
+            const departmentSelector = document.getElementById('department-selector');
+            const pdfDownloadBtn = document.getElementById('pdf-download-btn');
+            const tabTransform = document.getElementById('tab-transform');
+            const tabSummary = document.getElementById('tab-summary');
+            const tabTransformContent = document.getElementById('tab-transform-content');
+            const tabSummaryContent = document.getElementById('tab-summary-content');
+
+            // State Variables
+            let selectedFiles = [];
+            let parsedData = [], departmentAnalysis = [], personAnalysis = [], allAnalysisColumns = [];
+            let hasPersonColumn = false;
+            let currentView = 'department';
+            let currentProcessTab = 'transform';
+
+            // --- UI & File Handling ---
+            function updateFileListUI() {
+                fileList.innerHTML = '';
+                const hasFiles = selectedFiles.length > 0;
+                filePrompt.classList.toggle('hidden', hasFiles);
+                analyzeBtn.disabled = !hasFiles;
+                resetBtn.classList.toggle('hidden', !hasFiles && resultsContainer.classList.contains('hidden'));
+                
+                selectedFiles.forEach((file, index) => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'flex items-center justify-between bg-gray-100 p-2 rounded-md animate-fade-in';
+                    const fileInfoContainer = document.createElement('div');
+                    fileInfoContainer.className = 'flex items-center min-w-0';
+                    fileInfoContainer.innerHTML = `<svg class="w-5 h-5 mr-2 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V7a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg><span class="truncate text-gray-800">${file.name}</span>`;
+                    const removeBtn = document.createElement('button');
+                    removeBtn.type = 'button';
+                    removeBtn.innerHTML = '&times;';
+                    removeBtn.className = 'ml-4 font-bold text-red-500 hover:text-red-700 text-2xl leading-none';
+                    removeBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        selectedFiles.splice(index, 1);
+                        updateFileListUI();
+                    };
+                    fileItem.appendChild(fileInfoContainer);
+                    fileItem.appendChild(removeBtn);
+                    fileList.appendChild(fileItem);
+                });
+            }
+
+            function handleFileSelect(files) {
+                const allowedExtensions = /(\.xlsx)$/i;
+                Array.from(files).forEach(file => {
+                    const isDuplicate = selectedFiles.some(f => f.name === file.name);
+                    if (allowedExtensions.exec(file.name) && !isDuplicate) {
+                        selectedFiles.push(file);
+                    } else if (!allowedExtensions.exec(file.name)) {
+                        alert(`'${file.name}' 파일은 엑셀(.xlsx) 파일이 아니므로 제외됩니다.`);
+                    }
+                });
+                updateFileListUI();
+            }
+
+            function resetAll() {
+                selectedFiles = [];
+                parsedData = [];
+                departmentAnalysis = [];
+                personAnalysis = [];
+                allAnalysisColumns = [];
+                hasPersonColumn = false;
+                
+                fileInput.value = '';
+                updateFileListUI();
+                
+                resultsContainer.classList.add('hidden');
+                validationContainer.classList.add('hidden');
+                departmentSelector.innerHTML = '';
+                tabTransformContent.innerHTML = '';
+                tabSummaryContent.innerHTML = '';
+                resetBtn.classList.add('hidden');
+            }
+
+            // --- Event Listeners ---
+            fileDropZone.addEventListener('dragover', (e) => { e.preventDefault(); fileDropZone.classList.add('bg-blue-50', 'border-blue-500'); });
+            fileDropZone.addEventListener('dragleave', () => fileDropZone.classList.remove('bg-blue-50', 'border-blue-500'));
+            fileDropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                fileDropZone.classList.remove('bg-blue-50', 'border-blue-500');
+                if (e.dataTransfer.files.length) handleFileSelect(e.dataTransfer.files);
+            });
+            fileInput.addEventListener('change', () => { if (fileInput.files.length) handleFileSelect(fileInput.files); fileInput.value = ''; });
+            resetBtn.addEventListener('click', resetAll);
+            
+            analyzeBtn.addEventListener('click', async () => {
+                if (selectedFiles.length === 0) { alert('파일을 선택해주세요.'); return; }
+                
+                analyzeBtn.disabled = true;
+                analyzeBtn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>분석 중...`;
+                
+                try {
+                    const allJsonData = await Promise.all(selectedFiles.map(file => 
+                        new Promise((resolve, reject) => {
+                            const reader = new FileReader();
+                            reader.onload = e => {
+                                try {
+                                    const workbook = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
+                                    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                                    resolve(XLSX.utils.sheet_to_json(worksheet, { defval: "" }));
+                                } catch (error) { reject(new Error(`'${file.name}' 파일 파싱 오류: ${error.message}`)); }
+                            };
+                            reader.onerror = () => reject(new Error(`'${file.name}' 파일 읽기 오류`));
+                            reader.readAsArrayBuffer(file);
+                        })
+                    ));
+                    
+                    if (allJsonData.every(data => data.length === 0)) {
+                       throw new Error("모든 파일이 비어있거나 데이터를 읽을 수 없습니다.");
+                    }
+
+                    parsedData = [].concat(...allJsonData).map(row => 
+                        Object.fromEntries(Object.entries(row).map(([key, value]) => [key.trim(), value]))
+                    );
+
+                    if (parsedData.length === 0) throw new Error("파일을 합친 후 데이터가 없습니다.");
+
+                    const firstRowHeaders = Object.keys(parsedData[0] || {});
+                    ['부서명', '페이지', '총점'].forEach(col => {
+                        if (!firstRowHeaders.includes(col)) throw new Error(`필수 항목 '${col}'이(가) 없습니다. 파일의 첫 번째 행을 확인해주세요.`);
+                    });
+
+                    const analysisColumnsSet = new Set();
+                    parsedData.forEach(row => {
+                        const headers = Object.keys(row);
+                        const pageIndex = headers.indexOf('페이지');
+                        const totalScoreIndex = headers.indexOf('총점');
+                        if (pageIndex !== -1 && totalScoreIndex !== -1 && pageIndex < totalScoreIndex) {
+                            headers.slice(pageIndex + 1, totalScoreIndex).forEach(col => analysisColumnsSet.add(col));
+                        }
+                    });
+                    allAnalysisColumns = Array.from(analysisColumnsSet);
+                    hasPersonColumn = parsedData.some(row => '담당자' in row && row['담당자']);
+                    
+                    performAnalysis();
+                    populateDepartmentSelector();
+                    updateUIVisibility();
+                    renderTable();
+                    
+                    resultsContainer.classList.remove('hidden');
+                    validationContainer.classList.remove('hidden');
+                } catch (error) {
+                    console.error("Analysis failed:", error);
+                    alert(`분석 중 오류 발생: ${error.message}`);
+                } finally {
+                    analyzeBtn.disabled = false;
+                    analyzeBtn.innerHTML = '분석 시작';
+                }
+            });
+
+            // --- Core Analysis Logic ---
+            function parseValueToNumber(value) {
+                if (typeof value === 'number') return value;
+                if (typeof value !== 'string') return NaN;
+                const match = value.match(/(-?\d+(\.\d+)?)/);
+                return match ? parseFloat(match[0]) : NaN;
+            }
+
+            function performAnalysis() {
+                const deptAggregates = {};
+                parsedData.forEach(row => {
+                    const dept = row['부서명'];
+                    if (!dept) return;
+                    if (!deptAggregates[dept]) {
+                        deptAggregates[dept] = { totals: {}, counts: {} };
+                        allAnalysisColumns.forEach(col => {
+                            deptAggregates[dept].totals[col] = 0;
+                            deptAggregates[dept].counts[col] = 0;
+                        });
+                    }
+                    allAnalysisColumns.forEach(col => {
+                        if (row.hasOwnProperty(col)) {
+                            const value = parseValueToNumber(row[col]);
+                            if (!isNaN(value)) {
+                                deptAggregates[dept].totals[col] += value;
+                                deptAggregates[dept].counts[col]++;
+                            }
+                        }
+                    });
+                });
+                departmentAnalysis = Object.keys(deptAggregates).map(dept => {
+                    const result = { '부서명': dept };
+                    allAnalysisColumns.forEach(col => {
+                        const total = deptAggregates[dept].totals[col];
+                        const count = deptAggregates[dept].counts[col];
+                        result[col] = count > 0 ? total / count : 0;
+                    });
+                    return result;
+                }).sort((a, b) => a['부서명'].localeCompare(b['부서명']));
+
+                const departmentAverageMap = new Map(departmentAnalysis.map(d => [d['부서명'], d]));
+
+                if (hasPersonColumn) {
+                    const personAggregates = {};
+                    parsedData.forEach(row => {
+                        const dept = row['부서명'], person = row['담당자'];
+                        if (!dept || !person) return;
+                        const key = `${dept}_${person}`;
+                        if (!personAggregates[key]) {
+                            personAggregates[key] = { '부서명': dept, '담당자': person, totals: {}, counts: {} };
+                            allAnalysisColumns.forEach(col => {
+                                personAggregates[key].totals[col] = 0;
+                                personAggregates[key].counts[col] = 0;
+                            });
+                        }
+                        allAnalysisColumns.forEach(col => {
+                            if (row.hasOwnProperty(col)) {
+                                const value = parseValueToNumber(row[col]);
+                                if (!isNaN(value)) {
+                                    personAggregates[key].totals[col] += value;
+                                    personAggregates[key].counts[col]++;
+                                }
+                            }
+                        });
+                    });
+                    personAnalysis = Object.values(personAggregates).map(agg => {
+                        const result = { '부서명': agg['부서명'], '담당자': agg['담당자'] };
+                        const departmentAverages = departmentAverageMap.get(agg['부서명']);
+                        allAnalysisColumns.forEach(col => {
+                            const total = agg.totals[col], count = agg.counts[col];
+                            let personAverage = count > 0 ? total / count : 0;
+                            result[col] = (personAverage === 0 && departmentAverages) ? departmentAverages[col] : personAverage;
+                        });
+                        return result;
+                    });
+                }
+            }
+            
+            // --- Rendering ---
+            function populateDepartmentSelector() {
+                departmentSelector.innerHTML = '<option value="">-- 부서 선택 --</option>';
+                departmentAnalysis.forEach(dept => {
+                    departmentSelector.add(new Option(dept['부서명'], dept['부서명']));
+                });
+                departmentSelector.value = '';
+                pdfDownloadBtn.disabled = true;
+                validationTitle.textContent = '데이터 분석 과정';
+                tabTransformContent.innerHTML = '';
+                tabSummaryContent.innerHTML = '';
+            }
+            
+            departmentSelector.addEventListener('change', (e) => {
+                const selectedDept = e.target.value;
+                pdfDownloadBtn.disabled = !selectedDept;
+                if (selectedDept) {
+                    renderCalculationProcess(selectedDept);
+                } else {
+                    validationTitle.textContent = '데이터 분석 과정';
+                    tabTransformContent.innerHTML = '';
+                    tabSummaryContent.innerHTML = '';
+                }
+            });
+            
+            function generateCalculationProcess(departmentName) {
+                const processData = [];
+                const summary = {};
+                const validationData = parsedData.filter(row => row['부서명'] === departmentName);
+
+                if (validationData.length === 0) return { processData, summary };
+                
+                allAnalysisColumns.forEach(col => { summary[col] = { values: [], sum: 0, count: 0 }; });
+
+                validationData.forEach((row, index) => {
+                    const processRecord = {
+                        id: `row-${index}`,
+                        work: row['업무명'] || '-',
+                        person: row['담당자'] || '-',
+                        steps: []
+                    };
+                    allAnalysisColumns.forEach(col => {
+                        if (row.hasOwnProperty(col)) {
+                            const originalValue = row[col];
+                            const parsedValue = parseValueToNumber(originalValue);
+                            const success = !isNaN(parsedValue);
+                            processRecord.steps.push({ item: col, value: originalValue, parsed: parsedValue, success: success });
+                            if (success) {
+                                summary[col].values.push(parsedValue);
+                                summary[col].sum += parsedValue;
+                                summary[col].count++;
+                            }
+                        }
+                    });
+                    processData.push(processRecord);
+                });
+                allAnalysisColumns.forEach(col => {
+                    summary[col].average = summary[col].count > 0 ? summary[col].sum / summary[col].count : 0;
+                });
+                return { processData, summary };
+            }
+
+            function renderCalculationProcess(departmentName) {
+                const { processData, summary } = generateCalculationProcess(departmentName);
+                
+                validationTitle.textContent = `${departmentName} 데이터 분석 과정`;
+                tabTransformContent.innerHTML = '';
+                tabSummaryContent.innerHTML = '';
+
+                if (processData.length === 0) {
+                    const noDataMessage = `<div class="text-center text-gray-500 p-4">선택한 부서의 데이터가 없습니다.</div>`;
+                    tabTransformContent.innerHTML = noDataMessage;
+                    tabSummaryContent.innerHTML = noDataMessage;
+                    return;
+                }
+
+                // Render Transform Tab
+                processData.forEach(record => {
+                    const card = document.createElement('div');
+                    card.className = 'bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200';
+                    card.innerHTML = `<h3 class="font-bold text-lg text-gray-800">[${record.work}] <span class="font-normal text-gray-600">| 담당자: ${record.person}</span></h3>`;
+                    const list = document.createElement('ul');
+                    list.className = 'list-disc list-inside mt-3 text-sm space-y-2 pl-2';
+                    record.steps.forEach(step => {
+                        const statusHtml = step.success 
+                            ? `숫자 <strong class="text-blue-600">${step.parsed}</strong> (으)로 변환 <span class="text-green-600 font-semibold">성공</span>`
+                            : `숫자 추출 <span class="text-red-600 font-semibold">실패</span> (평균 계산에서 제외)`;
+                        list.innerHTML += `<li><strong>'${step.item}'</strong> 항목: 원본 값 <code class="bg-gray-200 text-gray-700 px-1 py-0.5 rounded text-xs">${step.value}</code> &rarr; ${statusHtml}</li>`;
+                    });
+                    card.appendChild(list);
+                    tabTransformContent.appendChild(card);
+                });
+                
+                // Render Summary Tab
+                const summaryGrid = document.createElement('div');
+                summaryGrid.className = 'grid grid-cols-1 md:grid-cols-2 gap-4';
+                allAnalysisColumns.forEach(col => {
+                    const colSummary = summary[col];
+                    if (colSummary && colSummary.count > 0) {
+                        const itemDiv = document.createElement('div');
+                        itemDiv.className = 'bg-blue-50 p-4 rounded-lg shadow-sm border border-blue-200 text-sm space-y-1';
+                        itemDiv.innerHTML = `
+                            <p class="font-semibold text-gray-700">평가항목: ${col}</p>
+                            <p>&bull; 계산에 사용된 값: <span class="font-mono text-blue-700">[${colSummary.values.join(', ')}]</span></p>
+                            <p>&bull; 합계: <span class="font-mono text-gray-800">${colSummary.values.join(' + ')} = <strong>${colSummary.sum}</strong></span></p>
+                            <p>&bull; 데이터 개수: <strong>${colSummary.count}</strong>개</p>
+                            <p>&bull; 최종 평균: <span class="font-mono text-gray-800">${colSummary.sum} / ${colSummary.count} = <strong class="text-lg text-blue-600">${colSummary.average.toFixed(2)}</strong></span></p>`;
+                        summaryGrid.appendChild(itemDiv);
+                    }
+                });
+                tabSummaryContent.appendChild(summaryGrid);
+            }
+
+            function updateUIVisibility() {
+                personViewBtn.style.display = hasPersonColumn ? 'inline-block' : 'none';
+                currentView = 'department';
+                setActiveButton(deptViewBtn);
+                setActiveTab(tabTransform);
+            }
+
+            function renderTable() {
+                const data = { 'department': departmentAnalysis, 'person': personAnalysis, 'combined': parsedData }[currentView] || [];
+                const headers = data.length > 0 ? Object.keys(data[0]) : [];
+
+                if (currentView === 'department' && headers.includes('부서명')) headers.unshift(...headers.splice(headers.indexOf('부서명'), 1));
+                if (currentView === 'person' && headers.includes('부서명') && headers.includes('담당자')) headers.unshift(...headers.splice(headers.indexOf('담당자'), 1), ...headers.splice(headers.indexOf('부서명'), 1));
+                
+                resultsThead.innerHTML = `<tr>${headers.map(h => `<th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider whitespace-nowrap">${h}</th>`).join('')}</tr>`;
+                resultsTbody.innerHTML = data.map(row => `<tr>${headers.map(h => {
+                    const val = row[h];
+                    const isNumeric = typeof val === 'number';
+                    const displayValue = (currentView !== 'combined' && isNumeric) ? val.toFixed(2) : (val || '');
+                    return `<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 ${isNumeric ? 'text-right' : 'text-left'}">${displayValue}</td>`;
+                }).join('')}</tr>`).join('');
+            }
+
+            function setActiveButton(activeBtn) {
+                [combinedViewBtn, deptViewBtn, personViewBtn].forEach(btn => btn.classList.remove('bg-white', 'text-blue-600', 'shadow'));
+                activeBtn.classList.add('bg-white', 'text-blue-600', 'shadow');
+            }
+
+            function setActiveTab(activeTab) {
+                currentProcessTab = activeTab.id === 'tab-transform' ? 'transform' : 'summary';
+                [tabTransform, tabSummary].forEach(tab => tab.classList.remove('tab-button-active', 'tab-button-inactive'));
+                tabTransform.classList.add(currentProcessTab === 'transform' ? 'tab-button-active' : 'tab-button-inactive');
+                tabSummary.classList.add(currentProcessTab === 'summary' ? 'tab-button-active' : 'tab-button-inactive');
+                tabTransformContent.classList.toggle('hidden', currentProcessTab !== 'transform');
+                tabSummaryContent.classList.toggle('hidden', currentProcessTab !== 'summary');
+            }
+            
+            [combinedViewBtn, deptViewBtn, personViewBtn].forEach(btn => {
+                btn.addEventListener('click', () => {
+                    currentView = btn.id.replace('-view-btn', '');
+                    setActiveButton(btn);
+                    renderTable();
+                });
+            });
+
+            [tabTransform, tabSummary].forEach(tab => tab.addEventListener('click', () => setActiveTab(tab)));
+            
+            exportBtn.addEventListener('click', () => {
+                const data = { 'department': departmentAnalysis, 'person': personAnalysis, 'combined': parsedData }[currentView] || [];
+                if (data.length === 0) { alert('반출할 데이터가 없습니다.'); return; }
+                const processedData = data.map(row => {
+                    if (currentView === 'combined') return row;
+                    const newRow = {};
+                    for(const key in row) newRow[key] = typeof row[key] === 'number' ? parseFloat(row[key].toFixed(2)) : row[key];
+                    return newRow;
+                });
+                const worksheet = XLSX.utils.json_to_sheet(processedData);
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, "Analysis Results");
+                XLSX.writeFile(workbook, `${currentView}_analysis_export.xlsx`);
+            });
+
+            pdfDownloadBtn.addEventListener('click', async () => {
+                const selectedDept = departmentSelector.value;
+                if (!selectedDept) { alert('부서를 먼저 선택해주세요.'); return; }
+                
+                const elementToCapture = currentProcessTab === 'transform' ? tabTransformContent : tabSummaryContent;
+                const fileName = `${selectedDept}_${currentProcessTab === 'transform' ? '데이터_변환_과정' : '최종_평균_산출'}.pdf`;
+
+                pdfDownloadBtn.disabled = true;
+                pdfDownloadBtn.innerHTML = `<svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> 생성 중...`;
+
+                try {
+                    const canvas = await html2canvas(elementToCapture, { scale: 2 });
+                    const imgData = canvas.toDataURL('image/png');
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF('p', 'mm', 'a4');
+                    const imgProps = doc.getImageProperties(imgData);
+                    const pdfWidth = doc.internal.pageSize.getWidth();
+                    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                    let heightLeft = pdfHeight;
+                    let position = 0;
+                    
+                    doc.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+                    heightLeft -= doc.internal.pageSize.getHeight();
+
+                    while (heightLeft > 0) {
+                        position = heightLeft - pdfHeight;
+                        doc.addPage();
+                        doc.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+                        heightLeft -= doc.internal.pageSize.getHeight();
+                    }
+                    doc.save(fileName);
+                } catch(e) {
+                    alert('PDF 생성 중 오류가 발생했습니다.');
+                    console.error(e);
+                } finally {
+                    pdfDownloadBtn.disabled = false;
+                    pdfDownloadBtn.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg> PDF로 다운로드`;
+                }
+            });
+
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+        });
+    </script>
+</body>
+</html>
+
