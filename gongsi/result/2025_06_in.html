@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025년 6월 공시항목 공시 현황</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f0f2f5;
+        }
+        /* A4 Page Layout */
+        .page {
+            background: white;
+            width: 210mm;
+            min-height: 297mm;
+            margin: 2rem auto;
+            padding: 25mm 20mm;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 5px;
+        }
+        h1 {
+            font-size: 24pt;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #000;
+            padding-bottom: 1rem;
+        }
+        h2 {
+            font-size: 16pt;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            border-left: 5px solid #4a5568;
+            padding-left: 10px;
+        }
+        h3 {
+            font-size: 13pt;
+            font-weight: 500;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        p {
+            font-size: 11pt;
+            line-height: 1.6;
+        }
+        .text-right {
+            text-align: right;
+        }
+        .main-list ol {
+            list-style-type: decimal;
+            padding-left: 20px;
+            font-size: 12pt;
+            line-height: 2;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 4rem;
+            font-weight: 500;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10pt;
+            margin-top: 1rem;
+        }
+        th, td {
+            border: 1px solid #e2e8f0;
+            padding: 8px 12px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        th {
+            background-color: #f7fafc;
+            font-weight: 500;
+        }
+        .chart-container {
+            width: 100%;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+        .note {
+            font-size: 9pt;
+            color: #4a5568;
+            margin-top: 1rem;
+            line-height: 1.8;
+        }
+
+        @media print {
+            body {
+                background-color: #fff;
+            }
+            .page {
+                width: auto;
+                min-height: auto;
+                margin: 0;
+                box-shadow: none;
+                border: 0;
+                border-radius: 0;
+                padding: 10mm 5mm;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <!-- 표지 -->
+        <header>
+            <h1>2025년 6월 공시항목 공시 현황(교내)</h1>
+            <p class="text-right font-medium">작성기준일 : 2025. 6. 5.(목)</p>
+        </header>
+
+        <main class="main-list mt-16">
+            <ol>
+                <li>입학전형 유형별 선발 결과</li>
+                <li>기회 균형 선발 결과</li>
+                <li>신입생의 출신고등학교 유형별 현황</li>
+                <li>대학의 원격강좌 현황</li>
+                <li>산업체 경력 전임교원</li>
+                <li>공동활용 연구장비 운영현황</li>
+                <li>현장실습 운영 현황</li>
+                <li>캡스톤 디자인 운영 현황</li>
+                <li>학교기업 운영 현황</li>
+                <li>주문식 교육과정 설치 운영 현황</li>
+                <li>특허 출원 및 등록 실적</li>
+                <li>창업관련 현황</li>
+            </ol>
+        </main>
+
+        <footer class="footer space-y-2">
+            <p>대학성과관리팀</p>
+            <p>(사)한달빛글로컬 보건연합대학</p>
+            <p class="font-bold text-lg">대구보건대학교</p>
+        </footer>
+    </div>
+
+    <!-- 전체 현황 요약 페이지 -->
+    <div class="page">
+        <h2>2025년 6월 대학정보공시 전체 현황</h2>
+        <div class="chart-container" style="height: 450px;">
+            <canvas id="overallStatusChart"></canvas>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="text-xs">
+                <thead>
+                    <tr>
+                        <th class="whitespace-nowrap">공시 연도</th>
+                        <th class="whitespace-nowrap">정원내외<br>통합 등록률</th>
+                        <th class="whitespace-nowrap">기회균형<br>선발비율</th>
+                        <th class="whitespace-nowrap">일반고<br>비율</th>
+                        <th class="whitespace-nowrap">원격<br>강좌수</th>
+                        <th class="whitespace-nowrap">산업체 경력<br>전임교원</th>
+                        <th class="whitespace-nowrap">설비자산 사용료<br>수익(백만원)</th>
+                        <th class="whitespace-nowrap">현장실습<br>이수 학생수</th>
+                        <th class="whitespace-nowrap">캡스톤 디자인<br>이수 학생수</th>
+                        <th class="whitespace-nowrap">DHC 웰니스<br>매출액(백만원)</th>
+                        <th class="whitespace-nowrap">주문식 교육<br>참여 학생수</th>
+                        <th class="whitespace-nowrap">기술 이전<br>수입료(백만원)</th>
+                        <th class="whitespace-nowrap">특허<br>출원</th>
+                        <th class="whitespace-nowrap">교원<br>창업</th>
+                        <th class="whitespace-nowrap">학생<br>창업</th>
+                        <th class="whitespace-nowrap">창업<br>강좌</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>2024</td>
+                        <td>92.1</td>
+                        <td>3.8</td>
+                        <td>57.21</td>
+                        <td>88</td>
+                        <td>40</td>
+                        <td>17</td>
+                        <td>16</td>
+                        <td>1,509</td>
+                        <td>28</td>
+                        <td>317</td>
+                        <td>25</td>
+                        <td>18</td>
+                        <td>1</td>
+                        <td>1</td>
+                        <td>33</td>
+                    </tr>
+                    <tr>
+                        <td>2025</td>
+                        <td>94.4</td>
+                        <td>3.2</td>
+                        <td>58.96</td>
+                        <td>164</td>
+                        <td>39</td>
+                        <td>57</td>
+                        <td>25</td>
+                        <td>1,457</td>
+                        <td>25</td>
+                        <td>457</td>
+                        <td>3</td>
+                        <td>29</td>
+                        <td>2</td>
+                        <td>4</td>
+                        <td>30</td>
+                    </tr>
+                    <tr class="font-bold">
+                        <td>증감</td>
+                        <td>2</td>
+                        <td>-1</td>
+                        <td>2</td>
+                        <td>76</td>
+                        <td>-1</td>
+                        <td>40</td>
+                        <td>9</td>
+                        <td>-52</td>
+                        <td>-3</td>
+                        <td>140</td>
+                        <td>-22</td>
+                        <td>11</td>
+                        <td>1</td>
+                        <td>3</td>
+                        <td>-3</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="note">
+            ■ 설비자산 사용료는 라이프케어기술원 사용성 평가 활용 증가로 상승함.<br>
+            ■ 기술이전 수입료 중 일부는 2025년도에 입금되어 공시에서 제외되었고, 기술이전 계약이 감소함.<br>
+            ■ 특허 출원 총계는 산학연협력 선도대학 육성사업(LINC3.0) 마지막 재정지원으로 증가함.
+        </p>
+    </div>
+
+
+    <!-- 내용 페이지 -->
+    <div class="page">
+        <h2>1. 입학전형 유형별 선발 결과</h2>
+        <h3>전형별 등록률 현황 (단위: %)</h3>
+        <div class="chart-container">
+            <canvas id="admissionRateChart"></canvas>
+        </div>
+        <p class="note">
+            - 2025학년도 일반전형 등록률 17.7% 상승, 정원외전형 등록률 2.3% 상승<br>
+            - 정원내외 통합등록률 상승 (2.4%, 2025년 94.4%, 2024년 92.1%)
+        </p>
+        
+        <h3>전형별 등록인원 현황</h3>
+        <div class="chart-container">
+            <canvas id="admissionCountChart"></canvas>
+        </div>
+
+        <h2>2. 기회 균형 선발 결과</h2>
+        <h3>기회균형 선발 비율 (단위: %)</h3>
+        <div class="chart-container">
+            <canvas id="opportunityBalanceChart"></canvas>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>기준연도</th>
+                    <th>2021</th>
+                    <th>2022</th>
+                    <th>2023</th>
+                    <th>2024</th>
+                    <th>2025</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>기회균형 선발 비율</td>
+                    <td>3.6</td>
+                    <td>4.0</td>
+                    <td>3.5</td>
+                    <td>3.8</td>
+                    <td>3.2</td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="note">- 주요 기회균형 선발 전형은 저소득층전형, 농어촌 전형이며, 2025학년도에는 선발비율이 소폭 하락함.</p>
+
+        <h2>3. 신입생의 출신고등학교 유형별 현황 (단위: 명)</h2>
+        <h3>고교 유형별 현황</h3>
+        <div class="chart-container">
+            <canvas id="highschoolTypeChart"></canvas>
+        </div>
+        <h3>시도 구분별 현황</h3>
+        <div class="chart-container">
+            <canvas id="regionTypeChart"></canvas>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>기준연도</th>
+                    <th>일반고</th>
+                    <th>특성화고</th>
+                    <th>검정고시</th>
+                    <th>광역시</th>
+                    <th>중소도시</th>
+                    <th>읍면</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>2021</td>
+                    <td>1,204</td>
+                    <td>427</td>
+                    <td>111</td>
+                    <td>1,079</td>
+                    <td>489</td>
+                    <td>397</td>
+                </tr>
+                 <tr>
+                    <td>2022</td>
+                    <td>1,323</td>
+                    <td>454</td>
+                    <td>78</td>
+                    <td>1,116</td>
+                    <td>566</td>
+                    <td>362</td>
+                </tr>
+                 <tr>
+                    <td>2023</td>
+                    <td>1,255</td>
+                    <td>536</td>
+                    <td>72</td>
+                    <td>1,184</td>
+                    <td>521</td>
+                    <td>343</td>
+                </tr>
+                 <tr>
+                    <td>2024</td>
+                    <td>1,278</td>
+                    <td>474</td>
+                    <td>103</td>
+                    <td>1,104</td>
+                    <td>526</td>
+                    <td>329</td>
+                </tr>
+                 <tr>
+                    <td>2025</td>
+                    <td>1,408</td>
+                    <td>523</td>
+                    <td>117</td>
+                    <td>1,198</td>
+                    <td>533</td>
+                    <td>368</td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="note">- 고교 유형별 : 일반고, 검정고시 신입생 증가<br>- 시도구분별 : 년도별 비슷한 분포도 유지</p>
+    </div>
+    
+    <div class="page">
+        <h2>4. 대학의 원격강좌 현황 (단위: 강좌수)</h2>
+        <div class="chart-container">
+            <canvas id="remoteCourseChart"></canvas>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>기준연도</th>
+                    <th>2020</th>
+                    <th>2021</th>
+                    <th>2022</th>
+                    <th>2023</th>
+                    <th>2024</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>원격강좌 수</td>
+                    <td>150</td>
+                    <td>1554</td>
+                    <td>165</td>
+                    <td>88</td>
+                    <td>164</td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="note">- 대학 내 원격강좌 권장으로 인한 강좌수 증가</p>
+
+        <h2>5. 산업체 경력 전임교원 (단위: 명)</h2>
+        <div class="chart-container">
+            <canvas id="facultyChart"></canvas>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>기준연도</th>
+                    <th>경력없음</th>
+                    <th>산업체 경력 전임교원</th>
+                    <th>산학협력 중점교원(채용형)</th>
+                    <th>산학협력 중점교원(지정형)</th>
+                    <th>산학협력 중점교원(비전임)</th>
+                    <th>합계</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>2021</td><td>4</td><td>41</td><td>12</td><td>20</td><td>2</td><td>79</td></tr>
+                <tr><td>2022</td><td>3</td><td>39</td><td>11</td><td>19</td><td>1</td><td>73</td></tr>
+                <tr><td>2023</td><td>3</td><td>32</td><td>10</td><td>18</td><td>4</td><td>67</td></tr>
+                <tr><td>2024</td><td>2</td><td>40</td><td>9</td><td>19</td><td>3</td><td>73</td></tr>
+                <tr><td>2025</td><td>1</td><td>39</td><td>9</td><td>18</td><td>1</td><td>68</td></tr>
+            </tbody>
+        </table>
+
+        <h2>6. 공동활용 연구장비 운영현황 (단위: 원)</h2>
+        <h3>설비자산 사용료 수익 현황</h3>
+        <div class="chart-container">
+            <canvas id="equipmentRevenueChart"></canvas>
+        </div>
+         <table>
+            <thead>
+                <tr>
+                    <th>기준연도</th>
+                    <th>2021</th>
+                    <th>2022</th>
+                    <th>2023</th>
+                    <th>2024</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>사용료 수익</td>
+                    <td>10,300,600</td>
+                    <td>26,919,260</td>
+                    <td>17,401,442</td>
+                    <td>57,889,585</td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="note">- 라이프케어기술원 사용성 평가 활용 증가로 상승함.</p>
+
+    </div>
+
+    <div class="page">
+        <h2>7. 현장실습 운영 현황 (단위: 명)</h2>
+        <h3>이수학생수</h3>
+        <div class="chart-container">
+            <canvas id="internshipChart"></canvas>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>기준연도</th>
+                    <th>이수학생수</th>
+                    <th>비고</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>2021</td><td>0</td><td>표준 현장실습학기제 해당 운영현황 없음.</td></tr>
+                <tr><td>2022</td><td>11</td><td>글로벌호텔조리학과 (11명)</td></tr>
+                <tr><td>2023</td><td>16</td><td>호텔외식조리학부 글로벌호텔조리학과 (12명), 호텔제과제빵학과(4명)</td></tr>
+                <tr><td>2024</td><td>25</td><td>호텔제과제빵학과(7명), 뷰티코디네이션학과(7명)</td></tr>
+            </tbody>
+        </table>
+        <p class="note">- 뷰티코디네이션학과 현장실습 이수 추가 실시로 인한 증가</p>
+        
+        <h2>8. 캡스톤 디자인 운영 현황 (단위: 명)</h2>
+        <h3>이수학생수</h3>
+        <div class="chart-container">
+            <canvas id="capstoneChart"></canvas>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>기준연도</th>
+                    <th>2021</th>
+                    <th>2022</th>
+                    <th>2023</th>
+                    <th>2024</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>이수학생수</td>
+                    <td>1,906</td>
+                    <td>1,655</td>
+                    <td>1,509</td>
+                    <td>1,457</td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="note">- 캡스톤 디자인 운영 현황: 감소추세</p>
+        
+        <h2>9. 학교기업 운영 현황</h2>
+        <h3>DHC웰니스 매출액 현황 (단위: 원)</h3>
+        <div class="chart-container">
+            <canvas id="companyRevenueChart"></canvas>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>기준연도</th>
+                    <th>2020</th>
+                    <th>2021</th>
+                    <th>2022</th>
+                    <th>2023</th>
+                    <th>2024</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>매출액</td>
+                    <td>14,112,738</td>
+                    <td>37,530,909</td>
+                    <td>85,027,273</td>
+                    <td>28,190,909</td>
+                    <td>25,200,000</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="page">
+        <h2>10. 주문식 교육과정 설치 운영 현황</h2>
+        <h3>참여 학생수와 이수자 졸업생의 취업률 현황</h3>
+        <div class="chart-container">
+            <canvas id="customizedEducationChart"></canvas>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>기준연도</th>
+                    <th>참여학생수</th>
+                    <th>졸업생수</th>
+                    <th>취업자수</th>
+                    <th>취업률(%)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>2020</td><td>45</td><td>15</td><td>9</td><td>60.0</td></tr>
+                <tr><td>2021</td><td>64</td><td>27</td><td>13</td><td>48.1</td></tr>
+                <tr><td>2022</td><td>128</td><td>65</td><td>47</td><td>72.3</td></tr>
+                <tr><td>2023</td><td>317</td><td>69</td><td>42</td><td>60.9</td></tr>
+                <tr><td>2024</td><td>457</td><td>211</td><td>109</td><td>51.7</td></tr>
+            </tbody>
+        </table>
+        <p class="note">- 주문식교육참여 졸업수는 증가하였고 취업자수도 증가하였음. 취업률은 졸업자의 상대적 증가로 전년도 보다 낮음. (전체대학의 취업률은 아님.)</p>
+        
+        <h2>11. 특허 출원 및 등록 실적 (단위: 건)</h2>
+        <div class="chart-container">
+            <canvas id="patentChart"></canvas>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>기준연도</th>
+                    <th>국내특허 출원</th>
+                    <th>국내특허 등록</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>2020</td><td>15</td><td>24</td></tr>
+                <tr><td>2021</td><td>12</td><td>11</td></tr>
+                <tr><td>2022</td><td>19</td><td>13</td></tr>
+                <tr><td>2023</td><td>18</td><td>14</td></tr>
+                <tr><td>2024</td><td>29</td><td>1</td></tr>
+                <tr><td>전년대비 증감</td><td>+11</td><td>-13</td></tr>
+            </tbody>
+        </table>
+        
+        <h2>12. 창업관련 현황</h2>
+        <h3>창업자수 현황 (단위: 명)</h3>
+        <table>
+             <thead>
+                <tr>
+                    <th>기준연도</th>
+                    <th>창업자수(교원)</th>
+                    <th>창업자수(학생)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>2020</td><td>0</td><td>1</td></tr>
+                <tr><td>2021</td><td>0</td><td>0</td></tr>
+                <tr><td>2022</td><td>1</td><td>0</td></tr>
+                <tr><td>2023</td><td>1</td><td>1</td></tr>
+                <tr><td>2024</td><td>2</td><td>5</td></tr>
+            </tbody>
+        </table>
+        
+        <h3 class="mt-8">창업관련 강좌수 현황 (단위: 개)</h3>
+        <table>
+             <thead>
+                <tr>
+                    <th>기준연도</th>
+                    <th>교양</th>
+                    <th>전공</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>2020</td><td>7</td><td>74</td></tr>
+                <tr><td>2021</td><td>8</td><td>70</td></tr>
+                <tr><td>2022</td><td>8</td><td>18</td></tr>
+                <tr><td>2023</td><td>14</td><td>19</td></tr>
+                <tr><td>2024</td><td>14</td><td>16</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    Chart.register(ChartDataLabels);
+
+    const commonOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'top',
+            },
+            tooltip: {
+                mode: 'index',
+                intersect: false,
+            },
+            datalabels: {
+                color: '#333',
+                font: {
+                    weight: 'bold',
+                    size: 10,
+                },
+                 formatter: (value, context) => {
+                    if (typeof value === 'number' && value > 1000) {
+                        return new Intl.NumberFormat('ko-KR').format(value);
+                    }
+                    return value;
+                }
+            }
+        },
+        scales: {
+            x: {
+                grid: {
+                    display: false
+                }
+            },
+            y: {
+                grid: {
+                    color: '#e2e8f0'
+                },
+                beginAtZero: true
+            }
+        }
+    };
+    
+    // 0. 전체 현황
+    const overallStatusData = [2, -1, 2, 76, -1, 40, 9, -52, -3, 140, -22, 11, 1, 3, -3];
+    new Chart(document.getElementById('overallStatusChart'), {
+        type: 'bar',
+        data: {
+            labels: ['통합등록률', '기회균형', '일반고비율', '원격강좌', '전임교원', '설비자산수익', '현장실습', '캡스톤디자인', 'DHC웰니스', '주문식교육', '기술이전수입', '특허출원', '교원창업', '학생창업', '창업강좌'],
+            datasets: [{
+                label: '전년대비 증감',
+                data: overallStatusData,
+                backgroundColor: overallStatusData.map(value => value >= 0 ? 'rgba(59, 130, 246, 0.7)' : 'rgba(239, 68, 68, 0.7)'),
+                borderColor: overallStatusData.map(value => value >= 0 ? 'rgba(59, 130, 246, 1)' : 'rgba(239, 68, 68, 1)'),
+                borderWidth: 1
+            }]
+        },
+        options: { ...commonOptions, 
+            plugins: {
+                ...commonOptions.plugins,
+                datalabels: { ...commonOptions.plugins.datalabels, anchor: 'end', align: 'top' }
+            },
+            scales: { x: { ticks: { font: { size: 9 } } } } }
+    });
+
+
+    // 1. 입학전형 유형별 선발 결과
+    new Chart(document.getElementById('admissionRateChart'), {
+        type: 'line',
+        data: {
+            labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+            datasets: [
+                { label: '일반전형', data: [65.2, 61.8, 68.0, 74.8, 78.4, 80.7], borderColor: '#3b82f6', backgroundColor: '#3b82f6', tension: 0.1 },
+                { label: '특별전형', data: [100, 100, 100, 100, 84.1, 89.2], borderColor: '#f97316', backgroundColor: '#f97316', tension: 0.1 },
+                { label: '정원외전형', data: [48.6, 51, 62, 70, 71.5, 75], borderColor: '#1f2937', backgroundColor: '#1f2937', tension: 0.1 }
+            ]
+        },
+        options: { ...commonOptions, maintainAspectRatio: true, plugins: { ...commonOptions.plugins, datalabels: { ...commonOptions.plugins.datalabels, align: 'top', offset: 5 } } }
+    });
+
+    new Chart(document.getElementById('admissionCountChart'), {
+        type: 'bar',
+        data: {
+            labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+            datasets: [
+                { label: '일반전형', data: [213, 376, 283, 292, 293, 439], backgroundColor: '#60a5fa' },
+                { label: '특별전형', data: [1856, 1576, 1733, 1754, 1673, 1578], backgroundColor: '#fb923c' },
+                { label: '정원외전형', data: [287, 254, 276, 235, 268, 371], backgroundColor: '#6b7280' }
+            ]
+        },
+        options: { ...commonOptions, maintainAspectRatio: true, 
+            plugins: { ...commonOptions.plugins, datalabels: { ...commonOptions.plugins.datalabels, color: 'white', formatter: (v) => v > 0 ? v : '', font: {size: 8} } },
+            scales: { x: { stacked: true }, y: { stacked: true } } }
+    });
+
+    // 2. 기회 균형 선발 결과
+    new Chart(document.getElementById('opportunityBalanceChart'), {
+        type: 'line',
+        data: {
+            labels: ['2021', '2022', '2023', '2024', '2025'],
+            datasets: [{
+                label: '기회균형 선발비율',
+                data: [3.6, 4.0, 3.5, 3.8, 3.2],
+                borderColor: '#22c55e', backgroundColor: '#22c55e', fill: false
+            }]
+        },
+        options: { ...commonOptions, maintainAspectRatio: true, plugins: { ...commonOptions.plugins, datalabels: {...commonOptions.plugins.datalabels, align: 'top', offset: 5 } } }
+    });
+
+    // 3. 신입생 출신고교 유형별 현황
+    const highschoolLabels = ['2021', '2022', '2023', '2024', '2025'];
+    new Chart(document.getElementById('highschoolTypeChart'), {
+        type: 'bar',
+        data: {
+            labels: highschoolLabels,
+            datasets: [
+                { label: '일반고', data: [1204, 1323, 1255, 1278, 1408], backgroundColor: '#3b82f6' },
+                { label: '특성화고', data: [427, 454, 536, 474, 523], backgroundColor: '#f97316' },
+                { label: '검정고시', data: [111, 78, 72, 103, 117], backgroundColor: '#6b7280' }
+            ]
+        },
+        options: { ...commonOptions, maintainAspectRatio: true, plugins: { ...commonOptions.plugins, datalabels: { ...commonOptions.plugins.datalabels, anchor: 'end', align: 'top' } } }
+    });
+    new Chart(document.getElementById('regionTypeChart'), {
+        type: 'bar',
+        data: {
+            labels: highschoolLabels,
+            datasets: [
+                { label: '광역시', data: [1079, 1116, 1184, 1104, 1198], backgroundColor: '#84cc16' },
+                { label: '중소도시', data: [489, 566, 521, 526, 533], backgroundColor: '#f59e0b' },
+                { label: '읍면', data: [397, 362, 343, 329, 368], backgroundColor: '#10b981' }
+            ]
+        },
+        options: { ...commonOptions, maintainAspectRatio: true, plugins: { ...commonOptions.plugins, datalabels: { ...commonOptions.plugins.datalabels, anchor: 'end', align: 'top' } } }
+    });
+
+    // 4. 대학의 원격강좌 현황
+    new Chart(document.getElementById('remoteCourseChart'), {
+        type: 'bar',
+        data: {
+            labels: ['2020', '2021', '2022', '2023', '2024'],
+            datasets: [{
+                label: '원격강좌 수',
+                data: [150, 1554, 165, 88, 164],
+                backgroundColor: '#ef4444'
+            }]
+        },
+        options: { ...commonOptions, maintainAspectRatio: true, plugins: { ...commonOptions.plugins, datalabels: { ...commonOptions.plugins.datalabels, anchor: 'end', align: 'top' } } }
+    });
+    
+    // 5. 산업체 경력 전임교원
+    new Chart(document.getElementById('facultyChart'), {
+        type: 'bar',
+        data: {
+            labels: ['2021', '2022', '2023', '2024', '2025'],
+            datasets: [
+                { label: '경력없음', data: [4, 3, 3, 2, 1], backgroundColor: '#f97316' },
+                { label: '산업체 경력 전임교원', data: [41, 39, 32, 40, 39], backgroundColor: '#a8a29e' },
+                { label: '산학협력 중점교원(채용형)', data: [12, 11, 10, 9, 9], backgroundColor: '#facc15' },
+                { label: '산학협력 중점교원(지정형)', data: [20, 19, 18, 19, 18], backgroundColor: '#3b82f6' },
+                { label: '산학협력 중점교원(비전임)', data: [2, 1, 4, 3, 1], backgroundColor: '#16a34a' }
+            ]
+        },
+        options: { ...commonOptions, maintainAspectRatio: true, 
+            plugins: { ...commonOptions.plugins, datalabels: { ...commonOptions.plugins.datalabels, color: 'white', formatter: (v) => v > 0 ? v : '', font: {size: 8} } },
+            scales: { x: { stacked: true }, y: { stacked: true } } }
+    });
+    
+    // 6. 공동활용 연구장비 운영현황
+    new Chart(document.getElementById('equipmentRevenueChart'), {
+        type: 'line',
+        data: {
+            labels: ['2021', '2022', '2023', '2024'],
+            datasets: [{
+                label: '설비자산 사용료 수익(원)',
+                data: [10300600, 26919260, 17401442, 57889585],
+                borderColor: '#0ea5e9', backgroundColor: '#0ea5e9', fill: false
+            }]
+        },
+        options: { ...commonOptions, maintainAspectRatio: true, plugins: { ...commonOptions.plugins, datalabels: { ...commonOptions.plugins.datalabels, align: 'top', offset: 5 } } }
+    });
+    
+    // 7. 현장실습 운영 현황
+    new Chart(document.getElementById('internshipChart'), {
+        type: 'bar',
+        data: {
+            labels: ['2021', '2022', '2023', '2024'],
+            datasets: [{
+                label: '이수학생수',
+                data: [0, 11, 16, 25],
+                backgroundColor: '#f97316'
+            }]
+        },
+        options: { ...commonOptions, maintainAspectRatio: true, plugins: { ...commonOptions.plugins, datalabels: { ...commonOptions.plugins.datalabels, anchor: 'end', align: 'top' } } }
+    });
+    
+    // 8. 캡스톤 디자인 운영 현황
+    new Chart(document.getElementById('capstoneChart'), {
+        type: 'line',
+        data: {
+            labels: ['2021', '2022', '2023', '2024'],
+            datasets: [{
+                label: '이수학생수',
+                data: [1906, 1655, 1509, 1457],
+                borderColor: '#8b5cf6', backgroundColor: '#8b5cf6', fill: false
+            }]
+        },
+        options: { ...commonOptions, maintainAspectRatio: true, plugins: { ...commonOptions.plugins, datalabels: { ...commonOptions.plugins.datalabels, align: 'top', offset: 5 } } }
+    });
+    
+    // 9. 학교기업 운영 현황
+    new Chart(document.getElementById('companyRevenueChart'), {
+        type: 'line',
+        data: {
+            labels: ['2020', '2021', '2022', '2023', '2024'],
+            datasets: [{
+                label: 'DHC웰니스 매출액(원)',
+                data: [14112738, 37530909, 85027273, 28190909, 25200000],
+                borderColor: '#f97316',
+                backgroundColor: 'rgba(249, 115, 22, 0.2)',
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: { ...commonOptions, maintainAspectRatio: true, plugins: { ...commonOptions.plugins, datalabels: { ...commonOptions.plugins.datalabels, align: 'top', offset: 5, font: {size: 9} } } }
+    });
+    
+    // 10. 주문식 교육과정 설치 운영 현황
+    new Chart(document.getElementById('customizedEducationChart'), {
+        type: 'bar',
+        data: {
+            labels: ['2020', '2021', '2022', '2023', '2024'],
+            datasets: [
+                {
+                    label: '참여학생수',
+                    data: [45, 64, 128, 317, 457],
+                    backgroundColor: '#3b82f6',
+                    yAxisID: 'y',
+                    datalabels: {
+                         anchor: 'end', align: 'top'
+                    }
+                },
+                {
+                    label: '취업률(%)',
+                    data: [60.0, 48.1, 72.3, 60.9, 51.7],
+                    type: 'line',
+                    borderColor: '#f97316',
+                    backgroundColor: '#f97316',
+                    yAxisID: 'y1',
+                    datalabels: {
+                        align: 'top', offset: 5
+                    }
+                }
+            ]
+        },
+        options: {
+            ...commonOptions,
+            maintainAspectRatio: true,
+            scales: {
+                y: { type: 'linear', display: true, position: 'left', title: {display: true, text: '참여학생수(명)'}},
+                y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false }, title: {display: true, text: '취업률(%)'} }
+            }
+        }
+    });
+    
+    // 11. 특허 출원 및 등록 실적
+    new Chart(document.getElementById('patentChart'), {
+        type: 'bar',
+        data: {
+            labels: ['2020', '2021', '2022', '2023', '2024'],
+            datasets: [
+                { label: '국내특허 출원', data: [15, 12, 19, 18, 29], backgroundColor: '#3b82f6' },
+                { label: '국내특허 등록', data: [24, 11, 13, 14, 1], backgroundColor: '#f97316' }
+            ]
+        },
+        options: { ...commonOptions, maintainAspectRatio: true, 
+            plugins: { ...commonOptions.plugins, datalabels: { ...commonOptions.plugins.datalabels, color: 'white', formatter: (v) => v > 0 ? v : '' } },
+            scales: { x: { stacked: true }, y: { stacked: true } } }
+    });
+});
+</script>
+
+</body>
+</html>
+
