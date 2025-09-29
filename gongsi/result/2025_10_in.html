@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>대학정보공시 주요 지표 현황 보고서</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f0f2f5;
+            -webkit-print-color-adjust: exact;
+        }
+        .page-container {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 20px auto;
+            background-color: white;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            padding: 1.5cm;
+            position: relative;
+        }
+        @media print {
+            body, html { margin: 0; padding: 0; background-color: white; }
+            .page-container { 
+                box-shadow: none; 
+                margin: 0; 
+                width: 100%; 
+                height: 297mm;
+                page-break-after: always;
+                overflow: hidden;
+            }
+        }
+        h1, h2, h3 { font-weight: 700; }
+        .table-container { page-break-inside: avoid; }
+        .chart-container { page-break-inside: avoid; }
+    </style>
+</head>
+<body>
+
+    <!-- Page 1: Cover -->
+    <div class="page-container" style="justify-content: center; text-align: center;">
+        <div class="absolute top-16 left-1/2 -translate-x-1/2 text-center">
+            <img src="https://dhcpm.github.io/img/logo.gif" alt="대학교 로고" class="mx-auto mb-4 rounded-full">
+            
+        </div>
+        
+        <div class="my-auto">
+            <p class="text-lg text-gray-500 mb-4">2025년 10월 대학정보공시</p>
+            <h1 class="text-5xl font-black text-gray-800 leading-tight">주요 지표 현황 보고서</h1>
+            <div class="mt-8 mx-auto w-24 border-b-4 border-blue-500"></div>
+        </div>
+        
+        <div class="absolute bottom-16 left-1/2 -translate-x-1/2 text-center">
+            <p class="text-lg font-medium text-gray-600">기획처 대학성과관리팀</p>
+            <p class="text-md text-gray-500 mt-2">기준일: 2025. 9. 29.</p>
+        </div>
+    </div>
+
+    <!-- Page 2: Infographic Summary -->
+    <div class="page-container">
+        <div class="text-center mb-5">
+            <h1 class="text-3xl font-black text-gray-800">2025 10월 대학정보공시 주요 지표 요약</h1>
+            <div class="mt-3 mx-auto w-16 border-b-2 border-blue-500"></div>
+        </div>
+        <div class="grid grid-cols-2 gap-5 flex-grow">
+            <div class="bg-gray-50 rounded-lg p-4 flex flex-col items-center justify-center text-center border">
+                <div class="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mb-3">
+                    <i data-lucide="bed-double" class="w-7 h-7 text-blue-600"></i>
+                </div>
+                <h2 class="text-lg font-bold text-gray-700">기숙사 수용률</h2>
+                <p class="text-4xl font-black text-blue-600">10.6<span class="text-2xl">%</span></p>
+                <div class="flex items-center justify-center text-sm text-green-600 font-semibold my-1">
+                    <i data-lucide="arrow-up" class="w-4 h-4 mr-1"></i>
+                    <span>+0.6%p (전년대비)</span>
+                </div>
+                <p class="text-sm text-gray-500">2025년 기준 / 696명 수용</p>
+                <div class="w-full h-12 mt-2"><canvas id="dormDonut"></canvas></div>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-4 flex flex-col items-center justify-center text-center border">
+                <div class="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mb-3">
+                    <i data-lucide="building-2" class="w-7 h-7 text-green-600"></i>
+                </div>
+                <h2 class="text-lg font-bold text-gray-700">교사시설 확보율 (2025)</h2>
+                <div class="flex w-full justify-around items-start mt-1">
+                    <div class="text-center">
+                        <p class="text-2xl font-black text-green-700">165.5<span class="text-lg">%</span></p>
+                        <p class="text-xs text-gray-500">입학정원 기준</p>
+                        <div class="flex items-center justify-center text-xs text-green-600 font-semibold">
+                            <i data-lucide="arrow-up" class="w-3 h-3 mr-0.5"></i>
+                            <span>+9.6%p</span>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-2xl font-black text-green-500">155.8<span class="text-lg">%</span></p>
+                        <p class="text-xs text-gray-500">재학생 기준</p>
+                         <div class="flex items-center justify-center text-xs text-green-600 font-semibold">
+                            <i data-lucide="arrow-up" class="w-3 h-3 mr-0.5"></i>
+                            <span>+5.5%p</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full h-16 mt-2"><canvas id="facilityBar"></canvas></div>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-4 flex flex-col items-center justify-center text-center border">
+                <div class="w-14 h-14 bg-yellow-100 rounded-full flex items-center justify-center mb-3">
+                    <i data-lucide="book-open" class="w-7 h-7 text-yellow-600"></i>
+                </div>
+                <h2 class="text-lg font-bold text-gray-700">학생 1인당 자료구입비</h2>
+                <p class="text-3xl font-black text-yellow-600">23,418<span class="text-xl">원</span></p>
+                <div class="flex items-center justify-center text-sm text-green-600 font-semibold my-1">
+                    <i data-lucide="arrow-up" class="w-4 h-4 mr-1"></i>
+                    <span>+982원 (전년대비)</span>
+                </div>
+                <p class="text-sm text-gray-500">2025년 기준 / 1인당 43권</p>
+                 <div class="w-full h-12 mt-2"><canvas id="materialsLine"></canvas></div>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-4 flex flex-col items-center justify-center text-center border">
+                <div class="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mb-3">
+                    <i data-lucide="landmark" class="w-7 h-7 text-red-600"></i>
+                </div>
+                <h2 class="text-lg font-bold text-gray-700">법정부담금 부담률</h2>
+                <p class="text-4xl font-black text-red-600">2.0<span class="text-2xl">%</span></p>
+                <div class="flex items-center justify-center text-sm text-green-600 font-semibold my-1">
+                    <i data-lucide="arrow-up" class="w-4 h-4 mr-1"></i>
+                    <span>+1.7%p (전년대비)</span>
+                </div>
+                <p class="text-sm text-gray-500">2024년 결산 기준</p>
+                <div class="w-full h-12 mt-2"><canvas id="legalFeeDonut"></canvas></div>
+            </div>
+            <div class="col-span-2 bg-blue-50 rounded-lg p-4 flex flex-col items-center justify-center text-center border border-blue-200">
+                <div class="w-14 h-14 bg-sky-100 rounded-full flex items-center justify-center mb-3">
+                    <i data-lucide="shield-check" class="w-7 h-7 text-sky-600"></i>
+                </div>
+                <h2 class="text-lg font-bold text-gray-700">폭력예방교육 참여율</h2>
+                <p class="text-4xl font-black text-sky-600">92.0<span class="text-2xl">%</span></p>
+                <div class="flex items-center justify-center text-sm text-green-600 font-semibold my-1">
+                    <i data-lucide="arrow-up" class="w-4 h-4 mr-1"></i>
+                    <span>+2.2%p (전년대비)</span>
+                </div>
+                <p class="text-sm text-gray-500">2024년 재학생 5,981명 참여</p>
+                <div class="w-full h-12 mt-2"><canvas id="educationBar"></canvas></div>
+            </div>
+        </div>
+        <div class="text-center mt-auto pt-4 border-t">
+            <p class="text-sm text-gray-500">기획처 대학성과관리팀 | 기준일: 2025. 9. 29.</p>
+        </div>
+    </div>
+    
+    <!-- Page 3: 기숙사 수용 현황 -->
+    <div class="page-container">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 pb-2 border-b-2 border-blue-500">1. 기숙사 수용 현황</h2>
+        <div class="table-container mb-8">
+            <table class="w-full text-center border-collapse">
+                <thead>
+                    <tr class="bg-gray-100">
+                        <th class="border p-2">기준연도</th>
+                        <th class="border p-2">재학생수</th>
+                        <th class="border p-2">수용가능인원</th>
+                        <th class="border p-2">기숙사수용률</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="border p-2">2021</td><td class="border p-2">6,672</td><td class="border p-2">383</td><td class="border p-2">5.7%</td></tr>
+                    <tr><td class="border p-2">2022</td><td class="border p-2">6,650</td><td class="border p-2">376</td><td class="border p-2">5.7%</td></tr>
+                    <tr><td class="border p-2">2023</td><td class="border p-2">6,571</td><td class="border p-2">376</td><td class="border p-2">5.7%</td></tr>
+                    <tr><td class="border p-2">2024</td><td class="border p-2">6,500</td><td class="border p-2">647</td><td class="border p-2">10.0%</td></tr>
+                    <tr><td class="border p-2">2025</td><td class="border p-2">6,580</td><td class="border p-2">696</td><td class="border p-2">10.6%</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="chart-container flex-grow"><canvas id="dormChart"></canvas></div>
+    </div>
+
+    <!-- Page 4: 법정부담금 부담현황 -->
+    <div class="page-container">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 pb-2 border-b-2 border-blue-500">2. 법정부담금 부담현황</h2>
+        <div class="table-container mb-8">
+            <table class="w-full text-center border-collapse">
+                <thead>
+                    <tr class="bg-gray-100">
+                        <th class="border p-2">기준연도</th>
+                        <th class="border p-2">기준액 (천원)</th>
+                        <th class="border p-2">부담액 (천원)</th>
+                        <th class="border p-2">부담률 (%)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="border p-2">2018</td><td class="border p-2">1,916,742</td><td class="border p-2">10,000</td><td class="border p-2">0.5</td></tr>
+                    <tr><td class="border p-2">2019</td><td class="border p-2">1,935,291</td><td class="border p-2">3,000</td><td class="border p-2">0.2</td></tr>
+                    <tr><td class="border p-2">2020</td><td class="border p-2">1,997,490</td><td class="border p-2">20,000</td><td class="border p-2">1</td></tr>
+                    <tr><td class="border p-2">2021</td><td class="border p-2">1,914,043</td><td class="border p-2">10,000</td><td class="border p-2">0.5</td></tr>
+                    <tr><td class="border p-2">2022</td><td class="border p-2">2,125,621</td><td class="border p-2">20,000</td><td class="border p-2">0.9</td></tr>
+                    <tr><td class="border p-2">2023</td><td class="border p-2">2,148,681</td><td class="border p-2">7,000</td><td class="border p-2">0.3</td></tr>
+                    <tr><td class="border p-2">2024</td><td class="border p-2">2,076,239</td><td class="border p-2">42,000</td><td class="border p-2">2</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="chart-container flex-grow"><canvas id="legalFeeChart"></canvas></div>
+    </div>
+    
+    <!-- Page 5: 학생 1인당 자료구입비 현황 -->
+    <div class="page-container">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 pb-2 border-b-2 border-blue-500">3. 학생 1인당 자료구입비 현황</h2>
+        <div class="table-container mb-8">
+            <table class="w-full text-center border-collapse">
+                <thead>
+                    <tr class="bg-gray-100">
+                        <th class="border p-2">기준연도</th>
+                        <th class="border p-2">학생 1인당 도서자료수</th>
+                        <th class="border p-2">학생 1인당 자료구입비</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="border p-2">2021</td><td class="border p-2">35.6</td><td class="border p-2">23,880.2</td></tr>
+                    <tr><td class="border p-2">2022</td><td class="border p-2">38.2</td><td class="border p-2">24,969.9</td></tr>
+                    <tr><td class="border p-2">2023</td><td class="border p-2">39.7</td><td class="border p-2">24,167.1</td></tr>
+                    <tr><td class="border p-2">2024</td><td class="border p-2">41.3</td><td class="border p-2">22,436.5</td></tr>
+                    <tr><td class="border p-2">2025</td><td class="border p-2">43</td><td class="border p-2">23,418.4</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="chart-container flex-grow"><canvas id="bookPurchaseChart"></canvas></div>
+    </div>
+
+    <!-- Page 6: 교사시설 확보현황 -->
+    <div class="page-container">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 pb-2 border-b-2 border-blue-500">4. 교사시설 확보현황</h2>
+        <div class="table-container mb-8">
+            <table class="w-full text-center border-collapse">
+                <thead>
+                    <tr class="bg-gray-100">
+                        <th class="border p-2">기준연도</th>
+                        <th class="border p-2">입학정원 기준 (%)</th>
+                        <th class="border p-2">재학생 기준 (%)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="border p-2">2019</td><td class="border p-2">137.9</td><td class="border p-2">125.4</td></tr>
+                    <tr><td class="border p-2">2020</td><td class="border p-2">136</td><td class="border p-2">124.5</td></tr>
+                    <tr><td class="border p-2">2021</td><td class="border p-2">136.7</td><td class="border p-2">130.4</td></tr>
+                    <tr><td class="border p-2">2022</td><td class="border p-2">125.3</td><td class="border p-2">122.7</td></tr>
+                    <tr><td class="border p-2">2023</td><td class="border p-2">129.8</td><td class="border p-2">123.6</td></tr>
+                    <tr><td class="border p-2">2024</td><td class="border p-2">155.9</td><td class="border p-2">150.3</td></tr>
+                    <tr><td class="border p-2">2025</td><td class="border p-2">165.5</td><td class="border p-2">155.8</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="chart-container flex-grow mb-4"><canvas id="facilitySecuringChart"></canvas></div>
+        <div class="p-4 bg-gray-50 rounded-lg text-sm text-gray-700">
+            <h3 class="font-bold mb-2">※ 특이사항</h3>
+            <p>기본시설에 임대시설 중 학생후생복지시설에서 (학생기숙사의 학생후생복지시설과 도서관)을 제외한 후생복지시설이 기본시설로 추가되어 확보율이 증가함.</p>
+        </div>
+    </div>
+
+    <!-- Page 7: 학생 폭력예방교육 이수 현황 -->
+    <div class="page-container">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 pb-2 border-b-2 border-blue-500">5. 학생 폭력예방교육 이수 현황</h2>
+        <div class="table-container mb-8">
+            <table class="w-full text-center border-collapse">
+                <thead>
+                    <tr class="bg-gray-100">
+                        <th class="border p-2">기준연도</th>
+                        <th class="border p-2">재학생수</th>
+                        <th class="border p-2">참여인원</th>
+                        <th class="border p-2">참여율</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="border p-2">2020</td><td class="border p-2">6,959</td><td class="border p-2">5,374</td><td class="border p-2">77.2%</td></tr>
+                    <tr><td class="border p-2">2021</td><td class="border p-2">6,672</td><td class="border p-2">4,728</td><td class="border p-2">70.9%</td></tr>
+                    <tr><td class="border p-2">2022</td><td class="border p-2">6,650</td><td class="border p-2">4,816</td><td class="border p-2">72.4%</td></tr>
+                    <tr><td class="border p-2">2023</td><td class="border p-2">6,571</td><td class="border p-2">5,898</td><td class="border p-2">89.8%</td></tr>
+                    <tr><td class="border p-2">2024</td><td class="border p-2">6,500</td><td class="border p-2">5,981</td><td class="border p-2">92.0%</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="chart-container flex-grow"><canvas id="violencePreventionChart"></canvas></div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+        Chart.register(ChartDataLabels);
+        Chart.defaults.plugins.datalabels.color = '#fff';
+        Chart.defaults.plugins.datalabels.font = { weight: 'bold' };
+        Chart.defaults.plugins.datalabels.formatter = (value, context) => {
+            if (typeof value === 'number' && value > 1000) {
+                return value.toLocaleString();
+            }
+            if(context.dataset.label.includes('률') || context.dataset.label.includes('율')) {
+                return value + '%';
+            }
+            return value;
+        };
+
+        // --- Infographic Charts ---
+        const dormDonutCtx = document.getElementById('dormDonut')?.getContext('2d');
+        if(dormDonutCtx) new Chart(dormDonutCtx, { type: 'doughnut', data: { labels: ['수용률', '미수용'], datasets: [{ data: [10.6, 100-10.6], backgroundColor: ['#3b82f6', '#e5e7eb'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { display: false }, tooltip: { enabled: false }, datalabels:{display:false} } } });
+        const facilityBarCtx = document.getElementById('facilityBar')?.getContext('2d');
+        if(facilityBarCtx) new Chart(facilityBarCtx, { type: 'bar', data: { labels: ['2023', '2024', '2025'], datasets: [ { label: '입학정원', data: [129.8, 155.9, 165.5], backgroundColor: '#16a34a' }, { label: '재학생', data: [123.6, 150.3, 155.8], backgroundColor: '#4ade80' } ] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true, position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } }, datalabels:{display:false} }, scales: { x: { grid: { display: false } }, y: { display: false, min: 100 } } } });
+        const materialsLineCtx = document.getElementById('materialsLine')?.getContext('2d');
+        if(materialsLineCtx) new Chart(materialsLineCtx, { type: 'line', data: { labels: ['2023', '2024', '2025'], datasets: [{ label: '자료구입비', data: [24167, 22436, 23418], borderColor: '#eab308', tension: 0.4, fill: true, backgroundColor: 'rgba(234, 179, 8, 0.1)' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, datalabels:{display:false} }, scales: { x: { grid: { display: false } }, y: { display: false } } } });
+        const legalFeeDonutCtx = document.getElementById('legalFeeDonut')?.getContext('2d');
+        if(legalFeeDonutCtx) new Chart(legalFeeDonutCtx, { type: 'doughnut', data: { labels: ['부담률', '미부담'], datasets: [{ data: [2.0, 100-2.0], backgroundColor: ['#ef4444', '#e5e7eb'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { display: false }, tooltip: { enabled: false }, datalabels:{display:false} } } });
+        const educationBarCtx = document.getElementById('educationBar')?.getContext('2d');
+        if(educationBarCtx) new Chart(educationBarCtx, { type: 'bar', data: { labels: ['2022', '2023', '2024'], datasets: [{ label: '참여율', data: [72.4, 89.8, 92.0], backgroundColor: '#0ea5e9' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, datalabels:{display:false} }, scales: { x: { grid: { display: false } }, y: { display: false, min: 50 } } } });
+
+        // --- Report Page Charts ---
+        const createChart = (ctx, config) => new Chart(ctx, config);
+
+        const dormCtx = document.getElementById('dormChart')?.getContext('2d');
+        if(dormCtx) createChart(dormCtx, { type: 'bar', data: { labels: ['2021', '2022', '2023', '2024', '2025'], datasets: [{ type: 'bar', label: '재학생수', data: [6672, 6650, 6571, 6500, 6580], backgroundColor: 'rgba(54, 162, 235, 0.5)', yAxisID: 'y' }, { type: 'bar', label: '수용가능인원', data: [383, 376, 376, 647, 696], backgroundColor: 'rgba(75, 192, 192, 0.5)', yAxisID: 'y' }, { type: 'line', label: '기숙사수용률', data: [5.7, 5.7, 5.7, 10, 10.6], borderColor: 'rgba(255, 99, 132, 1)', yAxisID: 'y1', datalabels: {color: '#333'} }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, position: 'left', title: {display: true, text: '인원 (명)'} }, y1: { beginAtZero: true, position: 'right', grid: { drawOnChartArea: false }, title: {display: true, text: '수용률 (%)'} } } } });
+        const legalFeeCtx = document.getElementById('legalFeeChart')?.getContext('2d');
+        if(legalFeeCtx) createChart(legalFeeCtx, { type: 'bar', data: { labels: ['2018', '2019', '2020', '2021', '2022', '2023', '2024'], datasets: [{ type: 'bar', label: '부담액(천원)', data: [10000, 3000, 20000, 10000, 20000, 7000, 42000], backgroundColor: 'rgba(255, 159, 64, 0.5)', yAxisID: 'y' }, { type: 'line', label: '부담률(%)', data: [0.5, 0.2, 1, 0.5, 0.9, 0.3, 2], borderColor: 'rgba(153, 102, 255, 1)', yAxisID: 'y1', datalabels: {color: '#333'} }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, position: 'left', title: { display: true, text: '금액 (천원)' } }, y1: { beginAtZero: true, position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: '부담률 (%)' } } } } });
+        const bookPurchaseCtx = document.getElementById('bookPurchaseChart')?.getContext('2d');
+        if(bookPurchaseCtx) createChart(bookPurchaseCtx, { type: 'bar', data: { labels: ['2021', '2022', '2023', '2024', '2025'], datasets: [{ type: 'bar', label: '1인당 도서자료수', data: [35.6, 38.2, 39.7, 41.3, 43], backgroundColor: 'rgba(153, 102, 255, 0.5)', yAxisID: 'y' }, { type: 'line', label: '1인당 자료구입비', data: [23880.2, 24969.9, 24167.1, 22436.5, 23418.4], borderColor: 'rgba(255, 206, 86, 1)', yAxisID: 'y1', datalabels: {color: '#333'} }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, position: 'left', title: { display: true, text: '권 수' } }, y1: { beginAtZero: true, position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: '금액 (원)' } } } } });
+        const facilitySecuringCtx = document.getElementById('facilitySecuringChart')?.getContext('2d');
+        if(facilitySecuringCtx) createChart(facilitySecuringCtx, { type: 'line', data: { labels: ['2019', '2020', '2021', '2022', '2023', '2024', '2025'], datasets: [{ label: '입학정원 기준 (%)', data: [137.9, 136, 136.7, 125.3, 129.8, 155.9, 165.5], borderColor: 'rgba(75, 192, 192, 1)', backgroundColor: 'rgba(75, 192, 192, 0.2)', fill: true, datalabels: {color: '#333'} }, { label: '재학생 기준 (%)', data: [125.4, 124.5, 130.4, 122.7, 123.6, 150.3, 155.8], borderColor: 'rgba(255, 99, 132, 1)', backgroundColor: 'rgba(255, 99, 132, 0.2)', fill: true, datalabels: {color: '#333'} }] }, options: { responsive: true, maintainAspectRatio: false, plugins:{legend:{position: 'bottom'}}, scales: { y: { beginAtZero: false, title: {display: true, text: '확보율 (%)'} } } } });
+        const violencePreventionCtx = document.getElementById('violencePreventionChart')?.getContext('2d');
+        if(violencePreventionCtx) createChart(violencePreventionCtx, { type: 'bar', data: { labels: ['2020', '2021', '2022', '2023', '2024'], datasets: [{ type: 'bar', label: '참여인원', data: [5374, 4728, 4816, 5898, 5981], backgroundColor: 'rgba(255, 99, 132, 0.5)', yAxisID: 'y' }, { type: 'line', label: '참여율', data: [77.2, 70.9, 72.4, 89.8, 92], borderColor: 'rgba(54, 162, 235, 1)', yAxisID: 'y1', datalabels: {color: '#333'} }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, position: 'left', title: {display: true, text: '참여 인원 (명)'} }, y1: { beginAtZero: true, position: 'right', grid: { drawOnChartArea: false }, title: {display: true, text: '참여율 (%)'} } } } });
+
+    </script>
+</body>
+</html>
