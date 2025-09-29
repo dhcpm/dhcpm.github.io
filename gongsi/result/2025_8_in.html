@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025년 8월 대학정보공시 교내 현황표</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chart.js Data Labels Plugin CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+    <!-- Google Fonts: Inter & Noto Sans KR -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* 기본 폰트 설정 */
+        body {
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+        }
+        /* 부드러운 스크롤 */
+        html {
+            scroll-behavior: smooth;
+        }
+        /* 인쇄용 스타일 */
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact; /* Chrome, Safari */
+                color-adjust: exact; /* Firefox */
+            }
+            .no-print {
+                display: none;
+            }
+            .cover-page {
+                height: 100vh; /* 표지가 한 페이지를 차지하도록 설정 */
+                border: none;
+                margin: 0;
+                padding: 0;
+                page-break-after: always; /* 표지 다음에 페이지 나누기 */
+            }
+            section {
+                page-break-inside: avoid; /* 섹션이 페이지 중간에 잘리지 않도록 함 */
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- 표지 섹션 -->
+    <section class="cover-page relative flex flex-col justify-center items-center min-h-screen bg-white p-8">
+        <!-- 상단 로고 (Placeholder) -->
+        <div class="w-full text-center mb-16">
+            <!--img src="https://placehold.co/150x60/000000/FFFFFF?text=UNIVERSITY+LOGO" alt="대학 로고" class="mx-auto"-->
+        </div>
+
+        <!-- 제목 -->
+        <div class="text-center">
+            <h1 class="text-5xl font-black text-gray-800 leading-tight">2025년 8월<br>주요 공시항목 공시 현황</h1>
+            <div class="w-24 h-1.5 bg-blue-600 mx-auto my-10"></div>
+        </div>
+        
+        <!-- 하단 정보 -->
+        <div class="mt-auto w-full text-center pt-16">
+             <p class="text-xl font-bold text-gray-700">대학성과관리팀</p>
+            <p class="text-lg text-gray-500 mt-2">2025년 8월</p>
+        </div>
+
+        <!-- 스크롤 다운 버튼 -->
+        <a href="#dashboard" class="no-print absolute bottom-10 animate-bounce p-2 rounded-full text-gray-500 hover:bg-gray-100">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+        </a>
+    </section>
+
+    <!-- 대시보드 콘텐츠 시작 -->
+    <div id="dashboard" class="dashboard-content container mx-auto p-4 sm:p-6 lg:p-8">
+        <main>
+            <!-- 1. 핵심 지표 카드 섹션 (8개 항목) -->
+            <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
+                <!-- 카드 1: 신입생 충원율 -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-2 border-teal-500 hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-lg font-semibold text-gray-600 mb-2">신입생 충원율 (2025)</h3>
+                    <p class="text-4xl font-bold text-teal-600">96.7%</p>
+                    <p class="text-sm text-gray-500 mt-2">신입생 경쟁률 7:1</p>
+                </div>
+                <!-- 카드 2: 재학생 충원율 -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-2 border-purple-500 hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-lg font-semibold text-gray-600 mb-2">재학생 충원율 (2025)</h3>
+                    <p class="text-4xl font-bold text-purple-600">86.5%</p>
+                    <p class="text-sm text-gray-500 mt-2">정원내 기준 (정원외 109.8%)</p>
+                </div>
+                <!-- 카드 3: 전임교원 확보율 (하락) -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-2 border-red-700 hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-lg font-semibold text-gray-600 mb-2">전임교원 확보율 (2025)</h3>
+                    <p class="text-4xl font-bold text-red-700">55.2%</p>
+                    <p class="text-sm text-gray-500 mt-2">재학생 기준 (학생정원 60.4%)</p>
+                </div>
+                <!-- 카드 4: 중도탈락률 (악화) -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-2 border-red-700 hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-lg font-semibold text-gray-600 mb-2">중도탈락률 (2024)</h3>
+                    <p class="text-4xl font-bold text-red-700">7.9%</p>
+                    <p class="text-sm text-gray-500 mt-2">전체 기준 (신입생 8.5%)</p>
+                </div>
+                <!-- 카드 5: 학생 1인당 교육비 -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-2 border-cyan-500 hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-lg font-semibold text-gray-600 mb-2">학생 1인당 교육비 (2024)</h3>
+                    <p class="text-4xl font-bold text-cyan-600">1,239<span class="text-2xl">만원</span></p>
+                    <p class="text-sm text-gray-500 mt-2">학생 투자 규모</p>
+                </div>
+                <!-- 카드 6: 학생 1인당 장학금 -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-2 border-green-500 hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-lg font-semibold text-gray-600 mb-2">학생 1인당 장학금 (2024)</h3>
+                    <p class="text-4xl font-bold text-green-600">420<span class="text-2xl">만원</span></p>
+                    <p class="text-sm text-gray-500 mt-2">학생 복지 수준</p>
+                </div>
+                <!-- 카드 7: 외국인 유학생 현황 (하락) -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-2 border-red-700 hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-lg font-semibold text-gray-600 mb-2">외국인 유학생 (2025)</h3>
+                    <p class="text-4xl font-bold text-red-700">22<span class="text-2xl">명</span></p>
+                    <p class="text-sm text-gray-500 mt-2">중도탈락 2명</p>
+                </div>
+                <!-- 카드 8: 직원 현황 (하락) -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-2 border-red-700 hover:shadow-lg transition-shadow duration-300">
+                    <h3 class="text-lg font-semibold text-gray-600 mb-2">직원 현황 (2025)</h3>
+                    <p class="text-4xl font-bold text-red-700">119<span class="text-2xl">명</span></p>
+                    <p class="text-sm text-gray-500 mt-2">남자 64명 / 여자 55명</p>
+                </div>
+            </section>
+            
+            <!-- 기존 섹션들 -->
+            <section class="mt-8 bg-white p-6 rounded-xl shadow-md border border-gray-200"><h2 class="text-2xl font-bold mb-6 text-center">신입생 충원현황</h2><div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center"><div class="lg:col-span-3"><canvas id="freshmanChart"></canvas></div><div class="lg:col-span-2"><div class="overflow-x-auto"><table class="w-full text-left"><thead class="bg-gray-100"><tr><th class="p-3 font-semibold text-center">기준연도</th><th class="p-3 font-semibold text-center">충원율(%)</th><th class="p-3 font-semibold text-center">경쟁률(:1)</th></tr></thead><tbody><tr class="border-b"><td class="p-3 text-center">2019</td><td class="p-3 text-center font-medium">100.0</td><td class="p-3 text-center font-medium">9.7</td></tr><tr class="border-b"><td class="p-3 text-center">2020</td><td class="p-3 text-center font-medium">94.6</td><td class="p-3 text-center font-medium">9.0</td></tr><tr class="border-b"><td class="p-3 text-center">2021</td><td class="p-3 text-center font-medium">89.4</td><td class="p-3 text-center font-medium">8.5</td></tr><tr class="border-b"><td class="p-3 text-center">2022</td><td class="p-3 text-center font-medium">91.6</td><td class="p-3 text-center font-medium">8.9</td></tr><tr class="border-b"><td class="p-3 text-center">2023</td><td class="p-3 text-center font-medium">97.4</td><td class="p-3 text-center font-medium">8.0</td></tr><tr class="border-b"><td class="p-3 text-center">2024</td><td class="p-3 text-center font-medium">94.5</td><td class="p-3 text-center font-medium">7.5</td></tr><tr class="bg-teal-100 font-bold"><td class="p-3 text-center">2025</td><td class="p-3 text-center text-teal-800">96.7</td><td class="p-3 text-center text-teal-800">7.0</td></tr></tbody></table></div></div></div></section>
+            <section class="mt-8 bg-white p-6 rounded-xl shadow-md border border-gray-200"><h2 class="text-2xl font-bold mb-6 text-center">재학생 충원현황</h2><div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center"><div class="lg:col-span-3"><canvas id="currentStudentChart"></canvas></div><div class="lg:col-span-2"><div class="overflow-x-auto"><table class="w-full text-left"><thead class="bg-gray-100"><tr><th class="p-3 font-semibold text-center">기준연도</th><th class="p-3 font-semibold text-center">정원내(%)</th><th class="p-3 font-semibold text-center">정원내·외(%)</th></tr></thead><tbody><tr class="border-b"><td class="p-3 text-center">2019</td><td class="p-3 text-center font-medium">95.4</td><td class="p-3 text-center font-medium">114.5</td></tr><tr class="border-b"><td class="p-3 text-center">2020</td><td class="p-3 text-center font-medium">92.3</td><td class="p-3 text-center font-medium">112.5</td></tr><tr class="border-b"><td class="p-3 text-center">2021</td><td class="p-3 text-center font-medium">87.5</td><td class="p-3 text-center font-medium">107.8</td></tr><tr class="border-b"><td class="p-3 text-center">2022</td><td class="p-3 text-center font-medium">86.3</td><td class="p-3 text-center font-medium">107.2</td></tr><tr class="border-b"><td class="p-3 text-center">2023</td><td class="p-3 text-center font-medium">85.9</td><td class="p-3 text-center font-medium">106.5</td></tr><tr class="border-b"><td class="p-3 text-center">2024</td><td class="p-3 text-center font-medium">86.0</td><td class="p-3 text-center font-medium">107.3</td></tr><tr class="bg-purple-100 font-bold"><td class="p-3 text-center">2025</td><td class="p-3 text-center text-purple-800">86.5</td><td class="p-3 text-center text-purple-800">109.8</td></tr></tbody></table></div></div></div></section>
+            <section class="mt-8 bg-white p-6 rounded-xl shadow-md border border-gray-200"><h2 class="text-2xl font-bold mb-6 text-center">전임교원 확보율</h2><div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center"><div class="lg:col-span-3"><canvas id="facultyRateChart"></canvas></div><div class="lg:col-span-2"><div class="overflow-x-auto"><table class="w-full text-left"><thead class="bg-gray-100"><tr><th class="p-3 font-semibold text-center">기준연도</th><th class="p-3 font-semibold text-center">학생정원(%)</th><th class="p-3 font-semibold text-center">재학생(%)</th></tr></thead><tbody><tr class="border-b"><td class="p-3 text-center">2019</td><td class="p-3 text-center font-medium">60.6</td><td class="p-3 text-center font-medium">52.9</td></tr><tr class="border-b"><td class="p-3 text-center">2020</td><td class="p-3 text-center font-medium">59.3</td><td class="p-3 text-center font-medium">52.5</td></tr><tr class="border-b"><td class="p-3 text-center">2021</td><td class="p-3 text-center font-medium">61.1</td><td class="p-3 text-center font-medium">56.7</td></tr><tr class="border-b"><td class="p-3 text-center">2022</td><td class="p-3 text-center font-medium">60.3</td><td class="p-3 text-center font-medium">56.2</td></tr><tr class="border-b"><td class="p-3 text-center">2023</td><td class="p-3 text-center font-medium">59.1</td><td class="p-3 text-center font-medium">55.5</td></tr><tr class="border-b"><td class="p-3 text-center">2024</td><td class="p-3 text-center font-medium">59.8</td><td class="p-3 text-center font-medium">55.7</td></tr><tr class="bg-red-100 font-bold"><td class="p-3 text-center">2025</td><td class="p-3 text-center text-red-800">60.4</td><td class="p-3 text-center text-red-800">55.2</td></tr></tbody></table></div></div></div></section>
+            <section class="mt-8 bg-white p-6 rounded-xl shadow-md border border-gray-200"><h2 class="text-2xl font-bold mb-6 text-center">중도탈락률</h2><div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center"><div class="lg:col-span-3"><canvas id="dropoutRateChart"></canvas></div><div class="lg:col-span-2"><div class="overflow-x-auto"><table class="w-full text-left"><thead class="bg-gray-100"><tr><th class="p-3 font-semibold text-center">기준연도</th><th class="p-3 font-semibold text-center">전체(%)</th><th class="p-3 font-semibold text-center">신입생(%)</th></tr></thead><tbody><tr class="border-b"><td class="p-3 text-center">2020</td><td class="p-3 text-center font-medium">4.9</td><td class="p-3 text-center font-medium">5.2</td></tr><tr class="border-b"><td class="p-3 text-center">2021</td><td class="p-3 text-center font-medium">5.7</td><td class="p-3 text-center font-medium">5.7</td></tr><tr class="border-b"><td class="p-3 text-center">2022</td><td class="p-3 text-center font-medium">5.9</td><td class="p-3 text-center font-medium">6.6</td></tr><tr class="border-b"><td class="p-3 text-center">2023</td><td class="p-3 text-center font-medium">7.1</td><td class="p-3 text-center font-medium">7.7</td></tr><tr class="bg-red-100 font-bold"><td class="p-3 text-center">2024</td><td class="p-3 text-center text-red-800">7.9</td><td class="p-3 text-center text-red-800">8.5</td></tr></tbody></table></div></div></div></section>
+            <section class="mt-8 bg-white p-6 rounded-xl shadow-md border border-gray-200"><h2 class="text-2xl font-bold mb-6 text-center">학생 1인당 장학금</h2><div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center"><div class="lg:col-span-3"><canvas id="scholarshipChart"></canvas></div><div class="lg:col-span-2"><div class="overflow-x-auto"><table class="w-full text-left"><thead class="bg-gray-100"><tr><th class="p-3 font-semibold text-center">기준연도</th><th class="p-3 font-semibold text-center">장학금(원)</th></tr></thead><tbody><tr class="border-b"><td class="p-3 text-center">2018</td><td class="p-3 text-center font-medium">3,716,500</td></tr><tr class="border-b"><td class="p-3 text-center">2019</td><td class="p-3 text-center font-medium">3,868,742</td></tr><tr class="border-b"><td class="p-3 text-center">2020</td><td class="p-3 text-center font-medium">3,779,586</td></tr><tr class="border-b"><td class="p-3 text-center">2021</td><td class="p-3 text-center font-medium">3,908,502</td></tr><tr class="border-b"><td class="p-3 text-center">2022</td><td class="p-3 text-center font-medium">3,849,947</td></tr><tr class="border-b"><td class="p-3 text-center">2023</td><td class="p-3 text-center font-medium">4,027,345</td></tr><tr class="bg-green-100 font-bold"><td class="p-3 text-center">2024</td><td class="p-3 text-center text-green-800">4,199,686</td></tr></tbody></table></div></div></div></section>
+            <section class="mt-8 bg-white p-6 rounded-xl shadow-md border border-gray-200"><h2 class="text-2xl font-bold mb-6 text-center">학생 1인당 교육비</h2><div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center"><div class="lg:col-span-3"><canvas id="educationCostChart"></canvas></div><div class="lg:col-span-2"><div class="overflow-x-auto"><table class="w-full text-left"><thead class="bg-gray-100"><tr><th class="p-3 font-semibold text-center">기준연도</th><th class="p-3 font-semibold text-center">교육비(원)</th></tr></thead><tbody><tr class="border-b"><td class="p-3 text-center">2019</td><td class="p-3 text-center font-medium">9,668,531</td></tr><tr class="border-b"><td class="p-3 text-center">2020</td><td class="p-3 text-center font-medium">9,872,634</td></tr><tr class="border-b"><td class="p-3 text-center">2021</td><td class="p-3 text-center font-medium">10,525,103</td></tr><tr class="border-b"><td class="p-3 text-center">2022</td><td class="p-3 text-center font-medium">11,484,248</td></tr><tr class="border-b"><td class="p-3 text-center">2023</td><td class="p-3 text-center font-medium">11,628,665</td></tr><tr class="bg-cyan-100 font-bold"><td class="p-3 text-center">2024</td><td class="p-3 text-center text-cyan-800">12,393,797</td></tr></tbody></table></div></div></div></section>
+            <section class="mt-8 bg-white p-6 rounded-xl shadow-md border border-gray-200"><h2 class="text-2xl font-bold mb-6 text-center">외국인 유학생 현황</h2><div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center"><div class="lg:col-span-3"><canvas id="foreignStudentChart"></canvas></div><div class="lg:col-span-2"><div class="overflow-x-auto"><table class="w-full text-left"><thead class="bg-gray-100"><tr><th class="p-3 font-semibold text-center">기준연도</th><th class="p-3 font-semibold text-center">유학생(명)</th><th class="p-3 font-semibold text-center">중도탈락(명)</th></tr></thead><tbody><tr class="border-b"><td class="p-3 text-center">2019</td><td class="p-3 text-center font-medium">74</td><td class="p-3 text-center font-medium">4</td></tr><tr class="border-b"><td class="p-3 text-center">2020</td><td class="p-3 text-center font-medium">103</td><td class="p-3 text-center font-medium">4</td></tr><tr class="border-b"><td class="p-3 text-center">2021</td><td class="p-3 text-center font-medium">119</td><td class="p-3 text-center font-medium">11</td></tr><tr class="border-b"><td class="p-3 text-center">2022</td><td class="p-3 text-center font-medium">119</td><td class="p-3 text-center font-medium">18</td></tr><tr class="border-b"><td class="p-3 text-center">2023</td><td class="p-3 text-center font-medium">113</td><td class="p-3 text-center font-medium">15</td></tr><tr class="border-b"><td class="p-3 text-center">2024</td><td class="p-3 text-center font-medium">38</td><td class="p-3 text-center font-medium">3</td></tr><tr class="bg-red-100 font-bold"><td class="p-3 text-center">2025</td><td class="p-3 text-center text-red-800">22</td><td class="p-3 text-center text-red-800">2</td></tr></tbody></table></div></div></div></section>
+            <section class="mt-8 bg-white p-6 rounded-xl shadow-md border border-gray-200"><h2 class="text-2xl font-bold mb-6 text-center">직원 현황</h2><div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center"><div class="lg:col-span-3"><canvas id="staffChart"></canvas></div><div class="lg:col-span-2"><div class="overflow-x-auto"><table class="w-full text-left"><thead class="bg-gray-100"><tr><th class="p-3 font-semibold text-center">기준연도</th><th class="p-3 font-semibold text-center">직원 수(명)</th></tr></thead><tbody><tr class="border-b"><td class="p-3 text-center">2019</td><td class="p-3 text-center font-medium">121</td></tr><tr class="border-b"><td class="p-3 text-center">2020</td><td class="p-3 text-center font-medium">121</td></tr><tr class="border-b"><td class="p-3 text-center">2021</td><td class="p-3 text-center font-medium">130</td></tr><tr class="border-b"><td class="p-3 text-center">2022</td><td class="p-3 text-center font-medium">131</td></tr><tr class="border-b"><td class="p-3 text-center">2023</td><td class="p-3 text-center font-medium">119</td></tr><tr class="border-b"><td class="p-3 text-center">2024</td><td class="p-3 text-center font-medium">123</td></tr><tr class="bg-red-100 font-bold"><td class="p-3 text-center">2025</td><td class="p-3 text-center text-red-800">119</td></tr></tbody></table></div></div></div></section>
+            
+            <!-- 10. 학과별 신입생 충원 현황 -->
+            <section class="mt-8 bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                <h2 class="text-2xl font-bold mb-6 text-center">학과별 신입생 충원 현황</h2>
+                <div class="grid grid-cols-1 gap-8">
+                    <div class="h-[800px]"><canvas id="departmentChart"></canvas></div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-gray-100 sticky top-0">
+                                <tr>
+                                    <th class="p-3 font-semibold text-center">학과명</th>
+                                    <th class="p-3 font-semibold text-center">충원율(%)</th>
+                                    <th class="p-3 font-semibold text-center">경쟁률</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b"><td class="p-3 text-center">간호</td><td class="p-3 text-center font-medium">100.0</td><td class="p-3 text-center font-medium">16.5</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">물치</td><td class="p-3 text-center font-medium">100.0</td><td class="p-3 text-center font-medium">15.2</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">방사</td><td class="p-3 text-center font-medium">100.0</td><td class="p-3 text-center font-medium">6.5</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">뷰티</td><td class="p-3 text-center font-medium">100.0</td><td class="p-3 text-center font-medium">7.1</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">사복</td><td class="p-3 text-center font-medium">100.0</td><td class="p-3 text-center font-medium">4.0</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">소방</td><td class="p-3 text-center font-medium">100.0</td><td class="p-3 text-center font-medium">3.8</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">스포츠</td><td class="p-3 text-center font-medium">100.0</td><td class="p-3 text-center font-medium">7.4</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">식영</td><td class="p-3 text-center font-medium">100.0</td><td class="p-3 text-center font-medium">4.7</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">안광</td><td class="p-3 text-center font-medium">100.0</td><td class="p-3 text-center font-medium">2.8</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">언치</td><td class="p-3 text-center font-medium">100.0</td><td class="p-3 text-center font-medium">3.3</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">유아</td><td class="p-3 text-center font-medium">100.0</td><td class="p-3 text-center font-medium">4.3</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">응급</td><td class="p-3 text-center font-medium">100.0</td><td class="p-3 text-center font-medium">14.3</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">임병</td><td class="p-3 text-center font-medium">100.0</td><td class="p-3 text-center font-medium">4.6</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">작치</td><td class="p-3 text-center font-medium">100.0</td><td class="p-3 text-center font-medium">5.4</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">제빵</td><td class="p-3 text-center font-medium">100.0</td><td class="p-3 text-center font-medium">7.5</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">치위</td><td class="p-3 text-center font-medium">100.0</td><td class="p-3 text-center font-medium">6.8</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">반려</td><td class="p-3 text-center font-medium">96.0</td><td class="p-3 text-center font-medium">6.7</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">보행</td><td class="p-3 text-center font-medium">90.0</td><td class="p-3 text-center font-medium">4.3</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">환경</td><td class="p-3 text-center font-medium">90.0</td><td class="p-3 text-center font-medium">2.5</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">치기</td><td class="p-3 text-center font-medium">87.3</td><td class="p-3 text-center font-medium">3.1</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">바이오</td><td class="p-3 text-center font-medium">68.0</td><td class="p-3 text-center font-medium">0.8</td></tr>
+                                <tr><td class="p-3 text-center">글로벌호텔</td><td class="p-3 text-center font-medium">63.3</td><td class="p-3 text-center font-medium">4.6</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 11. 학과별 재학생 충원 현황 -->
+            <section class="mt-8 bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                <h2 class="text-2xl font-bold mb-6 text-center">학과별 재학생 충원 현황 (정원내)</h2>
+                <div class="grid grid-cols-1 gap-8">
+                    <div class="h-[800px]"><canvas id="deptCurrentStudentChart"></canvas></div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-gray-100 sticky top-0">
+                                <tr>
+                                    <th class="p-3 font-semibold text-center">학과명</th>
+                                    <th class="p-3 font-semibold text-center">재학생 충원율(%)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b"><td class="p-3 text-center">사복</td><td class="p-3 text-center font-medium">102.8</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">소방</td><td class="p-3 text-center font-medium">96.4</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">방사</td><td class="p-3 text-center font-medium">95.1</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">식영</td><td class="p-3 text-center font-medium">94.3</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">간호</td><td class="p-3 text-center font-medium">94.2</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">제빵</td><td class="p-3 text-center font-medium">93.8</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">스포츠</td><td class="p-3 text-center font-medium">93.0</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">물치</td><td class="p-3 text-center font-medium">92.5</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">임병</td><td class="p-3 text-center font-medium">89.9</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">유아</td><td class="p-3 text-center font-medium">88.0</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">뷰티</td><td class="p-3 text-center font-medium">87.6</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">언치</td><td class="p-3 text-center font-medium">86.7</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">치위</td><td class="p-3 text-center font-medium">86.2</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">반려</td><td class="p-3 text-center font-medium">86.0</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">환경</td><td class="p-3 text-center font-medium">82.5</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">바이오</td><td class="p-3 text-center font-medium">76.8</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">보행</td><td class="p-3 text-center font-medium">75.4</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">안광</td><td class="p-3 text-center font-medium">75.3</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">작치</td><td class="p-3 text-center font-medium">73.6</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">응급</td><td class="p-3 text-center font-medium">70.0</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">치기</td><td class="p-3 text-center font-medium">69.1</td></tr>
+                                <tr><td class="p-3 text-center">글로벌호텔</td><td class="p-3 text-center font-medium">52.9</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 12. 학과별 중도탈락률 현황 -->
+            <section class="mt-8 bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                <h2 class="text-2xl font-bold mb-6 text-center">학과별 중도탈락률 (2024)</h2>
+                <div class="grid grid-cols-1 gap-8">
+                    <div class="h-[800px]"><canvas id="deptDropoutRateChart"></canvas></div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-gray-100 sticky top-0">
+                                <tr>
+                                    <th class="p-3 font-semibold text-center">학과명</th>
+                                    <th class="p-3 font-semibold text-center">중도탈락률(전체)%</th>
+                                    <th class="p-3 font-semibold text-center">중도탈락률(신입생)%</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b"><td class="p-3 text-center">글로벌호텔</td><td class="p-3 text-center font-medium">17.2</td><td class="p-3 text-center font-medium">13.0</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">작치</td><td class="p-3 text-center font-medium">14.0</td><td class="p-3 text-center font-bold text-red-700">14.8</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">식영</td><td class="p-3 text-center font-medium">13.8</td><td class="p-3 text-center font-bold text-red-700">14.0</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">치기</td><td class="p-3 text-center font-medium">13.1</td><td class="p-3 text-center font-bold text-red-700">13.6</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">응급</td><td class="p-3 text-center font-medium">12.9</td><td class="p-3 text-center font-medium">12.9</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">제빵</td><td class="p-3 text-center font-medium">11.4</td><td class="p-3 text-center font-medium">9.8</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">뷰티</td><td class="p-3 text-center font-medium">11.3</td><td class="p-3 text-center font-medium">10.3</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">안광</td><td class="p-3 text-center font-medium">10.8</td><td class="p-3 text-center font-medium">7.7</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">유아</td><td class="p-3 text-center font-medium">10.8</td><td class="p-3 text-center font-medium">7.8</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">치위</td><td class="p-3 text-center font-medium">10.4</td><td class="p-3 text-center font-bold text-red-700">17.0</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">소방</td><td class="p-3 text-center font-medium">10.1</td><td class="p-3 text-center font-bold text-red-700">11.1</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">언치</td><td class="p-3 text-center font-medium">9.2</td><td class="p-3 text-center font-medium">7.7</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">보행</td><td class="p-3 text-center font-medium">8.8</td><td class="p-3 text-center font-bold text-red-700">10.3</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">임병</td><td class="p-3 text-center font-medium">7.3</td><td class="p-3 text-center font-bold text-red-700">11.4</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">스포츠</td><td class="p-3 text-center font-medium">6.7</td><td class="p-3 text-center font-bold text-red-700">7.7</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">사복</td><td class="p-3 text-center font-medium">6.6</td><td class="p-3 text-center font-medium">2.7</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">방사</td><td class="p-3 text-center font-medium">6.5</td><td class="p-3 text-center font-medium">5.1</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">반려</td><td class="p-3 text-center font-medium">4.0</td><td class="p-3 text-center font-bold text-red-700">5.0</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">간호</td><td class="p-3 text-center font-medium">3.3</td><td class="p-3 text-center font-bold text-red-700">3.7</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">환경</td><td class="p-3 text-center font-medium">3.0</td><td class="p-3 text-center font-medium">2.8</td></tr>
+                                <tr class="border-b"><td class="p-3 text-center">물치</td><td class="p-3 text-center font-medium">2.9</td><td class="p-3 text-center font-medium">2.7</td></tr>
+                                <tr><td class="p-3 text-center">바이오</td><td class="p-3 text-center font-medium">2.3</td><td class="p-3 text-center font-bold text-red-700">4.4</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Data Labels 플러그인 등록
+        Chart.register(ChartDataLabels);
+
+        // 기존 차트 스크립트 (축약)
+        new Chart(document.getElementById('freshmanChart'), { type: 'bar', data: { labels: ['2019', '2020', '2021', '2022', '2023', '2024', '2025'], datasets: [ { type: 'bar', label: '충원율 (%)', data: [100, 94.6, 89.4, 91.6, 97.4, 94.5, 96.7], backgroundColor: ['rgba(59, 130, 246, 0.7)','rgba(59, 130, 246, 0.7)','rgba(59, 130, 246, 0.7)','rgba(59, 130, 246, 0.7)','rgba(59, 130, 246, 0.7)','rgba(59, 130, 246, 0.7)','rgba(20, 184, 166, 0.8)'], borderColor: ['rgba(59, 130, 246, 1)','rgba(59, 130, 246, 1)','rgba(59, 130, 246, 1)','rgba(59, 130, 246, 1)','rgba(59, 130, 246, 1)','rgba(59, 130, 246, 1)','rgba(20, 184, 166, 1)'], borderWidth: 1, yAxisID: 'y-axis-rate', order: 2, datalabels: { anchor: 'end', align: 'top', formatter: (v) => v + '%', color: (c) => c.dataIndex === 6 ? '#0f766e' : '#4b5563', font: { weight: 'bold' } } }, { type: 'line', label: '경쟁률 (:1)', data: [9.7, 9, 8.5, 8.9, 8, 7.5, 7], backgroundColor: 'rgba(156, 163, 175, 0.2)', borderColor: 'rgba(156, 163, 175, 1)', pointRadius: [3,3,3,3,3,3,6], pointHoverRadius: 8, tension: 0.3, fill: true, yAxisID: 'y-axis-ratio', order: 1, datalabels: { anchor: 'end', align: 'bottom', backgroundColor: 'rgba(249, 250, 251, 0.8)', borderRadius: 4, color: (c) => c.dataIndex === 6 ? '#0f766e' : '#4b5563', font: { weight: 'bold' }, padding: 4 } } ] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' }, tooltip: { mode: 'index', intersect: false }, datalabels: { display: false } }, scales: { x: { grid: { display: false } }, 'y-axis-rate': { type: 'linear', position: 'left', title: { display: true, text: '충원율 (%)' }, min: 80, max: 105 }, 'y-axis-ratio': { type: 'linear', position: 'right', title: { display: true, text: '경쟁률 (:1)' }, grid: { drawOnChartArea: false } } } } });
+        new Chart(document.getElementById('currentStudentChart'), { type: 'bar', data: { labels: ['2019', '2020', '2021', '2022', '2023', '2024', '2025'], datasets: [ { type: 'bar', label: '정원내 (%)', data: [95.4, 92.3, 87.5, 86.3, 85.9, 86, 86.5], backgroundColor: ['rgba(168, 85, 247, 0.7)','rgba(168, 85, 247, 0.7)','rgba(168, 85, 247, 0.7)','rgba(168, 85, 247, 0.7)','rgba(168, 85, 247, 0.7)','rgba(168, 85, 247, 0.7)','rgba(139, 92, 246, 0.8)'], borderColor: ['rgba(168, 85, 247, 1)','rgba(168, 85, 247, 1)','rgba(168, 85, 247, 1)','rgba(168, 85, 247, 1)','rgba(168, 85, 247, 1)','rgba(168, 85, 247, 1)','rgba(139, 92, 246, 1)'], borderWidth: 1, yAxisID: 'y-axis-main', order: 2, datalabels: { anchor: 'end', align: 'top', formatter: (v) => v + '%', color: (c) => c.dataIndex === 6 ? '#5b21b6' : '#4b5563', font: { weight: 'bold' } } }, { type: 'line', label: '정원내·외 (%)', data: [114.5, 112.5, 107.8, 107.2, 106.5, 107.3, 109.8], backgroundColor: 'rgba(249, 115, 22, 0.2)', borderColor: 'rgba(249, 115, 22, 1)', pointRadius: [3,3,3,3,3,3,6], pointHoverRadius: 8, tension: 0.3, fill: true, yAxisID: 'y-axis-secondary', order: 1, datalabels: { anchor: 'end', align: 'bottom', backgroundColor: 'rgba(249, 250, 251, 0.8)', borderRadius: 4, color: (c) => c.dataIndex === 6 ? '#9a3412' : '#4b5563', font: { weight: 'bold' }, padding: 4 } } ] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' }, tooltip: { mode: 'index', intersect: false }, datalabels: { display: false } }, scales: { x: { grid: { display: false } }, 'y-axis-main': { type: 'linear', position: 'left', title: { display: true, text: '정원내 충원율 (%)' }, min: 80, max: 100 }, 'y-axis-secondary': { type: 'linear', position: 'right', title: { display: true, text: '정원내·외 충원율 (%)' }, min: 100, max: 120, grid: { drawOnChartArea: false } } } } });
+        new Chart(document.getElementById('facultyRateChart'), { type: 'bar', data: { labels: ['2019', '2020', '2021', '2022', '2023', '2024', '2025'], datasets: [ { type: 'bar', label: '학생정원 기준 (%)', data: [60.6, 59.3, 61.1, 60.3, 59.1, 59.8, 60.4], backgroundColor: ['rgba(239, 68, 68, 0.7)','rgba(239, 68, 68, 0.7)','rgba(239, 68, 68, 0.7)','rgba(239, 68, 68, 0.7)','rgba(239, 68, 68, 0.7)','rgba(239, 68, 68, 0.7)','rgba(220, 38, 38, 0.8)'], borderColor: ['rgba(239, 68, 68, 1)','rgba(239, 68, 68, 1)','rgba(239, 68, 68, 1)','rgba(239, 68, 68, 1)','rgba(239, 68, 68, 1)','rgba(239, 68, 68, 1)','rgba(220, 38, 38, 1)'], borderWidth: 1, yAxisID: 'y-axis-main', order: 2, datalabels: { anchor: 'end', align: 'top', formatter: (v) => v + '%', color: (c) => c.dataIndex === 6 ? '#991b1b' : '#4b5563', font: { weight: 'bold' } } }, { type: 'line', label: '재학생 기준 (%)', data: [52.9, 52.5, 56.7, 56.2, 55.5, 55.7, 55.2], backgroundColor: 'rgba(251, 191, 36, 0.2)', borderColor: 'rgba(251, 191, 36, 1)', pointRadius: [3,3,3,3,3,3,6], pointHoverRadius: 8, tension: 0.3, fill: true, yAxisID: 'y-axis-main', order: 1, datalabels: { anchor: 'end', align: 'bottom', backgroundColor: 'rgba(249, 250, 251, 0.8)', borderRadius: 4, color: (c) => c.dataIndex === 6 ? '#b45309' : '#4b5563', font: { weight: 'bold' }, padding: 4 } } ] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' }, tooltip: { mode: 'index', intersect: false }, datalabels: { display: false } }, scales: { x: { grid: { display: false } }, 'y-axis-main': { type: 'linear', position: 'left', title: { display: true, text: '확보율 (%)' }, min: 50, max: 65 } } } });
+        new Chart(document.getElementById('dropoutRateChart'), { type: 'bar', data: { labels: ['2020', '2021', '2022', '2023', '2024'], datasets: [ { type: 'bar', label: '전체 (%)', data: [4.9, 5.7, 5.9, 7.1, 7.9], backgroundColor: ['rgba(96, 165, 250, 0.7)','rgba(96, 165, 250, 0.7)','rgba(96, 165, 250, 0.7)','rgba(96, 165, 250, 0.7)','rgba(59, 130, 246, 0.8)'], borderColor: ['rgba(96, 165, 250, 1)','rgba(96, 165, 250, 1)','rgba(96, 165, 250, 1)','rgba(96, 165, 250, 1)','rgba(59, 130, 246, 1)'], borderWidth: 1, yAxisID: 'y-axis-main', order: 2, datalabels: { anchor: 'end', align: 'top', formatter: (v) => v + '%', color: (c) => c.dataIndex === 4 ? '#1e40af' : '#4b5563', font: { weight: 'bold' } } }, { type: 'line', label: '신입생 (%)', data: [5.2, 5.7, 6.6, 7.7, 8.5], backgroundColor: 'rgba(236, 72, 153, 0.2)', borderColor: 'rgba(236, 72, 153, 1)', pointRadius: [3,3,3,3,6], pointHoverRadius: 8, tension: 0.3, fill: true, yAxisID: 'y-axis-main', order: 1, datalabels: { anchor: 'end', align: 'bottom', backgroundColor: 'rgba(249, 250, 251, 0.8)', borderRadius: 4, color: (c) => c.dataIndex === 4 ? '#9d174d' : '#4b5563', font: { weight: 'bold' }, padding: 4 } } ] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' }, tooltip: { mode: 'index', intersect: false }, datalabels: { display: false } }, scales: { x: { grid: { display: false } }, 'y-axis-main': { type: 'linear', position: 'left', title: { display: true, text: '중도탈락률 (%)' }, min: 4, max: 9 } } } });
+        new Chart(document.getElementById('scholarshipChart'), { type: 'bar', data: { labels: ['2018', '2019', '2020', '2021', '2022', '2023', '2024'], datasets: [ { label: '장학금 (원)', data: [3716500, 3868742, 3779586, 3908502, 3849947, 4027345, 4199686], backgroundColor: ['rgba(74, 222, 128, 0.7)','rgba(74, 222, 128, 0.7)','rgba(74, 222, 128, 0.7)','rgba(74, 222, 128, 0.7)','rgba(74, 222, 128, 0.7)','rgba(74, 222, 128, 0.7)','rgba(34, 197, 94, 0.8)'], borderColor: ['rgba(74, 222, 128, 1)','rgba(74, 222, 128, 1)','rgba(74, 222, 128, 1)','rgba(74, 222, 128, 1)','rgba(74, 222, 128, 1)','rgba(74, 222, 128, 1)','rgba(34, 197, 94, 1)'], borderWidth: 1, datalabels: { anchor: 'end', align: 'top', formatter: (v) => (v/10000).toFixed(0) + '만원', color: (c) => c.dataIndex === 6 ? '#15803d' : '#4b5563', font: { weight: 'bold' } } } ] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false }, datalabels: { display: false } }, scales: { x: { grid: { display: false } }, y: { title: { display: true, text: '금액 (원)' }, min: 3500000 } } } });
+        new Chart(document.getElementById('educationCostChart'), { type: 'bar', data: { labels: ['2019', '2020', '2021', '2022', '2023', '2024'], datasets: [ { label: '교육비 (원)', data: [9668531, 9872634, 10525103, 11484248, 11628665, 12393797], backgroundColor: ['rgba(103, 232, 249, 0.7)','rgba(103, 232, 249, 0.7)','rgba(103, 232, 249, 0.7)','rgba(103, 232, 249, 0.7)','rgba(103, 232, 249, 0.7)','rgba(6, 182, 212, 0.8)'], borderColor: ['rgba(103, 232, 249, 1)','rgba(103, 232, 249, 1)','rgba(103, 232, 249, 1)','rgba(103, 232, 249, 1)','rgba(103, 232, 249, 1)','rgba(6, 182, 212, 1)'], borderWidth: 1, datalabels: { anchor: 'end', align: 'top', formatter: (v) => (v/10000).toFixed(0) + '만원', color: (c) => c.dataIndex === 5 ? '#0e7490' : '#4b5563', font: { weight: 'bold' } } } ] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false }, datalabels: { display: false } }, scales: { x: { grid: { display: false } }, y: { title: { display: true, text: '금액 (원)' }, min: 9000000 } } } });
+        new Chart(document.getElementById('foreignStudentChart'), { type: 'bar', data: { labels: ['2019', '2020', '2021', '2022', '2023', '2024', '2025'], datasets: [ { type: 'bar', label: '유학생 (명)', data: [74, 103, 119, 119, 113, 38, 22], backgroundColor: ['rgba(251, 146, 60, 0.7)','rgba(251, 146, 60, 0.7)','rgba(251, 146, 60, 0.7)','rgba(251, 146, 60, 0.7)','rgba(251, 146, 60, 0.7)','rgba(251, 146, 60, 0.7)','rgba(249, 115, 22, 0.8)'], borderColor: ['rgba(251, 146, 60, 1)','rgba(251, 146, 60, 1)','rgba(251, 146, 60, 1)','rgba(251, 146, 60, 1)','rgba(251, 146, 60, 1)','rgba(251, 146, 60, 1)','rgba(249, 115, 22, 1)'], borderWidth: 1, yAxisID: 'y-axis-main', order: 2, datalabels: { anchor: 'end', align: 'top', color: (c) => c.dataIndex === 6 ? '#9a3412' : '#4b5563', font: { weight: 'bold' } } }, { type: 'line', label: '중도탈락 (명)', data: [4, 4, 11, 18, 15, 3, 2], backgroundColor: 'rgba(163, 163, 163, 0.2)', borderColor: 'rgba(163, 163, 163, 1)', pointRadius: [3,3,3,3,3,3,6], pointHoverRadius: 8, tension: 0.3, fill: true, yAxisID: 'y-axis-secondary', order: 1, datalabels: { anchor: 'end', align: 'bottom', backgroundColor: 'rgba(249, 250, 251, 0.8)', borderRadius: 4, color: (c) => c.dataIndex === 6 ? '#9a3412' : '#4b5563', font: { weight: 'bold' }, padding: 4 } } ] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' }, tooltip: { mode: 'index', intersect: false }, datalabels: { display: false } }, scales: { x: { grid: { display: false } }, 'y-axis-main': { type: 'linear', position: 'left', title: { display: true, text: '유학생 수 (명)' } }, 'y-axis-secondary': { type: 'linear', position: 'right', title: { display: true, text: '중도탈락 수 (명)' }, grid: { drawOnChartArea: false } } } } });
+        new Chart(document.getElementById('staffChart'), { type: 'bar', data: { labels: ['2019', '2020', '2021', '2022', '2023', '2024', '2025'], datasets: [ { label: '직원 수 (명)', data: [121, 121, 130, 131, 119, 123, 119], backgroundColor: ['rgba(139, 92, 246, 0.7)','rgba(139, 92, 246, 0.7)','rgba(139, 92, 246, 0.7)','rgba(139, 92, 246, 0.7)','rgba(139, 92, 246, 0.7)','rgba(139, 92, 246, 0.7)','rgba(124, 58, 237, 0.8)'], borderColor: ['rgba(139, 92, 246, 1)','rgba(139, 92, 246, 1)','rgba(139, 92, 246, 1)','rgba(139, 92, 246, 1)','rgba(139, 92, 246, 1)','rgba(139, 92, 246, 1)','rgba(124, 58, 237, 1)'], borderWidth: 1, datalabels: { anchor: 'end', align: 'top', color: (c) => c.dataIndex === 6 ? '#581c87' : '#4b5563', font: { weight: 'bold' } } } ] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false }, datalabels: { display: false } }, scales: { x: { grid: { display: false } }, y: { title: { display: true, text: '직원 수 (명)' }, min: 110 } } } });
+
+        // 학과별 신입생 충원 현황
+        const ctxDepartment = document.getElementById('departmentChart').getContext('2d');
+        new Chart(ctxDepartment, {
+            type: 'bar',
+            data: {
+                labels: ['간호', '물치', '방사', '뷰티', '사복', '소방', '스포츠', '식영', '안광', '언치', '유아', '응급', '임병', '작치', '제빵', '치위', '반려', '보행', '환경', '치기', '바이오', '글로벌호텔'],
+                datasets: [
+                    { type: 'bar', label: '충원율 (%)', data: [100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 96.0, 90.0, 90.0, 87.3, 68.0, 63.3], backgroundColor: 'rgba(217, 119, 6, 0.7)', borderColor: 'rgba(217, 119, 6, 1)', borderWidth: 1, yAxisID: 'y-axis-rate', order: 2, datalabels: { display: false } },
+                    { type: 'line', label: '경쟁률', data: [16.5, 15.2, 6.5, 7.1, 4.0, 3.8, 7.4, 4.7, 2.8, 3.3, 4.3, 14.3, 4.6, 5.4, 7.5, 6.8, 6.7, 4.3, 2.5, 3.1, 0.8, 4.6], backgroundColor: 'rgba(120, 113, 108, 0.2)', borderColor: 'rgba(120, 113, 108, 1)', tension: 0.3, yAxisID: 'y-axis-ratio', order: 1, datalabels: { display: false } }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' }, tooltip: { mode: 'index', intersect: false } }, scales: { x: { grid: { display: false } }, 'y-axis-rate': { type: 'linear', position: 'left', title: { display: true, text: '충원율 (%)' }, min: 50 }, 'y-axis-ratio': { type: 'linear', position: 'right', title: { display: true, text: '경쟁률 (:1)' }, grid: { drawOnChartArea: false } } } }
+        });
+
+        // 학과별 재학생 충원 현황
+        const ctxDeptCurrentStudent = document.getElementById('deptCurrentStudentChart').getContext('2d');
+        new Chart(ctxDeptCurrentStudent, {
+            type: 'bar',
+            data: {
+                labels: ['사복', '소방', '방사', '식영', '간호', '제빵', '스포츠', '물치', '임병', '유아', '뷰티', '언치', '치위', '반려', '환경', '바이오', '보행', '안광', '작치', '응급', '치기', '글로벌호텔'],
+                datasets: [ { label: '재학생 충원율 (%)', data: [102.8, 96.4, 95.1, 94.3, 94.2, 93.8, 93.0, 92.5, 89.9, 88.0, 87.6, 86.7, 86.2, 86.0, 82.5, 76.8, 75.4, 75.3, 73.6, 70.0, 69.1, 52.9], backgroundColor: 'rgba(139, 92, 246, 0.7)', borderColor: 'rgba(139, 92, 246, 1)', borderWidth: 1, datalabels: { display: false } } ]
+            },
+            options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } }, scales: { x: { title: { display: true, text: '재학생 충원율 (%)' } } } }
+        });
+
+        // 학과별 중도탈락률 현황
+        const ctxDeptDropoutRate = document.getElementById('deptDropoutRateChart').getContext('2d');
+        const deptDropoutData = {
+            labels: ['글로벌호텔', '작치', '식영', '치기', '응급', '제빵', '뷰티', '안광', '유아', '치위', '소방', '언치', '보행', '임병', '스포츠', '사복', '방사', '반려', '간호', '환경', '물치', '바이오'],
+            datasets: [
+                { type: 'bar', label: '중도탈락률(전체)%', data: [17.2, 14.0, 13.8, 13.1, 12.9, 11.4, 11.3, 10.8, 10.8, 10.4, 10.1, 9.2, 8.8, 7.3, 6.7, 6.6, 6.5, 4.0, 3.3, 3.0, 2.9, 2.3], backgroundColor: 'rgba(236, 72, 153, 0.7)', borderColor: 'rgba(236, 72, 153, 1)', borderWidth: 1, yAxisID: 'y-axis-rate', order: 2, datalabels: { display: false } },
+                { type: 'line', label: '중도탈락률(신입생)%', data: [13.0, 14.8, 14.0, 13.6, 12.9, 9.8, 10.3, 7.7, 7.8, 17.0, 11.1, 7.7, 10.3, 11.4, 7.7, 2.7, 5.1, 5.0, 3.7, 2.8, 2.7, 4.4], backgroundColor: 'rgba(120, 113, 108, 0.2)', borderColor: 'rgba(120, 113, 108, 1)', tension: 0.3, yAxisID: 'y-axis-ratio', order: 1, datalabels: { display: false } }
+            ]
+        };
+        // 신입생 중도탈락률이 더 높은 경우 강조
+        const pointColors = deptDropoutData.datasets[1].data.map((freshmanRate, index) => {
+            const totalRate = deptDropoutData.datasets[0].data[index];
+            return freshmanRate > totalRate ? 'rgba(190, 18, 60, 1)' : 'rgba(120, 113, 108, 1)';
+        });
+        deptDropoutData.datasets[1].pointBackgroundColor = pointColors;
+        deptDropoutData.datasets[1].pointBorderColor = pointColors;
+        deptDropoutData.datasets[1].pointRadius = deptDropoutData.datasets[1].data.map((freshmanRate, index) => {
+            const totalRate = deptDropoutData.datasets[0].data[index];
+            return freshmanRate > totalRate ? 5 : 3;
+        });
+
+        new Chart(ctxDeptDropoutRate, {
+            type: 'bar',
+            data: deptDropoutData,
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' }, tooltip: { mode: 'index', intersect: false } }, scales: { x: { grid: { display: false } }, 'y-axis-rate': { type: 'linear', position: 'left', title: { display: true, text: '중도탈락률(전체)%' } }, 'y-axis-ratio': { type: 'linear', position: 'right', title: { display: true, text: '중도탈락률(신입생)%' }, grid: { drawOnChartArea: false } } } }
+        });
+    </script>
+</body>
+</html>
