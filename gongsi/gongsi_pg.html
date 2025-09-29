@@ -207,85 +207,31 @@
                 mobileMenu.classList.toggle('hidden');
             });
 
-            // Popup and Date Logic
-            const statusButtons = document.querySelectorAll('.status-btn');
-            const modal = document.getElementById('popup-modal');
-            const iframe = document.getElementById('popup-iframe');
-            const closeModalBtn = document.getElementById('close-modal-btn');
-            const modalTitle = document.getElementById('modal-title');
-            const newTabLink = document.getElementById('open-in-new-tab-link');
+            // Link and Date Logic
+            const statusLinks = document.querySelectorAll('.status-btn');
 
             // Use a fixed date for consistent behavior as per instructions
             const now = new Date('2025-09-29T10:44:00'); 
             const currentYear = now.getFullYear();
             const currentMonth = now.getMonth() + 1; // getMonth() is 0-indexed (0-11)
 
-            statusButtons.forEach(button => {
-                const targetMonth = parseInt(button.dataset.month, 10);
+            statusLinks.forEach(link => {
+                const targetMonth = parseInt(link.dataset.month, 10);
                 
-                // Disable button if the current month is before the target month
+                const monthStr = String(targetMonth).padStart(2, '0');
+                const href = `../result/${currentYear}_${monthStr}_in.html`;
+                
+                link.href = href;
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                
+                // Disable link if the current month is before the target month
                 if (currentMonth < targetMonth) {
-                    button.disabled = true;
-                }
-
-                button.addEventListener('click', async () => {
-                    if (button.disabled) return;
-
-                    const monthStr = String(targetMonth).padStart(2, '0');
-                    const link = `../gongsi/result/${currentYear}_${monthStr}_in.html`;
-                    
-                    modalTitle.textContent = `${button.textContent} 주요 현황`;
-                    modal.style.display = 'flex';
-
-                    try {
-                        const response = await fetch(link, { method: 'HEAD' });
-
-                        if (response.ok) {
-                            iframe.srcdoc = ''; 
-                            iframe.src = link;
-                            newTabLink.href = link;
-                            newTabLink.classList.remove('hidden');
-                        } else {
-                            newTabLink.classList.add('hidden');
-                            iframe.src = 'about:blank';
-                            iframe.srcdoc = `
-                                <body style="margin: 0; padding: 2rem; display: flex; align-items: center; justify-content: center; height: 100vh; font-family: 'Noto Sans KR', sans-serif; text-align: center; background-color: #f9fafb;">
-                                    <div>
-                                        <h2 style="font-size: 1.5rem; font-weight: bold; color: #be123c;">자료를 찾을 수 없습니다.</h2>
-                                        <p style="margin-top: 1rem; color: #374151;">요청하신 자료가 아직 준비되지 않았습니다.</p>
-                                        <p style="margin-top: 1.5rem; font-size: 0.875rem; color: #6b7280;">확인된 경로:</p>
-                                        <code style="display: inline-block; margin-top: 0.5rem; padding: 0.5rem 1rem; background-color: #e5e7eb; border-radius: 6px; color: #1f2937; font-family: monospace; word-break: break-all;">${link}</code>
-                                    </div>
-                                </body>
-                            `;
-                        }
-                    } catch (error) {
-                        console.error('Error fetching resource:', error);
-                        newTabLink.classList.add('hidden');
-                        iframe.src = 'about:blank';
-                        iframe.srcdoc = `
-                            <body style="margin: 0; padding: 2rem; display: flex; align-items: center; justify-content: center; height: 100vh; font-family: 'Noto Sans KR', sans-serif; text-align: center; background-color: #f9fafb;">
-                                <div>
-                                    <h2 style="font-size: 1.5rem; font-weight: bold; color: #be123c;">오류 발생</h2>
-                                    <p style="margin-top: 1rem; color: #374151;">자료를 불러오는 중 네트워크 오류가 발생했습니다.</p>
-                                </div>
-                            </body>
-                        `;
-                    }
-                });
-            });
-
-            const closeModal = () => {
-                modal.style.display = 'none';
-                iframe.src = 'about:blank';
-                iframe.srcdoc = '';
-                newTabLink.classList.add('hidden');
-            };
-
-            closeModalBtn.addEventListener('click', closeModal);
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    closeModal();
+                    link.classList.add('disabled');
+                    link.setAttribute('aria-disabled', 'true');
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                    });
                 }
             });
         });
