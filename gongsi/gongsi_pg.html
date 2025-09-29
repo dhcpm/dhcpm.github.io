@@ -110,7 +110,7 @@
                         <a href="gongsi_pg_04.html" class="bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors shadow-md text-lg">4월</a>
                         <a href="gongsi_pg_06.html" class="bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors shadow-md text-lg">6월</a>
                         <a href="gongsi_pg_08.html" class="bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors shadow-md text-lg">8월</a>
-                        <a href="index.html" class="bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors shadow-md text-lg">10월</a>
+                        <a href="gongsi_pg_10.html" class="bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors shadow-md text-lg">10월</a>
                     </div>
                 </div>
 
@@ -222,7 +222,7 @@
                 button.addEventListener('click', () => {
                     if (!button.disabled) {
                         const monthStr = String(targetMonth).padStart(2, '0');
-                        const link = `${currentYear}_${monthStr}_in.html`;
+                        const link = `../result/${currentYear}_${monthStr}_in.html`;
                         iframe.src = link;
                         modalTitle.textContent = `${button.textContent} 주요 현황`;
                         modal.style.display = 'flex';
