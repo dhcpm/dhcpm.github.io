@@ -176,7 +176,7 @@
                 <button id="close-modal-btn" class="text-gray-500 hover:text-gray-800">&times;</button>
             </div>
             <div class="flex-grow p-1 md:p-2">
-                <iframe id="popup-iframe" src="" class="w-full h-full border-0" title="주요 현황 상세"></iframe>
+                <iframe id="popup-iframe" class="w-full h-full border-0" title="주요 현황 상세"></iframe>
             </div>
         </div>
     </div>
@@ -219,25 +219,57 @@
                     button.disabled = true;
                 }
 
-                button.addEventListener('click', () => {
-                    if (!button.disabled) {
-                        const monthStr = String(targetMonth).padStart(2, '0');
-                        const link = `../result/${currentYear}_${monthStr}_in.html`;
-                        iframe.src = link;
-                        modalTitle.textContent = `${button.textContent} 주요 현황`;
-                        modal.style.display = 'flex';
+                button.addEventListener('click', async () => {
+                    if (button.disabled) return;
+
+                    const monthStr = String(targetMonth).padStart(2, '0');
+                    const link = `../result/${currentYear}_${monthStr}_in.html`;
+                    
+                    modalTitle.textContent = `${button.textContent} 주요 현황`;
+                    modal.style.display = 'flex';
+
+                    try {
+                        const response = await fetch(link, { method: 'HEAD' });
+
+                        if (response.ok) {
+                            iframe.srcdoc = ''; 
+                            iframe.src = link;
+                        } else {
+                            iframe.src = 'about:blank';
+                            iframe.srcdoc = `
+                                <body style="margin: 0; padding: 2rem; display: flex; align-items: center; justify-content: center; height: 100vh; font-family: 'Noto Sans KR', sans-serif; text-align: center; background-color: #f9fafb;">
+                                    <div>
+                                        <h2 style="font-size: 1.5rem; font-weight: bold; color: #be123c;">자료를 찾을 수 없습니다.</h2>
+                                        <p style="margin-top: 1rem; color: #374151;">요청하신 자료가 아직 준비되지 않았습니다.</p>
+                                        <p style="margin-top: 1.5rem; font-size: 0.875rem; color: #6b7280;">확인된 경로:</p>
+                                        <code style="display: inline-block; margin-top: 0.5rem; padding: 0.5rem 1rem; background-color: #e5e7eb; border-radius: 6px; color: #1f2937; font-family: monospace; word-break: break-all;">${link}</code>
+                                    </div>
+                                </body>
+                            `;
+                        }
+                    } catch (error) {
+                        console.error('Error fetching resource:', error);
+                        iframe.src = 'about:blank';
+                        iframe.srcdoc = `
+                            <body style="margin: 0; padding: 2rem; display: flex; align-items: center; justify-content: center; height: 100vh; font-family: 'Noto Sans KR', sans-serif; text-align: center; background-color: #f9fafb;">
+                                <div>
+                                    <h2 style="font-size: 1.5rem; font-weight: bold; color: #be123c;">오류 발생</h2>
+                                    <p style="margin-top: 1rem; color: #374151;">자료를 불러오는 중 네트워크 오류가 발생했습니다.</p>
+                                </div>
+                            </body>
+                        `;
                     }
                 });
             });
 
             const closeModal = () => {
                 modal.style.display = 'none';
-                iframe.src = 'about:blank'; // Clear iframe src to stop content
+                iframe.src = 'about:blank';
+                iframe.srcdoc = '';
             };
 
             closeModalBtn.addEventListener('click', closeModal);
             modal.addEventListener('click', (e) => {
-                // Close if clicked on the overlay (the modal background)
                 if (e.target === modal) {
                     closeModal();
                 }
