@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>부서 자체평가 결과 분석</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            padding-top: 4rem; /* Added for fixed header */
+        }
+        .tab-button.active {
+            border-color: #4f46e5;
+            color: #4f46e5;
+            background-color: #eef2ff;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        #sugg_itemList li.active {
+            background-color: #eef2ff;
+            color: #4f46e5;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    
+     <!-- Header -->
+    <header id="header" class="bg-white/80 backdrop-blur-lg shadow-sm fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo and Team Name -->
+                <div class="flex-shrink-0 flex items-center">
+                    <img class="h-8 w-auto" src="../img/logo.png" alt="대구보건대학교 로고">
+                    <a href="../index.html" class="ml-3 text-xl font-bold text-gray-800 hover:text-blue-700">대학성과관리팀</a>
+                </div>
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex items-center space-x-5">
+                    <a href="../gongsi/gongsi_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">대학정보공시</a>
+                    <a href="../buseo/buseo_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">부서자체평가</a>
+                    <a href="../seonggwa/seonggwa_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">성과분석</a>
+                    <a href="../survey/survey_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">교육수요자 만족도 조사</a>
+                    <a href="../dept/dept_pg.html" class="text-blue-600 font-bold text-sm">부서운영</a>
+                    <a href="../edu/edu_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">교육</a>
+                </nav>
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
+                        <span class="sr-only">메뉴 열기</span>
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="../gongsi/gongsi_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">대학정보공시</a>
+                <a href="../buseo/buseo_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">부서자체평가</a>
+                <a href="../seonggwa/seonggwa_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">성과분석</a>
+                <a href="../survey/survey_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">교육수요자 만족도 조사</a>
+                <a href="../dept/dept_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-blue-700 bg-blue-50">부서운영</a>
+                <a href="../edu/edu_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">교육</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="p-4">
+        <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-lg w-full max-w-7xl mx-auto">
+            <header class="mb-8 text-center">
+                <h1 class="text-3xl font-bold text-gray-800">부서 자체평가 결과 분석</h1>
+                <p class="text-gray-500 mt-2">탭을 선택하여 부서별 결과 사항을 확인하세요</p>
+            </header>
+
+            <!-- Tab Navigation -->
+            <div class="border-b border-gray-200 mb-8">
+                <nav class="-mb-px flex space-x-6 justify-center" aria-label="Tabs">
+                    <button class="tab-button active whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg" data-tab="deptAnalysis">
+                        부서별 분석
+                    </button>
+                    <button class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="employeeAnalysis">
+                        부서원별 분석
+                    </button>
+                    <button class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="suggestionsReport">
+                        제언사항 조회
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Loading Spinner -->
+            <div id="loadingSpinner" class="text-center my-10">
+                <svg class="animate-spin -ml-1 mr-3 h-8 w-8 text-indigo-600 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <p class="text-lg font-medium text-gray-600 mt-2">전체 분석 데이터를 불러오고 있습니다...</p>
+            </div>
+
+            <!-- Tab Content Panels -->
+            <div id="tabContentsContainer" class="hidden">
+                <!-- Department Analysis Tab -->
+                <div id="deptAnalysis" class="tab-content active">
+                    <div class="max-w-sm mx-auto mb-8">
+                         <label for="dept_departmentDropdown" class="block text-lg font-medium text-gray-700 text-center mb-2">분석할 부서를 선택하세요</label>
+                        <select id="dept_departmentDropdown" class="w-full p-2 border border-gray-300 rounded-md shadow-sm"></select>
+                    </div>
+                    <div id="dept_analysisDisplay" class="hidden">
+                        <div id="dept_comparisonTableContainer" class="mb-8"></div>
+                        <div class="relative w-full max-w-3xl mx-auto h-96 sm:h-[500px]"><canvas id="dept_radarChart"></canvas></div>
+                    </div>
+                </div>
+
+                <!-- Employee Analysis Tab -->
+                <div id="employeeAnalysis" class="tab-content">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto mb-8">
+                        <div>
+                            <label for="emp_departmentDropdown" class="block text-lg font-medium text-gray-700 text-center mb-2">1. 부서 선택</label>
+                            <select id="emp_departmentDropdown" class="w-full p-2 border border-gray-300 rounded-md shadow-sm"></select>
+                        </div>
+                        <div>
+                            <label for="emp_employeeDropdown" class="block text-lg font-medium text-gray-700 text-center mb-2">2. 담당자 선택</label>
+                            <select id="emp_employeeDropdown" class="w-full p-2 border border-gray-300 rounded-md shadow-sm" disabled></select>
+                        </div>
+                    </div>
+                    <div id="emp_analysisDisplay" class="hidden">
+                        <div id="emp_comparisonTableContainer" class="mb-8"></div>
+                        <div class="relative w-full max-w-3xl mx-auto h-96 sm:h-[500px]"><canvas id="emp_radarChart"></canvas></div>
+                    </div>
+                </div>
+
+                <!-- Suggestions Report Tab -->
+                <div id="suggestionsReport" class="tab-content">
+                    <div class="w-full max-w-2xl mx-auto bg-white p-6 rounded-xl shadow-md">
+                         <div class="mb-4">
+                            <label for="sugg_departmentDropdown" class="block text-lg font-medium text-gray-700 mb-2">부서 선택</label>
+                            <select id="sugg_departmentDropdown" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 bg-white">
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div id="sugg_contentArea" class="hidden mt-8 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                        <div class="md:col-span-1 bg-gray-50 p-4 rounded-lg border">
+                            <h3 class="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b">평가항목 목록</h3>
+                            <ul id="sugg_itemList" class="space-y-1">
+                                <!-- Clickable list items will be generated here -->
+                            </ul>
+                        </div>
+                        <div class="md:col-span-2">
+                            <div id="sugg_detailsContainer" class="bg-white p-6 rounded-lg shadow-md h-full flex items-center justify-center">
+                                <p class="text-gray-500">왼쪽에서 평가항목을 선택하여 제언사항을 확인하세요.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // --- Header Mobile Menu Logic ---
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Global state
+        const dashboardData = {
+            dept: null,
+            employee: null,
+            suggestions: null
+        };
+        let chartInstances = {};
+
+        // DOM Elements
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const tabContentsContainer = document.getElementById('tabContentsContainer');
+        const tabButtons = document.querySelectorAll('.tab-button');
+
+        // Initializer
+        window.onload = async () => {
+            const fileUrls = {
+                dept: 'https://dhcpm.github.io/dept/file/dept.xlsx',
+                employee: 'https://dhcpm.github.io/dept/file/dept_sub.xlsx',
+                suggestions: 'https://dhcpm.github.io/dept/file/dept_adv.xlsx'
+            };
+
+            try {
+                const [deptData, employeeData, suggestionsData] = await Promise.all([
+                    fetchAndParseExcel(fileUrls.dept),
+                    fetchAndParseExcel(fileUrls.employee),
+                    fetchAndParseExcel(fileUrls.suggestions)
+                ]);
+
+                dashboardData.dept = processDeptData(deptData);
+                dashboardData.employee = processEmployeeData(employeeData);
+                dashboardData.suggestions = processSuggestionsData(suggestionsData);
+
+                initializeAllTabs();
+                
+                loadingSpinner.classList.add('hidden');
+                tabContentsContainer.classList.remove('hidden');
+
+            } catch (error) {
+                console.error("One or more files failed to load:", error);
+                loadingSpinner.innerHTML = `<p class="text-red-500 font-bold">데이터 로딩에 실패했습니다. 페이지를 새로고침 해주세요.</p>`;
+            }
+        };
+
+        // --- Data Fetching and Processing ---
+        async function fetchAndParseExcel(url) {
+            const proxiedUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
+            const response = await fetch(proxiedUrl);
+            if (!response.ok) throw new Error(`Failed to fetch ${url}`);
+            const arrayBuffer = await response.arrayBuffer();
+            const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+            const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+            const jsonData = XLSX.utils.sheet_to_json(worksheet);
+            if (jsonData.length === 0) throw new Error(`Excel file is empty: ${url}`);
+            return { headers: Object.keys(jsonData[0]), data: jsonData };
+        }
+        
+        function processTscores(originalData, idKeys, excludedKeys) {
+            const headers = Object.keys(originalData[0]);
+            const scoreColumns = headers.filter(h => h && ![...idKeys, ...excludedKeys].some(key => h.includes(key)));
+            
+            const stats = {};
+            scoreColumns.forEach(col => {
+                const scores = originalData.map(d => d[col]).filter(v => typeof v === 'number');
+                const mean = scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : 0;
+                const stdDev = scores.length > 0 ? Math.sqrt(scores.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b, 0) / scores.length) : 0;
+                stats[col] = { mean, stdDev };
+            });
+
+            const tScoresData = originalData.map(row => {
+                const tScores = {};
+                idKeys.forEach(key => tScores[key] = row[key]);
+                scoreColumns.forEach(col => {
+                    const score = row[col];
+                    const { mean, stdDev } = stats[col];
+                    tScores[col] = (typeof score === 'number' && stdDev > 0) ? (50 + 10 * (score - mean) / stdDev) : 50;
+                });
+                return tScores;
+            });
+
+            return { tScoresData, originalData, scoreColumns };
+        }
+
+        function processDeptData({ headers, data }) {
+            const deptKey = headers.find(h => h.includes('부서명'));
+            const excluded = ['총점', '순위', '성과지표 목표값의 적절성', '성과지표 목표값의 달성도'];
+            const processed = processTscores(data, [deptKey], excluded);
+            return { ...processed, departmentKey: deptKey };
+        }
+        
+        function processEmployeeData({ headers, data }) {
+            const deptKey = headers.find(h => h.includes('부서명'));
+            const empKey = headers.find(h => h.includes('담당자'));
+            const excluded = ['총점', '순위', '성과지표 목표값의 적절성', '성과지표 목표값의 달성도'];
+            const processed = processTscores(data, [deptKey, empKey], excluded);
+
+            const deptAverages = {};
+            const depts = [...new Set(data.map(d => d[deptKey]))];
+
+            depts.forEach(deptName => {
+                if (!deptName) return;
+                const employeesInDept = processed.tScoresData.filter(d => d[deptKey] === deptName);
+                if (employeesInDept.length > 0) {
+                    deptAverages[deptName] = {};
+                    processed.scoreColumns.forEach(col => {
+                        const sum = employeesInDept.reduce((acc, curr) => acc + (curr[col] || 0), 0);
+                        deptAverages[deptName][col] = sum / employeesInDept.length;
+                    });
+                }
+            });
+            
+            return { ...processed, departmentKey: deptKey, employeeKey: empKey, deptAverages };
+        }
+
+        function processSuggestionsData({ headers, data }) {
+             const departmentKey = headers.find(h => h.includes('부서명'));
+             const itemKey = headers.find(h => h.includes('평가항목'));
+             const suggestionKey = headers.find(h => h.includes('제언사항'));
+             return { originalData: data, departmentKey, itemKey, suggestionKey };
+        }
+
+        // --- Tab Initialization ---
+        function initializeAllTabs() {
+            initDeptAnalysisTab();
+            initEmployeeAnalysisTab();
+            initSuggestionsReportTab();
+            setupTabNavigation();
+        }
+
+        function setupTabNavigation() {
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                    document.getElementById(button.dataset.tab).classList.add('active');
+                });
+            });
+        }
+        
+        // --- Department Analysis Tab Logic ---
+        function initDeptAnalysisTab() {
+            const { originalData, departmentKey } = dashboardData.dept;
+            const dropdown = document.getElementById('dept_departmentDropdown');
+            dropdown.innerHTML = '<option value="">-- 부서 선택 --</option>';
+
+            const allDepts = [...new Set(originalData.map(d => d[departmentKey]))].filter(Boolean).sort((a,b) => a.localeCompare(b, 'ko'));
+            allDepts.forEach(deptName => {
+                const option = document.createElement('option');
+                option.value = deptName;
+                option.textContent = deptName;
+                dropdown.appendChild(option);
+            });
+            
+            dropdown.addEventListener('change', (event) => {
+                const selectedDept = event.target.value;
+                const display = document.getElementById('dept_analysisDisplay');
+                if (selectedDept) {
+                    renderDeptComparisonTable(selectedDept);
+                    renderRadarChart('dept', 'dept_radarChart', {selectedName: selectedDept});
+                    display.classList.remove('hidden');
+                } else {
+                    display.classList.add('hidden');
+                }
+            });
+        }
+        
+        function renderDeptComparisonTable(selectedDeptName) {
+            const { tScoresData, scoreColumns, departmentKey } = dashboardData.dept;
+            const deptData = tScoresData.find(d => d[departmentKey] === selectedDeptName);
+            const container = document.getElementById('dept_comparisonTableContainer');
+            container.innerHTML = createComparisonTableHTML(scoreColumns, deptData, selectedDeptName, "전체 부서 평균");
+        }
+
+        // --- Employee Analysis Tab Logic ---
+        function initEmployeeAnalysisTab() {
+            const { originalData, departmentKey, employeeKey } = dashboardData.employee;
+            const deptDropdown = document.getElementById('emp_departmentDropdown');
+            const empDropdown = document.getElementById('emp_employeeDropdown');
+
+            deptDropdown.innerHTML = '<option value="">-- 부서 선택 --</option>';
+            const allDepts = [...new Set(originalData.map(d => d[departmentKey]))].filter(Boolean).sort((a,b) => a.localeCompare(b, 'ko'));
+            allDepts.forEach(deptName => {
+                const option = document.createElement('option');
+                option.value = deptName;
+                option.textContent = deptName;
+                deptDropdown.appendChild(option);
+            });
+            
+            deptDropdown.addEventListener('change', () => {
+                const selectedDept = deptDropdown.value;
+                empDropdown.innerHTML = '<option value="">-- 담당자 선택 --</option>';
+                document.getElementById('emp_analysisDisplay').classList.add('hidden');
+
+                if (selectedDept) {
+                    const employees = originalData.filter(item => item[departmentKey] === selectedDept).map(item => item[employeeKey]);
+                    employees.forEach(emp => {
+                        const option = document.createElement('option');
+                        option.value = emp;
+                        option.textContent = emp;
+                        empDropdown.appendChild(option);
+                    });
+                    empDropdown.disabled = false;
+                } else {
+                    empDropdown.disabled = true;
+                }
+            });
+
+            empDropdown.addEventListener('change', () => {
+                const selectedEmployee = empDropdown.value;
+                const selectedDept = deptDropdown.value;
+                const display = document.getElementById('emp_analysisDisplay');
+                if (selectedEmployee) {
+                    renderEmpComparisonTable(selectedEmployee, selectedDept);
+                    renderRadarChart('employee', 'emp_radarChart', {selectedName: selectedEmployee, departmentName: selectedDept});
+                    display.classList.remove('hidden');
+                } else {
+                    display.classList.add('hidden');
+                }
+            });
+        }
+        
+        function renderEmpComparisonTable(selectedEmployeeName, selectedDeptName) {
+            const { tScoresData, scoreColumns, employeeKey, deptAverages } = dashboardData.employee;
+            const empData = tScoresData.find(d => d[employeeKey] === selectedEmployeeName);
+            const deptAvgData = deptAverages[selectedDeptName];
+            const container = document.getElementById('emp_comparisonTableContainer');
+            container.innerHTML = createEmpComparisonTableHTML(scoreColumns, empData, deptAvgData, selectedEmployeeName, selectedDeptName);
+        }
+        
+        // --- Suggestions Report Tab Logic ---
+        function initSuggestionsReportTab() {
+            const { originalData, departmentKey } = dashboardData.suggestions;
+            const dropdown = document.getElementById('sugg_departmentDropdown');
+            dropdown.innerHTML = '<option value="">-- 부서를 선택하세요 --</option>';
+
+            const allDepts = [...new Set(originalData.map(d => d[departmentKey]))].filter(Boolean).sort((a,b) => a.localeCompare(b, 'ko'));
+            allDepts.forEach(deptName => {
+                const option = document.createElement('option');
+                option.value = deptName;
+                option.textContent = deptName;
+                dropdown.appendChild(option);
+            });
+
+            dropdown.addEventListener('change', renderSuggestionsList);
+        }
+
+        function renderSuggestionsList() {
+            const selectedDept = document.getElementById('sugg_departmentDropdown').value;
+            const contentArea = document.getElementById('sugg_contentArea');
+            const itemList = document.getElementById('sugg_itemList');
+            const detailsContainer = document.getElementById('sugg_detailsContainer');
+            
+            itemList.innerHTML = '';
+            detailsContainer.innerHTML = '<p class="text-gray-500">왼쪽에서 평가항목을 선택하여 제언사항을 확인하세요.</p>';
+            
+            if (!selectedDept) {
+                contentArea.classList.add('hidden');
+                return;
+            }
+
+            const { originalData, departmentKey, itemKey, suggestionKey } = dashboardData.suggestions;
+            const deptData = originalData.filter(item => item[departmentKey] === selectedDept);
+            
+            const suggestionsByItem = deptData.reduce((acc, item) => {
+                const itemName = item[itemKey];
+                const suggestion = item[suggestionKey];
+                if (!itemName) return acc;
+                if (!acc[itemName]) acc[itemName] = [];
+                if (suggestion) acc[itemName].push(suggestion);
+                return acc;
+            }, {});
+
+            Object.keys(suggestionsByItem).forEach(itemName => {
+                const li = document.createElement('li');
+                li.className = 'p-2 rounded-md cursor-pointer hover:bg-gray-200 transition';
+                li.textContent = itemName;
+                li.onclick = () => {
+                    displaySuggestionDetails(itemName, suggestionsByItem[itemName]);
+                    document.querySelectorAll('#sugg_itemList li').forEach(item => item.classList.remove('active'));
+                    li.classList.add('active');
+                };
+                itemList.appendChild(li);
+            });
+
+            contentArea.classList.remove('hidden');
+        }
+
+        function displaySuggestionDetails(itemName, suggestions) {
+            const detailsContainer = document.getElementById('sugg_detailsContainer');
+            const suggestionText = suggestions.length > 0
+                ? suggestions.join('<div class="w-full my-4 border-t-2 border-dotted border-gray-300"></div>')
+                : '내용 없음';
+            
+            detailsContainer.innerHTML = `
+                <div class="w-full">
+                    <h3 class="text-lg font-semibold text-indigo-700 bg-indigo-50 p-3 rounded-t-md">${itemName}</h3>
+                    <div class="text-gray-700 bg-white border border-t-0 border-gray-200 p-4 rounded-b-md" style="white-space: pre-wrap; line-height: 1.75;">
+                        ${suggestionText}
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- Reusable Rendering Functions ---
+        function createComparisonTableHTML(scoreColumns, data, entityName, averageLabel) {
+             if (!data) return '';
+             let tableHTML = `
+                <h3 class="text-xl font-semibold text-gray-700 mb-4 text-center">T-점수 비교</h3>
+                <div class="overflow-x-auto rounded-lg shadow-md border border-gray-200 max-w-2xl mx-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">평가항목</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">${entityName}</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">${averageLabel}</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">`;
+
+            scoreColumns.forEach(col => {
+                const value = data[col] ? data[col].toFixed(2) : 'N/A';
+                let colorClass = 'text-gray-700';
+                if (value >= 60) colorClass = 'text-blue-600 font-bold';
+                else if (value >= 55) colorClass = 'text-green-600';
+                else if (value < 45) colorClass = 'text-red-700 font-bold';
+                else if (value < 50) colorClass = 'text-red-500';
+
+                tableHTML += `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">${col.split('(')[0]}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm ${colorClass}">${value}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">50.00</td>
+                    </tr>`;
+            });
+            tableHTML += `</tbody></table></div>`;
+            return tableHTML;
+        }
+        
+        function createEmpComparisonTableHTML(scoreColumns, empData, deptAvgData, empName, deptName) {
+            if (!empData || !deptAvgData) return '';
+             let tableHTML = `
+                <h3 class="text-xl font-semibold text-gray-700 mb-4 text-center">T-점수 비교</h3>
+                <div class="overflow-x-auto rounded-lg shadow-md border border-gray-200 max-w-4xl mx-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">평가항목</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">${empName}</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">${deptName} 평균</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">전체 담당자 평균</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">`;
+            
+            function getColorClass(value) {
+                if (value >= 60) return 'text-blue-600 font-bold';
+                if (value >= 55) return 'text-green-600';
+                if (value < 45) return 'text-red-700 font-bold';
+                if (value < 50) return 'text-red-500';
+                return 'text-gray-700';
+            }
+
+            scoreColumns.forEach(col => {
+                const empValue = empData[col] ? empData[col].toFixed(2) : 'N/A';
+                const deptAvgValue = deptAvgData[col] ? deptAvgData[col].toFixed(2) : 'N/A';
+                
+                tableHTML += `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">${col.split('(')[0]}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm ${getColorClass(empValue)}">${empValue}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm ${getColorClass(deptAvgValue)}">${deptAvgValue}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">50.00</td>
+                    </tr>`;
+            });
+            tableHTML += `</tbody></table></div>`;
+            return tableHTML;
+        }
+
+        function renderRadarChart(dataType, canvasId, options) {
+            if (chartInstances[canvasId]) chartInstances[canvasId].destroy();
+            
+            const dataConfig = dashboardData[dataType];
+            const {selectedName, departmentName} = options;
+            const nameKey = dataType === 'dept' ? dataConfig.departmentKey : dataConfig.employeeKey;
+            
+            const dataToPlot = dataConfig.tScoresData.find(d => d[nameKey] === selectedName);
+            if (!dataToPlot) return;
+
+            const labels = dataConfig.scoreColumns.map(col => col.split('(')[0]);
+            
+            const datasets = [{
+                label: selectedName,
+                data: dataConfig.scoreColumns.map(col => dataToPlot[col]),
+                borderColor: 'rgba(79, 70, 229, 0.8)',
+                backgroundColor: 'rgba(79, 70, 229, 0.2)',
+                borderWidth: 2,
+                pointBackgroundColor: 'rgba(79, 70, 229, 0.8)'
+            }];
+
+            if (dataType === 'employee') {
+                 const deptAvgData = dataConfig.deptAverages[departmentName];
+                 if (deptAvgData) {
+                    datasets.push({
+                        label: `${departmentName} 평균`,
+                        data: dataConfig.scoreColumns.map(col => deptAvgData[col]),
+                        borderColor: 'rgba(34, 197, 94, 0.8)',
+                        backgroundColor: 'rgba(34, 197, 94, 0.2)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(34, 197, 94, 0.8)'
+                    });
+                 }
+            }
+            
+            datasets.push({
+                label: `전체 ${dataType === 'dept' ? '부서' : '담당자'} 평균`,
+                data: Array(labels.length).fill(50),
+                borderColor: 'rgba(239, 68, 68, 0.8)',
+                backgroundColor: 'transparent',
+                borderWidth: 2,
+                borderDash: [5, 5],
+                pointRadius: 0,
+                fill: false
+            });
+
+            chartInstances[canvasId] = new Chart(document.getElementById(canvasId), {
+                type: 'radar',
+                data: { labels, datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'top', labels: { font: { size: 14 }}}},
+                    scales: { r: { suggestedMin: 20, suggestedMax: 80, pointLabels: { font: { size: 12 }}}}
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+
