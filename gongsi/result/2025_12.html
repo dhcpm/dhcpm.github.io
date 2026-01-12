@@ -24,7 +24,7 @@
             padding: 20px 0;
             border-bottom: 1px solid #ddd;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            position: relative;
+            position: relative; /* 자식 요소 절대 배치를 위해 relative 설정 */
             z-index: 10;
         }
 
@@ -33,6 +33,29 @@
             font-size: 26px;
             font-weight: 800;
             color: #2c3e50;
+        }
+
+        /* 홈 버튼 스타일 */
+        .home-button {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #4b5563; /* Gray-600 */
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background-color 0.2s;
+        }
+
+        .home-button:hover {
+            background-color: #374151; /* Gray-700 */
         }
 
         /* 탭 네비게이션 스타일 */
@@ -112,7 +135,7 @@
 </head>
 <body>
 
-    <!-- 메인 타이틀 영역 -->
+    <!-- 메인 타이틀 영역 (홈 버튼 추가됨) -->
     <div class="main-header no-print">
         <h1>2025년 대학정보공시 별도 공시 현황</h1>
         <a href="../gongsi/gongsi_pg.html" class="home-button">
