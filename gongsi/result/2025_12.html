@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025년 대학정보공시 별도 공시 현황</title>
+    
+    <!-- 폰트 및 라이브러리 -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <!-- 엑셀 다운로드 라이브러리 (SheetJS) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <style>
+        /* 기본 페이지 스타일 */
+        body { margin: 0; padding: 0; font-family: 'Pretendard', 'Noto Sans KR', sans-serif; background-color: #e9ecef; }
+        
+        /* 메인 타이틀 스타일 */
+        .main-header {
+            background-color: #fff;
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #ddd;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 10;
+        }
+
+        .main-header h1 {
+            margin: 0;
+            font-size: 26px;
+            font-weight: 800;
+            color: #2c3e50;
+        }
+
+        /* 탭 네비게이션 스타일 */
+        .tab-nav {
+            background-color: #343a40;
+            display: flex;
+            justify-content: center;
+            padding: 10px 0 0 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .tab-button {
+            background-color: #495057;
+            color: #adb5bd;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 12px 30px;
+            margin: 0 5px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 10px 10px 0 0;
+            transition: 0.3s;
+        }
+
+        .tab-button:hover {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .tab-button.active {
+            background-color: #f8f9fa;
+            color: #212529;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+        }
+
+        .tab-content {
+            display: none;
+            width: 100%;
+            padding: 20px 0;
+        }
+
+        /* A4 레이아웃 공통 스타일 (두 탭 모두 적용) */
+        .a4-page {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            background: white;
+            padding: 10mm 15mm;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            position: relative;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 테이블 공통 스타일 */
+        .table-compact th, .table-compact td {
+            padding: 6px 8px;
+            font-size: 0.85rem;
+            border: 1px solid #e5e7eb;
+        }
+        .table-compact th {
+            background-color: #f3f4f6;
+            font-weight: 700;
+            color: #374151;
+        }
+
+        /* 인쇄 설정 */
+        @media print {
+            .main-header, .tab-nav, .no-print { display: none !important; }
+            body, .tab-content { background: none; padding: 0; display: block !important; margin: 0; }
+            .tab-content { display: block !important; page-break-after: always; }
+            .a4-page { box-shadow: none; width: 100%; margin: 0; padding: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 메인 타이틀 영역 -->
+    <div class="main-header no-print">
+        <h1>2025년 대학정보공시 별도 공시 현황</h1>
+    </div>
+
+    <!-- 탭 네비게이션 -->
+    <div class="tab-nav no-print">
+        <button class="tab-button" onclick="openTab(event, 'Page1')" id="defaultOpen">5-나. 졸업생 진학현황</button>
+        <button class="tab-button" onclick="openTab(event, 'Page2')">5-다. 졸업생 취업현황</button>
+    </div>
+
+    <!-- [Tab 1] 진학현황 컨텐츠 (스타일 리팩토링됨) -->
+    <div id="Page1" class="tab-content">
+        <div class="a4-page">
+            <header class="border-b-4 border-blue-900 pb-3 mb-6 flex justify-between items-end">
+                <div>
+                    <h1 class="text-3xl font-black text-blue-900 leading-tight">5-나. 졸업생의 진학현황</h1>
+                    <p class="text-sm text-orange-700 mt-2 font-bold tracking-tight">
+                        졸업생 대비 진학자 분석 (진학자 중 외국인 제외)
+                    </p>
+                </div>
+                <div class="text-right text-xs text-gray-500 font-bold">
+                    기준일: 2024.12.31.
+                </div>
+            </header>
+        
+            <!-- KPI Cards -->
+            <div class="grid grid-cols-4 gap-4 mb-6">
+                <div class="bg-white p-3 rounded-lg border border-gray-200 text-center shadow-sm">
+                    <div class="text-xs text-gray-500 mb-1">전체 졸업생(A)</div>
+                    <div class="text-2xl font-black text-blue-900">2,288<span class="text-sm font-normal text-gray-400 ml-1">명</span></div>
+                </div>
+                <div class="bg-white p-3 rounded-lg border border-gray-200 text-center shadow-sm">
+                    <div class="text-xs text-gray-500 mb-1">진학자(B)</div>
+                    <div class="text-2xl font-black text-blue-900">122<span class="text-sm font-normal text-gray-400 ml-1">명</span></div>
+                </div>
+                <div class="bg-blue-900 p-3 rounded-lg border border-blue-900 text-center shadow-sm text-white">
+                    <div class="text-xs text-gray-300 mb-1">최종 진학률(B/A)</div>
+                    <div class="text-2xl font-black text-white mb-1">5.3<span class="text-sm font-normal text-gray-300 ml-1">%</span></div>
+                    <div class="text-[10px] pt-1 border-t border-blue-700 text-blue-200">
+                        2024년: 5.7% <span class="text-orange-300 ml-1">(▼0.4%p)</span>
+                    </div>
+                </div>
+                <div class="bg-white p-3 rounded-lg border border-gray-200 text-center shadow-sm">
+                    <div class="text-xs text-gray-500 mb-1">전문대학 진학</div>
+                    <div class="text-2xl font-black text-blue-900">97<span class="text-sm font-normal text-gray-400 ml-1">명</span></div>
+                </div>
+            </div>
+        
+            <section class="flex-grow">
+                <div class="flex justify-between items-center mb-2">
+                    <h2 class="text-base font-bold text-gray-800 flex items-center">
+                        <span class="bg-blue-600 w-2 h-5 mr-2 inline-block"></span>
+                        학과별 진학 상세 현황
+                    </h2>
+                    <button onclick="downloadExcel('table-jin-hak', '2025_졸업생_진학현황')" class="no-print bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-1.5 rounded flex items-center gap-1 transition shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        엑셀 다운로드
+                    </button>
+                </div>
+
+                <div class="overflow-hidden border border-gray-300 rounded-lg">
+                    <table id="table-jin-hak" class="w-full table-compact text-center border-collapse">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th rowspan="2" class="w-1/5 border border-gray-200">학과명</th>
+                                <th rowspan="2" class="w-1/4 border border-gray-200">주야구분</th>
+                                <th rowspan="2" class="border border-gray-200">졸업생</th>
+                                <th rowspan="2" class="border border-gray-200">진학자</th>
+                                <th rowspan="2" class="border border-gray-200">진학률</th>
+                                <th colspan="3" class="border border-gray-200 bg-gray-50">진학지 구분</th>
+                            </tr>
+                            <tr class="bg-gray-100">
+                                <th class="border border-gray-200">전문대학</th>
+                                <th class="border border-gray-200">대학교</th>
+                                <th class="border border-gray-200">대학원</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-orange-50 font-extrabold border-b-2 border-orange-200 text-gray-800">
+                                <td colspan="2" class="border border-orange-200">총계</td>
+                                <td class="border border-orange-200">2,288</td>
+                                <td class="border border-orange-200">122</td>
+                                <td class="text-orange-600 border border-orange-200">5.3%</td>
+                                <td class="border border-orange-200">97</td>
+                                <td class="border border-orange-200">22</td>
+                                <td class="border border-orange-200">3</td>
+                            </tr>
+                            <!-- 데이터 행 (스타일 통일) -->
+                            <tr><td class="text-left font-semibold pl-3">물리치료학과</td><td>주간</td><td>134</td><td>4</td><td class="bg-blue-50 font-bold text-blue-700">3.0%</td><td class="font-bold text-gray-700">4</td><td>0</td><td>0</td></tr>
+                            <tr><td class="text-left font-semibold pl-3"></td><td>야간</td><td>40</td><td>2</td><td class="bg-blue-50 font-bold text-blue-700">5.0%</td><td class="font-bold text-gray-700">2</td><td>0</td><td>0</td></tr>
+                            <tr><td class="text-left font-semibold pl-3">반려동물보건관리학과</td><td>주간</td><td>30</td><td>5</td><td class="bg-blue-50 font-bold text-blue-700">16.7%</td><td class="font-bold text-gray-700">1</td><td>4</td><td>0</td></tr>
+                            <tr><td class="text-left font-semibold pl-3">방사선학과</td><td>주간</td><td>205</td><td>14</td><td class="bg-blue-50 font-bold text-blue-700">6.8%</td><td class="font-bold text-gray-700">11</td><td>3</td><td>0</td></tr>
+                            <tr><td class="text-left font-semibold pl-3"></td><td>야간</td><td>30</td><td>2</td><td class="bg-blue-50 font-bold text-blue-700">6.7%</td><td class="font-bold text-gray-700">1</td><td>1</td><td>0</td></tr>
+                            <tr><td class="text-left font-semibold pl-3">뷰티코디네이션학과</td><td>주간</td><td>81</td><td>3</td><td class="bg-blue-50 font-bold text-blue-700">3.7%</td><td class="font-bold text-gray-700">2</td><td>1</td><td>0</td></tr>
+                            <tr><td class="text-left font-semibold pl-3">사회복지학과</td><td>주간</td><td>91</td><td>11</td><td class="bg-blue-50 font-bold text-blue-700">12.1%</td><td class="font-bold text-gray-700">8</td><td>3</td><td>0</td></tr>
+                            <tr><td class="text-left font-semibold pl-3">소방안전관리학과</td><td>주간</td><td>45</td><td>1</td><td class="bg-blue-50 font-bold text-blue-700">2.2%</td><td class="font-bold text-gray-700">0</td><td>1</td><td>0</td></tr>
+                            <tr><td class="text-left font-semibold pl-3">스포츠재활학과</td><td>주간</td><td>41</td><td>2</td><td class="bg-blue-50 font-bold text-blue-700">4.9%</td><td class="font-bold text-gray-700">1</td><td>1</td><td>0</td></tr>
+                            <tr><td class="text-left font-semibold pl-3">식품영양학과(2년제)</td><td>주간</td><td>31</td><td>2</td><td class="bg-blue-50 font-bold text-blue-700">6.5%</td><td class="font-bold text-gray-700">1</td><td>1</td><td>0</td></tr>
+                            <tr><td class="text-left font-semibold pl-3">안경광학과</td><td>주간</td><td>65</td><td>8</td><td class="bg-blue-50 font-bold text-blue-700">12.3%</td><td class="font-bold text-gray-700">8</td><td>0</td><td>0</td></tr>
+                            <tr><td class="text-left font-semibold pl-3">언어치료학과</td><td>주간</td><td>35</td><td>11</td><td class="bg-blue-50 font-bold text-blue-700">31.4%</td><td class="font-bold text-gray-700">11</td><td>0</td><td>0</td></tr>
+                            <tr><td class="text-left font-semibold pl-3">유아교육학과</td><td>주간</td><td>40</td><td>3</td><td class="bg-blue-50 font-bold text-blue-700">7.5%</td><td class="font-bold text-gray-700">3</td><td>0</td><td>0</td></tr>
+                            <tr><td class="text-left font-semibold pl-3">임상병리학과</td><td>주간</td><td>187</td><td>24</td><td class="bg-blue-50 font-bold text-blue-700">12.8%</td><td class="font-bold text-gray-700">21</td><td>3</td><td>0</td></tr>
+                            <tr><td class="text-left font-semibold pl-3"></td><td>야간</td><td>30</td><td>2</td><td class="bg-blue-50 font-bold text-blue-700">6.7%</td><td class="font-bold text-gray-700">2</td><td>0</td><td>0</td></tr>
+                            <tr><td class="text-left font-semibold pl-3"></td><td>학사학위전공심화(야간)</td><td>62</td><td>3</td><td class="bg-blue-50 font-bold text-blue-700">4.8%</td><td class="font-bold text-gray-700">2</td><td>0</td><td class="text-red-600 font-black">1</td></tr>
+                            <tr><td class="text-left font-semibold pl-3">작업치료학과</td><td>주간</td><td>41</td><td>1</td><td class="bg-blue-50 font-bold text-blue-700">2.4%</td><td class="font-bold text-gray-700">0</td><td>1</td><td>0</td></tr>
+                            <tr><td class="text-left font-semibold pl-3"></td><td>학사학위전공심화(야간)</td><td>17</td><td>1</td><td class="bg-blue-50 font-bold text-blue-700">5.9%</td><td class="font-bold text-gray-700">0</td><td>0</td><td class="text-red-600 font-black">1</td></tr>
+                            <tr><td class="text-left font-semibold pl-3">재테크세무회계과</td><td>주간</td><td>34</td><td>2</td><td class="bg-blue-50 font-bold text-blue-700">5.9%</td><td class="font-bold text-gray-700">0</td><td>2</td><td>0</td></tr>
+                            <tr><td class="text-left font-semibold pl-3">치기공학과</td><td>주간</td><td>155</td><td>15</td><td class="bg-blue-50 font-bold text-blue-700">9.7%</td><td class="font-bold text-gray-700">15</td><td>0</td><td>0</td></tr>
+                            <tr><td class="text-left font-semibold pl-3"></td><td>야간</td><td>20</td><td>1</td><td class="bg-blue-50 font-bold text-blue-700">5.0%</td><td class="font-bold text-gray-700">1</td><td>0</td><td>0</td></tr>
+                            <tr><td class="text-left font-semibold pl-3">치위생학과</td><td>주간</td><td>158</td><td>3</td><td class="bg-blue-50 font-bold text-blue-700">1.9%</td><td class="font-bold text-gray-700">3</td><td>0</td><td>0</td></tr>
+                            <tr><td class="text-left font-semibold pl-3"></td><td>학사학위전공심화(야간)</td><td>19</td><td>1</td><td class="bg-blue-50 font-bold text-blue-700">5.3%</td><td class="font-bold text-gray-700">0</td><td>0</td><td class="text-red-600 font-black">1</td></tr>
+                            <tr><td class="text-left font-semibold pl-3">환경보건학과</td><td>주간</td><td>30</td><td>1</td><td class="bg-blue-50 font-bold text-blue-700">3.3%</td><td class="font-bold text-gray-700">0</td><td>1</td><td>0</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        
+            <div class="bg-orange-50 border border-orange-200 p-4 rounded-lg text-sm leading-relaxed mt-6">
+                <strong class="text-orange-800 block mb-2">[학제별 진학 특징 요약]</strong>
+                <ul class="list-disc pl-5 space-y-1 text-gray-700">
+                    <li><strong>전문대학 집중:</strong> 한국인 진학자 122명 중 <strong>97명(79.5%)</strong>이 전문대학으로 진학하여 실무 전문성 강화 경향이 뚜렷함.</li>
+                    <li><strong>대학원 진학:</strong> 임상병리학과, 작업치료학과, 치위생학과의 <strong>학사학위 전공심화과정</strong> 졸업생들이 대학원(석사 등)으로 진학하는 성과를 보임.</li>
+                    <li><strong>학력 신장:</strong> 반려동물보건관리학과 및 사회복지학과는 대학교(4년제) 진학 비중이 타 학과 대비 상대적으로 높게 나타남.</li>
+                </ul>
+            </div>
+        
+            <div class="mt-6 text-center text-xs text-gray-400">
+                대구보건대학교 대학성과관리팀 | 데이터 분석가 시스템
+            </div>
+            
+            <!-- 하단 버튼 -->
+            <div class="flex justify-center mt-6 no-print">
+                <button onclick="window.print()" class="bg-blue-600 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-blue-700 font-bold flex items-center gap-2 transform transition hover:scale-105">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                    </svg>
+                    PDF 저장 / 인쇄
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- [Tab 2] 취업현황 컨텐츠 -->
+    <div id="Page2" class="tab-content">
+    
+        <div class="a4-page" id="infographic">
+            <!-- Header -->
+            <header class="border-b-4 border-blue-900 pb-3 mb-4 flex justify-between items-end">
+                <div>
+                    <h1 class="text-3xl font-black text-blue-900 leading-tight">5-다. 졸업생의 취업현황</h1>
+                    <p class="text-sm text-gray-600 mt-2 font-bold tracking-tight">
+                        공시일 : 2025.12.31 <span class="mx-2 text-gray-300">|</span> 기준일 : 2024.12.31
+                    </p>
+                </div>
+                <div class="flex flex-col items-end">
+                    <div class="text-xs text-gray-500 font-bold mb-1 tracking-tighter">대구보건대학교 최근 3년 취업률 (공시기준)</div>
+                    <div class="flex items-end gap-4 bg-gray-50 p-2 rounded-lg border border-gray-100">
+                        <div class="text-center group">
+                            <div class="text-[10px] text-gray-400 mb-0.5">2023</div>
+                            <div class="text-lg font-bold text-gray-400 group-hover:text-gray-600 transition-colors">77.7%</div>
+                        </div>
+                        <div class="h-8 w-px bg-gray-200"></div>
+                        <div class="text-center group">
+                            <div class="text-[10px] text-gray-400 mb-0.5">2024</div>
+                            <div class="text-lg font-bold text-gray-400 group-hover:text-gray-600 transition-colors">76.8%</div>
+                        </div>
+                        <div class="h-8 w-px bg-gray-200"></div>
+                        <div class="text-center relative">
+                            <!-- Current Year Highlight Indicator -->
+                            <div class="absolute -top-1 right-0 w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                            <div class="text-[10px] text-blue-600 font-bold mb-0.5">2025</div>
+                            <div class="text-2xl font-black text-blue-700 leading-none">77.7%</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+    
+            <!-- Summary Statistics Cards -->
+            <div class="grid grid-cols-4 gap-4 mb-5">
+                <div class="bg-gray-50 p-2 rounded-lg border border-gray-200 text-center">
+                    <div class="text-xs text-gray-500 mb-1">전체 졸업생</div>
+                    <div class="text-xl font-bold text-gray-800" id="total-grad">2,288</div>
+                    <div class="text-[10px] text-gray-400">명</div>
+                </div>
+                <div class="bg-red-50 p-2 rounded-lg border border-red-100 text-center">
+                    <div class="text-xs text-red-500 mb-1">제외 대상</div>
+                    <div class="text-xl font-bold text-red-700" id="total-excluded">187</div>
+                    <div class="text-[10px] text-red-400">진학/입대/외국인 등</div>
+                </div>
+                <div class="bg-blue-50 p-2 rounded-lg border border-blue-100 text-center">
+                    <div class="text-xs text-blue-500 mb-1">취업 대상자</div>
+                    <div class="text-xl font-bold text-blue-800" id="total-target">2,101</div>
+                    <div class="text-[10px] text-blue-400">실질 모수</div>
+                </div>
+                <div class="bg-green-50 p-2 rounded-lg border border-green-100 text-center">
+                    <div class="text-xs text-green-500 mb-1">취업자</div>
+                    <div class="text-xl font-bold text-green-700" id="total-employed">1,632</div>
+                    <div class="text-[10px] text-green-400">국내 취업</div>
+                </div>
+            </div>
+    
+            <!-- Top 5 Highlight Sections Wrapper -->
+            <div class="grid grid-cols-2 gap-6 mb-5">
+                
+                <!-- Top 5 Rate -->
+                <div>
+                    <h2 class="text-base font-bold text-gray-800 mb-2 flex items-center">
+                        <span class="bg-yellow-400 w-2 h-5 mr-2 inline-block"></span>
+                        취업률 우수 학과 (TOP 5)
+                    </h2>
+                    <div class="flex flex-col gap-2" id="top5-rate-container">
+                        <!-- Cards injected via JS -->
+                    </div>
+                </div>
+    
+                <!-- Top 5 Count -->
+                <div>
+                    <h2 class="text-base font-bold text-gray-800 mb-2 flex items-center">
+                        <span class="bg-green-500 w-2 h-5 mr-2 inline-block"></span>
+                        취업자 다수 학과 (TOP 5)
+                    </h2>
+                    <div class="flex flex-col gap-2" id="top5-count-container">
+                        <!-- Cards injected via JS -->
+                    </div>
+                </div>
+    
+            </div>
+    
+            <!-- Main Data Table -->
+            <div class="flex-grow">
+                <div class="flex justify-between items-center mb-2">
+                    <h2 class="text-base font-bold text-gray-800 flex items-center">
+                        <span class="bg-blue-600 w-2 h-5 mr-2 inline-block"></span>
+                        학과별 상세 현황 (가나다 순)
+                    </h2>
+                    <!-- 엑셀 다운로드 버튼 추가 -->
+                    <button onclick="downloadExcel('table-chwi-up', '2025_졸업생_취업현황')" class="no-print bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-1.5 rounded flex items-center gap-1 transition shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        엑셀 다운로드
+                    </button>
+                </div>
+                <div class="overflow-hidden border border-gray-300 rounded-lg">
+                    <table id="table-chwi-up" class="w-full table-compact text-center">
+                        <thead class="bg-gray-100 text-gray-700 border-b border-gray-300 text-xs uppercase">
+                            <tr>
+                                <th class="text-left pl-4 w-1/3">학과명</th>
+                                <th class="w-1/6">전체</th>
+                                <th class="w-1/6 text-gray-400">제외</th>
+                                <th class="w-1/6">대상</th>
+                                <th class="w-1/6 font-bold text-green-700">취업자</th>
+                                <th class="w-1/6 font-black text-blue-900 bg-blue-50">취업률</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dept-table-body" class="text-sm divide-y divide-gray-200">
+                            <!-- Rows injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+    
+            <!-- Footer -->
+            <footer class="mt-4 pt-3 border-t border-gray-300 text-[9px] text-gray-500 flex justify-between">
+                <div>
+                    <p><strong>* 산출 기준:</strong> (취업자 / 취업대상자) × 100</p>
+                    <p><strong>* 제외 대상:</strong> 외국인 유학생, 진학자(대학/전문대/대학원), 입대자, 취업불가능자</p>
+                </div>
+                <div class="text-right">
+                    <p>Generated by AI Analysis Tool | 2026.01.07</p>
+                </div>
+            </footer>
+        </div>
+
+        <!-- 하단 버튼 -->
+        <div class="flex justify-center mt-6 no-print">
+            <button onclick="window.print()" class="bg-blue-600 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-blue-700 font-bold flex items-center gap-2 transform transition hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                </svg>
+                PDF 저장 / 인쇄
+            </button>
+        </div>
+    </div>
+
+    <!-- 탭 기능 및 유틸리티 스크립트 -->
+    <script>
+        // 탭 기능
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        // 엑셀 다운로드 기능
+        function downloadExcel(tableId, fileName) {
+            var table = document.getElementById(tableId);
+            var wb = XLSX.utils.table_to_book(table, {sheet: "Sheet1"});
+            XLSX.writeFile(wb, fileName + '.xlsx');
+        }
+
+        // 초기 실행: 첫 번째 탭 열기
+        document.getElementById("defaultOpen").click();
+    </script>
+
+    <!-- 취업현황 데이터 처리 스크립트 -->
+    <script>
+        const rawData = [
+            { name: "간호학과", total: 244, excluded: 1, target: 243, employed: 182, rate: 74.9 },
+            { name: "글로벌호텔조리학과", total: 26, excluded: 9, target: 17, employed: 13, rate: 76.5 },
+            { name: "물리치료학과", total: 250, excluded: 15, target: 235, employed: 209, rate: 88.9 },
+            { name: "방사선학과", total: 280, excluded: 22, target: 258, employed: 203, rate: 78.7 },
+            { name: "반려동물보건관리학과", total: 30, excluded: 7, target: 23, employed: 15, rate: 65.2 },
+            { name: "보건행정학과", total: 79, excluded: 0, target: 79, employed: 54, rate: 68.4 },
+            { name: "뷰티코디네이션학과", total: 81, excluded: 6, target: 75, employed: 51, rate: 68.0 },
+            { name: "사회복지학과", total: 108, excluded: 16, target: 92, employed: 51, rate: 55.4 },
+            { name: "소방안전관리학과", total: 45, excluded: 3, target: 42, employed: 30, rate: 71.4 },
+            { name: "스마트의료IT과", total: 10, excluded: 1, target: 9, employed: 5, rate: 55.6 },
+            { name: "스포츠재활학과", total: 41, excluded: 7, target: 34, employed: 23, rate: 67.6 },
+            { name: "식품영양과(3년제)", total: 12, excluded: 1, target: 11, employed: 5, rate: 45.5 },
+            { name: "식품영양학과(2년제)", total: 31, excluded: 3, target: 28, employed: 22, rate: 78.6 },
+            { name: "안경광학과", total: 81, excluded: 9, target: 72, employed: 62, rate: 86.1 },
+            { name: "언어치료학과", total: 61, excluded: 11, target: 50, employed: 44, rate: 88.0 },
+            { name: "유아교육학과", total: 63, excluded: 3, target: 60, employed: 54, rate: 90.0 },
+            { name: "임상병리학과", total: 279, excluded: 30, target: 249, employed: 188, rate: 75.5 },
+            { name: "작업치료학과", total: 58, excluded: 2, target: 56, employed: 53, rate: 94.6 },
+            { name: "재테크세무회계과", total: 34, excluded: 2, target: 32, employed: 25, rate: 78.1 },
+            { name: "치기공학과", total: 222, excluded: 32, target: 190, employed: 141, rate: 74.2 },
+            { name: "치위생학과", total: 205, excluded: 4, target: 201, employed: 169, rate: 84.1 },
+            { name: "환경보건학과", total: 30, excluded: 3, target: 27, employed: 17, rate: 63.0 },
+            { name: "호텔제과제빵학과", total: 18, excluded: 0, target: 18, employed: 16, rate: 88.9 }
+        ];
+
+        const sortedByRate = [...rawData].sort((a, b) => b.rate - a.rate);
+        const top5Rate = sortedByRate.slice(0, 5);
+        const top5RateNames = top5Rate.map(d => d.name);
+
+        const sortedByCount = [...rawData].sort((a, b) => b.employed - a.employed);
+        const top5Count = sortedByCount.slice(0, 5);
+
+        function renderTopList(data, containerId, valueKey, suffix, rankColorClass, borderClass) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = ''; 
+
+            data.forEach((dept, index) => {
+                const row = document.createElement('div');
+                row.className = `flex justify-between items-center bg-white p-2 px-3 rounded shadow-sm border-l-4 ${borderClass}`;
+                
+                let valueDisplay = dept[valueKey];
+                if(valueKey === 'rate') valueDisplay = valueDisplay.toFixed(1) + '%';
+                else valueDisplay = valueDisplay + '명';
+
+                row.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="text-[10px] font-bold ${rankColorClass} text-white rounded-full w-5 h-5 flex items-center justify-center">${index + 1}</span>
+                        <span class="text-xs font-bold text-gray-700">${dept.name}</span>
+                    </div>
+                    <div class="text-sm font-black text-gray-800">${valueDisplay}</div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        renderTopList(top5Rate, 'top5-rate-container', 'rate', '%', 'bg-yellow-400', 'border-yellow-400');
+        renderTopList(top5Count, 'top5-count-container', 'employed', '명', 'bg-green-500', 'border-green-500');
+
+        rawData.sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+
+        const tableBody = document.getElementById('dept-table-body');
+        if (tableBody) {
+            tableBody.innerHTML = '';
+            
+            rawData.forEach(dept => {
+                const isTop5 = top5RateNames.includes(dept.name);
+                const rank = top5RateNames.indexOf(dept.name) + 1;
+                
+                const tr = document.createElement('tr');
+                if (isTop5) {
+                    tr.className = "highlight-row";
+                } else {
+                    tr.className = "hover:bg-gray-50";
+                }
+
+                let nameHtml = dept.name;
+                if (isTop5) {
+                    nameHtml = `<span class="rank-badge">${rank}</span>${dept.name}`;
+                }
+
+                tr.innerHTML = `
+                    <td class="text-left pl-4 border-r border-gray-100">${nameHtml}</td>
+                    <td class="text-gray-600">${dept.total}</td>
+                    <td class="text-gray-400 text-xs">${dept.excluded}</td>
+                    <td class="font-medium text-gray-700">${dept.target}</td>
+                    <td class="font-bold text-green-700 bg-green-50/30">${dept.employed}</td>
+                    <td class="font-black text-blue-900 bg-blue-50">${dept.rate.toFixed(1)}%</td>
+                `;
+                tableBody.appendChild(tr);
+            });
+        }
+    </script>
+
+</body>
+</html>
