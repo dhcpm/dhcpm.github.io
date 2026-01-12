@@ -271,11 +271,8 @@
                     const month = btn.dataset.month; // e.g., "04"
                     const href = `../gongsi/${selectedYear}_${month}.html`;
                     
-                    // In preview environment, we just log/alert. In production, set href.
-                    btn.setAttribute('data-href', href); 
+                    btn.setAttribute('href', href); // Set actual href
                     btn.setAttribute('title', `이동: ${href}`);
-                    
-                    // Optional: Update displayed text if needed, but keeping it simple "4월" is fine.
                 });
 
                 // 2. Update Status Links (교내 주요 현황)
@@ -284,7 +281,7 @@
                     const month = btn.dataset.month; // e.g., "04", "12"
                     const href = `../gongsi/result/${selectedYear}_${month}.html`;
                     
-                    btn.setAttribute('data-href', href);
+                    btn.setAttribute('href', href); // Set actual href
                     btn.setAttribute('title', `이동: ${href}`);
                 });
             }
@@ -295,19 +292,7 @@
             // Initial call
             updateLinks();
 
-            // Click Handler for Preview (since real files don't exist in this demo)
-            const allBtns = [...guideBtns, ...statusBtns];
-            allBtns.forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const targetHref = btn.getAttribute('data-href');
-                    const linkName = btn.classList.contains('guide-btn') ? '시기별 공시안내' : '교내 주요현황';
-                    
-                    // In a real environment, you would use: window.location.href = targetHref;
-                    // For this preview:
-                    alert(`[${linkName}]\n선택된 링크로 이동합니다:\n${targetHref}`);
-                });
-            });
+            // Removed previous event listeners that blocked navigation
         });
     </script>
 </body>
