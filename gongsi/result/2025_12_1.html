@@ -52,31 +52,47 @@
                     <i data-lucide="calculator" class="w-8 h-8 text-indigo-600"></i>
                     전국 대학 취업현황 분석
                 </h1>
-                <a href="/gongsi/gongsi_pg.html"><p class="text-slate-500 mt-1 text-sm">대학정보공시 홈으로 돌아가기</p></a>
+                <!-- 요청사항 반영: 설명 텍스트 삭제됨 -->
             </div>
             
-            <div class="flex flex-wrap gap-2">
-                <!-- Server Load Button -->
-                <button onclick="fetchServerData()" 
-                    class="flex items-center gap-2 bg-blue-50 hover:bg-blue-100 text-blue-700 px-4 py-2.5 rounded-lg transition-colors font-medium border border-blue-200">
-                    <i data-lucide="server" class="w-4 h-4"></i>
-                    <span>서버 데이터 로드</span>
-                </button>
+            <div class="flex flex-col items-end gap-2">
+                <!-- Navigation Buttons (New) -->
+                <div class="flex gap-2 mb-1">
+                    <button onclick="location.href='2025_12.html'" 
+                        class="flex items-center gap-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg transition-colors text-sm border border-gray-300">
+                        <i data-lucide="arrow-left" class="w-3 h-3"></i>
+                        이전
+                    </button>
+                    <button onclick="location.href='/gongsi/gongsi_pg.html'" 
+                        class="flex items-center gap-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg transition-colors text-sm border border-gray-300">
+                        <i data-lucide="home" class="w-3 h-3"></i>
+                        홈
+                    </button>
+                </div>
 
-                <!-- File Upload Button -->
-                <input type="file" id="csvFileInput" accept=".csv" class="hidden" />
-                <button onclick="document.getElementById('csvFileInput').click()" 
-                    class="flex items-center gap-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-4 py-2.5 rounded-lg transition-colors font-medium border border-indigo-200">
-                    <i data-lucide="upload" class="w-4 h-4"></i>
-                    <span id="uploadBtnText">파일 업로드</span>
-                </button>
+                <div class="flex flex-wrap gap-2">
+                    <!-- Server Load Button -->
+                    <button onclick="fetchServerData()" 
+                        class="flex items-center gap-2 bg-blue-50 hover:bg-blue-100 text-blue-700 px-4 py-2.5 rounded-lg transition-colors font-medium border border-blue-200">
+                        <i data-lucide="server" class="w-4 h-4"></i>
+                        <span>서버 데이터 로드</span>
+                    </button>
 
-                <!-- Excel Export Button -->
-                <button id="exportBtn" onclick="exportToExcel()" disabled
-                    class="flex items-center gap-2 px-4 py-2.5 rounded-lg transition-colors font-medium shadow-sm bg-slate-300 cursor-not-allowed text-slate-500">
-                    <i data-lucide="download" class="w-4 h-4"></i>
-                    엑셀 다운로드
-                </button>
+                    <!-- File Upload Button -->
+                    <input type="file" id="csvFileInput" accept=".csv" class="hidden" />
+                    <button onclick="document.getElementById('csvFileInput').click()" 
+                        class="flex items-center gap-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-4 py-2.5 rounded-lg transition-colors font-medium border border-indigo-200">
+                        <i data-lucide="upload" class="w-4 h-4"></i>
+                        <span id="uploadBtnText">파일 업로드</span>
+                    </button>
+
+                    <!-- Excel Export Button -->
+                    <button id="exportBtn" onclick="exportToExcel()" disabled
+                        class="flex items-center gap-2 px-4 py-2.5 rounded-lg transition-colors font-medium shadow-sm bg-slate-300 cursor-not-allowed text-slate-500">
+                        <i data-lucide="download" class="w-4 h-4"></i>
+                        엑셀 다운로드
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -90,7 +106,7 @@
             <div class="flex items-center justify-between text-slate-700 font-semibold mb-2">
                 <div class="flex items-center gap-2">
                     <i data-lucide="filter" class="w-5 h-5"></i>
-                    <span>상세 검색 조건 (다중 선택 가능)</span>
+                    <span>상세 검색 조건 (파일 데이터 기준)</span>
                 </div>
                 <button onclick="resetFilters()" class="text-xs text-slate-500 hover:text-indigo-600 flex items-center gap-1 bg-slate-100 px-2 py-1 rounded hover:bg-slate-200 transition-colors">
                     <i data-lucide="refresh-cw" class="w-3 h-3"></i> 초기화
@@ -199,7 +215,7 @@
                </div>
                
                <div class="p-4 bg-slate-50 border-t border-slate-200 text-xs text-slate-500 flex justify-between items-center">
-                 <span>데이터 기준: 2023~2025 대학정보공시</span>
+                 <span>데이터 기준: 대학정보공시</span>
                  <span>* 취업률(소수 첫째자리) = (취업자 / (졸업자 - 예외자)) × 100</span>
                </div>
              </div>
@@ -257,7 +273,8 @@
                 status: [],
                 schoolName: [] 
             },
-            activeDropdown: null // Currently open dropdown ID
+            activeDropdown: null, // Currently open dropdown ID
+            dropdownSearchQuery: '' // Persist search query
         };
 
         // ----------------------------------------------------------------------
@@ -375,7 +392,9 @@
                 skipEmptyLines: true,
                 complete: (results) => {
                     const processed = processData(results.data);
-                    processed.sort((a, b) => b.rate - a.rate || b.year.localeCompare(a.year));
+                    
+                    // [정렬 수정] 1순위: 연도(내림차순), 2순위: 취업률(내림차순, 높은순)
+                    processed.sort((a, b) => b.year.localeCompare(a.year) || b.rate - a.rate);
                     
                     appState.rawData = processed;
                     appState.fileName = name;
@@ -442,7 +461,8 @@
             // 학교명 다중 선택 필터링 로직
             if (f.schoolName.length > 0) result = result.filter(d => f.schoolName.includes(d.schoolName));
 
-            result.sort((a, b) => b.rate - a.rate || b.year.localeCompare(a.year));
+            // [정렬 수정] 1순위: 연도(내림차순), 2순위: 취업률(내림차순, 높은순)
+            result.sort((a, b) => b.year.localeCompare(a.year) || b.rate - a.rate);
             appState.filteredData = result;
         }
 
@@ -457,6 +477,18 @@
             renderTable();
             
             lucide.createIcons();
+            
+            // [NEW] Restore focus to search input if active
+            if (appState.activeDropdown) {
+                const activeInput = document.getElementById(`search-${appState.activeDropdown}`);
+                if (activeInput) {
+                    activeInput.focus();
+                    // Move cursor to end
+                    const val = activeInput.value;
+                    activeInput.value = '';
+                    activeInput.value = val;
+                }
+            }
         }
 
         // ----------------------------------------------------------------------
@@ -492,6 +524,19 @@
             const denominator = totalGraduates - totalExceptions;
             const avgRate = denominator > 0 ? (totalEmployed / denominator) * 100 : 0;
 
+            // [NEW] 연도별 대상 학교 수 카운팅
+            const countsByYear = data.reduce((acc, cur) => {
+                acc[cur.year] = (acc[cur.year] || 0) + 1;
+                return acc;
+            }, {});
+            
+            // 포맷팅: "2024(10) 2023(5)" (내림차순 정렬)
+            const yearCountsText = Object.keys(countsByYear)
+                .sort().reverse()
+                .map(year => `<span class="whitespace-nowrap">${year}년(<strong class="text-slate-900">${countsByYear[year]}</strong>)</span>`)
+                .join(' ');
+
+
             const statsContainer = document.getElementById('statsContainer');
             statsContainer.innerHTML = `
                 <div class="bg-indigo-600 text-white p-5 rounded-xl shadow-md col-span-2 md:col-span-1">
@@ -516,8 +561,10 @@
                     <p class="text-2xl font-bold text-amber-600">${formatNumber(totalExceptions)}명</p>
                 </div>
                 <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-                    <p class="text-slate-500 text-sm font-medium mb-1">대상 학교 수</p>
-                    <p class="text-2xl font-bold text-slate-800">${formatNumber(data.length)}개교</p>
+                    <p class="text-slate-500 text-sm font-medium mb-1">대상 학교 수 (연도별)</p>
+                    <div class="text-sm text-slate-600 flex flex-wrap gap-x-3 gap-y-1 items-center mt-1">
+                        ${yearCountsText || '<span class="text-slate-400">데이터 없음</span>'}
+                    </div>
                 </div>
             `;
 
@@ -548,12 +595,6 @@
 
         function renderFilterDropdowns() {
             const container = document.getElementById('filtersContainer');
-            // Re-rendering everything to ensure state consistency
-            // Don't clear if activeDropdown is search to avoid focus loss? 
-            // Better strategy: Simple re-render and restore focus if needed, but for now simple re-render is fine.
-            // Note: If user is typing, we shouldn't re-render the whole dropdown list or input will lose focus.
-            // However, updateUI calls this. So we need to be careful.
-            // Current flow: updateUI is called on FILTER CHANGE. Typing in search box does NOT call updateUI, it just hides DOM elements.
             
             container.innerHTML = '';
 
@@ -561,6 +602,9 @@
                 const options = appState.options[cfg.id] || [];
                 const selected = appState.filters[cfg.id] || [];
                 const isOpen = appState.activeDropdown === cfg.id;
+                
+                // [NEW] Get current search query if this dropdown is open and searchable
+                const searchQuery = (isOpen && cfg.searchable) ? appState.dropdownSearchQuery : '';
                 
                 const html = `
                 <div class="relative space-y-1 dropdown-container">
@@ -576,7 +620,10 @@
                         
                         ${cfg.searchable ? `
                         <div class="p-2 sticky top-0 bg-white border-b border-slate-100 z-10">
-                            <input type="text" placeholder="검색..." 
+                            <input type="text" 
+                                id="search-${cfg.id}" 
+                                placeholder="검색..." 
+                                value="${searchQuery}"
                                 class="w-full px-2 py-1.5 text-sm bg-slate-50 border border-slate-200 rounded focus:outline-none focus:border-indigo-500 transition-colors"
                                 onclick="event.stopPropagation()"
                                 oninput="filterDropdownOptions(this)"
@@ -594,8 +641,12 @@
                         <div class="options-list">
                             ${options.map(opt => {
                                 const isSelected = selected.includes(opt);
+                                // [NEW] Apply search filtering during render
+                                const matchesSearch = !searchQuery || opt.toLowerCase().includes(searchQuery.toLowerCase());
+                                const displayClass = matchesSearch ? 'flex' : 'hidden-force';
+                                
                                 return `
-                                    <div class="dropdown-option flex items-center px-3 py-2 hover:bg-slate-50 cursor-pointer"
+                                    <div class="dropdown-option ${displayClass} items-center px-3 py-2 hover:bg-slate-50 cursor-pointer"
                                         onclick="toggleFilterOption('${cfg.id}', '${opt}')">
                                         <div class="w-4 h-4 rounded border flex items-center justify-center mr-2 ${isSelected ? 'bg-indigo-600 border-indigo-600' : 'border-slate-300'}">
                                             ${isSelected ? '<i data-lucide="check" class="w-3 h-3 text-white"></i>' : ''}
@@ -611,9 +662,11 @@
             });
         }
 
-        // Dropdown internal search function (DOM based)
+        // Dropdown internal search function (Update State + DOM)
         function filterDropdownOptions(input) {
             const query = input.value.toLowerCase();
+            appState.dropdownSearchQuery = input.value; // [NEW] Save raw value
+
             const menu = input.closest('.dropdown-menu');
             const options = menu.querySelectorAll('.dropdown-option');
             
@@ -630,20 +683,30 @@
         }
 
         function toggleDropdown(id) {
-            appState.activeDropdown = appState.activeDropdown === id ? null : id;
+            if (appState.activeDropdown === id) {
+                appState.activeDropdown = null;
+                appState.dropdownSearchQuery = ''; // [NEW] Clear search on close
+            } else {
+                appState.activeDropdown = id;
+                appState.dropdownSearchQuery = ''; // [NEW] Clear search on new open
+            }
             updateUI();
         }
 
         function closeAllDropdowns() {
             if (appState.activeDropdown) {
                 appState.activeDropdown = null;
+                appState.dropdownSearchQuery = ''; // [NEW] Clear search
                 updateUI();
             }
         }
 
         function updateFilter(key, newVal, close = false) {
             appState.filters[key] = newVal;
-            if (close) appState.activeDropdown = null;
+            if (close) {
+                 appState.activeDropdown = null;
+                 appState.dropdownSearchQuery = '';
+            }
             updateUI();
         }
 
