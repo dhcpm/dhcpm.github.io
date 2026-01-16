@@ -52,7 +52,6 @@
                     <i data-lucide="calculator" class="w-8 h-8 text-indigo-600"></i>
                     전국 대학 취업현황 분석
                 </h1>
-                <!-- 요청사항 반영: 설명 텍스트 삭제됨 -->
             </div>
             
             <div class="flex flex-col items-end gap-2">
@@ -151,11 +150,11 @@
                      <i data-lucide="bar-chart" class="text-indigo-600 w-5 h-5"></i>
                      취업률 현황 그래프
                      </h2>
-                     <span class="text-xs text-slate-400">범위: 0% ~ 100% (가로로 스크롤하여 전체 보기)</span>
+                     <span class="text-xs text-slate-400">학교명(가나다) - 연도순 정렬 | 범위: 0% ~ 100%</span>
                  </div>
                  
                  <div class="overflow-x-auto pb-4">
-                     <div id="chartContainer" class="h-64 flex items-end gap-3 min-w-max px-2 border-b border-slate-200">
+                     <div id="chartContainer" class="h-auto min-h-[18rem] flex items-end gap-3 min-w-max px-2 border-b border-slate-200 pb-2">
                         <!-- Bars injected via JS -->
                      </div>
                  </div>
@@ -524,46 +523,106 @@
             const denominator = totalGraduates - totalExceptions;
             const avgRate = denominator > 0 ? (totalEmployed / denominator) * 100 : 0;
 
-            // [NEW] 연도별 대상 학교 수 카운팅
-            const countsByYear = data.reduce((acc, cur) => {
-                acc[cur.year] = (acc[cur.year] || 0) + 1;
-                return acc;
-            }, {});
-            
-            // 포맷팅: "2024(10) 2023(5)" (내림차순 정렬)
-            const yearCountsText = Object.keys(countsByYear)
-                .sort().reverse()
-                .map(year => `<span class="whitespace-nowrap">${year}년(<strong class="text-slate-900">${countsByYear[year]}</strong>)</span>`)
-                .join(' ');
+            // --- [Start] Year-based Breakdown Logic ---
+            // Group data by year
+            const statsByYear = {};
+            // Get unique years from filtered data, sorted descending
+            const uniqueYears = [...new Set(data.map(d => d.year))].sort().reverse();
 
+            uniqueYears.forEach(year => {
+                statsByYear[year] = { graduates: 0, employed: 0, exceptions: 0, count: 0 };
+            });
+
+            data.forEach(d => {
+                if (statsByYear[d.year]) {
+                    statsByYear[d.year].graduates += d.graduates;
+                    statsByYear[d.year].employed += d.employed;
+                    statsByYear[d.year].exceptions += d.exceptions;
+                    statsByYear[d.year].count += 1;
+                }
+            });
+
+            // Helper to generate year breakdown HTML string
+            const generateYearHtml = (type) => {
+                return uniqueYears.map(year => {
+                    const s = statsByYear[year];
+                    let val = 0;
+                    let displayVal = '';
+                    
+                    if (type === 'rate') {
+                        const denom = s.graduates - s.exceptions;
+                        val = denom > 0 ? (s.employed / denom) * 100 : 0;
+                        displayVal = `${val.toFixed(1)}%`;
+                    } else if (type === 'graduates') {
+                        val = s.graduates;
+                        displayVal = formatNumber(val);
+                    } else if (type === 'employed') {
+                        val = s.employed;
+                        displayVal = formatNumber(val);
+                    } else if (type === 'exceptions') {
+                        val = s.exceptions;
+                        displayVal = formatNumber(val);
+                    } else if (type === 'count') {
+                        val = s.count;
+                        displayVal = formatNumber(val);
+                    }
+                    
+                    return `<span class="whitespace-nowrap text-xs bg-slate-100 px-1.5 py-0.5 rounded text-slate-600">${year}년(<strong>${displayVal}</strong>)</span>`;
+                }).join(' ');
+            };
+            // --- [End] Year-based Breakdown Logic ---
 
             const statsContainer = document.getElementById('statsContainer');
             statsContainer.innerHTML = `
-                <div class="bg-indigo-600 text-white p-5 rounded-xl shadow-md col-span-2 md:col-span-1">
-                    <p class="text-indigo-200 text-sm font-medium mb-1">평균 취업률</p>
-                    <div class="flex items-baseline gap-2">
-                        <p class="text-3xl font-bold">${avgRate.toFixed(1)}%</p>
+                <div class="bg-indigo-600 text-white p-5 rounded-xl shadow-md col-span-2 md:col-span-1 flex flex-col justify-between">
+                    <div>
+                        <p class="text-indigo-200 text-sm font-medium mb-1">평균 취업률</p>
+                        <div class="flex items-baseline gap-2">
+                            <p class="text-3xl font-bold">${avgRate.toFixed(1)}%</p>
+                        </div>
                     </div>
-                    <div class="text-xs mt-2 text-indigo-200 opacity-80 flex items-center gap-1">
-                        <i data-lucide="info" class="w-3 h-3"></i> 조회된 ${formatNumber(data.length)}개교 평균
+                    <div class="mt-3 text-indigo-100 flex flex-wrap gap-1 opacity-90">
+                        ${generateYearHtml('rate').replace(/bg-slate-100/g, 'bg-indigo-700').replace(/text-slate-600/g, 'text-white')}
                     </div>
                 </div>
-                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-                    <p class="text-slate-500 text-sm font-medium mb-1">총 졸업자</p>
-                    <p class="text-2xl font-bold text-slate-800">${formatNumber(totalGraduates)}명</p>
+                
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                    <div>
+                        <p class="text-slate-500 text-sm font-medium mb-1">총 졸업자</p>
+                        <p class="text-2xl font-bold text-slate-800">${formatNumber(totalGraduates)}명</p>
+                    </div>
+                    <div class="mt-3 flex flex-wrap gap-1">
+                        ${generateYearHtml('graduates')}
+                    </div>
                 </div>
-                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-                    <p class="text-slate-500 text-sm font-medium mb-1">총 취업자</p>
-                    <p class="text-2xl font-bold text-blue-600">${formatNumber(totalEmployed)}명</p>
+                
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                    <div>
+                        <p class="text-slate-500 text-sm font-medium mb-1">총 취업자</p>
+                        <p class="text-2xl font-bold text-blue-600">${formatNumber(totalEmployed)}명</p>
+                    </div>
+                    <div class="mt-3 flex flex-wrap gap-1">
+                        ${generateYearHtml('employed')}
+                    </div>
                 </div>
-                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-                    <p class="text-slate-500 text-sm font-medium mb-1">총 예외자</p>
-                    <p class="text-2xl font-bold text-amber-600">${formatNumber(totalExceptions)}명</p>
+                
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                    <div>
+                        <p class="text-slate-500 text-sm font-medium mb-1">총 예외자</p>
+                        <p class="text-2xl font-bold text-amber-600">${formatNumber(totalExceptions)}명</p>
+                    </div>
+                    <div class="mt-3 flex flex-wrap gap-1">
+                        ${generateYearHtml('exceptions')}
+                    </div>
                 </div>
-                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-                    <p class="text-slate-500 text-sm font-medium mb-1">대상 학교 수 (연도별)</p>
-                    <div class="text-sm text-slate-600 flex flex-wrap gap-x-3 gap-y-1 items-center mt-1">
-                        ${yearCountsText || '<span class="text-slate-400">데이터 없음</span>'}
+                
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                    <div>
+                        <p class="text-slate-500 text-sm font-medium mb-1">대상 학교 수</p>
+                        <p class="text-2xl font-bold text-slate-800">${formatNumber(data.length)}개교</p>
+                    </div>
+                    <div class="mt-3 flex flex-wrap gap-1">
+                        ${generateYearHtml('count')}
                     </div>
                 </div>
             `;
@@ -738,8 +797,13 @@
             }
             section.classList.remove('hidden');
 
-            const html = appState.filteredData.map(item => `
-                <div class="flex flex-col items-center group w-14">
+            // [차트 정렬] 1. 학교명 오름차순, 2. 연도 오름차순
+            const chartData = [...appState.filteredData].sort((a, b) => {
+                return a.schoolName.localeCompare(b.schoolName) || a.year.localeCompare(b.year);
+            });
+
+            const html = chartData.map(item => `
+                <div class="flex flex-col items-center group w-20">
                     <!-- Tooltip -->
                     <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute mb-2 bg-slate-800 text-white text-xs rounded py-1 px-2 -translate-y-[120px] pointer-events-none z-10 whitespace-nowrap shadow-lg">
                         <p class="font-bold">${item.schoolName} (${item.year})</p>
@@ -756,7 +820,9 @@
                     <!-- Label -->
                     <div class="mt-2 text-center w-full">
                         <p class="text-[10px] font-bold text-slate-600 truncate">${item.rate}%</p>
-                        <p class="text-[10px] text-slate-500 truncate mt-0.5" title="${item.schoolName}">${item.schoolName}</p>
+                        <p class="text-[10px] text-slate-500 whitespace-normal break-words leading-tight mt-0.5 px-1 min-h-[2.5em] flex items-start justify-center" title="${item.schoolName}">
+                            ${item.schoolName}
+                        </p>
                         <p class="text-[9px] text-slate-400">${item.year}</p>
                     </div>
                 </div>
