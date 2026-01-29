@@ -81,10 +81,19 @@
                         목표: 2월 6일 시험 (D-7) / 700점 커트라인 돌파
                     </p>
                 </div>
-                <!-- 음성 안내 상태 표시 (JS로 제어) -->
-                <div id="voice-indicator" class="hidden items-center gap-2 text-orange-600 font-bold bg-orange-50 px-3 py-1 rounded-full text-sm animate-pulse">
-                    <i data-lucide="volume-2" class="w-4 h-4"></i>
-                    <span>읽어주는 중...</span>
+                
+                <div class="flex items-center gap-3">
+                    <!-- 음성 안내 ON/OFF 토글 -->
+                    <button id="tts-toggle" onclick="toggleTts()" class="flex items-center gap-2 px-4 py-2 rounded-full border transition-all shadow-sm bg-slate-100 text-slate-500 border-slate-300">
+                        <i data-lucide="volume-x" id="tts-icon" class="w-5 h-5"></i>
+                        <span id="tts-text" class="font-bold text-sm">음성 끄기</span>
+                    </button>
+
+                    <!-- 음성 재생 중 표시 (JS로 제어) -->
+                    <div id="voice-indicator" class="hidden items-center gap-2 text-orange-600 font-bold bg-orange-50 px-3 py-1 rounded-full text-sm animate-pulse">
+                        <i data-lucide="volume-2" class="w-4 h-4"></i>
+                        <span class="hidden md:inline">읽는 중...</span>
+                    </div>
                 </div>
             </div>
         </header>
@@ -210,19 +219,49 @@
 
         // --- 상태 관리 ---
         let currentTab = 'strategy'; 
+        let isTtsEnabled = false; // 기본값 OFF
         
         // --- 터치 디바이스 감지 (스마트폰/태블릿) ---
         // 사용자의 환경에 따라 안내 문구를 자동으로 변경합니다.
         const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
         
-        // 상황별 안내 텍스트 설정
-        const actionText = isTouchDevice ? "터치하면 읽어줍니다" : "마우스 올리면 읽어줍니다";
+        // 상황별 안내 텍스트 설정 (음성 안내가 켜져 있을 때만 보여줄 텍스트)
         const headerActionText = isTouchDevice ? "터치하면" : "마우스를 올리면";
+
+        // --- TTS 기능 토글 ---
+        function toggleTts() {
+            isTtsEnabled = !isTtsEnabled;
+            const btn = document.getElementById('tts-toggle');
+            const icon = document.getElementById('tts-icon');
+            const text = document.getElementById('tts-text');
+
+            if (isTtsEnabled) {
+                // ON 상태 스타일
+                btn.className = "flex items-center gap-2 px-4 py-2 rounded-full border transition-all shadow-sm bg-orange-600 text-white border-orange-600 hover:bg-orange-700";
+                icon.setAttribute('data-lucide', 'volume-2');
+                text.innerText = "음성 켜짐";
+            } else {
+                // OFF 상태 스타일
+                btn.className = "flex items-center gap-2 px-4 py-2 rounded-full border transition-all shadow-sm bg-slate-100 text-slate-500 border-slate-300 hover:bg-slate-200";
+                icon.setAttribute('data-lucide', 'volume-x');
+                text.innerText = "음성 끄기";
+                
+                // 끄는 순간 읽고 있던 소리 중단
+                stopSpeaking();
+            }
+            lucide.createIcons();
+            
+            // 현재 탭이 'cheat'라면 내용을 다시 그려서 안내 문구 업데이트
+            if (currentTab === 'cheat') {
+                renderContent();
+                lucide.createIcons();
+            }
+        }
 
         // --- TTS (음성 안내) 기능 ---
         function speakCard(catIdx, itemIdx) {
-            // 브라우저가 TTS를 지원하는지 확인
-            if (!window.speechSynthesis) return;
+            // 기능이 꺼져있거나 브라우저 미지원시 실행 안함
+            if (!isTtsEnabled || !window.speechSynthesis) return;
 
             const item = cheatSheetData[catIdx].items[itemIdx];
             
@@ -231,8 +270,8 @@
 
             // 1. 용어 (영어 발음)
             const termUtterance = new SpeechSynthesisUtterance(item.k);
-            termUtterance.lang = 'en-US'; // 용어는 영어로 (예: EC2 -> 이씨투)
-            termUtterance.rate = 0.9; // 약간 또박또박
+            termUtterance.lang = 'en-US'; // 용어는 영어로
+            termUtterance.rate = 0.9; 
 
             // 2. 설명 (한국어 발음)
             const descUtterance = new SpeechSynthesisUtterance(item.v);
@@ -291,7 +330,7 @@
             const container = document.getElementById('content-area');
             let html = '';
 
-            // 음성 안내 중단 (탭 전환 시)
+            // 탭 전환 시 읽기 중단
             stopSpeaking();
 
             if (currentTab === 'strategy') {
@@ -361,6 +400,11 @@
                     </div>
                 `;
             } else if (currentTab === 'cheat') {
+                // 음성 모드에 따라 안내 문구 변경
+                const actionText = isTtsEnabled 
+                    ? (isTouchDevice ? "터치하면 읽어줍니다" : "마우스 올리면 읽어줍니다")
+                    : (isTouchDevice ? "터치하면 정답확인" : "마우스 올리면 정답확인");
+
                 const listHtml = cheatSheetData.map((cat, catIdx) => `
                     <div class="border border-slate-200 rounded-xl overflow-hidden mb-8 shadow-sm">
                         <div class="bg-slate-100 p-3 font-bold text-slate-700 border-b border-slate-200">
@@ -375,8 +419,9 @@
                                     <!-- Front: Term -->
                                     <div class="card-front">
                                         <span class="text-xl md:text-2xl font-bold text-orange-600 mb-1 leading-tight px-2 text-center break-words w-full">${item.k}</span>
-                                        <span class="text-sm text-slate-400 font-medium mt-1">
-                                            <i data-lucide="volume-2" class="inline w-3 h-3 mr-1"></i>${actionText}
+                                        <span class="text-sm text-slate-400 font-medium mt-1 flex items-center gap-1">
+                                            ${isTtsEnabled ? '<i data-lucide="volume-2" class="w-3 h-3"></i>' : ''}
+                                            ${actionText}
                                         </span>
                                     </div>
                                     
@@ -392,14 +437,18 @@
                     </div>
                 `).join('');
 
+                const guideText = isTtsEnabled 
+                    ? `<strong>단어 카드를 ${headerActionText}</strong> 용어와 상세 설명을 소리 내어 읽어줍니다.`
+                    : `<strong>단어 카드를 ${headerActionText}</strong> 상세 설명이 나타납니다. (음성은 상단 버튼으로 켜세요)`;
+
                 html = `
                     <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
                         <h2 class="text-xl md:text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2 border-b pb-4">
-                            <i data-lucide="book-open" class="text-orange-500"></i> 필수 용어 암기 (음성 지원)
+                            <i data-lucide="book-open" class="text-orange-500"></i> 필수 용어 암기 ${isTtsEnabled ? '(음성 켜짐)' : '(음성 꺼짐)'}
                         </h2>
                         <p class="text-base md:text-lg text-slate-600 mb-6 break-keep">
                             카테고리별로 꼭 외워야 할 서비스들을 총정리했습니다.<br>
-                            <strong>단어 카드를 ${headerActionText}</strong> 용어와 상세 설명을 소리 내어 읽어줍니다.
+                            ${guideText}
                         </p>
                         ${listHtml}
                     </div>
