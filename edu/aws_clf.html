@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS CLF-C02 합격 플랜</title>
+    <!-- Tailwind CSS (스타일링) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons (아이콘) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; }
+        
+        /* 오버레이 효과 스타일 */
+        .card-container {
+            position: relative;
+            overflow: hidden; /* 자식이 넘치지 않도록 */
+        }
+        
+        /* 기본 상태 (앞면 - 용어) */
+        .card-front {
+            transition: opacity 0.3s ease;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 호버 상태 (뒷면 - 설명) */
+        .card-back {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #0f172a; /* Slate-900 */
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 1rem;
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+            pointer-events: none; /* 호버 감지를 부모가 하도록 */
+            z-index: 10;
+        }
+
+        /* 마우스를 올렸을 때 */
+        .card-container:hover .card-back {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        /* 탭 전환 애니메이션 */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-900 p-4 selection:bg-orange-200">
+
+    <!-- 메인 컨테이너 -->
+    <div id="app" class="max-w-4xl mx-auto">
+        <!-- 헤더 영역 -->
+        <header class="bg-white rounded-2xl shadow-lg p-6 mb-6 border-l-8 border-orange-500">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div>
+                    <h1 class="font-bold text-slate-800 mb-2 text-3xl">
+                        수강생을 위한 AWS CLF-C02 합격 플랜
+                    </h1>
+                    <p class="text-slate-600 font-medium text-lg">
+                        목표: 2월 6일 시험 (D-7) / 700점 커트라인 돌파
+                    </p>
+                </div>
+            </div>
+        </header>
+
+        <!-- 네비게이션 탭 -->
+        <nav class="mb-6 flex flex-wrap gap-2">
+            <button onclick="setTab('strategy')" id="btn-strategy" class="flex-1 min-w-[120px] flex items-center justify-center gap-2 p-4 rounded-xl font-bold transition-all shadow-sm">
+                <i data-lucide="award"></i> <span>1. 합격 전략</span>
+            </button>
+            <button onclick="setTab('schedule')" id="btn-schedule" class="flex-1 min-w-[120px] flex items-center justify-center gap-2 p-4 rounded-xl font-bold transition-all shadow-sm">
+                <i data-lucide="calendar"></i> <span>2. 7일 스케줄</span>
+            </button>
+            <button onclick="setTab('cheat')" id="btn-cheat" class="flex-1 min-w-[120px] flex items-center justify-center gap-2 p-4 rounded-xl font-bold transition-all shadow-sm">
+                <i data-lucide="book-open"></i> <span>3. 용어 암기</span>
+            </button>
+        </nav>
+
+        <!-- 메인 콘텐츠 영역 (JS로 내용 교체) -->
+        <main id="content-area" class="fade-in">
+            <!-- 내용은 renderContent() 함수에 의해 채워집니다 -->
+        </main>
+
+        <!-- 풋터 -->
+        <footer class="mt-8 text-center pb-8 text-slate-400 text-sm">
+           
+        </footer>
+    </div>
+
+    <!-- JavaScript 로직 -->
+    <script>
+        // --- 데이터 ---
+        const scheduleData = [
+            { day: 'D-7 (목)', title: '핵심 기술 1', desc: 'EC2(가상서버), S3(저장소), Lambda(서버리스) 키워드 암기' },
+            { day: 'D-6 (금)', title: '핵심 기술 2 + 네트워크', desc: 'VPC(가상네트워크), ELB(부하분산) 용어 익숙해지기' },
+            { day: 'D-5 (토)', title: '보안 (최중요)', desc: 'IAM(권한), WAF(방화벽), 공동책임모델(표 암기)' },
+            { day: 'D-4 (일)', title: '기출 풀이 (덤프)', desc: '실전 문제 1~2회분 풀기 + 해설 정독' },
+            { day: 'D-3 (월)', title: '빌링 & 오답', desc: '비용 관리 도구 구분 + 틀린 문제 다시 보기' },
+            { day: 'D-2 (화)', title: '비교 정리', desc: '비슷해서 헷갈리는 서비스(Inspector vs Trusted Advisor) 구분' },
+            { day: 'D-1 (수)', title: '최종 리허설', desc: '오답 노트와 키워드 매칭표만 반복해서 눈에 바르기' }
+        ];
+
+        // 대폭 보강된 암기 족보 데이터
+        const cheatSheetData = [
+            { 
+                cat: '1. 컴퓨팅 (Compute)', 
+                items: [
+                    { k: 'Lambda', v: '서버리스(Serverless). 코드만 실행. 15분 제한. 관리 불필요.' }, 
+                    { k: 'EC2', v: '가상 서버(IaaS). OS 직접 관리. 온디맨드/스팟/예약 인스턴스.' }, 
+                    { k: 'Elastic Beanstalk', v: 'PaaS. 코드 업로드 시 인프라 자동 배포/관리.' },
+                    { k: 'Auto Scaling', v: '수요에 따라 EC2 개수 자동 증감. 고가용성 확보.' },
+                    { k: 'Fargate', v: '서버리스 컨테이너. EC2 없이 컨테이너 실행.' },
+                    { k: 'Lightsail', v: '초보자용 가상 서버. 월 정액제. (VPS)' }
+                ] 
+            },
+            { 
+                cat: '2. 스토리지 (Storage)', 
+                items: [
+                    { k: 'S3', v: '객체 스토리지. 무제한 용량. 정적 웹 호스팅. URL 액세스.' }, 
+                    { k: 'S3 Glacier', v: '아카이브(장기 보관). 저렴함. 데이터 꺼낼 때 시간 소요.' },
+                    { k: 'EBS', v: '블록 스토리지. EC2용 하드디스크. 특정 AZ에 종속.' }, 
+                    { k: 'EFS', v: '파일 스토리지(NFS). 여러 리눅스 EC2가 동시 공유 가능.' },
+                    { k: 'Storage Gateway', v: '하이브리드. 온프레미스 데이터를 클라우드 S3와 연결.' },
+                    { k: 'Snowball', v: '물리적 장치로 대용량 데이터(PB급)를 이사(Migration).' }
+                ] 
+            },
+            { 
+                cat: '3. 네트워크 & 콘텐츠 (Network)', 
+                items: [
+                    { k: 'VPC', v: '가상 네트워크. AWS 내의 나만의 격리된 공간.' },
+                    { k: 'CloudFront', v: 'CDN 서비스. 전 세계 엣지 로케이션에서 콘텐츠 캐싱/전송.' },
+                    { k: 'Route 53', v: 'DNS 서비스. 도메인 이름 관리 및 라우팅.' },
+                    { k: 'Direct Connect', v: '전용선 연결. 인터넷을 통하지 않고 AWS와 직접 연결.' },
+                    { k: 'VPN', v: '인터넷을 통한 암호화된 연결.' },
+                    { k: 'ELB (Load Balancer)', v: '트래픽을 여러 EC2로 분산. 부하 분산.' }
+                ] 
+            },
+            { 
+                cat: '4. 보안 (Security) - 필수 암기', 
+                items: [
+                    { k: 'IAM', v: '사용자/권한 관리. "누가 무엇을 할 수 있는가". (글로벌)' },
+                    { k: 'Security Group', v: '인스턴스 방화벽. 상태 저장(Stateful).' },
+                    { k: 'NACL', v: '서브넷 방화벽. 상태 비저장(Stateless). 명시적 거부 가능.' }, 
+                    { k: 'WAF', v: '웹 해킹 방어. SQL 인젝션, XSS 차단.' },
+                    { k: 'Shield', v: 'DDoS(디도스) 공격 방어. Standard(무료)/Advanced(유료).' },
+                    { k: 'Inspector', v: '자동 보안 평가. EC2의 취약점 및 노출 검사.' },
+                    { k: 'Macie', v: 'S3의 민감한 데이터(개인정보)를 머신러닝으로 자동 식별/보호.' },
+                    { k: 'Artifact', v: '규정 준수(Compliance) 보고서/인증서 다운로드.' }
+                ] 
+            },
+            { 
+                cat: '5. DB & 분석 (Database)', 
+                items: [
+                    { k: 'RDS', v: '관계형 DB(SQL). 자동 백업/패치. (MySQL, Oracle 등)' }, 
+                    { k: 'DynamoDB', v: 'NoSQL(키-값). 서버리스. 초고속 성능. 스키마 없음.' },
+                    { k: 'Aurora', v: 'AWS 최적화 관계형 DB. 속도 5배 빠름. 고가용성.' }, 
+                    { k: 'ElastiCache', v: '인메모리 캐싱. DB 성능 향상. (Redis, Memcached)' },
+                    { k: 'Redshift', v: '데이터 웨어하우스(DW). 페타바이트급 데이터 분석.' }
+                ] 
+            },
+            { 
+                cat: '6. 관리 & 비용 (Management)', 
+                items: [
+                    { k: 'CloudWatch', v: '모니터링. 성능 지표(CPU), 알람, 로그.' }, 
+                    { k: 'CloudTrail', v: '감사(Audit). API 호출 기록. "누가 언제 무엇을 했나".' },
+                    { k: 'Trusted Advisor', v: '조언자. 비용/보안/성능 등 5가지 영역 검사 및 추천.' }, 
+                    { k: 'Budgets', v: '예산 설정. 비용 초과 시 알람 발송.' },
+                    { k: 'Cost Explorer', v: '비용 탐색기. 과거 비용 시각화 및 미래 예측.' },
+                    { k: 'Organizations', v: '여러 AWS 계정을 통합 관리. 통합 결제(할인).' }
+                ] 
+            },
+            { 
+                cat: '7. 심화 & 기타 (Advanced)', 
+                items: [
+                    { k: 'CloudFormation', v: 'IaC(코드형 인프라). 템플릿(JSON/YAML)으로 전체 인프라 자동 생성.' },
+                    { k: 'Marketplace', v: '타사 소프트웨어(AMI, SaaS)를 검색/구매/배포하는 쇼핑몰.' },
+                    { k: 'TAM', v: '기술 계정 관리자. "Enterprise Support" 플랜에서만 제공.' }, 
+                    { k: 'Rekognition', v: 'AI 이미지/동영상 분석. 얼굴 인식, 사물 감지.' },
+                    { k: 'Polly', v: 'AI 음성 변환. 텍스트를 말소리로 읽어줌 (Text-to-Speech).' },
+                    { k: 'DMS', v: '데이터베이스 마이그레이션. 중단 없이 DB 이전.' }
+                ] 
+            }
+        ];
+
+        // --- 상태 관리 ---
+        let currentTab = 'strategy'; 
+        
+        // --- 렌더링 함수들 ---
+        function updateStyles() {
+            // 탭 스타일 업데이트
+            ['strategy', 'schedule', 'cheat'].forEach(tab => {
+                const btn = document.getElementById(`btn-${tab}`);
+                const isActive = tab === currentTab;
+                btn.className = `flex-1 min-w-[120px] flex items-center justify-center gap-2 p-4 rounded-xl font-bold transition-all shadow-sm ${
+                    isActive ? 'bg-orange-600 text-white shadow-md transform scale-105' : 'bg-white text-slate-600 hover:bg-orange-50'
+                }`;
+                // 탭 내부 텍스트 크기 고정 (text-lg)
+                btn.querySelector('span').className = 'text-lg';
+            });
+
+            renderContent();
+            lucide.createIcons(); // 아이콘 리로드
+        }
+
+        function renderContent() {
+            const container = document.getElementById('content-area');
+            let html = '';
+
+            if (currentTab === 'strategy') {
+                html = `
+                    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                        <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2 border-b pb-4">
+                            <i data-lucide="award" class="text-orange-500"></i> 선택과 집중: 64% 공략법
+                        </h2>
+                        
+                        <div class="flex flex-col md:flex-row gap-8 items-center mb-8">
+                            <div class="relative w-64 h-64 flex-shrink-0">
+                                <svg viewBox="0 0 36 36" class="w-full h-full transform -rotate-90">
+                                    <path class="text-slate-100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="4" />
+                                    <path class="text-red-500" stroke-dasharray="30, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="8" />
+                                    <path class="text-blue-500" stroke-dasharray="34, 100" stroke-dashoffset="-30" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="8" />
+                                </svg>
+                                <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+                                    <span class="text-3xl font-bold text-slate-800">64%</span>
+                                    <span class="text-base text-slate-500">합격 안정권</span>
+                                </div>
+                            </div>
+                            
+                            <div class="flex-1 space-y-4">
+                                <div class="p-4 bg-red-50 rounded-xl border-l-4 border-red-500">
+                                    <h3 class="text-xl font-bold text-red-700">1순위: 보안 (Security) - 30%</h3>
+                                    <p class="text-lg text-slate-700 mt-1">
+                                        가장 비중이 높습니다. <strong>IAM(계정), WAF, 공동책임모델</strong>은 무조건 나옵니다.
+                                    </p>
+                                </div>
+                                <div class="p-4 bg-blue-50 rounded-xl border-l-4 border-blue-500">
+                                    <h3 class="text-xl font-bold text-blue-700">2순위: 기술 (Technology) - 34%</h3>
+                                    <p class="text-lg text-slate-700 mt-1">
+                                        <strong>EC2, S3, RDS, Lambda</strong> 4가지만 확실히 알아도 절반은 맞춥니다.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (currentTab === 'schedule') {
+                const listHtml = scheduleData.map(item => `
+                    <div class="flex flex-col md:flex-row gap-4 p-4 rounded-xl border border-slate-200 hover:border-orange-300 hover:bg-orange-50 transition-colors">
+                        <div class="md:w-32 flex-shrink-0 font-bold text-white bg-slate-700 rounded-lg flex items-center justify-center py-2 text-lg">
+                            ${item.day}
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-800">${item.title}</h3>
+                            <p class="text-lg text-slate-600 mt-1">${item.desc}</p>
+                        </div>
+                    </div>
+                `).join('');
+
+                html = `
+                    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                        <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2 border-b pb-4">
+                            <i data-lucide="calendar" class="text-orange-500"></i> 저녁 시간 활용 7일 플랜
+                        </h2>
+                        <div class="space-y-4">
+                            ${listHtml}
+                        </div>
+                         <div class="mt-6 p-4 bg-yellow-50 rounded-xl flex items-start gap-3">
+                            <i data-lucide="alert-circle" class="text-yellow-600 flex-shrink-0 mt-1"></i>
+                            <p class="text-lg text-yellow-800 font-medium">
+                                <strong>Tip:</strong> 시간이 정말 없다면, D-5(보안)와 D-4(기출 풀이) 이틀만이라도 꼭 챙기세요.
+                            </p>
+                        </div>
+                    </div>
+                `;
+            } else if (currentTab === 'cheat') {
+                const listHtml = cheatSheetData.map(cat => `
+                    <div class="border border-slate-200 rounded-xl overflow-hidden mb-8 shadow-sm">
+                        <div class="bg-slate-100 p-3 font-bold text-slate-700 border-b border-slate-200">
+                            <span class="text-xl">${cat.cat}</span>
+                        </div>
+                        <div class="p-4 grid grid-cols-2 md:grid-cols-3 gap-4 bg-white">
+                            ${cat.items.map(item => `
+                                <div class="card-container relative h-32 rounded-lg border-2 border-dashed border-slate-300 hover:border-orange-500 hover:bg-orange-50 transition-all cursor-help overflow-hidden">
+                                    <!-- Front: Term -->
+                                    <div class="card-front">
+                                        <span class="text-2xl font-bold text-orange-600 mb-1 leading-tight px-2 text-center break-words">${item.k}</span>
+                                        <span class="text-sm text-slate-400 font-medium mt-1">마우스를 올려보세요</span>
+                                    </div>
+                                    
+                                    <!-- Back (Overlay): Definition -->
+                                    <div class="card-back">
+                                        <div class="text-lg leading-snug px-2">
+                                            ${item.v}
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('');
+
+                html = `
+                    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                        <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2 border-b pb-4">
+                            <i data-lucide="book-open" class="text-orange-500"></i> 필수 용어 암기 (데이터 보강)
+                        </h2>
+                        <p class="text-lg text-slate-600 mb-6">
+                            카테고리별로 꼭 외워야 할 서비스들을 총정리했습니다.<br>
+                            <strong>단어 카드 위에 마우스를 올리면</strong> 해당 위치에 바로 설명이 나타납니다.
+                        </p>
+                        ${listHtml}
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+        }
+
+        // --- 이벤트 핸들러 ---
+        function setTab(tabName) {
+            currentTab = tabName;
+            updateStyles();
+        }
+
+        // 초기화
+        window.onload = function() {
+            updateStyles();
+            lucide.createIcons();
+        };
+    </script>
+</body>
+</html>
