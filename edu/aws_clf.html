@@ -28,7 +28,7 @@
             justify-content: center;
         }
 
-        /* 호버 상태 (뒷면 - 설명) */
+        /* 호버/터치 상태 (뒷면 - 설명) */
         .card-back {
             position: absolute;
             top: 0;
@@ -49,8 +49,9 @@
             z-index: 10;
         }
 
-        /* 마우스를 올렸을 때 */
-        .card-container:hover .card-back {
+        /* 마우스를 올리거나 터치했을 때 */
+        .card-container:hover .card-back,
+        .card-container:active .card-back {
             opacity: 1;
             pointer-events: auto;
         }
@@ -73,10 +74,10 @@
         <header class="bg-white rounded-2xl shadow-lg p-6 mb-6 border-l-8 border-orange-500">
             <div class="flex flex-col md:flex-row justify-between items-center gap-4">
                 <div>
-                    <h1 class="font-bold text-slate-800 mb-2 text-3xl">
+                    <h1 class="font-bold text-slate-800 mb-2 text-2xl md:text-3xl break-keep">
                         수강생을 위한 AWS CLF-C02 합격 플랜
                     </h1>
-                    <p class="text-slate-600 font-medium text-lg">
+                    <p class="text-slate-600 font-medium text-base md:text-lg break-keep">
                         목표: 2월 6일 시험 (D-7) / 700점 커트라인 돌파
                     </p>
                 </div>
@@ -85,14 +86,14 @@
 
         <!-- 네비게이션 탭 -->
         <nav class="mb-6 flex flex-wrap gap-2">
-            <button onclick="setTab('strategy')" id="btn-strategy" class="flex-1 min-w-[120px] flex items-center justify-center gap-2 p-4 rounded-xl font-bold transition-all shadow-sm">
-                <i data-lucide="award"></i> <span>1. 합격 전략</span>
+            <button onclick="setTab('strategy')" id="btn-strategy" class="flex-1 min-w-[100px] flex items-center justify-center gap-2 p-3 md:p-4 rounded-xl font-bold transition-all shadow-sm">
+                <i data-lucide="award"></i> <span class="text-sm md:text-lg">1. 합격 전략</span>
             </button>
-            <button onclick="setTab('schedule')" id="btn-schedule" class="flex-1 min-w-[120px] flex items-center justify-center gap-2 p-4 rounded-xl font-bold transition-all shadow-sm">
-                <i data-lucide="calendar"></i> <span>2. 7일 스케줄</span>
+            <button onclick="setTab('schedule')" id="btn-schedule" class="flex-1 min-w-[100px] flex items-center justify-center gap-2 p-3 md:p-4 rounded-xl font-bold transition-all shadow-sm">
+                <i data-lucide="calendar"></i> <span class="text-sm md:text-lg">2. 7일 스케줄</span>
             </button>
-            <button onclick="setTab('cheat')" id="btn-cheat" class="flex-1 min-w-[120px] flex items-center justify-center gap-2 p-4 rounded-xl font-bold transition-all shadow-sm">
-                <i data-lucide="book-open"></i> <span>3. 용어 암기</span>
+            <button onclick="setTab('cheat')" id="btn-cheat" class="flex-1 min-w-[100px] flex items-center justify-center gap-2 p-3 md:p-4 rounded-xl font-bold transition-all shadow-sm">
+                <i data-lucide="book-open"></i> <span class="text-sm md:text-lg">3. 용어 암기</span>
             </button>
         </nav>
 
@@ -205,17 +206,23 @@
         // --- 상태 관리 ---
         let currentTab = 'strategy'; 
         
+        // --- 터치 디바이스 감지 (스마트폰/태블릿) ---
+        // 사용자의 환경에 따라 안내 문구를 자동으로 변경합니다.
+        const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+        
+        // 상황별 안내 텍스트 설정
+        const actionText = isTouchDevice ? "터치해보세요" : "마우스를 올려보세요";
+        const headerActionText = isTouchDevice ? "터치하면" : "마우스를 올리면";
+
         // --- 렌더링 함수들 ---
         function updateStyles() {
             // 탭 스타일 업데이트
             ['strategy', 'schedule', 'cheat'].forEach(tab => {
                 const btn = document.getElementById(`btn-${tab}`);
                 const isActive = tab === currentTab;
-                btn.className = `flex-1 min-w-[120px] flex items-center justify-center gap-2 p-4 rounded-xl font-bold transition-all shadow-sm ${
+                btn.className = `flex-1 min-w-[100px] flex items-center justify-center gap-2 p-3 md:p-4 rounded-xl font-bold transition-all shadow-sm ${
                     isActive ? 'bg-orange-600 text-white shadow-md transform scale-105' : 'bg-white text-slate-600 hover:bg-orange-50'
                 }`;
-                // 탭 내부 텍스트 크기 고정 (text-lg)
-                btn.querySelector('span').className = 'text-lg';
             });
 
             renderContent();
@@ -229,33 +236,33 @@
             if (currentTab === 'strategy') {
                 html = `
                     <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-                        <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2 border-b pb-4">
+                        <h2 class="text-xl md:text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2 border-b pb-4">
                             <i data-lucide="award" class="text-orange-500"></i> 선택과 집중: 64% 공략법
                         </h2>
                         
                         <div class="flex flex-col md:flex-row gap-8 items-center mb-8">
-                            <div class="relative w-64 h-64 flex-shrink-0">
+                            <div class="relative w-48 h-48 md:w-64 md:h-64 flex-shrink-0">
                                 <svg viewBox="0 0 36 36" class="w-full h-full transform -rotate-90">
                                     <path class="text-slate-100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="4" />
                                     <path class="text-red-500" stroke-dasharray="30, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="8" />
                                     <path class="text-blue-500" stroke-dasharray="34, 100" stroke-dashoffset="-30" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="8" />
                                 </svg>
                                 <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
-                                    <span class="text-3xl font-bold text-slate-800">64%</span>
-                                    <span class="text-base text-slate-500">합격 안정권</span>
+                                    <span class="text-2xl md:text-3xl font-bold text-slate-800">64%</span>
+                                    <span class="text-sm md:text-base text-slate-500">합격 안정권</span>
                                 </div>
                             </div>
                             
-                            <div class="flex-1 space-y-4">
+                            <div class="flex-1 space-y-4 w-full">
                                 <div class="p-4 bg-red-50 rounded-xl border-l-4 border-red-500">
-                                    <h3 class="text-xl font-bold text-red-700">1순위: 보안 (Security) - 30%</h3>
-                                    <p class="text-lg text-slate-700 mt-1">
+                                    <h3 class="text-lg md:text-xl font-bold text-red-700">1순위: 보안 (Security) - 30%</h3>
+                                    <p class="text-base md:text-lg text-slate-700 mt-1 break-keep">
                                         가장 비중이 높습니다. <strong>IAM(계정), WAF, 공동책임모델</strong>은 무조건 나옵니다.
                                     </p>
                                 </div>
                                 <div class="p-4 bg-blue-50 rounded-xl border-l-4 border-blue-500">
-                                    <h3 class="text-xl font-bold text-blue-700">2순위: 기술 (Technology) - 34%</h3>
-                                    <p class="text-lg text-slate-700 mt-1">
+                                    <h3 class="text-lg md:text-xl font-bold text-blue-700">2순위: 기술 (Technology) - 34%</h3>
+                                    <p class="text-base md:text-lg text-slate-700 mt-1 break-keep">
                                         <strong>EC2, S3, RDS, Lambda</strong> 4가지만 확실히 알아도 절반은 맞춥니다.
                                     </p>
                                 </div>
@@ -265,20 +272,20 @@
                 `;
             } else if (currentTab === 'schedule') {
                 const listHtml = scheduleData.map(item => `
-                    <div class="flex flex-col md:flex-row gap-4 p-4 rounded-xl border border-slate-200 hover:border-orange-300 hover:bg-orange-50 transition-colors">
-                        <div class="md:w-32 flex-shrink-0 font-bold text-white bg-slate-700 rounded-lg flex items-center justify-center py-2 text-lg">
+                    <div class="flex flex-col md:flex-row gap-2 md:gap-4 p-4 rounded-xl border border-slate-200 hover:border-orange-300 hover:bg-orange-50 transition-colors">
+                        <div class="w-full md:w-32 flex-shrink-0 font-bold text-white bg-slate-700 rounded-lg flex items-center justify-center py-2 text-base md:text-lg mb-2 md:mb-0">
                             ${item.day}
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold text-slate-800">${item.title}</h3>
-                            <p class="text-lg text-slate-600 mt-1">${item.desc}</p>
+                            <h3 class="text-lg md:text-xl font-bold text-slate-800">${item.title}</h3>
+                            <p class="text-base md:text-lg text-slate-600 mt-1 break-keep">${item.desc}</p>
                         </div>
                     </div>
                 `).join('');
 
                 html = `
                     <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-                        <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2 border-b pb-4">
+                        <h2 class="text-xl md:text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2 border-b pb-4">
                             <i data-lucide="calendar" class="text-orange-500"></i> 저녁 시간 활용 7일 플랜
                         </h2>
                         <div class="space-y-4">
@@ -286,7 +293,7 @@
                         </div>
                          <div class="mt-6 p-4 bg-yellow-50 rounded-xl flex items-start gap-3">
                             <i data-lucide="alert-circle" class="text-yellow-600 flex-shrink-0 mt-1"></i>
-                            <p class="text-lg text-yellow-800 font-medium">
+                            <p class="text-base md:text-lg text-yellow-800 font-medium break-keep">
                                 <strong>Tip:</strong> 시간이 정말 없다면, D-5(보안)와 D-4(기출 풀이) 이틀만이라도 꼭 챙기세요.
                             </p>
                         </div>
@@ -296,20 +303,21 @@
                 const listHtml = cheatSheetData.map(cat => `
                     <div class="border border-slate-200 rounded-xl overflow-hidden mb-8 shadow-sm">
                         <div class="bg-slate-100 p-3 font-bold text-slate-700 border-b border-slate-200">
-                            <span class="text-xl">${cat.cat}</span>
+                            <span class="text-lg md:text-xl">${cat.cat}</span>
                         </div>
-                        <div class="p-4 grid grid-cols-2 md:grid-cols-3 gap-4 bg-white">
+                        <!-- 모바일에서는 1열(grid-cols-1), PC에서는 2열 이상으로 배치 -->
+                        <div class="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 bg-white">
                             ${cat.items.map(item => `
-                                <div class="card-container relative h-32 rounded-lg border-2 border-dashed border-slate-300 hover:border-orange-500 hover:bg-orange-50 transition-all cursor-help overflow-hidden">
+                                <div class="card-container relative h-40 rounded-lg border-2 border-dashed border-slate-300 hover:border-orange-500 hover:bg-orange-50 transition-all cursor-help overflow-hidden">
                                     <!-- Front: Term -->
                                     <div class="card-front">
-                                        <span class="text-2xl font-bold text-orange-600 mb-1 leading-tight px-2 text-center break-words">${item.k}</span>
-                                        <span class="text-sm text-slate-400 font-medium mt-1">마우스를 올려보세요</span>
+                                        <span class="text-xl md:text-2xl font-bold text-orange-600 mb-1 leading-tight px-2 text-center break-words w-full">${item.k}</span>
+                                        <span class="text-sm text-slate-400 font-medium mt-1">${actionText}</span>
                                     </div>
                                     
                                     <!-- Back (Overlay): Definition -->
                                     <div class="card-back">
-                                        <div class="text-lg leading-snug px-2">
+                                        <div class="text-base md:text-lg leading-snug px-2 break-keep">
                                             ${item.v}
                                         </div>
                                     </div>
@@ -321,12 +329,12 @@
 
                 html = `
                     <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-                        <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2 border-b pb-4">
+                        <h2 class="text-xl md:text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2 border-b pb-4">
                             <i data-lucide="book-open" class="text-orange-500"></i> 필수 용어 암기 (데이터 보강)
                         </h2>
-                        <p class="text-lg text-slate-600 mb-6">
+                        <p class="text-base md:text-lg text-slate-600 mb-6 break-keep">
                             카테고리별로 꼭 외워야 할 서비스들을 총정리했습니다.<br>
-                            <strong>단어 카드 위에 마우스를 올리면</strong> 해당 위치에 바로 설명이 나타납니다.
+                            <strong>단어 카드를 ${headerActionText}</strong> 해당 위치에 바로 설명이 나타납니다.
                         </p>
                         ${listHtml}
                     </div>
