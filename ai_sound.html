@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Voice Studio</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Custom scrollbar for textarea */
+        textarea::-webkit-scrollbar {
+            width: 8px;
+        }
+        textarea::-webkit-scrollbar-track {
+            background: #1e293b; 
+        }
+        textarea::-webkit-scrollbar-thumb {
+            background: #475569; 
+            border-radius: 4px;
+        }
+        textarea::-webkit-scrollbar-thumb:hover {
+            background: #64748b; 
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-slate-900 text-slate-100 font-sans selection:bg-indigo-500 selection:text-white">
+
+    <!-- Header -->
+    <header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur-md sticky top-0 z-10">
+        <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="bg-indigo-600 p-2 rounded-lg">
+                    <i data-lucide="sparkles" class="w-5 h-5 text-white"></i>
+                </div>
+                <h1 class="text-xl font-bold bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
+                    AI Voice Studio
+                </h1>
+            </div>
+            <div class="text-xs font-medium px-3 py-1 rounded-full bg-slate-800 text-slate-400 border border-slate-700">
+                HTML5 Version
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-6 py-10 space-y-8">
+        
+        <!-- Intro Section -->
+        <div class="text-center space-y-3">
+            <h2 class="text-3xl md:text-4xl font-bold">텍스트를 생생한 목소리로.</h2>
+            <p class="text-slate-400 max-w-2xl mx-auto">
+                원하는 텍스트를 입력하면 AI가 자연스러운 음성으로 읽어줍니다. <br class="hidden md:block"/>
+                긴 문서나 소설도 문제없습니다. 10분 이상의 긴 오디오도 생성하고 다운로드하세요.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Left Column: Input -->
+            <div class="lg:col-span-2 space-y-6">
+                <div class="bg-slate-800/50 rounded-2xl p-1 border border-slate-700 shadow-xl focus-within:ring-2 focus-within:ring-indigo-500/50 transition-all">
+                    <div class="px-4 py-3 border-b border-slate-700/50 flex justify-between items-center bg-slate-800 rounded-t-xl">
+                        <span class="text-sm font-medium text-slate-300 flex items-center gap-2">
+                            <i data-lucide="file-audio" class="w-4 h-4 text-indigo-400"></i>
+                            스크립트 입력
+                        </span>
+                        <span id="charCount" class="text-xs text-slate-500">
+                            0 자
+                        </span>
+                    </div>
+                    <textarea id="textInput"
+                        placeholder="여기에 텍스트를 입력하세요. 긴 글도 자동으로 처리됩니다..."
+                        class="w-full h-80 bg-transparent text-slate-200 p-4 resize-none focus:outline-none leading-relaxed text-lg placeholder:text-slate-600 font-light"
+                        spellcheck="false">안녕하세요. AI 음성 생성 스튜디오에 오신 것을 환영합니다. 이 텍스트를 원하는 내용으로 바꾸고, 아래 버튼을 눌러보세요. 긴 글도 문제없이 변환됩니다.</textarea>
+                </div>
+
+                <!-- Error Message Container -->
+                <div id="errorContainer" class="hidden bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-xl text-sm flex items-center gap-3">
+                    <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
+                    <span id="errorMessage"></span>
+                </div>
+            </div>
+
+            <!-- Right Column: Settings & Output -->
+            <div class="space-y-6">
+                
+                <!-- Control Panel -->
+                <div class="bg-slate-800 rounded-2xl p-6 border border-slate-700 shadow-lg space-y-6">
+                    
+                    <div class="space-y-3">
+                        <label class="text-sm font-medium text-slate-400 block">AI 보이스 선택</label>
+                        <div class="grid grid-cols-1 gap-2" id="voiceList">
+                            <!-- Voices will be injected here by JS -->
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-700/50">
+                        <button id="generateBtn" onclick="generateAudio()"
+                            class="w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-3 transition-all bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white shadow-lg shadow-indigo-500/25 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <i data-lucide="sparkles" class="w-5 h-5 btn-icon"></i>
+                            <i data-lucide="loader-2" class="w-5 h-5 animate-spin hidden loading-icon"></i>
+                            <span id="btnText">음성 생성하기</span>
+                        </button>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div id="progressContainer" class="hidden space-y-2">
+                        <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+                            <div id="progressBar" class="h-full bg-indigo-500 transition-all duration-300 ease-out" style="width: 0%"></div>
+                        </div>
+                        <div class="flex justify-between text-xs text-slate-400">
+                            <span>진행률</span>
+                            <span id="progressText">0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Audio Player Card -->
+                <div id="audioPlayerCard" class="hidden bg-slate-800 rounded-2xl p-6 border border-slate-700 shadow-lg fade-in">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-12 h-12 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400">
+                            <i data-lucide="volume-2" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white">생성 완료</h3>
+                            <p id="resultVoiceName" class="text-sm text-slate-400">AI Voice</p>
+                        </div>
+                    </div>
+
+                    <audio id="audioElement" class="hidden"></audio>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <button id="playBtn" onclick="togglePlayback()"
+                            class="flex items-center justify-center gap-2 py-3 bg-slate-700 hover:bg-slate-600 rounded-xl text-white font-medium transition-colors">
+                            <i id="playIcon" data-lucide="play" class="w-5 h-5"></i>
+                            <span id="playText">듣기</span>
+                        </button>
+                        
+                        <a id="downloadLink" href="#" download="ai-voice.wav"
+                            class="flex items-center justify-center gap-2 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-white font-medium transition-colors shadow-lg shadow-indigo-900/20">
+                            <i data-lucide="download" class="w-5 h-5"></i>
+                            다운로드
+                        </a>
+                    </div>
+                    
+                    <button onclick="resetUI()"
+                        class="w-full mt-4 text-xs text-slate-500 hover:text-slate-300 flex items-center justify-center gap-1">
+                        <i data-lucide="rotate-ccw" class="w-3 h-3"></i> 새로 만들기
+                    </button>
+                </div>
+                
+                <div class="bg-slate-800/30 rounded-xl p-4 border border-slate-700/50">
+                    <h4 class="text-sm font-semibold text-slate-400 mb-2">💡 사용 팁</h4>
+                    <ul class="text-xs text-slate-500 space-y-1 list-disc list-inside">
+                        <li>긴 문장도 자동으로 나누어 처리하므로 끊김이 없습니다.</li>
+                        <li>10분 분량은 약 2,000~3,000자 정도입니다.</li>
+                        <li>다운로드된 파일은 WAV 형식이므로 모든 플레이어에서 호환됩니다.</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // --- Constants & Variables ---
+        const API_KEY = "AIzaSyB7WmcKytVOJaqhtudVecQO2bS8YDKxzYQ"; // Environment will inject key here
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${API_KEY}`;
+        
+        const VOICES = [
+            { id: 'Kore', name: 'Kore (여성/차분함)' },
+            { id: 'Fenrir', name: 'Fenrir (남성/저음)' },
+            { id: 'Puck', name: 'Puck (남성/장난기)' },
+            { id: 'Charon', name: 'Charon (남성/깊음)' },
+            { id: 'Aoede', name: 'Aoede (여성/우아함)' }
+        ];
+
+        let selectedVoice = 'Kore';
+        let audioUrl = null;
+        let isPlaying = false;
+
+        // --- DOM Elements ---
+        const textInput = document.getElementById('textInput');
+        const charCount = document.getElementById('charCount');
+        const voiceList = document.getElementById('voiceList');
+        const generateBtn = document.getElementById('generateBtn');
+        const btnText = document.getElementById('btnText');
+        const btnIcon = document.querySelector('.btn-icon');
+        const loadingIcon = document.querySelector('.loading-icon');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const errorContainer = document.getElementById('errorContainer');
+        const errorMessage = document.getElementById('errorMessage');
+        const audioPlayerCard = document.getElementById('audioPlayerCard');
+        const resultVoiceName = document.getElementById('resultVoiceName');
+        const audioElement = document.getElementById('audioElement');
+        const playBtn = document.getElementById('playBtn');
+        const playIcon = document.getElementById('playIcon'); // Will be replaced by Lucide
+        const playText = document.getElementById('playText');
+        const downloadLink = document.getElementById('downloadLink');
+
+        // --- Init ---
+        function init() {
+            // Render Voice List
+            voiceList.innerHTML = VOICES.map(voice => `
+                <button onclick="selectVoice('${voice.id}')" 
+                    class="voice-btn w-full flex items-center justify-between px-4 py-3 rounded-xl border transition-all ${selectedVoice === voice.id ? 'bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/20' : 'bg-slate-700/30 border-slate-700 text-slate-300 hover:bg-slate-700'}"
+                    data-id="${voice.id}">
+                    <span class="font-medium">${voice.name}</span>
+                    ${selectedVoice === voice.id ? '<i data-lucide="check-circle-2" class="w-4 h-4"></i>' : ''}
+                </button>
+            `).join('');
+            
+            lucide.createIcons();
+            updateCharCount();
+        }
+
+        // --- Event Listeners ---
+        textInput.addEventListener('input', updateCharCount);
+        audioElement.onended = () => {
+            isPlaying = false;
+            updatePlayButton();
+        };
+
+        function updateCharCount() {
+            const len = textInput.value.length;
+            charCount.textContent = `${len.toLocaleString()} 자`;
+            charCount.className = len > 5000 ? 'text-xs text-amber-400' : 'text-xs text-slate-500';
+        }
+
+        function selectVoice(id) {
+            selectedVoice = id;
+            init(); // Re-render list to update styles
+        }
+
+        function resetUI() {
+            audioPlayerCard.classList.add('hidden');
+            progressContainer.classList.add('hidden');
+            errorContainer.classList.add('hidden');
+            audioUrl = null;
+            isPlaying = false;
+            if (audioElement.src) URL.revokeObjectURL(audioElement.src);
+        }
+
+        function updatePlayButton() {
+            // Re-render icon
+            playBtn.innerHTML = isPlaying 
+                ? `<i data-lucide="pause" class="w-5 h-5"></i><span>일시정지</span>`
+                : `<i data-lucide="play" class="w-5 h-5"></i><span>듣기</span>`;
+            lucide.createIcons();
+        }
+
+        function togglePlayback() {
+            if (!audioUrl) return;
+            if (isPlaying) {
+                audioElement.pause();
+            } else {
+                audioElement.play();
+            }
+            isPlaying = !isPlaying;
+            updatePlayButton();
+        }
+
+        // --- Core Logic ---
+
+        function chunkText(text) {
+            const maxChunkSize = 400;
+            const sentences = text.match(/[^.!?\n]+[.!?\n]+/g) || [text];
+            const chunks = [];
+            let currentChunk = '';
+
+            sentences.forEach((sentence) => {
+                if ((currentChunk + sentence).length > maxChunkSize) {
+                    chunks.push(currentChunk);
+                    currentChunk = sentence;
+                } else {
+                    currentChunk += sentence;
+                }
+            });
+            if (currentChunk) chunks.push(currentChunk);
+            return chunks;
+        }
+
+        function base64ToArrayBuffer(base64) {
+            const binaryString = window.atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        // WAV Header Creation
+        function createWavFile(audioDataPoints) {
+            const numChannels = 1;
+            const sampleRate = 24000;
+            const bitsPerSample = 16;
+            
+            const totalLength = audioDataPoints.reduce((acc, curr) => acc + curr.byteLength, 0);
+            const wavBuffer = new Uint8Array(44 + totalLength);
+            const view = new DataView(wavBuffer.buffer);
+
+            const writeString = (view, offset, string) => {
+                for (let i = 0; i < string.length; i++) {
+                    view.setUint8(offset + i, string.charCodeAt(i));
+                }
+            };
+
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + totalLength, true);
+            writeString(view, 8, 'WAVE');
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true);
+            view.setUint16(22, numChannels, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * numChannels * (bitsPerSample / 8), true);
+            view.setUint16(32, numChannels * (bitsPerSample / 8), true);
+            view.setUint16(34, bitsPerSample, true);
+            writeString(view, 36, 'data');
+            view.setUint32(40, totalLength, true);
+
+            let offset = 44;
+            audioDataPoints.forEach((chunk) => {
+                wavBuffer.set(new Uint8Array(chunk), offset);
+                offset += chunk.byteLength;
+            });
+
+            return new Blob([wavBuffer], { type: 'audio/wav' });
+        }
+
+        // --- Main Generation Function ---
+        async function generateAudio() {
+            const text = textInput.value.trim();
+            if (!text) return;
+
+            // UI Loading State
+            resetUI();
+            generateBtn.disabled = true;
+            btnIcon.classList.add('hidden');
+            loadingIcon.classList.remove('hidden');
+            progressContainer.classList.remove('hidden');
+            
+            try {
+                const chunks = chunkText(text);
+                const audioBuffers = [];
+                const totalChunks = chunks.length;
+
+                for (let i = 0; i < totalChunks; i++) {
+                    const chunk = chunks[i];
+                    btnText.textContent = `변환 중... (${i + 1}/${totalChunks})`;
+                    
+                    const payload = {
+                        contents: [{ parts: [{ text: chunk }] }],
+                        generationConfig: {
+                            responseModalities: ["AUDIO"],
+                            speechConfig: {
+                                voiceConfig: {
+                                    prebuiltVoiceConfig: {
+                                        voiceName: selectedVoice
+                                    }
+                                }
+                            }
+                        }
+                    };
+
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) throw new Error(`API Request Failed: ${response.status}`);
+
+                    const data = await response.json();
+                    if (data.candidates?.[0]?.content?.parts?.[0]?.inlineData) {
+                        const base64Audio = data.candidates[0].content.parts[0].inlineData.data;
+                        audioBuffers.push(base64ToArrayBuffer(base64Audio));
+                    }
+
+                    // Progress Update
+                    const pct = Math.round(((i + 1) / totalChunks) * 100);
+                    progressBar.style.width = `${pct}%`;
+                    progressText.textContent = `${pct}%`;
+
+                    await new Promise(r => setTimeout(r, 200)); 
+                }
+
+                btnText.textContent = "오디오 병합 중...";
+                const wavBlob = createWavFile(audioBuffers);
+                audioUrl = URL.createObjectURL(wavBlob);
+
+                // Setup Player
+                audioElement.src = audioUrl;
+                downloadLink.href = audioUrl;
+                downloadLink.download = `ai-voice-${Date.now()}.wav`;
+                resultVoiceName.textContent = `AI Voice • ${VOICES.find(v => v.id === selectedVoice).name}`;
+                
+                audioPlayerCard.classList.remove('hidden');
+                
+            } catch (err) {
+                console.error(err);
+                errorMessage.textContent = '음성 생성 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+                errorContainer.classList.remove('hidden');
+            } finally {
+                generateBtn.disabled = false;
+                btnText.textContent = "음성 생성하기";
+                btnIcon.classList.remove('hidden');
+                loadingIcon.classList.add('hidden');
+            }
+        }
+
+        // Initial render
+        init();
+
+    </script>
+</body>
+</html>
