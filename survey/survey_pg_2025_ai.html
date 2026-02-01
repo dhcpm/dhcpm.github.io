@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025 대구보건대학교 만족도 조사 AI 뷰어</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Markdown Parser for AI responses -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #f3f4f6;
+        }
+
+        /* 스크롤바 커스텀 */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 3px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+
+        .toc-item:hover {
+            color: #0d9488;
+            background-color: #f0fdfa;
+        }
+        
+        .toc-page-badge {
+            background-color: #e2e8f0;
+            color: #64748b;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            min-width: 36px;
+            text-align: center;
+        }
+        .toc-item:hover .toc-page-badge {
+            background-color: #ccfbf1;
+            color: #0f766e;
+        }
+
+        .toc-item.active-page {
+            background-color: #ccfbf1;
+            color: #0f766e;
+            border-left: 3px solid #0d9488;
+        }
+        .toc-item.active-page .toc-page-badge {
+            background-color: #0f766e;
+            color: white;
+        }
+
+        /* 챗봇 스타일 */
+        .chat-message {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 12px;
+            word-break: break-word;
+            animation: fadeIn 0.3s ease-in-out;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        
+        /* Markdown Style Reset inside Chat */
+        .chat-message p { margin-bottom: 0.5em; }
+        .chat-message p:last-child { margin-bottom: 0; }
+        .chat-message ul { list-style-type: disc; margin-left: 1.2em; margin-bottom: 0.5em; }
+        .chat-message ol { list-style-type: decimal; margin-left: 1.2em; margin-bottom: 0.5em; }
+        .chat-message strong { font-weight: 700; color: #0f766e; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .chat-user {
+            background-color: #0d9488;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+        .chat-user strong { color: white; } /* User msg strong color override */
+
+        .chat-bot {
+            background-color: #ffffff;
+            color: #1f2937;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .chat-container-ani {
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease-in-out;
+        }
+
+        /* 로딩 애니메이션 */
+        .typing-indicator span {
+            display: inline-block;
+            width: 5px;
+            height: 5px;
+            background-color: #9ca3af;
+            border-radius: 50%;
+            animation: typing 1s infinite;
+            margin: 0 2px;
+        }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+    </style>
+</head>
+<body class="flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm z-20 h-16 flex items-center px-6 border-b border-gray-200 justify-between">
+        <div class="flex items-center gap-3">
+            <div class="bg-teal-600 text-white p-2 rounded-lg">
+                <i class="fa-solid fa-graduation-cap text-lg"></i>
+            </div>
+            <h1 class="text-xl font-bold text-gray-800 tracking-tight">2025 대구보건대학교 만족도 조사 결과보고서</h1>
+        </div>
+        <div class="text-xs text-gray-400 font-light flex items-center">
+            <span class="bg-teal-50 text-teal-600 px-2 py-1 rounded border border-teal-100 mr-2 flex items-center gap-1">
+                <i class="fa-solid fa-sparkles"></i> AI Powered
+            </span>
+            <i class="fa-regular fa-folder-open mr-1"></i> Local PDF System
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="flex flex-1 overflow-hidden relative">
+        
+        <!-- Sidebar (Navigation & TOC) -->
+        <aside class="w-80 bg-white flex flex-col border-r border-gray-200 shadow-xl z-10 flex-shrink-0">
+            <div class="p-4 bg-gray-50 border-b border-gray-200">
+                <h2 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-users-viewfinder"></i> 조사 대상 선택
+                </h2>
+                <div class="grid grid-cols-2 gap-2" id="targetButtons">
+                    <!-- Buttons generated by JS -->
+                </div>
+            </div>
+            <div class="flex-1 overflow-y-auto custom-scroll p-4 relative">
+                <h2 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center sticky top-0 bg-white pb-2 border-b border-gray-100 justify-between">
+                    <span><i class="fa-solid fa-list-ul mr-2 text-teal-600"></i> 목차 (바로가기)</span>
+                </h2>
+                <ul id="tocList" class="space-y-1 pb-10">
+                    <li class="text-sm text-gray-400 text-center py-10 flex flex-col items-center gap-2">
+                        <i class="fa-solid fa-arrow-up text-2xl text-gray-300"></i>
+                        <span>대상을 선택해주세요.</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="p-3 bg-gray-100 text-[10px] text-gray-500 text-center border-t border-gray-200">
+                &copy; 2025 Daegu Health College
+            </div>
+        </aside>
+
+        <!-- PDF Viewer Area -->
+        <main class="flex-1 bg-gray-200 relative flex flex-col h-full overflow-hidden">
+            <div id="pdfToolbar" class="h-14 bg-white border-b border-gray-300 flex items-center justify-between px-4 shadow-sm z-10 hidden">
+                <div class="flex items-center gap-2 overflow-hidden flex-1 mr-4">
+                    <span class="bg-teal-50 text-teal-700 text-xs px-2 py-1 rounded border border-teal-100 whitespace-nowrap">
+                        <i class="fa-regular fa-file-pdf mr-1"></i> 현재 문서
+                    </span>
+                    <span id="currentFileName" class="text-sm font-medium text-gray-700 truncate" title="">-</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-2 bg-gray-100 p-1 rounded-lg border border-gray-200">
+                        <span class="text-xs text-gray-500 px-2 font-medium">Page</span>
+                        <div class="flex items-center">
+                            <input type="number" id="pageInput" min="1" value="1" class="w-14 text-center text-sm border border-gray-300 rounded-l focus:outline-none focus:border-teal-500 py-1" onkeydown="if(event.key === 'Enter') applyPageInput()">
+                            <button onclick="applyPageInput()" class="bg-teal-600 hover:bg-teal-700 text-white text-xs px-3 py-1.5 rounded-r font-medium transition-colors">이동</button>
+                        </div>
+                    </div>
+                    <button onclick="downloadCurrentPdf()" class="flex items-center gap-2 bg-gray-800 hover:bg-gray-900 text-white text-xs px-4 py-2 rounded-lg font-medium transition-colors shadow-sm" title="현재 파일 다운로드">
+                        <i class="fa-solid fa-download"></i> 다운로드
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex-1 relative w-full h-full bg-gray-500">
+                <div id="loading" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-white bg-opacity-90 z-50">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mb-4"></div>
+                    <p class="text-gray-600 font-medium animate-pulse">PDF 문서를 로딩중입니다...</p>
+                </div>
+                <div id="pdfContainer" class="w-full h-full bg-white">
+                    <iframe id="pdfFrame" src="about:blank" class="w-full h-full block border-none"></iframe>
+                </div>
+                <div id="initialState" class="absolute inset-0 flex flex-col items-center justify-center text-gray-400 bg-gray-100">
+                    <div class="bg-white p-8 rounded-2xl shadow-lg text-center max-w-md">
+                        <div class="bg-teal-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-teal-600">
+                            <i class="fa-solid fa-magnifying-glass-chart text-3xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-800 mb-2">보고서 뷰어 시작하기</h3>
+                        <p class="text-gray-500 text-sm mb-6">왼쪽 사이드바에서 <strong>조사 대상</strong>을<br>선택하여 결과 보고서를 확인하세요.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Chat Bot Button -->
+        <button id="chatButton" onclick="toggleChat()" class="absolute bottom-6 right-6 bg-teal-600 hover:bg-teal-700 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-2xl transition-transform hover:scale-110 z-50 ring-4 ring-white ring-opacity-50">
+            <i class="fa-solid fa-robot"></i>
+        </button>
+
+        <!-- Chat Window -->
+        <div id="chatWindow" class="absolute bottom-24 right-6 w-96 h-[550px] bg-white rounded-2xl shadow-2xl flex flex-col border border-gray-200 z-50 transform translate-y-4 opacity-0 pointer-events-none chat-container-ani origin-bottom-right">
+            
+            <!-- Chat Header -->
+            <div class="bg-teal-600 text-white p-4 rounded-t-2xl flex items-center justify-between shadow-md">
+                <div class="flex items-center gap-2">
+                    <div class="bg-white/20 p-1.5 rounded-lg">
+                        <i class="fa-solid fa-robot text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-sm flex items-center gap-1">Gemini AI 분석 <i class="fa-solid fa-sparkles text-yellow-300 text-xs"></i></h3>
+                        <p class="text-[10px] opacity-90" id="chatTargetName">문서를 선택해주세요</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-1">
+                    <button onclick="summarizeDocument()" class="hover:bg-teal-700 text-[10px] bg-teal-800/50 px-2 py-1 rounded transition-colors border border-teal-500/50" title="AI 요약">
+                        <i class="fa-solid fa-file-lines mr-1"></i>요약
+                    </button>
+                    <button onclick="toggleSettings()" class="hover:bg-teal-700 p-2 rounded transition-colors" title="API 설정">
+                        <i class="fa-solid fa-gear"></i>
+                    </button>
+                    <button onclick="toggleChat()" class="hover:bg-teal-700 p-2 rounded transition-colors">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Settings Panel (Hidden by default) -->
+            <div id="settingsPanel" class="hidden absolute inset-0 bg-white z-20 flex flex-col p-6 rounded-2xl">
+                <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-key text-teal-600"></i> API 설정
+                </h3>
+                <p class="text-sm text-gray-600 mb-4">
+                    AI 기능을 사용하려면 Google Gemini API 키가 필요합니다.<br>
+                    <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-teal-600 underline text-xs">키 발급받기 (무료)</a>
+                </p>
+                <div class="mb-4">
+                    <label class="block text-xs font-bold text-gray-500 mb-1">API KEY</label>
+                    <input type="password" id="apiKeyInput" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:border-teal-500 focus:outline-none" placeholder="AIzaSy...">
+                </div>
+                <div class="flex gap-2 mt-auto">
+                    <button onclick="saveApiKey()" class="flex-1 bg-teal-600 hover:bg-teal-700 text-white py-2 rounded-lg font-bold transition-colors">저장</button>
+                    <button onclick="toggleSettings()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded-lg font-bold transition-colors">취소</button>
+                </div>
+            </div>
+
+            <!-- Chat Messages -->
+            <div id="chatMessages" class="flex-1 overflow-y-auto p-4 custom-scroll bg-gray-50 flex flex-col gap-2">
+                <div class="chat-message chat-bot shadow-sm">
+                    안녕하세요! <strong>Gemini AI</strong>입니다. ✨<br>
+                    좌측 목록에서 조사 대상을 선택하시면, 해당 보고서에 대해 무엇이든 답변해 드립니다.<br>
+                    <span class="text-xs text-gray-500 mt-2 block border-t border-gray-200 pt-2">
+                        <i class="fa-solid fa-circle-info mr-1"></i>먼저 우측 상단 ⚙️설정에서 API 키를 등록해주세요.
+                    </span>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="p-3 border-t border-gray-200 bg-white rounded-b-2xl">
+                <div class="flex items-center gap-2 relative">
+                    <input type="text" id="chatInput" class="flex-1 border border-gray-300 rounded-full px-4 py-3 text-sm focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 pr-10 shadow-inner" placeholder="질문을 입력하세요..." onkeydown="if(event.key === 'Enter') sendMessage()">
+                    <button onclick="sendMessage()" class="absolute right-2 bg-teal-600 text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-teal-700 transition-colors shadow-sm transform hover:scale-105 active:scale-95">
+                        <i class="fa-solid fa-paper-plane text-xs"></i>
+                    </button>
+                </div>
+                <div class="text-[10px] text-center text-gray-400 mt-2">
+                    Gemini can make mistakes. Check important info.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. Data Definitions ---
+        const surveyData = {
+            "student": {
+                name: "재학생",
+                icon: "fa-user-graduate",
+                file: "/pdf/2025/2025 대구보건대학교 만족도 조사 결과보고서_재학생_260119.pdf",
+                toc: [ { title: "Part I. 조사 개요", page: 3 }, { title: "Part II. 조사 결과 요약", page: 11 }, { title: "Part III. 조사 결과 분석", page: 18 }, { title: "Part IV. 학과별 결과 분석", page: 60 }, { title: "Part V. 스쿨제별 결과 분석", page: 85 }, { title: "Part VI. 학과별 개선과제 도출", page: 99 }, { title: "Part VII. 시사점 및 제언", page: 122 }, { title: "Appendix", page: 124 } ],
+                // Gemini에게 제공할 컨텍스트 데이터 (요약본)
+                context: `
+                [2025 대구보건대학교 재학생 만족도 조사]
+                - 종합 만족도: 82.4점 (전년 대비 0.2점 상승).
+                - 강점 영역: '학생상담센터 운영프로그램'(89.4점), '교육과정'(84.3점), '학생역량 프로그램'(83.9점).
+                - 학과별 우수: 호텔제과제빵학과(91.4점), 글로벌호텔조리학과(89.7점).
+                - 약점/개선필요: '시설 및 서비스', '취업지원', '창업지원'. 특히 취업지원에 대한 요구가 큼.
+                - 특이사항: 반려동물보건관리학과(76.0점) 등 일부 학과 만족도 상대적 낮음. 스쿨제 운영 만족도 낮음.
+                `
+            },
+            "graduate": {
+                name: "졸업생",
+                icon: "fa-user-tie",
+                file: "/pdf/2025/2025 대구보건대학교 만족도 조사 결과보고서_졸업생_260119.pdf",
+                toc: [ { title: "Part I. 조사 개요", page: 3 }, { title: "Part II. 조사 결과 요약", page: 11 }, { title: "Part III. 조사 결과 분석", page: 16 }, { title: "Part IV. 학과별 결과 분석", page: 31 }, { title: "Part V. 학과별 개선과제 도출", page: 38 }, { title: "Part VI. 시사점 및 제언", page: 60 }, { title: "Appendix", page: 62 } ],
+                context: `
+                [2025 대구보건대학교 졸업생 만족도 조사]
+                - 종합 만족도: 82.2점.
+                - 강점: '대학의 전반적 만족도'(84.0점), '교육과정'. 대학에 대한 자부심 높음.
+                - 학과별 우수: 바이오헬스융합학과(92.9점).
+                - 약점/개선필요: '학생역량강화 및 취·창업지원'(81.9점), '교육환경'.
+                - 제언: 취업 지원 프로그램의 실질적 강화 필요.
+                `
+            },
+            "industry": {
+                name: "산업체",
+                icon: "fa-building",
+                file: "/pdf/2025/2025 대구보건대학교 만족도 조사 결과보고서_산업체_260119.pdf",
+                toc: [ { title: "Part I. 조사 개요", page: 3 }, { title: "Part II. 조사 결과 요약", page: 11 }, { title: "Part III. 조사 결과 분석", page: 16 }, { title: "Part IV. 시사점 및 제언", page: 58 }, { title: "Appendix", page: 60 } ],
+                context: `
+                [2025 대구보건대학교 산업체 만족도 조사]
+                - 종합 만족도: 86.0점 (전년 대비 1.8점 상승, 매우 긍정적).
+                - 강점: '대학 평판'(88.3점), 산학협력 활동.
+                - 약점/개선필요: '취업 혹은 실습한 학생의 실무 업무능력'(84.3점)이 상대적으로 낮음.
+                - 제언: 실무 중심의 교육 과정 강화 필요.
+                `
+            },
+            "faculty": {
+                name: "교원",
+                icon: "fa-chalkboard-user",
+                file: "/pdf/2025/2025 대구보건대학교 만족도 조사 결과보고서_교원_260119.pdf",
+                toc: [ { title: "Part I. 조사 개요", page: 3 }, { title: "Part II. 조사 결과 요약", page: 11 }, { title: "Part III. 조사 결과 분석", page: 15 }, { title: "Part IV. 시사점 및 제언", page: 48 } ],
+                context: `
+                [2025 대구보건대학교 교원 만족도 조사]
+                - 종합 만족도: 88.0점.
+                - 강점: '대학의 사명과 발전계획'(92.7점), '교육'. 구성원 간 비전 공유 우수.
+                - 약점/개선필요: '취·창업지원'(86.6점), '대학구성원(소통)'(82.5점).
+                - 제언: 내부 소통 채널 확대 및 학생 취업 지원을 위한 교원 역량 강화.
+                `
+            },
+            "staff": {
+                name: "직원",
+                icon: "fa-briefcase",
+                file: "/pdf/2025/2025 대구보건대학교 만족도 조사 결과보고서_직원_260119.pdf",
+                toc: [ { title: "Part I. 조사 개요", page: 3 }, { title: "Part II. 조사 결과 요약", page: 11 }, { title: "Part III. 조사 결과 분석", page: 15 }, { title: "Part IV. 시사점 및 제언", page: 39 } ],
+                context: `
+                [2025 대구보건대학교 직원 만족도 조사]
+                - 종합 만족도: 83.9점.
+                - 강점: '대학의 사명과 발전계획'(88.4점).
+                - 약점/개선필요: '직원평가 및 지원'(81.6점), '직무 만족도'.
+                - 제언: 인사 제도 개선 및 직무 환경 개선 시급.
+                `
+            },
+            "community": {
+                name: "지역사회",
+                icon: "fa-users",
+                file: "/pdf/2025/2025 대구보건대학교 만족도 조사 결과보고서_지역사회_260119.pdf",
+                toc: [ { title: "Part I. 조사 개요", page: 3 }, { title: "Part II. 조사 결과 요약", page: 11 }, { title: "Part III. 조사 결과 분석", page: 15 }, { title: "Part IV. 시사점 및 제언", page: 26 } ],
+                context: `
+                [2025 대구보건대학교 지역사회 만족도 조사]
+                - 종합 만족도: 88.4점 (매우 높음).
+                - 강점: 대학 인지도 및 평판, 지역사회 활성화 기여.
+                - 약점/개선필요: '대학과 산업체의 상호협력 관계 형성'.
+                - 제언: 지역 사회와의 산학 협력 모델 구체화 필요.
+                `
+            },
+            "fgi": {
+                name: "FGI 조사<br><span class='text-[10px] opacity-80 font-normal'>(혁신지원사업)</span>",
+                realName: "FGI 조사",
+                icon: "fa-comments",
+                file: "/pdf/2025/2025 대구보건대학교 교육수요자 요구도조사 (FGI)_260124.pdf",
+                toc: [ { title: "Part I. 조사 개요", page: 3 }, { title: "Part II. 주요 조사 결과", page: 5 }, { title: "최종 결론 (Conclusion)", page: 29 } ],
+                context: `
+                [2025 대구보건대학교 FGI 조사 - 혁신지원사업]
+                - 조사 방식: 표적집단면접(FGI) / 교직원, 재학생, 산업체 대상.
+                - 주요 결론: '무엇을 했는가(양적 성과)'가 아니라 '어떻게 경험되었는가(질적 경험)' 중심의 혁신 전환 필요.
+                - 핵심 제언:
+                  1. 성과의 의미화: 정책 용어를 학생 언어로 번역.
+                  2. 관리 축의 전환: 사업 단위 -> 경험 단위 품질 관리.
+                  3. 상시 환류 파트너십: 산업체를 교육과정 검증 파트너로 격상.
+                `
+            }
+        };
+
+        let currentKey = null;
+
+        // --- 2. Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderButtons();
+            
+            // API 키 확인 및 UI 초기화
+            const savedKey = localStorage.getItem('GEMINI_API_KEY');
+            if (savedKey) {
+                document.getElementById('apiKeyInput').value = savedKey;
+            } else {
+                // 키가 없으면 설정 패널 자동 열기 (선택 사항)
+                // toggleSettings();
+            }
+        });
+
+        // --- 3. View Logic (PDF & TOC) ---
+        function renderButtons() {
+            const container = document.getElementById('targetButtons');
+            container.innerHTML = '';
+            Object.keys(surveyData).forEach(key => {
+                const item = surveyData[key];
+                const btn = document.createElement('button');
+                btn.className = `p-2 rounded-lg text-sm transition-all duration-200 border flex items-center justify-center gap-2 ${currentKey === key ? 'bg-teal-600 text-white border-teal-700 shadow-md transform scale-[1.02]' : 'bg-white text-gray-700 border-gray-200 hover:bg-teal-50 hover:border-teal-300'}`;
+                btn.innerHTML = `<i class="fa-solid ${item.icon}"></i> <span class="text-center leading-tight">${item.name}</span>`;
+                btn.onclick = () => selectTarget(key);
+                container.appendChild(btn);
+            });
+        }
+
+        function selectTarget(key) {
+            currentKey = key;
+            renderButtons();
+            
+            const data = surveyData[key];
+            const tocList = document.getElementById('tocList');
+            const initialState = document.getElementById('initialState');
+            const pdfToolbar = document.getElementById('pdfToolbar');
+            const fileNameDisplay = document.getElementById('currentFileName');
+            const pageInput = document.getElementById('pageInput');
+            const chatTargetName = document.getElementById('chatTargetName');
+
+            initialState.classList.add('hidden');
+            pdfToolbar.classList.remove('hidden');
+            pdfToolbar.classList.add('flex');
+
+            const justFileName = data.file.split('/').pop();
+            fileNameDisplay.innerText = justFileName;
+            fileNameDisplay.title = data.file;
+            chatTargetName.innerText = (data.realName || data.name);
+            
+            pageInput.value = 1;
+            tocList.innerHTML = '';
+            createTocItem(tocList, 1, "표지 (Cover)", 1);
+            data.toc.forEach(item => {
+                createTocItem(tocList, item.page, item.title, 1);
+            });
+            loadPdfPage(1);
+
+            // 채팅창에 문서 변경 알림
+            addSystemMessage(`<strong>${data.realName || data.name}</strong> 문서가 선택되었습니다. 궁금한 점을 물어보세요!`);
+        }
+
+        function createTocItem(parent, page, title, currentPage) {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <button onclick="goToPage(${page})" id="toc-btn-${page}" class="toc-item w-full text-left px-3 py-2.5 rounded-lg text-sm transition-all flex items-center group mb-1 border border-transparent hover:border-teal-100">
+                    <span class="toc-page-badge mr-3 font-mono">p.${page}</span>
+                    <span class="truncate font-medium text-gray-600 group-hover:text-teal-700 flex-1" title="${title}">${title}</span>
+                </button>
+            `;
+            parent.appendChild(li);
+        }
+
+        function goToPage(pageNum) {
+            if (!currentKey) return;
+            document.getElementById('pageInput').value = pageNum;
+            updateTocStyle(pageNum);
+            loadPdfPage(pageNum);
+        }
+
+        function updateTocStyle(activePage) {
+            document.querySelectorAll('.toc-item').forEach(btn => btn.classList.remove('active-page'));
+            const activeBtn = document.getElementById(`toc-btn-${activePage}`);
+            if (activeBtn) activeBtn.classList.add('active-page');
+        }
+
+        function applyPageInput() {
+            const input = document.getElementById('pageInput');
+            let pageNum = parseInt(input.value);
+            if (isNaN(pageNum) || pageNum < 1) { input.value = 1; return; }
+            input.blur();
+            goToPage(pageNum);
+        }
+
+        function loadPdfPage(pageNum) {
+            const data = surveyData[currentKey];
+            const pdfContainer = document.getElementById('pdfContainer');
+            const loading = document.getElementById('loading');
+            loading.classList.remove('hidden');
+            const encodedFilename = encodeURIComponent(data.file);
+            
+            setTimeout(() => {
+                pdfContainer.innerHTML = `<iframe id="pdfFrame" src="${encodedFilename}#page=${pageNum}&view=FitH" class="w-full h-full block border-none"></iframe>`;
+                document.getElementById('pdfFrame').onload = () => loading.classList.add('hidden');
+                setTimeout(() => loading.classList.add('hidden'), 1000);
+            }, 50);
+        }
+
+        function downloadCurrentPdf() {
+            if (!currentKey) return;
+            const data = surveyData[currentKey];
+            const link = document.createElement('a');
+            link.href = data.file;
+            link.download = data.file.split('/').pop(); 
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // --- 4. Gemini AI Chatbot Logic ---
+        let isChatOpen = false;
+
+        function toggleChat() {
+            const chatWindow = document.getElementById('chatWindow');
+            isChatOpen = !isChatOpen;
+            if (isChatOpen) {
+                chatWindow.classList.remove('translate-y-4', 'opacity-0', 'pointer-events-none');
+                document.getElementById('chatInput').focus();
+            } else {
+                chatWindow.classList.add('translate-y-4', 'opacity-0', 'pointer-events-none');
+            }
+        }
+
+        function toggleSettings() {
+            const panel = document.getElementById('settingsPanel');
+            panel.classList.toggle('hidden');
+        }
+
+        function saveApiKey() {
+            const key = document.getElementById('apiKeyInput').value.trim();
+            if (key) {
+                localStorage.setItem('GEMINI_API_KEY', key);
+                alert('API 키가 저장되었습니다.');
+                toggleSettings();
+            } else {
+                alert('유효한 키를 입력해주세요.');
+            }
+        }
+
+        function getApiKey() {
+            return localStorage.getItem('GEMINI_API_KEY');
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            const apiKey = getApiKey();
+            if (!apiKey) {
+                addSystemMessage("API 키가 설정되지 않았습니다. 우측 상단 ⚙️설정 버튼을 눌러 키를 입력해주세요.");
+                toggleSettings();
+                return;
+            }
+
+            // 1. User Message
+            addChatMessage(message, 'user');
+            input.value = '';
+
+            if (!currentKey) {
+                addChatMessage("문서를 먼저 선택해주세요.", 'bot');
+                return;
+            }
+
+            // 2. Loading Indicator
+            const loadingId = addLoadingIndicator();
+
+            try {
+                // 3. Call Gemini API
+                const context = surveyData[currentKey].context;
+                const response = await callGeminiAPI(apiKey, context, message);
+                
+                // 4. Bot Response
+                removeLoadingIndicator(loadingId);
+                addChatMessage(response, 'bot');
+            } catch (error) {
+                removeLoadingIndicator(loadingId);
+                addSystemMessage("오류가 발생했습니다: " + error.message);
+            }
+        }
+
+        async function summarizeDocument() {
+            if (!currentKey) {
+                alert("먼저 문서를 선택해주세요.");
+                return;
+            }
+            if (!isChatOpen) toggleChat();
+            
+            const apiKey = getApiKey();
+            if (!apiKey) {
+                addSystemMessage("API 키가 필요합니다.");
+                toggleSettings();
+                return;
+            }
+
+            const loadingId = addLoadingIndicator();
+            try {
+                const context = surveyData[currentKey].context;
+                const prompt = "이 문서의 핵심 내용을 3줄로 요약해줘. 중요한 수치나 키워드를 포함해서.";
+                const response = await callGeminiAPI(apiKey, context, prompt);
+                removeLoadingIndicator(loadingId);
+                addChatMessage("📝 <strong>AI 요약 결과:</strong>\n" + response, 'bot');
+            } catch (error) {
+                removeLoadingIndicator(loadingId);
+                addSystemMessage("요약 중 오류가 발생했습니다.");
+            }
+        }
+
+        async function callGeminiAPI(apiKey, context, userPrompt) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+            
+            const payload = {
+                contents: [{
+                    parts: [{
+                        text: `Context (Survey Report Data):\n${context}\n\nUser Question:\n${userPrompt}\n\nInstruction:\n당신은 대구보건대학교 만족도 조사 결과보고서 전문가입니다. 위 Context를 기반으로 사용자의 질문에 한국어로 친절하고 명확하게 답변하세요. 없는 내용은 지어내지 말고 보고서에 없다고 말하세요. 답변은 Markdown 형식으로 작성하세요.`
+                    }]
+                }]
+            };
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                throw new Error(`API Error: ${response.status}`);
+            }
+
+            const data = await response.json();
+            return data.candidates[0].content.parts[0].text;
+        }
+
+        function addChatMessage(text, sender) {
+            const container = document.getElementById('chatMessages');
+            const div = document.createElement('div');
+            div.className = `chat-message chat-${sender}`;
+            // Parse Markdown
+            div.innerHTML = marked.parse(text); 
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function addSystemMessage(text) {
+            const container = document.getElementById('chatMessages');
+            const div = document.createElement('div');
+            div.className = "text-center text-xs text-gray-400 my-2";
+            div.innerHTML = text;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function addLoadingIndicator() {
+            const container = document.getElementById('chatMessages');
+            const div = document.createElement('div');
+            const id = 'loading-' + Date.now();
+            div.id = id;
+            div.className = `chat-message chat-bot typing-indicator`;
+            div.innerHTML = `<span></span><span></span><span></span>`;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+            return id;
+        }
+
+        function removeLoadingIndicator(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+    </script>
+</body>
+</html>
