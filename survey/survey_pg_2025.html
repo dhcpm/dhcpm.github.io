@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2025 대구보건대학교 만족도 조사 결과 뷰어</title>
+    <title>2025 대구보건대학교 교육 수요자 만족도 및 요구도 조사 결과보고서</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
-    <!-- PDF.js 라이브러리 추가 (모바일 호환성 해결 핵심) -->
+    <!-- PDF.js 라이브러리 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
-        // PDF.js 워커 설정
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     </script>
 
@@ -25,58 +24,26 @@
         }
 
         /* 스크롤바 커스텀 */
-        .custom-scroll::-webkit-scrollbar {
-            width: 6px;
-        }
-        .custom-scroll::-webkit-scrollbar-track {
-            background: #f1f1f1; 
-        }
-        .custom-scroll::-webkit-scrollbar-thumb {
-            background: #cbd5e1; 
-            border-radius: 3px;
-        }
-        .custom-scroll::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8; 
-        }
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        .toc-item:hover {
-            color: #0d9488;
-            background-color: #f0fdfa;
-        }
-        
-        .toc-page-badge {
-            background-color: #e2e8f0;
-            color: #64748b;
-            font-size: 0.7rem;
-            padding: 2px 6px;
-            border-radius: 4px;
-            min-width: 36px;
-            text-align: center;
-        }
-        .toc-item:hover .toc-page-badge {
-            background-color: #ccfbf1;
-            color: #0f766e;
-        }
+        .toc-item:hover { color: #0d9488; background-color: #f0fdfa; }
+        .toc-page-badge { background-color: #e2e8f0; color: #64748b; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; min-width: 36px; text-align: center; }
+        .toc-item:hover .toc-page-badge { background-color: #ccfbf1; color: #0f766e; }
+        .toc-item.active-page { background-color: #ccfbf1; color: #0f766e; border-left: 3px solid #0d9488; }
+        .toc-item.active-page .toc-page-badge { background-color: #0f766e; color: white; }
 
-        .toc-item.active-page {
-            background-color: #ccfbf1;
-            color: #0f766e;
-            border-left: 3px solid #0d9488;
-        }
-        .toc-item.active-page .toc-page-badge {
-            background-color: #0f766e;
-            color: white;
-        }
-
-        /* 캔버스 컨테이너 스타일 */
         #pdf-render-container {
             width: 100%;
             height: 100%;
-            overflow: auto; /* 내부 스크롤 허용 */
+            overflow: auto;
             display: flex;
             justify-content: center;
-            background-color: #525659; /* PDF 뷰어 배경색 */
+            background-color: #525659;
             padding: 20px;
+            position: relative; 
         }
         
         canvas {
@@ -85,10 +52,7 @@
         }
 
         @media (max-width: 768px) {
-            #pdf-render-container {
-                padding: 10px;
-                align-items: flex-start;
-            }
+            #pdf-render-container { padding: 10px; align-items: flex-start; }
         }
     </style>
 </head>
@@ -97,16 +61,14 @@
     <!-- Header -->
     <header class="bg-white shadow-sm z-30 h-16 flex items-center px-4 md:px-6 border-b border-gray-200 justify-between relative">
         <div class="flex items-center gap-3">
-            <!-- Mobile Menu Button -->
             <button id="mobileMenuBtn" onclick="toggleSidebar()" class="md:hidden text-gray-600 hover:text-teal-600 focus:outline-none p-1">
                 <i class="fa-solid fa-bars text-xl"></i>
             </button>
-            
             <div class="bg-teal-600 text-white p-2 rounded-lg hidden md:block">
                 <i class="fa-solid fa-graduation-cap text-lg"></i>
             </div>
             <h1 class="text-base md:text-xl font-bold text-gray-800 tracking-tight truncate max-w-[200px] md:max-w-none">
-                2025 대구보건대학교 만족도 조사
+                2025 대구보건대학교 교육 수요자 만족도 및 요구도 조사 결과보고서
             </h1>
         </div>
         <div class="text-xs text-gray-400 font-light flex items-center">
@@ -117,26 +79,19 @@
 
     <!-- Main Content -->
     <div class="flex flex-1 overflow-hidden relative">
-        
-        <!-- Mobile Overlay -->
         <div id="mobileOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden transition-opacity duration-300 opacity-0"></div>
 
-        <!-- Sidebar -->
         <aside id="sidebar" class="w-80 bg-white flex flex-col border-r border-gray-200 shadow-xl z-50 absolute inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out h-full">
             <div class="md:hidden flex items-center justify-between p-4 border-b border-gray-100">
                 <span class="font-bold text-gray-700">메뉴</span>
-                <button onclick="toggleSidebar()" class="text-gray-500 hover:text-red-500">
-                    <i class="fa-solid fa-xmark text-xl"></i>
-                </button>
+                <button onclick="toggleSidebar()" class="text-gray-500 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
-
             <div class="p-4 bg-gray-50 border-b border-gray-200">
                 <h2 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center gap-2">
                     <i class="fa-solid fa-users-viewfinder"></i> 조사 대상 선택
                 </h2>
                 <div class="grid grid-cols-2 gap-2" id="targetButtons"></div>
             </div>
-
             <div class="flex-1 overflow-y-auto custom-scroll p-4 relative">
                 <h2 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center sticky top-0 bg-white pb-2 border-b border-gray-100 justify-between">
                     <span><i class="fa-solid fa-list-ul mr-2 text-teal-600"></i> 목차 (바로가기)</span>
@@ -148,16 +103,12 @@
                     </li>
                 </ul>
             </div>
-            
             <div class="p-3 bg-gray-100 text-[10px] text-gray-500 text-center border-t border-gray-200">
                 &copy; 2025 Daegu Health College
             </div>
         </aside>
 
-        <!-- PDF Viewer Area -->
         <main class="flex-1 bg-gray-200 relative flex flex-col h-full overflow-hidden w-full">
-            
-            <!-- Toolbar -->
             <div id="pdfToolbar" class="h-14 bg-white border-b border-gray-300 flex items-center justify-between px-2 md:px-4 shadow-sm z-10 hidden">
                 <div class="flex items-center gap-2 overflow-hidden flex-1 mr-2">
                     <span class="bg-teal-50 text-teal-700 text-xs px-2 py-1 rounded border border-teal-100 whitespace-nowrap hidden md:inline-block">
@@ -165,47 +116,77 @@
                     </span>
                     <span id="currentFileName" class="text-xs md:text-sm font-medium text-gray-700 truncate" title="">-</span>
                 </div>
-
                 <div class="flex items-center gap-2">
-                    <!-- Page Navigation -->
+                    <!-- 페이지 이동 컨트롤 (Input 필드 복구 및 디자인 개선) -->
                     <div class="flex items-center gap-1 md:gap-2 bg-gray-100 p-1 rounded-lg border border-gray-200">
-                        <!-- Prev Button -->
-                        <button onclick="onPrevPage()" class="w-8 h-8 flex items-center justify-center bg-white hover:bg-gray-200 rounded text-gray-600 border border-gray-300">
+                        <button onclick="onPrevPage()" class="w-8 h-8 flex items-center justify-center bg-white hover:bg-gray-200 rounded text-gray-600 border border-gray-300 shadow-sm active:bg-gray-300">
                             <i class="fa-solid fa-chevron-left text-xs"></i>
                         </button>
+                        
+                        <div class="flex items-center justify-center bg-white border border-gray-300 rounded h-8 px-2 min-w-[60px]">
+                            <!-- pageInput ID 복구 -->
+                            <input type="number" id="pageInput" value="1" min="1" 
+                                   class="w-8 text-center text-sm font-semibold text-gray-700 border-none outline-none p-0 bg-transparent focus:ring-0"
+                                   onkeydown="if(event.key === 'Enter') applyPageInput()"
+                                   onblur="applyPageInput()">
+                            <span class="text-xs text-gray-400 mx-1">/</span>
+                            <span id="page_count" class="text-xs text-gray-500 font-medium">--</span>
+                        </div>
 
-                        <span class="text-xs text-gray-500 font-medium whitespace-nowrap">
-                            <span id="page_num">1</span> / <span id="page_count">--</span>
-                        </span>
-
-                        <!-- Next Button -->
-                        <button onclick="onNextPage()" class="w-8 h-8 flex items-center justify-center bg-white hover:bg-gray-200 rounded text-gray-600 border border-gray-300">
+                        <button onclick="onNextPage()" class="w-8 h-8 flex items-center justify-center bg-white hover:bg-gray-200 rounded text-gray-600 border border-gray-300 shadow-sm active:bg-gray-300">
                             <i class="fa-solid fa-chevron-right text-xs"></i>
                         </button>
                     </div>
 
-                    <!-- Download Button -->
-                    <button onclick="downloadCurrentPdf()" 
-                            class="flex items-center gap-2 bg-gray-800 hover:bg-gray-900 text-white text-xs px-3 py-2 rounded-lg font-medium transition-colors shadow-sm"
-                            title="현재 파일 다운로드">
+                    <button onclick="downloadCurrentPdf()" class="flex items-center gap-2 bg-gray-800 hover:bg-gray-900 text-white text-xs px-3 py-2 rounded-lg font-medium transition-colors shadow-sm" title="현재 파일 다운로드">
                         <i class="fa-solid fa-download"></i> <span class="hidden md:inline">다운로드</span>
                     </button>
                 </div>
             </div>
 
-            <!-- PDF Canvas Container (Replaces Iframe) -->
             <div class="flex-1 relative w-full h-full bg-gray-500 overflow-hidden">
+                <!-- 로딩 인디케이터 -->
                 <div id="loading" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-white bg-opacity-90 z-20">
                     <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mb-4"></div>
                     <p class="text-gray-600 font-medium animate-pulse">페이지를 렌더링 중입니다...</p>
+                </div>
+
+                <!-- 에러 메시지 컨테이너 -->
+                <div id="error-container" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-white z-30 p-6">
+                    <div class="bg-red-50 border-l-4 border-red-500 p-6 rounded-r shadow-lg max-w-lg w-full">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <i class="fa-solid fa-circle-exclamation text-red-500 text-2xl"></i>
+                            </div>
+                            <div class="ml-4 w-full">
+                                <h3 class="text-lg font-bold text-red-800">파일을 불러올 수 없습니다</h3>
+                                <div class="mt-2 text-sm text-red-700">
+                                    <p class="mb-2">아래 경로에서 파일을 찾을 수 없거나 접근이 차단되었습니다.</p>
+                                    <div class="bg-white border border-red-200 p-3 rounded font-mono text-xs break-all text-gray-700 mb-3">
+                                        <strong class="text-red-600">시도한 경로:</strong><br>
+                                        <span id="error-path">...</span>
+                                    </div>
+                                    <p class="text-xs text-gray-500">
+                                        <strong>[해결 방법]</strong><br>
+                                        1. 위 경로(/pdf/2025/...)에 실제 PDF 파일이 존재하는지 확인하세요.<br>
+                                        2. 서버 설정 또는 브라우저 보안 정책(CORS) 문제일 수 있습니다.
+                                    </p>
+                                </div>
+                                <div class="mt-4">
+                                    <button onclick="document.getElementById('error-container').classList.add('hidden')" class="text-sm font-medium text-red-600 hover:text-red-500 hover:underline">
+                                        닫기
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
                 <div id="pdf-render-container">
                     <canvas id="the-canvas"></canvas>
                 </div>
                 
-                <!-- Initial State Message -->
-                <div id="initialState" class="absolute inset-0 flex flex-col items-center justify-center text-gray-400 bg-gray-100 p-4 z-30">
+                <div id="initialState" class="absolute inset-0 flex flex-col items-center justify-center text-gray-400 bg-gray-100 p-4 z-10">
                     <div class="bg-white p-8 rounded-2xl shadow-lg text-center max-w-md w-full">
                         <div class="bg-teal-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-teal-600">
                             <i class="fa-solid fa-magnifying-glass-chart text-3xl"></i>
@@ -224,7 +205,7 @@
     </div>
 
     <script>
-        // --- 데이터 정의 ---
+        // 데이터 정의
         const surveyData = {
             "student": {
                 name: "재학생",
@@ -312,12 +293,12 @@
             }
         };
 
-        // --- PDF.js State Variables ---
+        // --- PDF.js 변수 ---
         let pdfDoc = null;
         let pageNum = 1;
         let pageRendering = false;
         let pageNumPending = null;
-        let scale = 1.2; // 초기 스케일 (반응형으로 조정됨)
+        let scale = 1.2;
         let canvas = document.getElementById('the-canvas');
         let ctx = canvas.getContext('2d');
         let currentKey = null;
@@ -325,16 +306,13 @@
         document.addEventListener('DOMContentLoaded', () => {
             renderButtons();
             
-            // 반응형 리사이징 처리
             window.addEventListener('resize', () => {
-                if (pdfDoc) {
-                    renderPage(pageNum);
-                }
+                if (pdfDoc) renderPage(pageNum);
                 closeSidebarOnMobile();
             });
         });
 
-        // --- UI Logic ---
+        // --- UI 로직 ---
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('mobileOverlay');
@@ -365,6 +343,7 @@
                 const item = surveyData[key];
                 const btn = document.createElement('button');
                 btn.className = `p-2 rounded-lg text-sm transition-all duration-200 border flex items-center justify-center gap-2 ${currentKey === key ? 'bg-teal-600 text-white border-teal-700 shadow-md transform scale-[1.02]' : 'bg-white text-gray-700 border-gray-200 hover:bg-teal-50 hover:border-teal-300'}`;
+                
                 btn.innerHTML = `<i class="fa-solid ${item.icon}"></i> <span class="text-center leading-tight">${item.name}</span>`;
                 btn.onclick = () => selectTarget(key);
                 container.appendChild(btn);
@@ -381,21 +360,26 @@
             const initialState = document.getElementById('initialState');
             const pdfToolbar = document.getElementById('pdfToolbar');
             const fileNameDisplay = document.getElementById('currentFileName');
+            const errorContainer = document.getElementById('error-container');
 
+            // 에러 메시지 초기화
+            errorContainer.classList.add('hidden');
             initialState.classList.add('hidden');
             pdfToolbar.classList.remove('hidden');
             pdfToolbar.classList.add('flex');
 
             fileNameDisplay.innerText = data.file.split('/').pop();
             
-            // TOC 생성
+            const startPage = 1;
+            // 여기서 pageInput ID가 필요합니다. HTML에 복구했습니다.
+            document.getElementById('pageInput').value = startPage;
+
             tocList.innerHTML = '';
             createTocItem(tocList, 1, "표지 (Cover)");
             data.toc.forEach(item => {
                 createTocItem(tocList, item.page, item.title);
             });
 
-            // PDF 로드
             loadPdf(data.file, 1);
         }
 
@@ -410,41 +394,50 @@
             parent.appendChild(li);
         }
 
-        // --- PDF.js Logic ---
+        // --- PDF.js 로직 ---
         function loadPdf(url, startPage) {
-            document.getElementById('loading').classList.remove('hidden');
+            const loading = document.getElementById('loading');
+            const errorContainer = document.getElementById('error-container');
+            const errorPath = document.getElementById('error-path');
             
-            // 비동기 로드
-            pdfjsLib.getDocument(url).promise.then(function(pdfDoc_) {
+            loading.classList.remove('hidden');
+            errorContainer.classList.add('hidden');
+            
+            const encodedUrl = encodeURI(url);
+
+            const loadingTask = pdfjsLib.getDocument({
+                url: encodedUrl,
+                cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
+                cMapPacked: true,
+                enableXfa: true
+            });
+
+            loadingTask.promise.then(function(pdfDoc_) {
                 pdfDoc = pdfDoc_;
                 document.getElementById('page_count').textContent = pdfDoc.numPages;
                 
-                // 페이지 렌더링
                 pageNum = startPage;
                 renderPage(pageNum);
-                document.getElementById('loading').classList.add('hidden');
+                loading.classList.add('hidden');
             }).catch(function(error) {
                 console.error('Error loading PDF:', error);
-                document.getElementById('loading').classList.add('hidden');
-                alert('PDF 문서를 로드하는 중 오류가 발생했습니다. (파일 경로 또는 서버 설정을 확인하세요)');
+                loading.classList.add('hidden');
+                errorPath.textContent = url;
+                errorContainer.classList.remove('hidden');
             });
         }
 
         function renderPage(num) {
             pageRendering = true;
-            
-            // TOC 스타일 업데이트
             updateTocStyle(num);
 
             pdfDoc.getPage(num).then(function(page) {
-                // 반응형 스케일 계산 (화면 너비에 맞춤)
                 const container = document.getElementById('pdf-render-container');
-                const desiredWidth = container.clientWidth - 40; // padding 고려
+                const desiredWidth = container.clientWidth - 40; 
                 const viewport = page.getViewport({scale: 1});
                 
-                // 모바일에서는 너비에 꽉 차게, PC에서는 적당한 크기 유지
                 scale = desiredWidth / viewport.width;
-                if (scale < 1.0) scale = 1.0; // 최소 크기 제한
+                if (scale < 1.0) scale = 1.0;
                 
                 const scaledViewport = page.getViewport({scale: scale});
 
@@ -459,17 +452,14 @@
 
                 renderTask.promise.then(function() {
                     pageRendering = false;
+                    // pageInput 업데이트
+                    document.getElementById('pageInput').value = num;
                     
-                    // UI 업데이트
-                    document.getElementById('page_num').textContent = num;
-                    
-                    // 대기 중인 렌더링 요청 처리
                     if (pageNumPending !== null) {
                         renderPage(pageNumPending);
                         pageNumPending = null;
                     }
                     
-                    // 스크롤 상단 이동
                     document.getElementById('pdf-render-container').scrollTop = 0;
                 });
             });
@@ -501,6 +491,24 @@
             buttons.forEach(btn => btn.classList.remove('active-page'));
             const activeBtn = document.getElementById(`toc-btn-${activePage}`);
             if (activeBtn) activeBtn.classList.add('active-page');
+        }
+
+        function applyPageInput() {
+            const input = document.getElementById('pageInput');
+            let pageNum = parseInt(input.value);
+            if (isNaN(pageNum) || pageNum < 1) {
+                alert("올바른 페이지 번호를 입력해주세요.");
+                input.value = 1; 
+                return;
+            }
+            input.blur();
+            goToPage(pageNum);
+        }
+
+        function goToPage(num) {
+            if (!currentKey) return;
+            document.getElementById('pageInput').value = num;
+            queueRenderPage(num);
         }
 
         function downloadCurrentPdf() {
