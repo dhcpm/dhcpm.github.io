@@ -6,6 +6,14 @@
     <title>2025 대구보건대학교 만족도 조사 결과 뷰어</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- PDF.js 라이브러리 추가 (모바일 호환성 해결 핵심) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        // PDF.js 워커 설정
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    </script>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
         
@@ -50,15 +58,37 @@
             color: #0f766e;
         }
 
-        /* 현재 보고 있는 페이지 강조 */
         .toc-item.active-page {
-            background-color: #ccfbf1; /* Teal-100 */
+            background-color: #ccfbf1;
             color: #0f766e;
             border-left: 3px solid #0d9488;
         }
         .toc-item.active-page .toc-page-badge {
             background-color: #0f766e;
             color: white;
+        }
+
+        /* 캔버스 컨테이너 스타일 */
+        #pdf-render-container {
+            width: 100%;
+            height: 100%;
+            overflow: auto; /* 내부 스크롤 허용 */
+            display: flex;
+            justify-content: center;
+            background-color: #525659; /* PDF 뷰어 배경색 */
+            padding: 20px;
+        }
+        
+        canvas {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            max-width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            #pdf-render-container {
+                padding: 10px;
+                align-items: flex-start;
+            }
         }
     </style>
 </head>
@@ -80,22 +110,19 @@
             </h1>
         </div>
         <div class="text-xs text-gray-400 font-light flex items-center">
-            <span class="hidden md:inline bg-gray-100 px-2 py-1 rounded border border-gray-200 mr-2">HTML5 Viewer</span>
-            <i class="fa-regular fa-folder-open mr-1"></i> <span class="hidden md:inline">Local PDF System</span>
+            <span class="hidden md:inline bg-gray-100 px-2 py-1 rounded border border-gray-200 mr-2">PDF.js Viewer</span>
+            <i class="fa-regular fa-folder-open mr-1"></i> <span class="hidden md:inline">Mobile Optimized</span>
         </div>
     </header>
 
     <!-- Main Content -->
     <div class="flex flex-1 overflow-hidden relative">
         
-        <!-- Mobile Overlay (Background Dimming) -->
+        <!-- Mobile Overlay -->
         <div id="mobileOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden transition-opacity duration-300 opacity-0"></div>
 
-        <!-- Sidebar (Navigation & TOC) -->
-        <!-- Responsive Classes: absolute on mobile, relative on desktop -->
+        <!-- Sidebar -->
         <aside id="sidebar" class="w-80 bg-white flex flex-col border-r border-gray-200 shadow-xl z-50 absolute inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out h-full">
-            
-            <!-- Mobile Sidebar Header (Close Button) -->
             <div class="md:hidden flex items-center justify-between p-4 border-b border-gray-100">
                 <span class="font-bold text-gray-700">메뉴</span>
                 <button onclick="toggleSidebar()" class="text-gray-500 hover:text-red-500">
@@ -103,17 +130,13 @@
                 </button>
             </div>
 
-            <!-- 조사 대상 탭 -->
             <div class="p-4 bg-gray-50 border-b border-gray-200">
                 <h2 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center gap-2">
                     <i class="fa-solid fa-users-viewfinder"></i> 조사 대상 선택
                 </h2>
-                <div class="grid grid-cols-2 gap-2" id="targetButtons">
-                    <!-- 자바스크립트로 버튼 생성됨 -->
-                </div>
+                <div class="grid grid-cols-2 gap-2" id="targetButtons"></div>
             </div>
 
-            <!-- 목차 리스트 -->
             <div class="flex-1 overflow-y-auto custom-scroll p-4 relative">
                 <h2 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center sticky top-0 bg-white pb-2 border-b border-gray-100 justify-between">
                     <span><i class="fa-solid fa-list-ul mr-2 text-teal-600"></i> 목차 (바로가기)</span>
@@ -126,7 +149,6 @@
                 </ul>
             </div>
             
-            <!-- Footer Info -->
             <div class="p-3 bg-gray-100 text-[10px] text-gray-500 text-center border-t border-gray-200">
                 &copy; 2025 Daegu Health College
             </div>
@@ -135,30 +157,31 @@
         <!-- PDF Viewer Area -->
         <main class="flex-1 bg-gray-200 relative flex flex-col h-full overflow-hidden w-full">
             
-            <!-- PDF Control Toolbar -->
+            <!-- Toolbar -->
             <div id="pdfToolbar" class="h-14 bg-white border-b border-gray-300 flex items-center justify-between px-2 md:px-4 shadow-sm z-10 hidden">
                 <div class="flex items-center gap-2 overflow-hidden flex-1 mr-2">
                     <span class="bg-teal-50 text-teal-700 text-xs px-2 py-1 rounded border border-teal-100 whitespace-nowrap hidden md:inline-block">
-                        <i class="fa-regular fa-file-pdf mr-1"></i> 현재 문서
+                        <i class="fa-regular fa-file-pdf mr-1"></i> 문서
                     </span>
-                    <span id="currentFileName" class="text-xs md:text-sm font-medium text-gray-700 truncate" title="">
-                        -
-                    </span>
+                    <span id="currentFileName" class="text-xs md:text-sm font-medium text-gray-700 truncate" title="">-</span>
                 </div>
 
                 <div class="flex items-center gap-2">
-                    <!-- Page Navigation API -->
+                    <!-- Page Navigation -->
                     <div class="flex items-center gap-1 md:gap-2 bg-gray-100 p-1 rounded-lg border border-gray-200">
-                        <span class="text-xs text-gray-500 px-1 font-medium hidden md:inline">Page</span>
-                        <div class="flex items-center">
-                            <input type="number" id="pageInput" min="1" value="1" 
-                                class="w-10 md:w-14 text-center text-xs md:text-sm border border-gray-300 rounded-l focus:outline-none focus:border-teal-500 py-1"
-                                onkeydown="if(event.key === 'Enter') applyPageInput()">
-                            <button onclick="applyPageInput()" 
-                                    class="bg-teal-600 hover:bg-teal-700 text-white text-xs px-2 md:px-3 py-1.5 rounded-r font-medium transition-colors">
-                                이동
-                            </button>
-                        </div>
+                        <!-- Prev Button -->
+                        <button onclick="onPrevPage()" class="w-8 h-8 flex items-center justify-center bg-white hover:bg-gray-200 rounded text-gray-600 border border-gray-300">
+                            <i class="fa-solid fa-chevron-left text-xs"></i>
+                        </button>
+
+                        <span class="text-xs text-gray-500 font-medium whitespace-nowrap">
+                            <span id="page_num">1</span> / <span id="page_count">--</span>
+                        </span>
+
+                        <!-- Next Button -->
+                        <button onclick="onNextPage()" class="w-8 h-8 flex items-center justify-center bg-white hover:bg-gray-200 rounded text-gray-600 border border-gray-300">
+                            <i class="fa-solid fa-chevron-right text-xs"></i>
+                        </button>
                     </div>
 
                     <!-- Download Button -->
@@ -170,35 +193,30 @@
                 </div>
             </div>
 
-            <!-- PDF Iframe Container -->
-            <div class="flex-1 relative w-full h-full bg-gray-500">
+            <!-- PDF Canvas Container (Replaces Iframe) -->
+            <div class="flex-1 relative w-full h-full bg-gray-500 overflow-hidden">
                 <div id="loading" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-white bg-opacity-90 z-20">
                     <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mb-4"></div>
-                    <p class="text-gray-600 font-medium animate-pulse">PDF 문서를 로딩중입니다...</p>
+                    <p class="text-gray-600 font-medium animate-pulse">페이지를 렌더링 중입니다...</p>
                 </div>
                 
-                <!-- Iframe Wrapper -->
-                <div id="pdfContainer" class="w-full h-full bg-white">
-                    <iframe id="pdfFrame" src="about:blank" class="w-full h-full block border-none"></iframe>
+                <div id="pdf-render-container">
+                    <canvas id="the-canvas"></canvas>
                 </div>
                 
-                <!-- 초기 안내 메시지 -->
-                <div id="initialState" class="absolute inset-0 flex flex-col items-center justify-center text-gray-400 bg-gray-100 p-4">
+                <!-- Initial State Message -->
+                <div id="initialState" class="absolute inset-0 flex flex-col items-center justify-center text-gray-400 bg-gray-100 p-4 z-30">
                     <div class="bg-white p-8 rounded-2xl shadow-lg text-center max-w-md w-full">
                         <div class="bg-teal-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-teal-600">
                             <i class="fa-solid fa-magnifying-glass-chart text-3xl"></i>
                         </div>
-                        <h3 class="text-lg font-bold text-gray-800 mb-2">보고서 뷰어 시작하기</h3>
+                        <h3 class="text-lg font-bold text-gray-800 mb-2">모바일 최적화 뷰어</h3>
                         <p class="text-gray-500 text-sm mb-6 hidden md:block">
-                            왼쪽 사이드바에서 <strong>조사 대상(재학생, 졸업생 등)</strong>을<br>선택하여 결과 보고서를 확인하세요.
+                            왼쪽 사이드바에서 <strong>조사 대상</strong>을<br>선택하여 결과 보고서를 확인하세요.
                         </p>
                         <p class="text-gray-500 text-sm mb-6 md:hidden">
                             좌측 상단 <strong>메뉴(<i class="fa-solid fa-bars"></i>)</strong>를 눌러<br>조사 대상을 선택하세요.
                         </p>
-                        <div class="flex justify-center gap-4 text-xs text-gray-400">
-                            <span class="flex items-center gap-1"><i class="fa-solid fa-check text-teal-500"></i> 목차 바로가기</span>
-                            <span class="flex items-center gap-1"><i class="fa-solid fa-check text-teal-500"></i> PDF 다운로드</span>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -206,7 +224,7 @@
     </div>
 
     <script>
-        // 데이터 정의
+        // --- 데이터 정의 ---
         const surveyData = {
             "student": {
                 name: "재학생",
@@ -294,49 +312,59 @@
             }
         };
 
+        // --- PDF.js State Variables ---
+        let pdfDoc = null;
+        let pageNum = 1;
+        let pageRendering = false;
+        let pageNumPending = null;
+        let scale = 1.2; // 초기 스케일 (반응형으로 조정됨)
+        let canvas = document.getElementById('the-canvas');
+        let ctx = canvas.getContext('2d');
         let currentKey = null;
 
         document.addEventListener('DOMContentLoaded', () => {
             renderButtons();
+            
+            // 반응형 리사이징 처리
+            window.addEventListener('resize', () => {
+                if (pdfDoc) {
+                    renderPage(pageNum);
+                }
+                closeSidebarOnMobile();
+            });
         });
 
-        // --- Sidebar Logic for Mobile ---
+        // --- UI Logic ---
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('mobileOverlay');
-            
-            // 토글 로직: -translate-x-full 클래스가 있으면 제거하여 보여주고, 없으면 추가하여 숨김
             if (sidebar.classList.contains('-translate-x-full')) {
-                // 사이드바 열기
                 sidebar.classList.remove('-translate-x-full');
-                // 오버레이 보이기
                 overlay.classList.remove('hidden');
-                setTimeout(() => overlay.classList.remove('opacity-0'), 10); // fade in animation
+                setTimeout(() => overlay.classList.remove('opacity-0'), 10);
             } else {
-                // 사이드바 닫기
                 sidebar.classList.add('-translate-x-full');
-                // 오버레이 숨기기
                 overlay.classList.add('opacity-0');
-                setTimeout(() => overlay.classList.add('hidden'), 300); // wait for animation
+                setTimeout(() => overlay.classList.add('hidden'), 300);
             }
         }
 
-        // 모바일에서 메뉴 선택 시 자동으로 사이드바 닫기
         function closeSidebarOnMobile() {
-            if (window.innerWidth < 768) { // md breakpoint
-                toggleSidebar();
+            if (window.innerWidth < 768) {
+                const sidebar = document.getElementById('sidebar');
+                if (!sidebar.classList.contains('-translate-x-full')) {
+                    toggleSidebar();
+                }
             }
         }
 
         function renderButtons() {
             const container = document.getElementById('targetButtons');
             container.innerHTML = '';
-
             Object.keys(surveyData).forEach(key => {
                 const item = surveyData[key];
                 const btn = document.createElement('button');
                 btn.className = `p-2 rounded-lg text-sm transition-all duration-200 border flex items-center justify-center gap-2 ${currentKey === key ? 'bg-teal-600 text-white border-teal-700 shadow-md transform scale-[1.02]' : 'bg-white text-gray-700 border-gray-200 hover:bg-teal-50 hover:border-teal-300'}`;
-                
                 btn.innerHTML = `<i class="fa-solid ${item.icon}"></i> <span class="text-center leading-tight">${item.name}</span>`;
                 btn.onclick = () => selectTarget(key);
                 container.appendChild(btn);
@@ -346,8 +374,6 @@
         function selectTarget(key) {
             currentKey = key;
             renderButtons();
-            
-            // 모바일에서 선택 시 메뉴 닫기
             closeSidebarOnMobile();
 
             const data = surveyData[key];
@@ -355,36 +381,28 @@
             const initialState = document.getElementById('initialState');
             const pdfToolbar = document.getElementById('pdfToolbar');
             const fileNameDisplay = document.getElementById('currentFileName');
-            const pageInput = document.getElementById('pageInput');
 
             initialState.classList.add('hidden');
             pdfToolbar.classList.remove('hidden');
             pdfToolbar.classList.add('flex');
 
-            const justFileName = data.file.split('/').pop();
-            fileNameDisplay.innerText = justFileName;
-            fileNameDisplay.title = data.file;
+            fileNameDisplay.innerText = data.file.split('/').pop();
             
-            const startPage = 1;
-            pageInput.value = startPage;
-
+            // TOC 생성
             tocList.innerHTML = '';
-            createTocItem(tocList, 1, "표지 (Cover)", startPage);
-
+            createTocItem(tocList, 1, "표지 (Cover)");
             data.toc.forEach(item => {
-                createTocItem(tocList, item.page, item.title, startPage);
+                createTocItem(tocList, item.page, item.title);
             });
 
-            loadPdfPage(startPage);
+            // PDF 로드
+            loadPdf(data.file, 1);
         }
 
-        function createTocItem(parent, page, title, currentPage) {
+        function createTocItem(parent, page, title) {
             const li = document.createElement('li');
-            const isActive = page === currentPage;
-            const activeClass = isActive ? "active-page" : "";
-            
             li.innerHTML = `
-                <button onclick="goToPage(${page})" id="toc-btn-${page}" class="toc-item ${activeClass} w-full text-left px-3 py-2.5 rounded-lg text-sm transition-all flex items-center group mb-1 border border-transparent hover:border-teal-100">
+                <button onclick="queueRenderPage(${page})" id="toc-btn-${page}" class="toc-item w-full text-left px-3 py-2.5 rounded-lg text-sm transition-all flex items-center group mb-1 border border-transparent hover:border-teal-100">
                     <span class="toc-page-badge mr-3 font-mono">p.${page}</span>
                     <span class="truncate font-medium text-gray-600 group-hover:text-teal-700 flex-1" title="${title}">${title}</span>
                 </button>
@@ -392,81 +410,105 @@
             parent.appendChild(li);
         }
 
-        function goToPage(pageNum) {
-            if (!currentKey) return;
+        // --- PDF.js Logic ---
+        function loadPdf(url, startPage) {
+            document.getElementById('loading').classList.remove('hidden');
             
-            // 모바일에서 목차 선택 시 메뉴 닫기
+            // 비동기 로드
+            pdfjsLib.getDocument(url).promise.then(function(pdfDoc_) {
+                pdfDoc = pdfDoc_;
+                document.getElementById('page_count').textContent = pdfDoc.numPages;
+                
+                // 페이지 렌더링
+                pageNum = startPage;
+                renderPage(pageNum);
+                document.getElementById('loading').classList.add('hidden');
+            }).catch(function(error) {
+                console.error('Error loading PDF:', error);
+                document.getElementById('loading').classList.add('hidden');
+                alert('PDF 문서를 로드하는 중 오류가 발생했습니다. (파일 경로 또는 서버 설정을 확인하세요)');
+            });
+        }
+
+        function renderPage(num) {
+            pageRendering = true;
+            
+            // TOC 스타일 업데이트
+            updateTocStyle(num);
+
+            pdfDoc.getPage(num).then(function(page) {
+                // 반응형 스케일 계산 (화면 너비에 맞춤)
+                const container = document.getElementById('pdf-render-container');
+                const desiredWidth = container.clientWidth - 40; // padding 고려
+                const viewport = page.getViewport({scale: 1});
+                
+                // 모바일에서는 너비에 꽉 차게, PC에서는 적당한 크기 유지
+                scale = desiredWidth / viewport.width;
+                if (scale < 1.0) scale = 1.0; // 최소 크기 제한
+                
+                const scaledViewport = page.getViewport({scale: scale});
+
+                canvas.height = scaledViewport.height;
+                canvas.width = scaledViewport.width;
+
+                const renderContext = {
+                    canvasContext: ctx,
+                    viewport: scaledViewport
+                };
+                const renderTask = page.render(renderContext);
+
+                renderTask.promise.then(function() {
+                    pageRendering = false;
+                    
+                    // UI 업데이트
+                    document.getElementById('page_num').textContent = num;
+                    
+                    // 대기 중인 렌더링 요청 처리
+                    if (pageNumPending !== null) {
+                        renderPage(pageNumPending);
+                        pageNumPending = null;
+                    }
+                    
+                    // 스크롤 상단 이동
+                    document.getElementById('pdf-render-container').scrollTop = 0;
+                });
+            });
+        }
+
+        function queueRenderPage(num) {
+            if (pageRendering) {
+                pageNumPending = num;
+            } else {
+                renderPage(num);
+            }
             closeSidebarOnMobile();
-            
-            document.getElementById('pageInput').value = pageNum;
-            updateTocStyle(pageNum);
-            loadPdfPage(pageNum);
+        }
+
+        function onPrevPage() {
+            if (pageNum <= 1) return;
+            pageNum--;
+            queueRenderPage(pageNum);
+        }
+
+        function onNextPage() {
+            if (pageNum >= pdfDoc.numPages) return;
+            pageNum++;
+            queueRenderPage(pageNum);
         }
 
         function updateTocStyle(activePage) {
             const buttons = document.querySelectorAll('.toc-item');
-            buttons.forEach(btn => {
-                btn.classList.remove('active-page');
-            });
-
+            buttons.forEach(btn => btn.classList.remove('active-page'));
             const activeBtn = document.getElementById(`toc-btn-${activePage}`);
-            if (activeBtn) {
-                activeBtn.classList.add('active-page');
-            }
-        }
-
-        function applyPageInput() {
-            const input = document.getElementById('pageInput');
-            let pageNum = parseInt(input.value);
-            
-            if (isNaN(pageNum) || pageNum < 1) {
-                alert("올바른 페이지 번호를 입력해주세요.");
-                input.value = 1; 
-                return;
-            }
-            
-            input.blur();
-            goToPage(pageNum);
-        }
-
-        function loadPdfPage(pageNum) {
-            const data = surveyData[currentKey];
-            const pdfContainer = document.getElementById('pdfContainer');
-            const loading = document.getElementById('loading');
-            
-            loading.classList.remove('hidden');
-
-            const encodedFilename = encodeURIComponent(data.file);
-            
-            setTimeout(() => {
-                pdfContainer.innerHTML = `
-                    <iframe id="pdfFrame" 
-                            src="${encodedFilename}#page=${pageNum}&view=FitH" 
-                            class="w-full h-full block border-none">
-                    </iframe>`;
-                
-                const newIframe = document.getElementById('pdfFrame');
-                
-                newIframe.onload = () => {
-                    loading.classList.add('hidden');
-                };
-                
-                setTimeout(() => {
-                    loading.classList.add('hidden');
-                }, 1000);
-            }, 50);
+            if (activeBtn) activeBtn.classList.add('active-page');
         }
 
         function downloadCurrentPdf() {
-            if (!currentKey) {
-                alert("다운로드할 문서를 선택해주세요.");
-                return;
-            }
-
+            if (!currentKey) return;
             const data = surveyData[currentKey];
             const link = document.createElement('a');
             link.href = data.file;
-            link.download = data.file.split('/').pop(); 
+            link.download = data.file.split('/').pop();
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
