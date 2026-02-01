@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025 대구보건대학교 만족도 조사 결과 뷰어</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #f3f4f6;
+        }
+
+        /* 스크롤바 커스텀 */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 3px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+
+        .toc-item:hover {
+            color: #0d9488;
+            background-color: #f0fdfa;
+        }
+        
+        .toc-page-badge {
+            background-color: #e2e8f0;
+            color: #64748b;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            min-width: 36px;
+            text-align: center;
+        }
+        .toc-item:hover .toc-page-badge {
+            background-color: #ccfbf1;
+            color: #0f766e;
+        }
+
+        /* 현재 보고 있는 페이지 강조 */
+        .toc-item.active-page {
+            background-color: #ccfbf1; /* Teal-100 */
+            color: #0f766e;
+            border-left: 3px solid #0d9488;
+        }
+        .toc-item.active-page .toc-page-badge {
+            background-color: #0f766e;
+            color: white;
+        }
+    </style>
+</head>
+<body class="flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm z-20 h-16 flex items-center px-6 border-b border-gray-200 justify-between">
+        <div class="flex items-center gap-3">
+            <div class="bg-teal-600 text-white p-2 rounded-lg">
+                <i class="fa-solid fa-graduation-cap text-lg"></i>
+            </div>
+            <h1 class="text-xl font-bold text-gray-800 tracking-tight">2025 대구보건대학교 만족도 조사 결과보고서</h1>
+        </div>
+        <div class="text-xs text-gray-400 font-light flex items-center">
+            <span class="bg-gray-100 px-2 py-1 rounded border border-gray-200 mr-2">HTML5 Viewer</span>
+            <i class="fa-regular fa-folder-open mr-1"></i> Local PDF System
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="flex flex-1 overflow-hidden">
+        
+        <!-- Sidebar (Navigation & TOC) -->
+        <aside class="w-80 bg-white flex flex-col border-r border-gray-200 shadow-xl z-10 flex-shrink-0">
+            
+            <!-- 조사 대상 탭 -->
+            <div class="p-4 bg-gray-50 border-b border-gray-200">
+                <h2 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-users-viewfinder"></i> 조사 대상 선택
+                </h2>
+                <div class="grid grid-cols-2 gap-2" id="targetButtons">
+                    <!-- 자바스크립트로 버튼 생성됨 -->
+                </div>
+            </div>
+
+            <!-- 목차 리스트 -->
+            <div class="flex-1 overflow-y-auto custom-scroll p-4 relative">
+                <h2 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center sticky top-0 bg-white pb-2 border-b border-gray-100 justify-between">
+                    <span><i class="fa-solid fa-list-ul mr-2 text-teal-600"></i> 목차 (바로가기)</span>
+                </h2>
+                <ul id="tocList" class="space-y-1 pb-10">
+                    <li class="text-sm text-gray-400 text-center py-10 flex flex-col items-center gap-2">
+                        <i class="fa-solid fa-arrow-up text-2xl text-gray-300"></i>
+                        <span>대상을 선택해주세요.</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Footer Info -->
+            <div class="p-3 bg-gray-100 text-[10px] text-gray-500 text-center border-t border-gray-200">
+                &copy; 2025 Daegu Health College
+            </div>
+        </aside>
+
+        <!-- PDF Viewer Area -->
+        <main class="flex-1 bg-gray-200 relative flex flex-col h-full overflow-hidden">
+            
+            <!-- PDF Control Toolbar -->
+            <div id="pdfToolbar" class="h-14 bg-white border-b border-gray-300 flex items-center justify-between px-4 shadow-sm z-10 hidden">
+                <div class="flex items-center gap-2 overflow-hidden flex-1 mr-4">
+                    <span class="bg-teal-50 text-teal-700 text-xs px-2 py-1 rounded border border-teal-100 whitespace-nowrap">
+                        <i class="fa-regular fa-file-pdf mr-1"></i> 현재 문서
+                    </span>
+                    <span id="currentFileName" class="text-sm font-medium text-gray-700 truncate" title="">
+                        -
+                    </span>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <!-- Page Navigation API -->
+                    <div class="flex items-center gap-2 bg-gray-100 p-1 rounded-lg border border-gray-200">
+                        <span class="text-xs text-gray-500 px-2 font-medium">Page</span>
+                        <div class="flex items-center">
+                            <input type="number" id="pageInput" min="1" value="1" 
+                                class="w-14 text-center text-sm border border-gray-300 rounded-l focus:outline-none focus:border-teal-500 py-1"
+                                onkeydown="if(event.key === 'Enter') applyPageInput()">
+                            <button onclick="applyPageInput()" 
+                                    class="bg-teal-600 hover:bg-teal-700 text-white text-xs px-3 py-1.5 rounded-r font-medium transition-colors">
+                                이동
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Download Button -->
+                    <button onclick="downloadCurrentPdf()" 
+                            class="flex items-center gap-2 bg-gray-800 hover:bg-gray-900 text-white text-xs px-4 py-2 rounded-lg font-medium transition-colors shadow-sm"
+                            title="현재 파일 다운로드">
+                        <i class="fa-solid fa-download"></i> 다운로드
+                    </button>
+                </div>
+            </div>
+
+            <!-- PDF Iframe Container -->
+            <div class="flex-1 relative w-full h-full bg-gray-500">
+                <div id="loading" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-white bg-opacity-90 z-50">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mb-4"></div>
+                    <p class="text-gray-600 font-medium animate-pulse">PDF 문서를 로딩중입니다...</p>
+                </div>
+                
+                <!-- Iframe Wrapper -->
+                <div id="pdfContainer" class="w-full h-full bg-white">
+                    <iframe id="pdfFrame" src="about:blank" class="w-full h-full block border-none"></iframe>
+                </div>
+                
+                <!-- 초기 안내 메시지 -->
+                <div id="initialState" class="absolute inset-0 flex flex-col items-center justify-center text-gray-400 bg-gray-100">
+                    <div class="bg-white p-8 rounded-2xl shadow-lg text-center max-w-md">
+                        <div class="bg-teal-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-teal-600">
+                            <i class="fa-solid fa-magnifying-glass-chart text-3xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-800 mb-2">보고서 뷰어 시작하기</h3>
+                        <p class="text-gray-500 text-sm mb-6">
+                            왼쪽 사이드바에서 <strong>조사 대상(재학생, 졸업생 등)</strong>을<br>선택하여 결과 보고서를 확인하세요.
+                        </p>
+                        <div class="flex justify-center gap-4 text-xs text-gray-400">
+                            <span class="flex items-center gap-1"><i class="fa-solid fa-check text-teal-500"></i> 목차 바로가기</span>
+                            <span class="flex items-center gap-1"><i class="fa-solid fa-check text-teal-500"></i> PDF 다운로드</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // 데이터 정의 (파일명과 목차 매핑) - 경로 업데이트 완료 (/survey/pdf/2025/)
+        const surveyData = {
+            "student": {
+                name: "재학생",
+                icon: "fa-user-graduate",
+                file: "/survey/pdf/2025/2025 대구보건대학교 만족도 조사 결과보고서_재학생_260119.pdf",
+                toc: [
+                    { title: "Part I. 조사 개요", page: 3 },
+                    { title: "Part II. 조사 결과 요약", page: 11 },
+                    { title: "Part III. 조사 결과 분석", page: 18 },
+                    { title: "Part IV. 학과별 결과 분석", page: 60 },
+                    { title: "Part V. 스쿨제별 결과 분석", page: 85 },
+                    { title: "Part VI. 학과별 개선과제 도출", page: 99 },
+                    { title: "Part VII. 시사점 및 제언", page: 122 },
+                    { title: "Appendix", page: 124 }
+                ]
+            },
+            "graduate": {
+                name: "졸업생",
+                icon: "fa-user-tie",
+                file: "/survey/pdf/2025/2025 대구보건대학교 만족도 조사 결과보고서_졸업생_260119.pdf",
+                toc: [
+                    { title: "Part I. 조사 개요", page: 3 },
+                    { title: "Part II. 조사 결과 요약", page: 11 },
+                    { title: "Part III. 조사 결과 분석", page: 16 },
+                    { title: "Part IV. 학과별 결과 분석", page: 31 },
+                    { title: "Part V. 학과별 개선과제 도출", page: 38 },
+                    { title: "Part VI. 시사점 및 제언", page: 60 },
+                    { title: "Appendix", page: 62 }
+                ]
+            },
+            "industry": {
+                name: "산업체",
+                icon: "fa-building",
+                file: "/survey/pdf/2025/2025 대구보건대학교 만족도 조사 결과보고서_산업체_260119.pdf",
+                toc: [
+                    { title: "Part I. 조사 개요", page: 3 },
+                    { title: "Part II. 조사 결과 요약", page: 11 },
+                    { title: "Part III. 조사 결과 분석", page: 16 },
+                    { title: "Part IV. 시사점 및 제언", page: 58 },
+                    { title: "Appendix", page: 60 }
+                ]
+            },
+            "faculty": {
+                name: "교원",
+                icon: "fa-chalkboard-user",
+                file: "/survey/pdf/2025/2025 대구보건대학교 만족도 조사 결과보고서_교원_260119.pdf",
+                toc: [
+                    { title: "Part I. 조사 개요", page: 3 },
+                    { title: "Part II. 조사 결과 요약", page: 11 },
+                    { title: "Part III. 조사 결과 분석", page: 15 },
+                    { title: "Part IV. 시사점 및 제언", page: 48 }
+                ]
+            },
+            "staff": {
+                name: "직원",
+                icon: "fa-briefcase",
+                file: "/survey/pdf/2025/2025 대구보건대학교 만족도 조사 결과보고서_직원_260119.pdf",
+                toc: [
+                    { title: "Part I. 조사 개요", page: 3 },
+                    { title: "Part II. 조사 결과 요약", page: 11 },
+                    { title: "Part III. 조사 결과 분석", page: 15 },
+                    { title: "Part IV. 시사점 및 제언", page: 39 }
+                ]
+            },
+            "community": {
+                name: "지역사회",
+                icon: "fa-users",
+                file: "/survey/pdf/2025/2025 대구보건대학교 만족도 조사 결과보고서_지역사회_260119.pdf",
+                toc: [
+                    { title: "Part I. 조사 개요", page: 3 },
+                    { title: "Part II. 조사 결과 요약", page: 11 },
+                    { title: "Part III. 조사 결과 분석", page: 15 },
+                    { title: "Part IV. 시사점 및 제언", page: 26 }
+                ]
+            },
+            "fgi": {
+                name: "FGI 조사<br><span class='text-[10px] opacity-80 font-normal'>(혁신지원사업)</span>",
+                icon: "fa-comments",
+                file: "/survey/pdf/2025/2025 대구보건대학교 교육수요자 요구도조사 (FGI)_260124.pdf",
+                toc: [
+                    { title: "Part I. 조사 개요", page: 3 },
+                    { title: "Part II. 주요 조사 결과", page: 5 },
+                    { title: "최종 결론 (Conclusion)", page: 29 }
+                ]
+            }
+        };
+
+        let currentKey = null;
+
+        // 초기화
+        document.addEventListener('DOMContentLoaded', () => {
+            renderButtons();
+        });
+
+        function renderButtons() {
+            const container = document.getElementById('targetButtons');
+            container.innerHTML = '';
+
+            Object.keys(surveyData).forEach(key => {
+                const item = surveyData[key];
+                const btn = document.createElement('button');
+                btn.className = `p-2 rounded-lg text-sm transition-all duration-200 border flex items-center justify-center gap-2 ${currentKey === key ? 'bg-teal-600 text-white border-teal-700 shadow-md transform scale-[1.02]' : 'bg-white text-gray-700 border-gray-200 hover:bg-teal-50 hover:border-teal-300'}`;
+                
+                // 버튼 내부 HTML 구조 변경
+                btn.innerHTML = `<i class="fa-solid ${item.icon}"></i> <span class="text-center leading-tight">${item.name}</span>`;
+                btn.onclick = () => selectTarget(key);
+                container.appendChild(btn);
+            });
+        }
+
+        function selectTarget(key) {
+            currentKey = key;
+            renderButtons();
+            
+            const data = surveyData[key];
+            const tocList = document.getElementById('tocList');
+            const initialState = document.getElementById('initialState');
+            const pdfToolbar = document.getElementById('pdfToolbar');
+            const fileNameDisplay = document.getElementById('currentFileName');
+            const pageInput = document.getElementById('pageInput');
+
+            // UI 상태 업데이트
+            initialState.classList.add('hidden');
+            pdfToolbar.classList.remove('hidden');
+            pdfToolbar.classList.add('flex');
+
+            // 텍스트 업데이트 (파일명만 추출하여 표시)
+            const justFileName = data.file.split('/').pop();
+            fileNameDisplay.innerText = justFileName;
+            fileNameDisplay.title = data.file;
+            
+            // 항상 1페이지로 리셋
+            const startPage = 1;
+            pageInput.value = startPage;
+
+            // 목차 생성
+            tocList.innerHTML = '';
+            
+            // 1페이지 (표지) 추가
+            createTocItem(tocList, 1, "표지 (Cover)", startPage);
+
+            // 데이터 기반 목차 추가
+            data.toc.forEach(item => {
+                createTocItem(tocList, item.page, item.title, startPage);
+            });
+
+            // 1페이지로 이동
+            loadPdfPage(startPage);
+        }
+
+        function createTocItem(parent, page, title, currentPage) {
+            const li = document.createElement('li');
+            const isActive = page === currentPage;
+            const activeClass = isActive ? "active-page" : "";
+            
+            li.innerHTML = `
+                <button onclick="goToPage(${page})" id="toc-btn-${page}" class="toc-item ${activeClass} w-full text-left px-3 py-2.5 rounded-lg text-sm transition-all flex items-center group mb-1 border border-transparent hover:border-teal-100">
+                    <span class="toc-page-badge mr-3 font-mono">p.${page}</span>
+                    <span class="truncate font-medium text-gray-600 group-hover:text-teal-700 flex-1" title="${title}">${title}</span>
+                    <i class="fa-solid fa-chevron-right text-[10px] text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                </button>
+            `;
+            parent.appendChild(li);
+        }
+
+        // 페이지 이동 통합 함수
+        function goToPage(pageNum) {
+            if (!currentKey) return;
+            
+            // 입력창 동기화
+            document.getElementById('pageInput').value = pageNum;
+            
+            // 목차 스타일 업데이트
+            updateTocStyle(pageNum);
+            
+            loadPdfPage(pageNum);
+        }
+
+        function updateTocStyle(activePage) {
+            const buttons = document.querySelectorAll('.toc-item');
+            buttons.forEach(btn => {
+                btn.classList.remove('active-page');
+            });
+
+            const activeBtn = document.getElementById(`toc-btn-${activePage}`);
+            if (activeBtn) {
+                activeBtn.classList.add('active-page');
+            }
+        }
+
+        function applyPageInput() {
+            const input = document.getElementById('pageInput');
+            let pageNum = parseInt(input.value);
+            
+            if (isNaN(pageNum) || pageNum < 1) {
+                alert("올바른 페이지 번호를 입력해주세요.");
+                input.value = 1; 
+                return;
+            }
+            
+            input.blur();
+            goToPage(pageNum);
+        }
+
+        function loadPdfPage(pageNum) {
+            const data = surveyData[currentKey];
+            const pdfContainer = document.getElementById('pdfContainer');
+            const loading = document.getElementById('loading');
+            
+            loading.classList.remove('hidden');
+
+            const encodedFilename = encodeURIComponent(data.file);
+            
+            setTimeout(() => {
+                pdfContainer.innerHTML = `
+                    <iframe id="pdfFrame" 
+                            src="${encodedFilename}#page=${pageNum}&view=FitH" 
+                            class="w-full h-full block border-none">
+                    </iframe>`;
+                
+                const newIframe = document.getElementById('pdfFrame');
+                
+                newIframe.onload = () => {
+                    loading.classList.add('hidden');
+                };
+                
+                setTimeout(() => {
+                    loading.classList.add('hidden');
+                }, 1000);
+            }, 50);
+        }
+
+        function downloadCurrentPdf() {
+            if (!currentKey) {
+                alert("다운로드할 문서를 선택해주세요.");
+                return;
+            }
+
+            const data = surveyData[currentKey];
+            const link = document.createElement('a');
+            link.href = data.file;
+            // 다운로드 시에는 긴 경로를 제외하고 순수 파일명만 사용
+            link.download = data.file.split('/').pop(); 
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
