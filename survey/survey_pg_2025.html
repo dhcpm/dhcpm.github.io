@@ -7,12 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
-    <!-- PDF.js 라이브러리 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script>
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    </script>
-
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
         
@@ -35,41 +29,18 @@
         .toc-item.active-page { background-color: #ccfbf1; color: #0f766e; border-left: 3px solid #0d9488; }
         .toc-item.active-page .toc-page-badge { background-color: #0f766e; color: white; }
 
-        /* PDF 렌더링 컨테이너 (연속 스크롤) */
-        #pdf-render-container {
+        /* PDF 컨테이너 */
+        #pdf-viewer-container {
             width: 100%;
             height: 100%;
-            overflow-y: auto; /* 세로 스크롤 허용 */
-            overflow-x: hidden;
             background-color: #525659;
-            padding: 20px 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            scroll-behavior: smooth; /* 부드러운 스크롤 */
+            overflow: hidden;
         }
         
-        /* 개별 페이지 래퍼 */
-        .pdf-page-container {
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            background-color: white;
-            min-height: 200px; /* 로딩 전 최소 높이 */
-            position: relative;
-        }
-
-        .pdf-page-label {
-            position: absolute;
-            top: -25px;
-            left: 0;
-            color: #d1d5db;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        @media (max-width: 768px) {
-            #pdf-render-container { padding: 10px 0; }
-            .pdf-page-container { margin-bottom: 10px; }
+        iframe, object, embed {
+            width: 100%;
+            height: 100%;
+            border: none;
         }
     </style>
 </head>
@@ -89,7 +60,7 @@
             </h1>
         </div>
         <div class="text-xs text-gray-400 font-light flex items-center">
-            <span class="hidden md:inline bg-gray-100 px-2 py-1 rounded border border-gray-200 mr-2">High-Res View</span>
+            <span class="hidden md:inline bg-gray-100 px-2 py-1 rounded border border-gray-200 mr-2">Native Viewer</span>
             <i class="fa-regular fa-folder-open mr-1"></i> <span class="hidden md:inline">Server Hosted</span>
         </div>
     </header>
@@ -135,73 +106,21 @@
                     <span id="currentFileName" class="text-xs md:text-sm font-medium text-gray-700 truncate" title="">-</span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <div class="flex items-center gap-1 md:gap-2 bg-gray-100 p-1 rounded-lg border border-gray-200">
-                        <button onclick="scrollToPage(currentPage - 1)" class="w-8 h-8 flex items-center justify-center bg-white hover:bg-gray-200 rounded text-gray-600 border border-gray-300 shadow-sm active:bg-gray-300">
-                            <i class="fa-solid fa-chevron-up text-xs"></i>
-                        </button>
-                        
-                        <div class="flex items-center justify-center bg-white border border-gray-300 rounded h-8 px-2 min-w-[60px]">
-                            <input type="number" id="pageInput" value="1" min="1" 
-                                   class="w-8 text-center text-sm font-semibold text-gray-700 border-none outline-none p-0 bg-transparent focus:ring-0"
-                                   onkeydown="if(event.key === 'Enter') applyPageInput()"
-                                   onblur="applyPageInput()">
-                            <span class="text-xs text-gray-400 mx-1">/</span>
-                            <span id="page_count" class="text-xs text-gray-500 font-medium">--</span>
-                        </div>
-
-                        <button onclick="scrollToPage(currentPage + 1)" class="w-8 h-8 flex items-center justify-center bg-white hover:bg-gray-200 rounded text-gray-600 border border-gray-300 shadow-sm active:bg-gray-300">
-                            <i class="fa-solid fa-chevron-down text-xs"></i>
-                        </button>
-                    </div>
-
                     <button onclick="downloadCurrentPdf()" class="flex items-center gap-2 bg-gray-800 hover:bg-gray-900 text-white text-xs px-3 py-2 rounded-lg font-medium transition-colors shadow-sm" title="현재 파일 다운로드">
                         <i class="fa-solid fa-download"></i> <span class="hidden md:inline">다운로드</span>
                     </button>
                 </div>
             </div>
 
-            <!-- PDF Continuous Render Container -->
+            <!-- PDF Viewer Container -->
             <div class="flex-1 relative w-full h-full bg-gray-500 overflow-hidden">
-                <!-- 로딩 인디케이터 -->
                 <div id="loading" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-white bg-opacity-90 z-20">
                     <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mb-4"></div>
-                    <p class="text-gray-600 font-medium animate-pulse">문서를 고해상도로 로딩중입니다...</p>
+                    <p class="text-gray-600 font-medium animate-pulse">문서를 불러오는 중입니다...</p>
                 </div>
 
-                <!-- 에러 메시지 컨테이너 -->
-                <div id="error-container" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-white z-30 p-6">
-                    <div class="bg-red-50 border-l-4 border-red-500 p-6 rounded-r shadow-lg max-w-lg w-full">
-                        <div class="flex items-start">
-                            <div class="flex-shrink-0">
-                                <i class="fa-solid fa-circle-exclamation text-red-500 text-2xl"></i>
-                            </div>
-                            <div class="ml-4 w-full">
-                                <h3 class="text-lg font-bold text-red-800">파일을 불러올 수 없습니다</h3>
-                                <div class="mt-2 text-sm text-red-700">
-                                    <p class="mb-2">아래 경로에서 파일을 찾을 수 없거나 접근이 차단되었습니다.</p>
-                                    <div class="bg-white border border-red-200 p-3 rounded font-mono text-xs break-all text-gray-700 mb-3">
-                                        <strong class="text-red-600">시도한 경로:</strong><br>
-                                        <span id="error-path">...</span>
-                                    </div>
-                                    <p class="text-xs text-gray-500">
-                                        <strong>[해결 방법]</strong><br>
-                                        1. 위 서버 경로에 실제 PDF 파일이 존재하는지 확인하세요.<br>
-                                        2. 서버의 CORS(교차 출처 리소스 공유) 설정이 외부 접근을 허용해야 합니다.
-                                    </p>
-                                </div>
-                                <div class="mt-4">
-                                    <button onclick="document.getElementById('error-container').classList.add('hidden')" class="text-sm font-medium text-red-600 hover:text-red-500 hover:underline">
-                                        닫기
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 실제 PDF 페이지들이 붙을 컨테이너 -->
-                <div id="pdf-render-container">
-                    <!-- Canvas elements will be injected here -->
+                <div id="pdf-viewer-container">
+                    <!-- PDF Viewer will be injected here -->
                 </div>
                 
                 <div id="initialState" class="absolute inset-0 flex flex-col items-center justify-center text-gray-400 bg-gray-100 p-4 z-10">
@@ -223,7 +142,7 @@
     </div>
 
     <script>
-        // 데이터 정의 (GitHub Pages 서버 경로 적용)
+        // 데이터 정의 (GitHub Pages 서버 경로)
         const surveyData = {
             "student": {
                 name: "재학생",
@@ -311,36 +230,17 @@
             }
         };
 
-        // --- PDF.js State Variables ---
-        let pdfDoc = null;
-        let currentPage = 1;
-        let totalPages = 0;
-        let scale = 1.2;
         let currentKey = null;
-        let observer = null;
 
         document.addEventListener('DOMContentLoaded', () => {
             renderButtons();
             
-            // 창 크기 변경 시 스케일 조정 로직
-            let resizeTimeout;
             window.addEventListener('resize', () => {
                 closeSidebarOnMobile();
-                clearTimeout(resizeTimeout);
-                resizeTimeout = setTimeout(() => {
-                    // 화면 크기 변경 시 강제 리렌더링 (해상도 유지)
-                    if (pdfDoc) {
-                        // 모든 페이지의 렌더링 상태 초기화
-                        const pages = document.querySelectorAll('.pdf-page-container');
-                        pages.forEach(p => p.dataset.rendered = 'false');
-                        // 현재 보고 있는 페이지만 다시 렌더링하도록 유도
-                        setupIntersectionObserver();
-                    }
-                }, 300);
             });
         });
 
-        // --- UI Logic ---
+        // --- UI 로직 ---
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('mobileOverlay');
@@ -387,200 +287,74 @@
             const initialState = document.getElementById('initialState');
             const pdfToolbar = document.getElementById('pdfToolbar');
             const fileNameDisplay = document.getElementById('currentFileName');
-            const errorContainer = document.getElementById('error-container');
 
-            errorContainer.classList.add('hidden');
             initialState.classList.add('hidden');
             pdfToolbar.classList.remove('hidden');
             pdfToolbar.classList.add('flex');
 
             fileNameDisplay.innerText = data.file.split('/').pop();
             
-            const startPage = 1;
-            document.getElementById('pageInput').value = startPage;
-
+            // TOC 생성
             tocList.innerHTML = '';
+            // 목차는 파일 내 링크 기능을 지원하지 않는 경우 단순 정보용으로 표시하거나
+            // 페이지 번호만 알려주는 용도로 사용 (Native Viewer는 외부 JS로 페이지 제어 불가한 경우가 많음)
             createTocItem(tocList, 1, "표지 (Cover)");
             data.toc.forEach(item => {
                 createTocItem(tocList, item.page, item.title);
             });
 
+            // PDF 로드
             loadPdf(data.file);
         }
 
         function createTocItem(parent, page, title) {
             const li = document.createElement('li');
             li.innerHTML = `
-                <button onclick="scrollToPage(${page})" id="toc-btn-${page}" class="toc-item w-full text-left px-3 py-2.5 rounded-lg text-sm transition-all flex items-center group mb-1 border border-transparent hover:border-teal-100">
+                <div class="toc-item w-full text-left px-3 py-2.5 rounded-lg text-sm transition-all flex items-center group mb-1 border border-transparent hover:border-teal-100 cursor-default">
                     <span class="toc-page-badge mr-3 font-mono">p.${page}</span>
                     <span class="truncate font-medium text-gray-600 group-hover:text-teal-700 flex-1" title="${title}">${title}</span>
-                </button>
+                </div>
             `;
             parent.appendChild(li);
         }
 
-        // --- Continuous Scroll PDF.js Logic ---
+        // --- Native/Google Viewer Logic ---
         function loadPdf(url) {
+            const container = document.getElementById('pdf-viewer-container');
             const loading = document.getElementById('loading');
-            const container = document.getElementById('pdf-render-container');
-            const errorContainer = document.getElementById('error-container');
-            const errorPath = document.getElementById('error-path');
             
             loading.classList.remove('hidden');
-            errorContainer.classList.add('hidden');
-            container.innerHTML = ''; // 초기화
-            
-            const encodedUrl = encodeURI(url);
+            container.innerHTML = '';
 
-            pdfjsLib.getDocument({
-                url: encodedUrl,
-                cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
-                cMapPacked: true,
-                enableXfa: true
-            }).promise.then(function(pdf) {
-                pdfDoc = pdf;
-                totalPages = pdf.numPages;
-                document.getElementById('page_count').textContent = totalPages;
-                currentPage = 1;
-                document.getElementById('pageInput').value = 1;
+            // 모바일 감지 (간단한 방식)
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-                // 모든 페이지의 컨테이너를 미리 생성 (Lazy Rendering 준비)
-                for (let i = 1; i <= totalPages; i++) {
-                    const pageDiv = document.createElement('div');
-                    pageDiv.id = `page-container-${i}`;
-                    pageDiv.className = 'pdf-page-container';
-                    pageDiv.dataset.pageNumber = i;
-                    
-                    const canvas = document.createElement('canvas');
-                    canvas.id = `canvas-${i}`;
-                    pageDiv.appendChild(canvas);
-                    
-                    container.appendChild(pageDiv);
-                }
-
-                loading.classList.add('hidden');
+            if (isMobile) {
+                // 모바일: Google Docs Viewer 사용 (다운로드 없이 바로보기 최적화)
+                const encodedUrl = encodeURIComponent(url);
+                const iframe = document.createElement('iframe');
+                iframe.src = `https://docs.google.com/gview?embedded=true&url=${encodedUrl}`;
+                iframe.onload = () => loading.classList.add('hidden');
+                container.appendChild(iframe);
+            } else {
+                // 데스크탑: Native <object> 태그 사용 (최고 품질, 자체 툴바 포함)
+                const object = document.createElement('object');
+                object.data = url;
+                object.type = "application/pdf";
+                object.className = "w-full h-full";
                 
-                // Intersection Observer 설정 (보이는 페이지만 렌더링 + 현재 페이지 감지)
-                setupIntersectionObserver();
+                // Fallback for browsers that don't support object pdf
+                const fallbackLink = document.createElement('a');
+                fallbackLink.href = url;
+                fallbackLink.textContent = "이 브라우저는 PDF 미리보기를 지원하지 않습니다. 여기를 눌러 다운로드하세요.";
+                object.appendChild(fallbackLink);
 
-            }).catch(function(error) {
-                console.error('Error loading PDF:', error);
-                loading.classList.add('hidden');
-                errorPath.textContent = url;
-                errorContainer.classList.remove('hidden');
-            });
-        }
-
-        function setupIntersectionObserver() {
-            if (observer) observer.disconnect();
-
-            const options = {
-                root: document.getElementById('pdf-render-container'),
-                rootMargin: '300px', // 미리 로드할 여유 공간 확대 (끊김 방지)
-                threshold: 0.05
-            };
-
-            observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const pageNum = parseInt(entry.target.dataset.pageNumber);
-                        renderPage(pageNum);
-                        
-                        // 화면 중앙에 가까운 페이지를 현재 페이지로 인식
-                        if (entry.intersectionRatio > 0.3) {
-                            updateCurrentPageUI(pageNum);
-                        }
-                    }
-                });
-            }, options);
-
-            // 모든 페이지 컨테이너 관찰 시작
-            for (let i = 1; i <= totalPages; i++) {
-                const el = document.getElementById(`page-container-${i}`);
-                if (el) observer.observe(el);
-            }
-        }
-
-        function renderPage(num) {
-            const pageDiv = document.getElementById(`page-container-${num}`);
-            if (pageDiv.dataset.rendered === 'true') return; // 이미 렌더링됨
-
-            // 렌더링 시작 표시
-            pageDiv.dataset.rendered = 'true'; 
-
-            pdfDoc.getPage(num).then(function(page) {
-                const canvas = document.getElementById(`canvas-${num}`);
-                const ctx = canvas.getContext('2d');
-                const containerWidth = document.getElementById('pdf-render-container').clientWidth - 40; // 패딩 고려
+                object.onload = () => loading.classList.add('hidden');
+                // Object 태그는 onload 이벤트가 확실하지 않을 수 있으므로 타임아웃 병행
+                setTimeout(() => loading.classList.add('hidden'), 1000);
                 
-                // 스케일 계산: 기본적으로 너비에 맞추되 최소 크기 보장
-                const viewport = page.getViewport({scale: 1});
-                let desiredScale = containerWidth / viewport.width;
-                if (desiredScale < 1) desiredScale = 1;
-
-                // [해상도 개선] 픽셀 밀도(DPR) 반영 + 추가 해상도(2배) 부스트
-                // devicePixelRatio가 1인 일반 모니터에서도 2배로 렌더링하여 선명하게 표시
-                const pixelRatio = window.devicePixelRatio || 1;
-                const resolutionBoost = 2.0; // 강제 고해상도 (2배)
-                const outputScale = Math.max(pixelRatio, 1.5) * resolutionBoost; 
-
-                // 실제 렌더링할 고해상도 뷰포트
-                const scaledViewport = page.getViewport({scale: desiredScale * outputScale});
-
-                // 캔버스 크기 (물리적 픽셀 - 고해상도)
-                canvas.width = Math.floor(scaledViewport.width);
-                canvas.height = Math.floor(scaledViewport.height);
-
-                // CSS 크기 (화면 표시용 - 원본 크기)
-                // 캔버스를 크게 그리고 CSS로 줄여서 보여줌 -> 선명도 향상 (Downsampling)
-                canvas.style.width = Math.floor(page.getViewport({scale: desiredScale}).width) + "px";
-                canvas.style.height = Math.floor(page.getViewport({scale: desiredScale}).height) + "px";
-
-                const renderContext = {
-                    canvasContext: ctx,
-                    viewport: scaledViewport
-                };
-                
-                page.render(renderContext);
-            });
-        }
-
-        function updateCurrentPageUI(pageNum) {
-            if (currentPage !== pageNum) {
-                currentPage = pageNum;
-                document.getElementById('pageInput').value = pageNum;
-                updateTocStyle(pageNum);
+                container.appendChild(object);
             }
-        }
-
-        function scrollToPage(num) {
-            if (!currentKey || num < 1 || num > totalPages) return;
-            
-            // 해당 페이지 요소로 스크롤
-            const el = document.getElementById(`page-container-${num}`);
-            if (el) {
-                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                updateCurrentPageUI(num);
-                closeSidebarOnMobile();
-            }
-        }
-
-        function updateTocStyle(activePage) {
-            const buttons = document.querySelectorAll('.toc-item');
-            buttons.forEach(btn => btn.classList.remove('active-page'));
-            const activeBtn = document.getElementById(`toc-btn-${activePage}`);
-            if (activeBtn) activeBtn.classList.add('active-page');
-        }
-
-        function applyPageInput() {
-            const input = document.getElementById('pageInput');
-            let pageNum = parseInt(input.value);
-            if (isNaN(pageNum) || pageNum < 1 || pageNum > totalPages) {
-                input.value = currentPage; // 복구
-                return;
-            }
-            scrollToPage(pageNum);
-            input.blur();
         }
 
         function downloadCurrentPdf() {
