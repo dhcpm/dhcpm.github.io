@@ -117,14 +117,12 @@
                     <span id="currentFileName" class="text-xs md:text-sm font-medium text-gray-700 truncate" title="">-</span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <!-- 페이지 이동 컨트롤 (Input 필드 복구 및 디자인 개선) -->
                     <div class="flex items-center gap-1 md:gap-2 bg-gray-100 p-1 rounded-lg border border-gray-200">
                         <button onclick="onPrevPage()" class="w-8 h-8 flex items-center justify-center bg-white hover:bg-gray-200 rounded text-gray-600 border border-gray-300 shadow-sm active:bg-gray-300">
                             <i class="fa-solid fa-chevron-left text-xs"></i>
                         </button>
                         
                         <div class="flex items-center justify-center bg-white border border-gray-300 rounded h-8 px-2 min-w-[60px]">
-                            <!-- pageInput ID 복구 -->
                             <input type="number" id="pageInput" value="1" min="1" 
                                    class="w-8 text-center text-sm font-semibold text-gray-700 border-none outline-none p-0 bg-transparent focus:ring-0"
                                    onkeydown="if(event.key === 'Enter') applyPageInput()"
@@ -168,8 +166,8 @@
                                     </div>
                                     <p class="text-xs text-gray-500">
                                         <strong>[해결 방법]</strong><br>
-                                        1. 위 경로(/pdf/2025/...)에 실제 PDF 파일이 존재하는지 확인하세요.<br>
-                                        2. 서버 설정 또는 브라우저 보안 정책(CORS) 문제일 수 있습니다.
+                                        1. 위 서버 경로에 실제 PDF 파일이 존재하는지 확인하세요.<br>
+                                        2. 서버의 CORS(교차 출처 리소스 공유) 설정이 외부 접근을 허용해야 합니다.
                                     </p>
                                 </div>
                                 <div class="mt-4">
@@ -205,12 +203,12 @@
     </div>
 
     <script>
-        // 데이터 정의
+        // 데이터 정의 (GitHub Pages 서버 경로 적용)
         const surveyData = {
             "student": {
                 name: "재학생",
                 icon: "fa-user-graduate",
-                file: "/pdf/2025/2025 대구보건대학교 만족도 조사 결과보고서_재학생_260119.pdf",
+                file: "https://dhcpm.github.io/survey/pdf/2025/2025 대구보건대학교 만족도 조사 결과보고서_재학생_260119.pdf",
                 toc: [
                     { title: "Part I. 조사 개요", page: 3 },
                     { title: "Part II. 조사 결과 요약", page: 11 },
@@ -225,7 +223,7 @@
             "graduate": {
                 name: "졸업생",
                 icon: "fa-user-tie",
-                file: "/pdf/2025/2025 대구보건대학교 만족도 조사 결과보고서_졸업생_260119.pdf",
+                file: "https://dhcpm.github.io/survey/pdf/2025/2025 대구보건대학교 만족도 조사 결과보고서_졸업생_260119.pdf",
                 toc: [
                     { title: "Part I. 조사 개요", page: 3 },
                     { title: "Part II. 조사 결과 요약", page: 11 },
@@ -239,7 +237,7 @@
             "industry": {
                 name: "산업체",
                 icon: "fa-building",
-                file: "/pdf/2025/2025 대구보건대학교 만족도 조사 결과보고서_산업체_260119.pdf",
+                file: "https://dhcpm.github.io/survey/pdf/2025/2025 대구보건대학교 만족도 조사 결과보고서_산업체_260119.pdf",
                 toc: [
                     { title: "Part I. 조사 개요", page: 3 },
                     { title: "Part II. 조사 결과 요약", page: 11 },
@@ -251,7 +249,7 @@
             "faculty": {
                 name: "교원",
                 icon: "fa-chalkboard-user",
-                file: "/pdf/2025/2025 대구보건대학교 만족도 조사 결과보고서_교원_260119.pdf",
+                file: "https://dhcpm.github.io/survey/pdf/2025/2025 대구보건대학교 만족도 조사 결과보고서_교원_260119.pdf",
                 toc: [
                     { title: "Part I. 조사 개요", page: 3 },
                     { title: "Part II. 조사 결과 요약", page: 11 },
@@ -262,7 +260,7 @@
             "staff": {
                 name: "직원",
                 icon: "fa-briefcase",
-                file: "/pdf/2025/2025 대구보건대학교 만족도 조사 결과보고서_직원_260119.pdf",
+                file: "https://dhcpm.github.io/survey/pdf/2025/2025 대구보건대학교 만족도 조사 결과보고서_직원_260119.pdf",
                 toc: [
                     { title: "Part I. 조사 개요", page: 3 },
                     { title: "Part II. 조사 결과 요약", page: 11 },
@@ -273,7 +271,7 @@
             "community": {
                 name: "지역사회",
                 icon: "fa-users",
-                file: "/pdf/2025/2025 대구보건대학교 만족도 조사 결과보고서_지역사회_260119.pdf",
+                file: "https://dhcpm.github.io/survey/pdf/2025/2025 대구보건대학교 만족도 조사 결과보고서_지역사회_260119.pdf",
                 toc: [
                     { title: "Part I. 조사 개요", page: 3 },
                     { title: "Part II. 조사 결과 요약", page: 11 },
@@ -284,7 +282,7 @@
             "fgi": {
                 name: "FGI 조사<br><span class='text-[10px] opacity-80 font-normal'>(혁신지원사업)</span>",
                 icon: "fa-comments",
-                file: "/pdf/2025/2025 대구보건대학교 교육수요자 요구도조사 (FGI)_260124.pdf",
+                file: "https://dhcpm.github.io/survey/pdf/2025/2025 대구보건대학교 교육수요자 요구도조사 (FGI)_260124.pdf",
                 toc: [
                     { title: "Part I. 조사 개요", page: 3 },
                     { title: "Part II. 주요 조사 결과", page: 5 },
@@ -371,7 +369,6 @@
             fileNameDisplay.innerText = data.file.split('/').pop();
             
             const startPage = 1;
-            // 여기서 pageInput ID가 필요합니다. HTML에 복구했습니다.
             document.getElementById('pageInput').value = startPage;
 
             tocList.innerHTML = '';
@@ -452,7 +449,6 @@
 
                 renderTask.promise.then(function() {
                     pageRendering = false;
-                    // pageInput 업데이트
                     document.getElementById('pageInput').value = num;
                     
                     if (pageNumPending !== null) {
