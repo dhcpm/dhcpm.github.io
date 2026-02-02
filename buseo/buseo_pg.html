@@ -8,6 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- SheetJS (js-xlsx) CDN for Excel Export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- PDF.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <!-- Google Fonts: Noto Sans KR -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -76,6 +78,10 @@
             flex-shrink: 0;
             cursor: col-resize;
             z-index: 10;
+        }
+        /* PDF 캔버스 스타일 */
+        #pdf-container {
+            background-color: #525659; /* 일반적인 PDF 뷰어 배경색 */
         }
     </style>
 </head>
@@ -253,11 +259,25 @@
         <!-- 화면 비율 조절 핸들 -->
         <div id="resizer" class="w-2 bg-gray-200 hover:bg-blue-500 transition-colors"></div>
 
-        <!-- 오른쪽 패널: PDF 뷰어 -->
-        <div id="right-panel" class="flex-1 h-1/2 md:h-full">
-            <iframe id="pdf-viewer" src="2024 부서운영결과보고서 통합본.pdf" class="w-full h-full border-l border-gray-200" title="부서운영결과보고서 PDF">
-                <p>현재 브라우저는 PDF를 지원하지 않습니다. <a href="2024 부서운영결과보고서 통합본.pdf">PDF 파일을 다운로드</a>하여 확인해주세요.</p>
-            </iframe>
+        <!-- 오른쪽 패널: PDF.js 뷰어 -->
+        <div id="right-panel" class="flex-1 h-1/2 md:h-full flex flex-col bg-gray-50 border-l border-gray-200">
+            <!-- 툴바 -->
+            <div class="flex items-center justify-between p-2 bg-white border-b border-gray-200 shadow-sm">
+                <div class="flex items-center space-x-2">
+                    <button id="prev-page" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 text-sm font-medium">이전</button>
+                    <span class="text-sm font-medium text-gray-700">Page: <span id="page-num">--</span> / <span id="page-count">--</span></span>
+                    <button id="next-page" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 text-sm font-medium">다음</button>
+                </div>
+                <div class="flex items-center space-x-2">
+                     <button id="zoom-out" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 text-sm font-medium">-</button>
+                     <span id="zoom-level" class="text-sm font-medium text-gray-700">100%</span>
+                     <button id="zoom-in" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 text-sm font-medium">+</button>
+                </div>
+            </div>
+            <!-- 캔버스 컨테이너 (스크롤 가능) -->
+            <div id="pdf-container" class="flex-1 overflow-auto flex justify-center p-4 relative">
+                <canvas id="the-canvas" class="shadow-lg border border-gray-200"></canvas>
+            </div>
         </div>
     </div>
 
@@ -305,6 +325,9 @@
 
 
 <script>
+    // PDF.js 워커 설정 (필수)
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
     // 제공된 업무 목록 데이터
     const taskData = `
 교무지원팀,양영은,수업시간 관리,13
@@ -518,7 +541,6 @@
     const tableHead = document.getElementById('table-head');
     const tableBody = document.getElementById('table-body');
     const tableFoot = document.getElementById('table-foot');
-    const pdfViewer = document.getElementById('pdf-viewer');
     const evaluationTitle = document.getElementById('evaluation-title');
     const radioButtons = document.querySelectorAll('input[name="evaluation-item"]');
     const exportExcelButton = document.getElementById('export-excel-button');
@@ -545,6 +567,21 @@
     const incompleteListEl = document.getElementById('incomplete-list');
     const completedCountEl = document.getElementById('completed-count');
     const incompleteCountEl = document.getElementById('incomplete-count');
+
+    // PDF Elements
+    const pdfUrl = '2024 부서운영결과보고서 통합본.pdf';
+    let pdfDoc = null;
+    let pageNum = 1;
+    let pageRendering = false;
+    let pageNumPending = null;
+    let scale = 1.0;
+    const canvas = document.getElementById('the-canvas');
+    const ctx = canvas.getContext('2d');
+    const pageNumEl = document.getElementById('page-num');
+    const pageCountEl = document.getElementById('page-count');
+    const zoomInBtn = document.getElementById('zoom-in');
+    const zoomOutBtn = document.getElementById('zoom-out');
+    const zoomLevelEl = document.getElementById('zoom-level');
     // --- END: DOM Element Selections ---
 
     let isDirty = false;
@@ -644,12 +681,111 @@
             // 암호가 맞을 경우
             passwordModal.classList.add('hidden');
             mainContent.classList.remove('hidden');
+            
+            // PDF 로드 시작
+            loadPdf();
         } else {
             // 암호가 틀릴 경우
             window.location.href = '/index.html'; // 지정된 페이지로 이동
         }
     }
     // --- END: Password Protection Logic ---
+
+    // --- START: PDF.js Logic ---
+    function loadPdf() {
+        pdfjsLib.getDocument(pdfUrl).promise.then(function(pdfDoc_) {
+            pdfDoc = pdfDoc_;
+            pageCountEl.textContent = pdfDoc.numPages;
+
+            // Initial/first page rendering
+            renderPage(pageNum);
+        });
+    }
+
+    function renderPage(num) {
+        pageRendering = true;
+        
+        // Fetch page
+        pdfDoc.getPage(num).then(function(page) {
+            const viewport = page.getViewport({scale: scale});
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            // Render PDF page into canvas context
+            const renderContext = {
+                canvasContext: ctx,
+                viewport: viewport
+            };
+            const renderTask = page.render(renderContext);
+
+            // Wait for render to finish
+            renderTask.promise.then(function() {
+                pageRendering = false;
+                if (pageNumPending !== null) {
+                    // New page rendering is pending
+                    renderPage(pageNumPending);
+                    pageNumPending = null;
+                }
+            });
+        });
+
+        // Update page counters
+        pageNumEl.textContent = num;
+    }
+
+    function queueRenderPage(num) {
+        if (pageRendering) {
+            pageNumPending = num;
+        } else {
+            renderPage(num);
+        }
+    }
+
+    function onPrevPage() {
+        if (pageNum <= 1) {
+            return;
+        }
+        pageNum--;
+        queueRenderPage(pageNum);
+    }
+
+    function onNextPage() {
+        if (pageNum >= pdfDoc.numPages) {
+            return;
+        }
+        pageNum++;
+        queueRenderPage(pageNum);
+    }
+
+    function onZoomIn() {
+        scale += 0.1;
+        zoomLevelEl.textContent = Math.round(scale * 100) + "%";
+        renderPage(pageNum);
+    }
+
+    function onZoomOut() {
+        if (scale <= 0.5) return;
+        scale -= 0.1;
+        zoomLevelEl.textContent = Math.round(scale * 100) + "%";
+        renderPage(pageNum);
+    }
+
+    // PDF 뷰어 이벤트 리스너
+    document.getElementById('prev-page').addEventListener('click', onPrevPage);
+    document.getElementById('next-page').addEventListener('click', onNextPage);
+    zoomInBtn.addEventListener('click', onZoomIn);
+    zoomOutBtn.addEventListener('click', onZoomOut);
+
+    // 글로벌 함수로 노출하여 HTML inline onclick에서 호출 가능하게 함
+    window.goToPdfPage = function(num) {
+        // 숫자형 변환 확인
+        const targetPage = parseInt(num);
+        if (pdfDoc && targetPage > 0 && targetPage <= pdfDoc.numPages) {
+            pageNum = targetPage;
+            queueRenderPage(pageNum);
+        }
+    };
+    // --- END: PDF.js Logic ---
 
     // 점수 드롭다운 생성 헬퍼 함수
     function createScoreDropdown(min, max, step = 1) {
@@ -908,13 +1044,6 @@
             });
         });
     }
-
-    // PDF 뷰어 페이지 이동 (전역 스코프로 이동)
-    window.goToPdfPage = function(pageNumber) {
-        if (pdfViewer) {
-            pdfViewer.src = `2024 부서운영결과보고서 통합본.pdf#page=${pageNumber}`;
-        }
-    }
     
     // 알림/확인 모달 표시 함수
     function showCustomAlert(message) {
@@ -1028,22 +1157,6 @@
             if (confirmed) {
                 // 사용자가 '예'를 선택한 경우
                 
-                // --- 엑셀 저장 로직 주석 처리 ---
-                /*
-                // 엑셀 데이터 구성
-                const excelData = [
-                    ["2025 부서운영 자체평가 결과"],
-                    [],
-                    ["평가위원", evaluator],
-                    ["평가부서", departmentForFilename],
-                    ["평가항목", evalTypeLabel],
-                    []
-                ];
-                // ... (중략) ...
-                XLSX.writeFile(workbook, fileName);
-                */
-                // --- 엑셀 저장 로직 주석 처리 끝 ---
-
                 // --- NEW: Save Data Logic ---
                 const currentScores = [];
                 document.querySelectorAll('.score-select').forEach(select => {
