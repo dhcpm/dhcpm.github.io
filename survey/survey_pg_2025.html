@@ -3,760 +3,370 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2025 부서운영결과보고서 작성 상세 지침</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>2025 대구보건대학교 교육 수요자 만족도 및 요구도 조사 결과보고서</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
     <style>
-        :root {
-            /* Updated Color Palette */
-            --primary-color: #033E8C;   /* Deep Blue - 1 */
-            --secondary-color: #049DD9; /* Bright Blue - 2 */
-            --accent-color: #04B2D9;    /* Cyan Blue - 3 */
-            --neutral-gray: #D9D9D9;    /* Light Gray - 4 */
-            --text-color: #0D0D0D;      /* Almost Black - 5 */
-            
-            --bg-color: #f8f9fa;        /* Light Background */
-            --warning-color: #ef4444;   /* Warning/Must Read (Kept semantic) */
-            
-            --sidebar-width: 280px;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+        
         body {
             font-family: 'Noto Sans KR', sans-serif;
-            color: var(--text-color);
-            background-color: var(--bg-color);
-            line-height: 1.6;
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* Sidebar Navigation */
-        .sidebar {
-            width: var(--sidebar-width);
-            background-color: #fff;
-            border-right: 1px solid var(--neutral-gray);
-            position: fixed;
             height: 100vh;
-            overflow-y: auto;
-            z-index: 100;
-            padding-bottom: 40px;
+            overflow: hidden;
+            background-color: #f3f4f6;
         }
 
-        .sidebar-header {
-            padding: 25px 20px;
-            background-color: var(--primary-color);
-            color: #fff;
-            text-align: center;
-        }
+        /* 스크롤바 커스텀 */
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        .sidebar-header h2 {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin: 0;
-        }
+        .toc-item:hover { color: #0d9488; background-color: #f0fdfa; }
+        .toc-page-badge { background-color: #e2e8f0; color: #64748b; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; min-width: 36px; text-align: center; }
+        .toc-item:hover .toc-page-badge { background-color: #ccfbf1; color: #0f766e; }
+        .toc-item.active-page { background-color: #ccfbf1; color: #0f766e; border-left: 3px solid #0d9488; }
+        .toc-item.active-page .toc-page-badge { background-color: #0f766e; color: white; }
 
-        .nav-menu {
-            list-style: none;
-            padding: 10px 0;
-        }
-
-        .nav-item {
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .nav-link {
-            display: block;
-            padding: 15px 20px;
-            color: #555;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.2s;
-            font-size: 0.95rem;
-        }
-
-        .nav-link:hover, .nav-link.active {
-            background-color: #eef8fc; /* Very light blue tint */
-            color: var(--primary-color);
-            border-left: 5px solid var(--secondary-color);
-        }
-
-        /* Must Read Highlight Styles */
-        .highlight-link {
-            color: #b91c1c !important;
-            background-color: #fef2f2;
-            font-weight: bold;
-        }
-        
-        .highlight-link:hover, .highlight-link.active {
-            background-color: #fee2e2;
-            border-left: 5px solid var(--warning-color);
-            color: #991b1b !important;
-        }
-
-        .nav-link i {
-            margin-right: 10px;
-            width: 20px;
-            text-align: center;
-        }
-
-        /* Main Content */
-        .main-content {
-            margin-left: var(--sidebar-width);
-            flex: 1;
-            padding: 40px;
-            max-width: 1200px;
-        }
-
-        .content-header {
-            margin-bottom: 40px;
-            border-bottom: 3px solid var(--primary-color);
-            padding-bottom: 20px;
-        }
-
-        .content-header h1 {
-            font-size: 2.2rem;
-            color: var(--primary-color);
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-
-        .content-header p {
-            font-size: 1.1rem;
-            color: #666;
-        }
-
-        /* Sections */
-        section {
-            background-color: #fff;
-            border-radius: 8px;
-            padding: 35px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            border: 1px solid var(--neutral-gray);
-            scroll-margin-top: 20px;
-        }
-
-        section.must-read-section {
-            border: 2px solid var(--warning-color);
-            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.15);
-            position: relative;
+        /* PDF 컨테이너 */
+        #pdf-viewer-container {
+            width: 100%;
+            height: 100%;
+            background-color: #525659;
             overflow: hidden;
         }
-
-        section.must-read-section::before {
-            content: "필독 사항";
-            position: absolute;
-            top: 0;
-            right: 0;
-            background-color: var(--warning-color);
-            color: white;
-            padding: 5px 15px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            border-bottom-left-radius: 8px;
-        }
-
-        h2 {
-            color: var(--primary-color);
-            font-size: 1.6rem;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--neutral-gray);
-            display: flex;
-            align-items: center;
-            font-weight: 700;
-        }
-
-        h2 i {
-            margin-right: 12px;
-            color: var(--secondary-color);
-        }
-
-        h3 {
-            color: var(--text-color);
-            font-size: 1.3rem;
-            margin: 30px 0 15px 0;
-            font-weight: 700;
-            border-left: 4px solid var(--accent-color);
-            padding-left: 12px;
-        }
-
-        h4 {
-            color: #555;
-            font-size: 1.1rem;
-            margin: 20px 0 10px 0;
-            font-weight: 600;
-        }
-
-        p {
-            margin-bottom: 15px;
-            text-align: justify;
-        }
-
-        ul, ol {
-            margin-bottom: 20px;
-            padding-left: 25px;
-        }
-
-        li {
-            margin-bottom: 8px;
-        }
-
-        /* Tables */
-        .table-container {
-            overflow-x: auto;
-            margin-bottom: 20px;
-            border: 1px solid var(--neutral-gray);
-            border-radius: 6px;
-        }
-
-        table {
+        
+        iframe, object, embed {
             width: 100%;
-            border-collapse: collapse;
-            font-size: 0.95rem;
-        }
-
-        th, td {
-            border: 1px solid var(--neutral-gray);
-            padding: 14px 16px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #e6f0fa; /* Light tint of primary blue */
-            color: var(--primary-color);
-            font-weight: 700;
-            text-align: center;
-            border-bottom: 2px solid var(--secondary-color);
-        }
-
-        td.center {
-            text-align: center;
-        }
-        
-        tr:nth-child(even) {
-            background-color: #fafafa;
-        }
-
-        /* Info Boxes */
-        .info-box {
-            background-color: #eef8fc; /* Tint of secondary */
-            border-left: 5px solid var(--secondary-color);
-            padding: 20px 25px;
-            margin-bottom: 20px;
-            border-radius: 0 6px 6px 0;
-        }
-        
-        .info-box a {
-            color: var(--secondary-color);
-            font-weight: bold;
-            text-decoration: none;
-        }
-        
-        .info-box a:hover {
-            text-decoration: underline;
-        }
-
-        .warning-box {
-            background-color: #fff8e1;
-            border-left: 5px solid #f59e0b;
-            padding: 20px 25px;
-            margin-bottom: 20px;
-            border-radius: 0 6px 6px 0;
-        }
-
-        .tip-box {
-            background-color: #f0fdf4;
-            border: 1px solid #bbf7d0;
-            padding: 25px;
-            border-radius: 8px;
-            margin-top: 25px;
-        }
-        
-        .tip-header {
-            display: flex;
-            align-items: center;
-            font-weight: bold;
-            color: #166534;
-            margin-bottom: 15px;
-            font-size: 1.05rem;
-        }
-
-        /* Badges */
-        .badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            margin-right: 5px;
-        }
-        
-        .badge-blue { background-color: var(--secondary-color); color: #fff; }
-        .badge-red { background-color: #fee2e2; color: #b91c1c; }
-
-        /* Scroll to top button */
-        .scroll-top {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background-color: var(--primary-color);
-            color: #fff;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            transition: transform 0.2s, background-color 0.2s;
-            z-index: 1000;
-        }
-        
-        .scroll-top:hover {
-            transform: translateY(-5px);
-            background-color: var(--secondary-color);
-        }
-
-        /* Download Button Style */
-        .download-btn {
-            display: inline-block;
-            background-color: var(--secondary-color);
-            color: white;
-            padding: 12px 24px;
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: 600;
-            margin-top: 20px;
-            transition: background-color 0.2s, transform 0.2s;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .download-btn:hover {
-            background-color: var(--primary-color);
-            transform: translateY(-2px);
-        }
-
-        .download-btn i {
-            margin-right: 8px;
-        }
-
-        /* Responsive */
-        @media (max-width: 900px) {
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-                overflow: visible;
-                border-right: none;
-                border-bottom: 1px solid var(--neutral-gray);
-            }
-            
-            .nav-menu {
-                display: flex;
-                flex-wrap: wrap;
-                background: #fff;
-            }
-            
-            .nav-item {
-                flex: 1 1 50%;
-                border-right: 1px solid #f0f0f0;
-            }
-            
-            .main-content {
-                margin-left: 0;
-                padding: 20px;
-            }
+            height: 100%;
+            border: none;
         }
     </style>
 </head>
-<body>
+<body class="flex flex-col">
 
-    <!-- Sidebar -->
-    <nav class="sidebar">
-        <div class="sidebar-header">
-            <h2>2025 부서운영결과보고서<br>작성 지침서</h2>
+    <!-- Header -->
+    <header class="bg-white shadow-sm z-30 h-16 flex items-center px-4 md:px-6 border-b border-gray-200 justify-between relative">
+        <div class="flex items-center gap-3">
+            <button id="mobileMenuBtn" onclick="toggleSidebar()" class="md:hidden text-gray-600 hover:text-teal-600 focus:outline-none p-1">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+            <div class="bg-teal-600 text-white p-2 rounded-lg hidden md:block">
+                <i class="fa-solid fa-graduation-cap text-lg"></i>
+            </div>
+            <h1 class="text-base md:text-xl font-bold text-gray-800 tracking-tight truncate max-w-[200px] md:max-w-none">
+                2025 대구보건대학교 교육 수요자 만족도 및 요구도 조사 결과보고서
+            </h1>
         </div>
-        <ul class="nav-menu">
-            <li class="nav-item"><a href="#overview" class="nav-link"><i class="fa-solid fa-circle-info"></i> 작성 개요 및 일정</a></li>
-            <li class="nav-item"><a href="#system" class="nav-link"><i class="fa-solid fa-computer"></i> 시스템 접속 방법</a></li>
-            <li class="nav-item"><a href="#process" class="nav-link"><i class="fa-solid fa-list-check"></i> 작성 순서 및 방법</a></li>
-            <li class="nav-item"><a href="#detail-input" class="nav-link"><i class="fa-solid fa-keyboard"></i> 상세 입력 가이드</a></li>
-            <li class="nav-item"><a href="#evaluation" class="nav-link"><i class="fa-solid fa-scale-balanced"></i> 평가 기준 및 배점</a></li>
-            <li class="nav-item"><a href="#examples" class="nav-link"><i class="fa-solid fa-file-pen"></i> 작성 예시 (Template)</a></li>
-            <li class="nav-item"><a href="#tips" class="nav-link highlight-link"><i class="fa-solid fa-star"></i> 실적 vs 성과 & 총평 <span class="badge badge-red">필독</span></a></li>
-        </ul>
-    </nav>
+        <div class="text-xs text-gray-400 font-light flex items-center">
+            <span class="hidden md:inline bg-gray-100 px-2 py-1 rounded border border-gray-200 mr-2">Native Viewer</span>
+            <i class="fa-regular fa-folder-open mr-1"></i> <span class="hidden md:inline">Server Hosted</span>
+        </div>
+    </header>
 
     <!-- Main Content -->
-    <main class="main-content">
-        <div class="content-header">
-            <h1>2025학년도 부서운영결과보고서 작성 지침</h1>
-            <p>작성기준 학년도: 2025학년도 (2025.3 ~ 2026.2) | 작성: 행정부서 | 2026.1</p>
-            
-            <!-- Download Button -->
-            <a href="붙임1. 2025학년도 부서운영결과보고서 작성 지침서.pdf" class="download-btn" download>
-                <i class="fa-solid fa-file-arrow-down"></i> 작성지침서 다운로드
-            </a>
-        </div>
+    <div class="flex flex-1 overflow-hidden relative">
+        <div id="mobileOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden transition-opacity duration-300 opacity-0"></div>
 
-        <!-- Section 1: Overview -->
-        <section id="overview">
-            <h2><i class="fa-solid fa-circle-info"></i> 1. 작성 개요</h2>
-            
-            <h3>1.1 목적</h3>
-            <p>대학에서 관리하는 성과지표 및 행정업무 전반에 대한 지속적인 품질관리(CQI: Continuous Quality Improvement)를 통한 교육의 질 개선 및 행정역량 제고를 목적으로 합니다.</p>
-            <ul>
-                <li><strong>평가 자료 활용:</strong> 대학자체평가 및 연간운영평가의 기초자료로 활용</li>
-                <li><strong>업적 평가 반영:</strong> 2026학년도 직원업적평가(부서종합평정)에 반영</li>
-            </ul>
-
-            <h3>1.2 작성 대상 및 기간</h3>
-            <div class="table-container">
-                <table>
-                    <tr>
-                        <th width="30%">구분</th>
-                        <th>내용</th>
-                    </tr>
-                    <tr>
-                        <td><strong>작성 기간</strong></td>
-                        <td><strong>2026. 01. 28(수) ~ 02. 06(금)</strong></td>
-                    </tr>
-                    <tr>
-                        <td><strong>작성 부서</strong></td>
-                        <td>33개 운영계획서 작성 부서 (총 116개 성과지표 대상)</td>
-                    </tr>
-                    <tr>
-                        <td><strong>작성 내용</strong></td>
-                        <td>2025학년도 부서운영 추진결과(실적·성과) 작성 및 자체분석 내용</td>
-                    </tr>
-                </table>
+        <aside id="sidebar" class="w-80 bg-white flex flex-col border-r border-gray-200 shadow-xl z-50 absolute inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out h-full">
+            <div class="md:hidden flex items-center justify-between p-4 border-b border-gray-100">
+                <span class="font-bold text-gray-700">메뉴</span>
+                <button onclick="toggleSidebar()" class="text-gray-500 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
-
-            <div class="warning-box">
-                <strong><i class="fa-solid fa-triangle-exclamation"></i> 주의:</strong> 직원업적평가에 반영되므로 성실하게 작성 바랍니다.
+            <div class="p-4 bg-gray-50 border-b border-gray-200">
+                <h2 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-users-viewfinder"></i> 조사 대상 선택
+                </h2>
+                <div class="grid grid-cols-2 gap-2" id="targetButtons"></div>
             </div>
-
-            <h3>1.3 향후 일정</h3>
-            <ul>
-                <li><strong>부서 운영성과 평가:</strong> 2월 말까지 (오프라인/위원회 평가)</li>
-                <li><strong>차기년도 계획 회의:</strong> 2026. 3월 (오프라인 회의록 작성)</li>
-                <li><strong>차기년도 계획서 작성:</strong> 2026. 4월 (성과관리시스템)</li>
-            </ul>
-        </section>
-
-        <!-- Section 2: System Access -->
-        <section id="system">
-            <h2><i class="fa-solid fa-computer"></i> 2. 성과관리시스템 접속</h2>
-            
-            <div class="info-box">
-                <i class="fa-solid fa-link"></i> <strong>접속 주소:</strong> <a href="https://nbsc.dhc.ac.kr" target="_blank">https://nbsc.dhc.ac.kr</a>
-            </div>
-
-            <h3>2.1 로그인 정보</h3>
-            <p>종합정보시스템의 <strong>아이디(ID)</strong> 및 <strong>패스워드(PW)</strong>와 동일합니다.</p>
-
-            <h3>2.2 접속 환경 (브라우저)</h3>
-            <ul>
-                <li><span class="badge badge-blue">권장</span> <strong>크롬(Chrome)</strong> 또는 <strong>엣지(Edge)</strong> 브라우저 사용</li>
-                <li><span class="badge badge-red">금지</span> 인터넷 익스플로러(IE)는 연도 설정 오류 등으로 사용이 금지됩니다.</li>
-            </ul>
-
-            <h3>2.3 접속 경로</h3>
-            <ol>
-                <li>직접 접속: 주소창에 URL 입력</li>
-                <li>종합정보시스템 로그인 후 [더보기] > [성과관리시스템] 아이콘 클릭</li>
-            </ol>
-        </section>
-
-        <!-- Section 3: Process -->
-        <section id="process">
-            <h2><i class="fa-solid fa-list-check"></i> 3. 작성 순서 및 요령</h2>
-            
-            <h3>3.1 작성 흐름도</h3>
-            <ol>
-                <li><strong>시스템 로그인:</strong> 성과관리시스템 접속 및 2025년도 설정</li>
-                <li><strong>중간평가 반영:</strong> 부서 운영 자체 중간평가 결과(우수/미흡) 반영</li>
-                <li><strong>성과지표별 실적 작성:</strong>
-                    <ul>
-                        <li><span class="badge badge-red">중요</span> <strong>『부서업무 운영실적』 지표:</strong> 상세 추진실적 및 총평 작성</li>
-                        <li><strong>그 외 지표:</strong> 목푯값 대비 최종 달성값만 입력</li>
-                    </ul>
-                </li>
-                <li><strong>보고서 검토:</strong> 팀장/센터장 검토 (달성률, 총평 확인)</li>
-                <li><strong>최종 제출:</strong> 작성 완료 확인서 제출 (대학성과관리팀 업무협조전)</li>
-            </ol>
-
-            <h3>3.2 핵심 작성 요령</h3>
-            <div class="tip-box">
-                <div class="tip-header"><i class="fa-solid fa-pen-nib"></i> 작성 Tip</div>
-                <ul>
-                    <li>내용은 <strong>개조식</strong>으로 구체적이고 명확하게 작성합니다.</li>
-                    <li>불필요한 미사여구나 수식어는 자제합니다.</li>
-                    <li>단순 실적이 아닌 <strong>정량적·정성적 성과 중심</strong>으로 작성합니다.</li>
-                    <li><strong>피드백 강화:</strong> 자체평가 후 문제분석 및 개선계획을 구체적으로 작성해야 합니다.</li>
+            <div class="flex-1 overflow-y-auto custom-scroll p-4 relative">
+                <h2 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center sticky top-0 bg-white pb-2 border-b border-gray-100 justify-between">
+                    <span><i class="fa-solid fa-list-ul mr-2 text-teal-600"></i> 목차 (바로가기)</span>
+                </h2>
+                <ul id="tocList" class="space-y-1 pb-10">
+                    <li class="text-sm text-gray-400 text-center py-10 flex flex-col items-center gap-2">
+                        <i class="fa-solid fa-arrow-up text-2xl text-gray-300"></i>
+                        <span>대상을 선택해주세요.</span>
+                    </li>
                 </ul>
             </div>
-        </section>
-
-        <!-- Section 4: Detail Input Guide -->
-        <section id="detail-input">
-            <h2><i class="fa-solid fa-keyboard"></i> 4. 상세 입력 가이드</h2>
-
-            <h3>4.1 기본 설정 확인</h3>
-            <ul>
-                <li><strong>부서목표설정:</strong> 계획 수립 시 내용을 점검하고 변경 시 수정 (저장 필수)</li>
-                <li><strong>업무담당자 설정:</strong> 부서에서 직접 입력. 담당자가 조회되지 않거나 업무명이 변경된 경우 대학성과관리팀 문의</li>
-            </ul>
-
-            <h3>4.2 실적 입력 (중요)</h3>
-            <p><strong>『부서업무 운영실적』</strong> 지표 내에서 담당자별 업무에 대해 다음 항목들을 작성합니다.</p>
-            
-            <div class="table-container">
-                <table>
-                    <tr>
-                        <th width="20%">항목</th>
-                        <th>작성 내용</th>
-                    </tr>
-                    <tr>
-                        <td><strong>추진실적</strong></td>
-                        <td>
-                            - 운영계획 대비 실적을 개조식으로 구체적 작성<br>
-                            - 전년도 분석에 따른 환류 개선 실적 포함<br>
-                            - <span class="badge badge-red">필수</span> 관련 근거 파일(증빙자료) 첨부
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><strong>정량적 성과</strong></td>
-                        <td>
-                            - 투입/산출/성과의 형식으로 작성<br>
-                            - 예: 예산(투입) -> 프로그램 수(산출) -> 취업률 4.1%p 향상(성과)
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><strong>정성적 성과</strong></td>
-                        <td>
-                            - 수치화할 수 없는 성과 (심리적 효과, 업무 효율성, 만족도 등)
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><strong>전년 대비 개선</strong></td>
-                        <td>
-                            - 전년도 미흡사항과는 별도로 업무를 추진하며 개선한 실적 작성
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><strong>문제점 분석</strong></td>
-                        <td>
-                            - 업무 추진 중 드러난 문제점이나 보완 사항
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><strong>환류 계획</strong></td>
-                        <td>
-                            - 차기년도 개선 계획 (구체적 방법, 시기, 예산 등)<br>
-                            - 포괄적 표현("노력하겠다") 지양
-                        </td>
-                    </tr>
-                </table>
+            <div class="p-3 bg-gray-100 text-[10px] text-gray-500 text-center border-t border-gray-200">
+                &copy; 2025 Daegu Health College
             </div>
+        </aside>
 
-            <h3>4.3 달성도 입력 (일반 지표)</h3>
-            <p>일반 지표(재학생 충원율, 만족도 등)는 12월 1일 기준(또는 최종) <strong>실적값</strong>만 입력하고 대푯값으로 설정합니다.</p>
-        </section>
-
-        <!-- Section 5: Evaluation Criteria -->
-        <section id="evaluation">
-            <h2><i class="fa-solid fa-scale-balanced"></i> 5. 평가 기준 및 배점</h2>
-            
-            <h3>5.1 정량적 평가 (25점)</h3>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>평가 항목</th>
-                            <th class="center">배점</th>
-                            <th>평가 기준 요약</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>목푯값 설정의 적절성</td>
-                            <td class="center">10점</td>
-                            <td>달성률 100% 이상 + 3년간 실적 평균값 초과 설정 시 만점</td>
-                        </tr>
-                        <tr>
-                            <td>목표 달성도</td>
-                            <td class="center">15점</td>
-                            <td>목표 대비 실적 달성률 (100% 이상 시 15점, 90% 이상 14점 등)</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <p class="small">* 평가 제외 지표: 교육비환원율, 교사확보율 등 / 권역평균 적용 지표: 충원율, 중도탈락률 등</p>
-
-            <h3>5.2 정성적 평가 (부서업무 추진계획 수행도 - 25점)</h3>
-            <ul>
-                <li><strong>성실도 (15점):</strong> 계획 대비 수행 여부, 증빙자료 첨부, 내용의 구체성</li>
-                <li><strong>문제분석 (5점):</strong> 수행 후 문제점 분석 및 보완사항의 적절성</li>
-                <li><strong>개선노력 (5점):</strong> 구체적인 개선방안 및 환류계획 수립 여부</li>
-            </ul>
-
-            <h3>5.3 총평 및 환류 평가 (30점)</h3>
-            <ul>
-                <li><strong>종합평가 충실성 (15점):</strong> 우수사항(8점) 및 미흡사항(7점) 분석의 적절성</li>
-                <li><strong>환류방안 적정성 (15점):</strong> 향후 개선방안의 구체성 (전략, 방법, 시기, 대상, 피드백 포함 여부)</li>
-            </ul>
-        </section>
-
-        <!-- Section 6: Examples -->
-        <section id="examples">
-            <h2><i class="fa-solid fa-file-pen"></i> 6. 작성 예시 (Template)</h2>
-            <p>보고서 작성 시 아래 템플릿 구조를 활용하여 논리적으로 작성하십시오.</p>
-
-            <div class="info-box">
-                <h4>[Plan 단계] 계획 단계의 추진실적</h4>
-                <ul>
-                    <li>업무 시기, 준비사항, 주관기관 및 협력기관 내용</li>
-                    <li>공문 접수 및 승인 내용</li>
-                </ul>
-                
-                <h4>[Do 단계] 시행 단계의 추진실적</h4>
-                <ul>
-                    <li>추진 내용 및 방법에 대한 구체적 서술</li>
-                    <li>예산 집행 내역 등</li>
-                </ul>
-
-                <h4>[Check 단계] 중간점검 및 결과보고</h4>
-                <ul>
-                    <li>정량적 성과 (환경, 진행, 결과 수치)</li>
-                    <li>정성적 성과 (만족도, 효율성 등)</li>
-                </ul>
-
-                <h4>[Action 단계] 공유 및 환류</h4>
-                <ul>
-                    <li>성과 공유 방법 (게시판, 회의 등)</li>
-                    <li>차기 추진 방향 및 개선안</li>
-                </ul>
-            </div>
-
-            <h3>작성 템플릿 예시 (개선실적)</h3>
-            <div class="table-container">
-                <table>
-                    <tr>
-                        <th width="20%">항목</th>
-                        <th>작성 내용 예시</th>
-                    </tr>
-                    <tr>
-                        <td><strong>개선목적</strong></td>
-                        <td>양정주기 내 자체진단보고서 작성 및 제출의무 수행</td>
-                    </tr>
-                    <tr>
-                        <td><strong>개선방법</strong></td>
-                        <td>자체진단 결과보고서 관련 공문 접수 및 역량 강화 교육 참석</td>
-                    </tr>
-                    <tr>
-                        <td><strong>반영시기</strong></td>
-                        <td>2025. 4월, 6월, 8월 (시기별 보고서 작성)</td>
-                    </tr>
-                    <tr>
-                        <td><strong>반영방법</strong></td>
-                        <td>각 시기별 비교분석 결과보고서 작성 및 대학 주요 자료 공유</td>
-                    </tr>
-                </table>
-            </div>
-        </section>
-
-        <!-- Section 7: Tips (Must Read) -->
-        <section id="tips" class="must-read-section">
-            <h2><i class="fa-solid fa-star"></i> 7. 실적 vs 성과 & 총평 <span class="badge badge-red" style="font-size:0.6em; vertical-align:middle; margin-left:10px;">필독</span></h2>
-            
-            <div class="warning-box" style="border-left-color: var(--warning-color); background-color: #fef2f2; border-radius: 8px;">
-                <div style="color: #b91c1c; font-weight: bold; margin-bottom: 5px; font-size: 1.1em;">
-                    <i class="fa-solid fa-bullhorn"></i> 중요 알림
+        <main class="flex-1 bg-gray-200 relative flex flex-col h-full overflow-hidden w-full">
+            <!-- Toolbar -->
+            <div id="pdfToolbar" class="h-14 bg-white border-b border-gray-300 flex items-center justify-between px-2 md:px-4 shadow-sm z-10 hidden">
+                <div class="flex items-center gap-2 overflow-hidden flex-1 mr-2">
+                    <span class="bg-teal-50 text-teal-700 text-xs px-2 py-1 rounded border border-teal-100 whitespace-nowrap hidden md:inline-block">
+                        <i class="fa-regular fa-file-pdf mr-1"></i> 문서
+                    </span>
+                    <span id="currentFileName" class="text-xs md:text-sm font-medium text-gray-700 truncate" title="">-</span>
                 </div>
-                <p style="margin-bottom: 0; color: #7f1d1d;">
-                    이 섹션에는 <strong>전년 대비 개선된 입력 지침</strong>이 포함되어 있습니다. 작성 전 반드시 내용을 숙지해 주시기 바랍니다.
-                </p>
+                <div class="flex items-center gap-2">
+                    <button onclick="downloadCurrentPdf()" class="flex items-center gap-2 bg-gray-800 hover:bg-gray-900 text-white text-xs px-3 py-2 rounded-lg font-medium transition-colors shadow-sm" title="현재 파일 다운로드">
+                        <i class="fa-solid fa-download"></i> <span class="hidden md:inline">다운로드</span>
+                    </button>
+                </div>
             </div>
 
-            <h3>7.1 실적(Result)과 성과(Outcome)의 차이</h3>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th width="50%">실적 (Result)</th>
-                            <th width="50%">성과 (Outcome)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>단순한 결과물, 루틴한 업무</td>
-                            <td><strong>목표 달성 상태, 전년 대비 개선된 결과</strong></td>
-                        </tr>
-                        <tr>
-                            <td>예: 취업률 72% 달성</td>
-                            <td>예: 전년 대비 취업률 <strong>2.1%p 향상</strong></td>
-                        </tr>
-                        <tr>
-                            <td>예: 예산집행 1,000만원</td>
-                            <td>예: 전년 대비 <strong>100만원 절감</strong></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <p class="small">* 이전보다 나아지거나 개선된 것이 없다면 성과라고 보기 어렵습니다.</p>
+            <!-- PDF Viewer Container -->
+            <div class="flex-1 relative w-full h-full bg-gray-500 overflow-hidden">
+                <div id="loading" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-white bg-opacity-90 z-20">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mb-4"></div>
+                    <p class="text-gray-600 font-medium animate-pulse">문서를 불러오는 중입니다...</p>
+                </div>
 
-            <h3>7.2 총평 작성 가이드</h3>
-            <p>총평은 <strong>[중장기], [자체평가], [만족도]</strong> 등 관련도를 반드시 표기하여 작성합니다.</p>
-            
-            <div class="tip-box">
-                <div class="tip-header"><i class="fa-solid fa-star"></i> 우수사항 작성 예시</div>
-                <p><strong>반드시 관련도([중장기], [자체평가], [만족도])를 표기해야 합니다.</strong></p>
-                <ul style="list-style-type: none; padding-left: 0;">
-                    <li style="margin-bottom: 15px; background: rgba(255,255,255,0.6); padding: 10px; border-radius: 4px; border: 1px solid #e5e7eb;">
-                        <span class="badge badge-blue">중장기</span> <strong>DHC만족도 지수 목표값 대비 116%이상 달성</strong><br>
-                        <span style="font-size: 0.9em; color: #666;">(상세: DHC만족도 지수 83.8점 달성)</span>
-                    </li>
-                    <li style="margin-bottom: 15px; background: rgba(255,255,255,0.6); padding: 10px; border-radius: 4px; border: 1px solid #e5e7eb;">
-                        <span class="badge badge-blue">자체평가</span> <strong>만족도 조사 항목 조정의견 반영 및 응답률 제고</strong><br>
-                        <span style="font-size: 0.9em; color: #666;">(상세: 설문문항 조정을 통해 전년대비 응답자수 156명 증가)</span>
-                    </li>
-                    <li style="background: rgba(255,255,255,0.6); padding: 10px; border-radius: 4px; border: 1px solid #e5e7eb;">
-                        <span class="badge badge-blue">만족도</span> <strong>학생식당 메뉴 개선의견 반영</strong><br>
-                        <span style="font-size: 0.9em; color: #666;">(상세: 학생식당 메뉴 다양화 실시)</span>
-                    </li>
-                </ul>
+                <div id="pdf-viewer-container">
+                    <!-- PDF Viewer will be injected here -->
+                </div>
+                
+                <div id="initialState" class="absolute inset-0 flex flex-col items-center justify-center text-gray-400 bg-gray-100 p-4 z-10">
+                    <div class="bg-white p-8 rounded-2xl shadow-lg text-center max-w-md w-full">
+                        <div class="bg-teal-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-teal-600">
+                            <i class="fa-solid fa-magnifying-glass-chart text-3xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-800 mb-2">통합 결과 보고서 뷰어</h3>
+                        <p class="text-gray-500 text-sm mb-6 hidden md:block">
+                            왼쪽 사이드바에서 <strong>조사 대상</strong>을<br>선택하여 결과 보고서를 확인하세요.
+                        </p>
+                        <p class="text-gray-500 text-sm mb-6 md:hidden">
+                            좌측 상단 <strong>메뉴(<i class="fa-solid fa-bars"></i>)</strong>를 눌러<br>조사 대상을 선택하세요.
+                        </p>
+                    </div>
+                </div>
             </div>
-            
-            <div class="tip-box" style="margin-top: 20px; border-color: #fcd34d; background-color: #fffbeb;">
-                <div class="tip-header" style="color: #92400e;"><i class="fa-solid fa-arrow-trend-up"></i> 향후 개선방안 작성 예시 (좋은 예)</div>
-                <p><strong>[중장기, 만족도] 교육수요자 만족도 조사 운영 개선</strong></p>
-                <ul>
-                    <li><strong>전략:</strong> 전문외부용역업체를 통한 신뢰성 확보</li>
-                    <li><strong>방법:</strong> 예산 40,000,000원 (혁신지원사업비)</li>
-                    <li><strong>시기:</strong> 2026. 3월 ~ 12월 (전체 학기 대상)</li>
-                    <li><strong>대상:</strong> 재학생, 졸업생, 교원, 직원, 산업체, 지역사회</li>
-                    <li><strong>피드백:</strong> 웹서비스 결과 공유 및 AI 피드백 시스템 도입</li>
-                </ul>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Scroll to Top Button -->
-    <div class="scroll-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">
-        <i class="fa-solid fa-arrow-up"></i>
+        </main>
     </div>
 
+    <script>
+        // 데이터 정의 (GitHub Pages 서버 경로)
+        const surveyData = {
+            "student": {
+                name: "재학생",
+                icon: "fa-user-graduate",
+                file: "https://dhcpm.github.io/survey/pdf/2025/2025 대구보건대학교 만족도 조사 결과보고서_재학생_260119.pdf",
+                toc: [
+                    { title: "Part I. 조사 개요", page: 3 },
+                    { title: "Part II. 조사 결과 요약", page: 11 },
+                    { title: "Part III. 조사 결과 분석", page: 18 },
+                    { title: "Part IV. 학과별 결과 분석", page: 60 },
+                    { title: "Part V. 스쿨제별 결과 분석", page: 85 },
+                    { title: "Part VI. 학과별 개선과제 도출", page: 99 },
+                    { title: "Part VII. 시사점 및 제언", page: 122 },
+                    { title: "Appendix", page: 124 }
+                ]
+            },
+            "graduate": {
+                name: "졸업생",
+                icon: "fa-user-tie",
+                file: "https://dhcpm.github.io/survey/pdf/2025/2025 대구보건대학교 만족도 조사 결과보고서_졸업생_260119.pdf",
+                toc: [
+                    { title: "Part I. 조사 개요", page: 3 },
+                    { title: "Part II. 조사 결과 요약", page: 11 },
+                    { title: "Part III. 조사 결과 분석", page: 16 },
+                    { title: "Part IV. 학과별 결과 분석", page: 31 },
+                    { title: "Part V. 학과별 개선과제 도출", page: 38 },
+                    { title: "Part VI. 시사점 및 제언", page: 60 },
+                    { title: "Appendix", page: 62 }
+                ]
+            },
+            "industry": {
+                name: "산업체",
+                icon: "fa-building",
+                file: "https://dhcpm.github.io/survey/pdf/2025/2025 대구보건대학교 만족도 조사 결과보고서_산업체_260119.pdf",
+                toc: [
+                    { title: "Part I. 조사 개요", page: 3 },
+                    { title: "Part II. 조사 결과 요약", page: 11 },
+                    { title: "Part III. 조사 결과 분석", page: 16 },
+                    { title: "Part IV. 시사점 및 제언", page: 58 },
+                    { title: "Appendix", page: 60 }
+                ]
+            },
+            "faculty": {
+                name: "교원",
+                icon: "fa-chalkboard-user",
+                file: "https://dhcpm.github.io/survey/pdf/2025/2025 대구보건대학교 만족도 조사 결과보고서_교원_260119.pdf",
+                toc: [
+                    { title: "Part I. 조사 개요", page: 3 },
+                    { title: "Part II. 조사 결과 요약", page: 11 },
+                    { title: "Part III. 조사 결과 분석", page: 15 },
+                    { title: "Part IV. 시사점 및 제언", page: 48 }
+                ]
+            },
+            "staff": {
+                name: "직원",
+                icon: "fa-briefcase",
+                file: "https://dhcpm.github.io/survey/pdf/2025/2025 대구보건대학교 만족도 조사 결과보고서_직원_260119.pdf",
+                toc: [
+                    { title: "Part I. 조사 개요", page: 3 },
+                    { title: "Part II. 조사 결과 요약", page: 11 },
+                    { title: "Part III. 조사 결과 분석", page: 15 },
+                    { title: "Part IV. 시사점 및 제언", page: 39 }
+                ]
+            },
+            "community": {
+                name: "지역사회",
+                icon: "fa-users",
+                file: "https://dhcpm.github.io/survey/pdf/2025/2025 대구보건대학교 만족도 조사 결과보고서_지역사회_260119.pdf",
+                toc: [
+                    { title: "Part I. 조사 개요", page: 3 },
+                    { title: "Part II. 조사 결과 요약", page: 11 },
+                    { title: "Part III. 조사 결과 분석", page: 15 },
+                    { title: "Part IV. 시사점 및 제언", page: 26 }
+                ]
+            },
+            "fgi": {
+                name: "FGI 조사<br><span class='text-[10px] opacity-80 font-normal'>(혁신지원사업)</span>",
+                icon: "fa-comments",
+                file: "https://dhcpm.github.io/survey/pdf/2025/2025 대구보건대학교 교육수요자 요구도조사 (FGI)_260124.pdf",
+                toc: [
+                    { title: "Part I. 조사 개요", page: 3 },
+                    { title: "Part II. 주요 조사 결과", page: 5 },
+                    { title: "최종 결론 (Conclusion)", page: 29 }
+                ]
+            }
+        };
+
+        let currentKey = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderButtons();
+            
+            window.addEventListener('resize', () => {
+                closeSidebarOnMobile();
+            });
+        });
+
+        // --- UI 로직 ---
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+                setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('opacity-0');
+                setTimeout(() => overlay.classList.add('hidden'), 300);
+            }
+        }
+
+        function closeSidebarOnMobile() {
+            if (window.innerWidth < 768) {
+                const sidebar = document.getElementById('sidebar');
+                if (!sidebar.classList.contains('-translate-x-full')) {
+                    toggleSidebar();
+                }
+            }
+        }
+
+        function renderButtons() {
+            const container = document.getElementById('targetButtons');
+            container.innerHTML = '';
+            Object.keys(surveyData).forEach(key => {
+                const item = surveyData[key];
+                const btn = document.createElement('button');
+                btn.className = `p-2 rounded-lg text-sm transition-all duration-200 border flex items-center justify-center gap-2 ${currentKey === key ? 'bg-teal-600 text-white border-teal-700 shadow-md transform scale-[1.02]' : 'bg-white text-gray-700 border-gray-200 hover:bg-teal-50 hover:border-teal-300'}`;
+                btn.innerHTML = `<i class="fa-solid ${item.icon}"></i> <span class="text-center leading-tight">${item.name}</span>`;
+                btn.onclick = () => selectTarget(key);
+                container.appendChild(btn);
+            });
+        }
+
+        function selectTarget(key) {
+            currentKey = key;
+            renderButtons();
+            closeSidebarOnMobile();
+
+            const data = surveyData[key];
+            const tocList = document.getElementById('tocList');
+            const initialState = document.getElementById('initialState');
+            const pdfToolbar = document.getElementById('pdfToolbar');
+            const fileNameDisplay = document.getElementById('currentFileName');
+
+            initialState.classList.add('hidden');
+            pdfToolbar.classList.remove('hidden');
+            pdfToolbar.classList.add('flex');
+
+            fileNameDisplay.innerText = data.file.split('/').pop();
+            
+            // TOC 생성
+            tocList.innerHTML = '';
+            // 목차는 파일 내 링크 기능을 지원하지 않는 경우 단순 정보용으로 표시하거나
+            // 페이지 번호만 알려주는 용도로 사용 (Native Viewer는 외부 JS로 페이지 제어 불가한 경우가 많음)
+            createTocItem(tocList, 1, "표지 (Cover)");
+            data.toc.forEach(item => {
+                createTocItem(tocList, item.page, item.title);
+            });
+
+            // PDF 로드
+            loadPdf(data.file);
+        }
+
+        function createTocItem(parent, page, title) {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <div class="toc-item w-full text-left px-3 py-2.5 rounded-lg text-sm transition-all flex items-center group mb-1 border border-transparent hover:border-teal-100 cursor-default">
+                    <span class="toc-page-badge mr-3 font-mono">p.${page}</span>
+                    <span class="truncate font-medium text-gray-600 group-hover:text-teal-700 flex-1" title="${title}">${title}</span>
+                </div>
+            `;
+            parent.appendChild(li);
+        }
+
+        // --- Native/Google Viewer Logic ---
+        function loadPdf(url) {
+            const container = document.getElementById('pdf-viewer-container');
+            const loading = document.getElementById('loading');
+            
+            loading.classList.remove('hidden');
+            container.innerHTML = '';
+
+            // 모바일 감지 (간단한 방식)
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+            if (isMobile) {
+                // 모바일: Google Docs Viewer 사용 (다운로드 없이 바로보기 최적화)
+                const encodedUrl = encodeURIComponent(url);
+                const iframe = document.createElement('iframe');
+                iframe.src = `https://docs.google.com/gview?embedded=true&url=${encodedUrl}`;
+                iframe.onload = () => loading.classList.add('hidden');
+                container.appendChild(iframe);
+            } else {
+                // 데스크탑: Native <object> 태그 사용 (최고 품질, 자체 툴바 포함)
+                const object = document.createElement('object');
+                object.data = url;
+                object.type = "application/pdf";
+                object.className = "w-full h-full";
+                
+                // Fallback for browsers that don't support object pdf
+                const fallbackLink = document.createElement('a');
+                fallbackLink.href = url;
+                fallbackLink.textContent = "이 브라우저는 PDF 미리보기를 지원하지 않습니다. 여기를 눌러 다운로드하세요.";
+                object.appendChild(fallbackLink);
+
+                object.onload = () => loading.classList.add('hidden');
+                // Object 태그는 onload 이벤트가 확실하지 않을 수 있으므로 타임아웃 병행
+                setTimeout(() => loading.classList.add('hidden'), 1000);
+                
+                container.appendChild(object);
+            }
+        }
+
+        function downloadCurrentPdf() {
+            if (!currentKey) return;
+            const data = surveyData[currentKey];
+            const link = document.createElement('a');
+            link.href = data.file;
+            link.download = data.file.split('/').pop();
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
 </body>
 </html>
