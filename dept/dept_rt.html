@@ -18,9 +18,6 @@
         .pt-header {
             padding-top: 64px; /* 헤더 높이만큼 */
         }
-        .file-input-label {
-            cursor: pointer;
-        }
         @keyframes fade-in {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -88,30 +85,28 @@
             <div class="max-w-7xl mx-auto">
                 <div class="text-center mb-10">
                     <h1 class="text-3xl font-bold text-gray-900 sm:text-4xl">평가 데이터 분석</h1>
-                    <p class="mt-4 text-lg text-gray-600">서로 다른 양식의 엑셀(.xlsx) 파일을 통합하여 동적으로 분석합니다.</p>
+                    <p class="mt-4 text-lg text-gray-600">개별 평가된 평가항목을 통합하여 동적으로 분석합니다.</p>
                 </div>
 
-                <!-- File Upload Section -->
-                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg mb-10">
-                    <div class="flex flex-col sm:flex-row items-center gap-4">
-                        <label for="file-input" id="file-drop-zone" class="file-input-label flex-grow w-full p-4 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:border-blue-500 transition">
-                            <div id="file-display-area" class="text-center">
-                                <div id="file-prompt">
-                                    <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                                        <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                    </svg>
-                                    <span class="mt-2 block font-medium">클릭 또는 드래그하여 파일 선택</span>
-                                </div>
-                                <div id="file-list" class="mt-2 space-y-2 text-sm text-left"></div>
-                            </div>
-                        </label>
-                        <input type="file" id="file-input" class="hidden" accept=".xlsx, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" multiple>
-                        <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto self-stretch">
-                            <button id="analyze-btn" class="w-full sm:w-auto bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition-colors shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center flex-grow" disabled>
+                <!-- Server File Load Section -->
+                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg mb-10 text-center">
+                    <div class="flex flex-col items-center gap-4">
+                        <div class="p-4 bg-blue-50 rounded-full">
+                            <svg class="h-10 w-10 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-900">서버 데이터 자동 분석</h3>
+                        <p class="text-gray-500 max-w-lg">
+                            평가된 모든 항목을 분석하여 그 과정을 AI기술이 검증된 내용을 표시합니다.
+                        </p>
+                        
+                        <div id="loading-status" class="hidden w-full max-w-md bg-gray-100 rounded-lg p-3 text-sm text-left font-mono space-y-1 max-h-40 overflow-y-auto border border-gray-200">
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto mt-2">
+                            <button id="analyze-btn" class="w-full sm:w-auto bg-blue-600 text-white font-bold py-3 px-10 rounded-lg hover:bg-blue-700 transition-colors shadow-md flex items-center justify-center">
                                 분석 시작
-                            </button>
-                            <button id="reset-btn" class="w-full sm:w-auto bg-gray-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-600 transition-colors shadow-md hidden flex items-center justify-center">
-                                초기화
                             </button>
                         </div>
                     </div>
@@ -183,12 +178,8 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Element Definitions
-            const fileInput = document.getElementById('file-input');
-            const fileDropZone = document.getElementById('file-drop-zone');
-            const filePrompt = document.getElementById('file-prompt');
-            const fileList = document.getElementById('file-list');
             const analyzeBtn = document.getElementById('analyze-btn');
-            const resetBtn = document.getElementById('reset-btn');
+            const loadingStatus = document.getElementById('loading-status');
             const resultsContainer = document.getElementById('results-container');
             const combinedViewBtn = document.getElementById('combined-view-btn');
             const deptViewBtn = document.getElementById('dept-view-btn');
@@ -205,122 +196,143 @@
             const tabTransformContent = document.getElementById('tab-transform-content');
             const tabSummaryContent = document.getElementById('tab-summary-content');
 
+            // Constants
+            const DATA_DIR = '../dept/result/';
+
             // State Variables
-            let selectedFiles = [];
             let parsedData = [], departmentAnalysis = [], personAnalysis = [], allAnalysisColumns = [];
             let hasPersonColumn = false;
             let currentView = 'department';
             let currentProcessTab = 'transform';
 
-            // --- UI & File Handling ---
-            function updateFileListUI() {
-                fileList.innerHTML = '';
-                const hasFiles = selectedFiles.length > 0;
-                filePrompt.classList.toggle('hidden', hasFiles);
-                analyzeBtn.disabled = !hasFiles;
-                resetBtn.classList.toggle('hidden', !hasFiles && resultsContainer.classList.contains('hidden'));
-                
-                selectedFiles.forEach((file, index) => {
-                    const fileItem = document.createElement('div');
-                    fileItem.className = 'flex items-center justify-between bg-gray-100 p-2 rounded-md animate-fade-in';
-                    const fileInfoContainer = document.createElement('div');
-                    fileInfoContainer.className = 'flex items-center min-w-0';
-                    fileInfoContainer.innerHTML = `<svg class="w-5 h-5 mr-2 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V7a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg><span class="truncate text-gray-800">${file.name}</span>`;
-                    const removeBtn = document.createElement('button');
-                    removeBtn.type = 'button';
-                    removeBtn.innerHTML = '&times;';
-                    removeBtn.className = 'ml-4 font-bold text-red-500 hover:text-red-700 text-2xl leading-none';
-                    removeBtn.onclick = (e) => {
-                        e.stopPropagation();
-                        selectedFiles.splice(index, 1);
-                        updateFileListUI();
-                    };
-                    fileItem.appendChild(fileInfoContainer);
-                    fileItem.appendChild(removeBtn);
-                    fileList.appendChild(fileItem);
-                });
+            // --- Server File Handling ---
+            async function fetchServerFiles() {
+                try {
+                    // 1. Fetch directory listing
+                    addStatusLog(`폴더 검색 중: ${DATA_DIR}`);
+                    const response = await fetch(DATA_DIR);
+                    if (!response.ok) throw new Error(`폴더 접근 실패 (${response.status})`);
+                    
+                    const text = await response.text();
+                    
+                    // 2. Parse HTML to find .xlsx links (Assumes directory listing is enabled on server)
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(text, 'text/html');
+                    const links = Array.from(doc.querySelectorAll('a'));
+                    
+                    const fileUrls = links
+                        .map(a => a.getAttribute('href'))
+                        .filter(href => href && href.toLowerCase().endsWith('.xlsx'))
+                        .map(href => {
+                            // Handle relative paths correctly
+                            try {
+                                return new URL(href, response.url).href;
+                            } catch (e) {
+                                return href;
+                            }
+                        });
+                    
+                    const uniqueUrls = [...new Set(fileUrls)];
+                    
+                    if (uniqueUrls.length === 0) {
+                        throw new Error("폴더 내에 엑셀 파일(.xlsx)이 없습니다.");
+                    }
+                    
+                    addStatusLog(`총 ${uniqueUrls.length}개의 파일을 찾았습니다.`);
+                    
+                    // 3. Fetch each file
+                    const fileDataPromises = uniqueUrls.map(async (url) => {
+                        try {
+                            const fileName = url.split('/').pop();
+                            addStatusLog(`다운로드 중: ${fileName}...`);
+                            const fileRes = await fetch(url);
+                            if (!fileRes.ok) throw new Error(`다운로드 실패 (${fileRes.status})`);
+                            const arrayBuffer = await fileRes.arrayBuffer();
+                            return { name: fileName, data: arrayBuffer };
+                        } catch (e) {
+                            addStatusLog(`[오류] ${url}: ${e.message}`, true);
+                            return null;
+                        }
+                    });
+                    
+                    const files = (await Promise.all(fileDataPromises)).filter(f => f !== null);
+                    return files;
+                    
+                } catch (error) {
+                    addStatusLog(`[치명적 오류] ${error.message}`, true);
+                    throw error;
+                }
             }
 
-            function handleFileSelect(files) {
-                const allowedExtensions = /(\.xlsx)$/i;
-                Array.from(files).forEach(file => {
-                    const isDuplicate = selectedFiles.some(f => f.name === file.name);
-                    if (allowedExtensions.exec(file.name) && !isDuplicate) {
-                        selectedFiles.push(file);
-                    } else if (!allowedExtensions.exec(file.name)) {
-                        alert(`'${file.name}' 파일은 엑셀(.xlsx) 파일이 아니므로 제외됩니다.`);
-                    }
-                });
-                updateFileListUI();
+            function addStatusLog(message, isError = false) {
+                const p = document.createElement('div');
+                p.className = isError ? 'text-red-600 font-bold' : 'text-gray-600';
+                p.textContent = `> ${message}`;
+                loadingStatus.appendChild(p);
+                loadingStatus.scrollTop = loadingStatus.scrollHeight;
             }
 
             function resetAll() {
-                selectedFiles = [];
                 parsedData = [];
                 departmentAnalysis = [];
                 personAnalysis = [];
                 allAnalysisColumns = [];
                 hasPersonColumn = false;
                 
-                fileInput.value = '';
-                updateFileListUI();
-                
                 resultsContainer.classList.add('hidden');
                 validationContainer.classList.add('hidden');
                 departmentSelector.innerHTML = '';
                 tabTransformContent.innerHTML = '';
                 tabSummaryContent.innerHTML = '';
-                resetBtn.classList.add('hidden');
+                loadingStatus.innerHTML = '';
+                loadingStatus.classList.add('hidden');
             }
 
             // --- Event Listeners ---
-            fileDropZone.addEventListener('dragover', (e) => { e.preventDefault(); fileDropZone.classList.add('bg-blue-50', 'border-blue-500'); });
-            fileDropZone.addEventListener('dragleave', () => fileDropZone.classList.remove('bg-blue-50', 'border-blue-500'));
-            fileDropZone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                fileDropZone.classList.remove('bg-blue-50', 'border-blue-500');
-                if (e.dataTransfer.files.length) handleFileSelect(e.dataTransfer.files);
-            });
-            fileInput.addEventListener('change', () => { if (fileInput.files.length) handleFileSelect(fileInput.files); fileInput.value = ''; });
-            resetBtn.addEventListener('click', resetAll);
-            
             analyzeBtn.addEventListener('click', async () => {
-                if (selectedFiles.length === 0) { alert('파일을 선택해주세요.'); return; }
-                
+                resetAll();
+                loadingStatus.classList.remove('hidden');
                 analyzeBtn.disabled = true;
-                analyzeBtn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>분석 중...`;
+                const originalBtnText = analyzeBtn.innerHTML;
+                analyzeBtn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>데이터 가져오는 중...`;
                 
                 try {
-                    const allJsonData = await Promise.all(selectedFiles.map(file => 
-                        new Promise((resolve, reject) => {
-                            const reader = new FileReader();
-                            reader.onload = e => {
-                                try {
-                                    const workbook = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
-                                    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-                                    resolve(XLSX.utils.sheet_to_json(worksheet, { defval: "" }));
-                                } catch (error) { reject(new Error(`'${file.name}' 파일 파싱 오류: ${error.message}`)); }
-                            };
-                            reader.onerror = () => reject(new Error(`'${file.name}' 파일 읽기 오류`));
-                            reader.readAsArrayBuffer(file);
+                    // Fetch files from server
+                    const fetchedFiles = await fetchServerFiles();
+                    
+                    if (fetchedFiles.length === 0) {
+                        throw new Error("분석할 파일이 없습니다.");
+                    }
+
+                    addStatusLog(`데이터 병합 및 분석 시작...`);
+
+                    // Parse Excel Data
+                    const allJsonData = await Promise.all(fetchedFiles.map(file => 
+                        new Promise((resolve) => {
+                            try {
+                                const workbook = XLSX.read(new Uint8Array(file.data), { type: 'array' });
+                                const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                                resolve(XLSX.utils.sheet_to_json(worksheet, { defval: "" }));
+                            } catch (error) {
+                                addStatusLog(`[파싱 오류] ${file.name}: ${error.message}`, true);
+                                resolve([]); // Skip failed files
+                            }
                         })
                     ));
                     
-                    if (allJsonData.every(data => data.length === 0)) {
-                       throw new Error("모든 파일이 비어있거나 데이터를 읽을 수 없습니다.");
-                    }
-
                     parsedData = [].concat(...allJsonData).map(row => 
                         Object.fromEntries(Object.entries(row).map(([key, value]) => [key.trim(), value]))
                     );
 
-                    if (parsedData.length === 0) throw new Error("파일을 합친 후 데이터가 없습니다.");
+                    if (parsedData.length === 0) throw new Error("파일 처리 후 유효한 데이터가 없습니다.");
 
+                    // Validate Headers
                     const firstRowHeaders = Object.keys(parsedData[0] || {});
                     ['부서명', '페이지', '총점'].forEach(col => {
-                        if (!firstRowHeaders.includes(col)) throw new Error(`필수 항목 '${col}'이(가) 없습니다. 파일의 첫 번째 행을 확인해주세요.`);
+                        if (!firstRowHeaders.includes(col)) throw new Error(`필수 항목 '${col}'이(가) 없습니다.`);
                     });
 
+                    // Identify Analysis Columns
                     const analysisColumnsSet = new Set();
                     parsedData.forEach(row => {
                         const headers = Object.keys(row);
@@ -333,6 +345,7 @@
                     allAnalysisColumns = Array.from(analysisColumnsSet);
                     hasPersonColumn = parsedData.some(row => '담당자' in row && row['담당자']);
                     
+                    // Perform Analysis
                     performAnalysis();
                     populateDepartmentSelector();
                     updateUIVisibility();
@@ -340,16 +353,24 @@
                     
                     resultsContainer.classList.remove('hidden');
                     validationContainer.classList.remove('hidden');
+                    addStatusLog(`분석 완료!`);
+                    
+                    // Success Alert
+                    setTimeout(() => {
+                        alert("모든 결과분석이 완료되었습니다. 결과페이지에서 결과를 확인하세요");
+                    }, 100);
+
                 } catch (error) {
                     console.error("Analysis failed:", error);
                     alert(`분석 중 오류 발생: ${error.message}`);
+                    addStatusLog(`[종료] ${error.message}`, true);
                 } finally {
                     analyzeBtn.disabled = false;
-                    analyzeBtn.innerHTML = '분석 시작';
+                    analyzeBtn.innerHTML = originalBtnText;
                 }
             });
 
-            // --- Core Analysis Logic ---
+            // --- Core Analysis Logic (Same as before) ---
             function parseValueToNumber(value) {
                 if (typeof value === 'number') return value;
                 if (typeof value !== 'string') return NaN;
@@ -698,4 +719,3 @@
     </script>
 </body>
 </html>
-
