@@ -236,6 +236,7 @@
             font-weight: 700;
             text-align: center;
             border-bottom: 2px solid var(--secondary-color);
+            white-space: nowrap;
         }
 
         td.center {
@@ -350,6 +351,22 @@
             margin-right: 8px;
         }
 
+        /* Evaluation Table Box */
+        .eval-box {
+            border: 1px solid #ddd;
+            background: #fff;
+            padding: 20px;
+            border-radius: 6px;
+            margin-top: 15px;
+        }
+        
+        .eval-title {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            display: block;
+        }
+
         /* Responsive */
         @media (max-width: 900px) {
             .sidebar {
@@ -429,11 +446,14 @@
                     </tr>
                     <tr>
                         <td><strong>작성 기간</strong></td>
-                        <td><strong>2026. 01. 28(수) ~ 02. 06(금)</strong></td>
+                        <td>
+                            <strong>2026. 02. 02(월) ~ 02. 06(금)</strong><br>
+                            <span style="font-size: 0.85rem; color: #666;">* 대학성과관리시스템 수정은 2.20(금)까지 가능하며,<br>연장문의는 대학성과관리팀으로 문의 바랍니다.</span>
+                        </td>
                     </tr>
                     <tr>
                         <td><strong>작성 부서</strong></td>
-                        <td>33개 운영계획서 작성 부서 (총 116개 성과지표 대상)</td>
+                        <td>32개 운영계획서 작성 부서 (총 115개 성과지표 대상)</td>
                     </tr>
                     <tr>
                         <td><strong>작성 내용</strong></td>
@@ -452,6 +472,123 @@
                 <li><strong>차기년도 계획 회의:</strong> 2026. 3월 (오프라인 회의록 작성)</li>
                 <li><strong>차기년도 계획서 작성:</strong> 2026. 4월 (성과관리시스템)</li>
             </ul>
+
+            <!-- New Content: Relevant Regulations -->
+            <h3>1.4 직원업적평가 관련 규정 (시행세칙 제6조 및 제17조)</h3>
+            <div class="eval-box">
+                <span class="eval-title">제6조(평정 점수)</span>
+                <p>근무성적 평정(140점) 중 부서종합평정은 개인 20점, 부서 20점으로 배점한다.</p>
+                <div class="table-container">
+                    <table style="text-align: center;">
+                        <tr style="background-color: #f3f4f6;">
+                            <th rowspan="2">구분</th>
+                            <th colspan="2" style="text-align:center;">부서종합평정 (40점)</th>
+                        </tr>
+                        <tr style="background-color: #fff;">
+                            <td>개인 (20점)</td>
+                            <td>부서 (20점)</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <span class="eval-title" style="margin-top: 15px;">제17조(평정 방법)</span>
+                <ul style="list-style-type: disc; padding-left: 20px; font-size: 0.95rem;">
+                    <li><strong>부서종합평정 정의:</strong> 성과지표 담당부서에서 부서별 연간운영계획서 상의 성과지표에 대한 달성도에 대하여 대학 자체평가위원회에서 평가한 결과(점수)를 업적평가담당부서에서 환산하여 일괄 반영한다. (개정 2019.7.12)</li>
+                    <li><strong>가. 배점 적용:</strong> 개인 및 부서 단위로 평정하고, 개인 평정점 20점, 부서 평정점은 20점으로, <span class="highlight-link" style="padding:0 4px;">부서별 평가 평정점을 팀 구성원 전체에 동일하게 적용한다.</span> (개정 2021.6.25., 2025.2.12)</li>
+                    <li><strong>나. 반영 시기:</strong> 성과지표 달성도 평정점은 평가결과 도출 이후에 실시하는 업적평가에 반영한다.</li>
+                    <li><strong>다. 부서 이동 시:</strong> 피평정자가 부서 이동을 한 경우에는 평정 당시 소속된 부서(팀·센터)의 평정점을 반영한다. (신설 2016.5.18)</li>
+                    <li><strong>라. 평가 면제 부서:</strong> 해당년도 전체 평가대상 부서 중 <span style="color:#b91c1c; font-weight:bold;">상위 3개 부서의 점수를 제외한 부서의 평균점</span>을 적용한다. (신설 2018.01.18) (개정 2025.2.12)</li>
+                    <li><strong>마. 평가 면제 부서 내 개인:</strong> 해당년도 직원 평가대상 중 최고점을 제외한 개인 점수의 평균점을 적용한다. (신설 2025.2.12)</li>
+                    <li><strong>바. 미평정자:</strong> 평가대상부서 내 미평정자의 개인점수는 0점을 적용한다. (신설 2025.2.12)</li>
+                </ul>
+            </div>
+
+            <!-- New Content: Department List -->
+            <h3>1.5 작성 대상 부서 현황 (총 32개 부서 / 115개 지표)</h3>
+            <div class="table-container" style="max-height: 500px; overflow-y: auto;">
+                <table>
+                    <colgroup>
+                        <col style="width: 8%">
+                        <col style="width: 20%">
+                        <col style="width: 5%">
+                        <col style="width: 8%">
+                        <col style="width: 20%">
+                        <col style="width: 5%">
+                        <col style="width: 8%">
+                        <col style="width: 20%">
+                        <col style="width: 5%">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>순번</th><th>부서명</th><th>지표</th>
+                            <th>순번</th><th>부서명</th><th>지표</th>
+                            <th>순번</th><th>부서명</th><th>지표</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="center">1</td><td>감사팀</td><td class="center">4</td>
+                            <td class="center">12</td><td>보건융합교육센터</td><td class="center">2</td>
+                            <td class="center">23</td><td>직업교육혁신센터</td><td class="center">6</td>
+                        </tr>
+                        <tr>
+                            <td class="center">2</td><td>교무지원팀</td><td class="center">6</td>
+                            <td class="center">13</td><td>산학경영지원팀</td><td class="center">2</td>
+                            <td class="center">24</td><td>총무팀</td><td class="center">6</td>
+                        </tr>
+                        <tr>
+                            <td class="center">3</td><td>교수학습지원센터</td><td class="center">5</td>
+                            <td class="center">14</td><td>산학기획연구팀</td><td class="center">6</td>
+                            <td class="center">25</td><td>통합예산팀</td><td class="center">3</td>
+                        </tr>
+                        <tr>
+                            <td class="center">4</td><td>교양교육운영팀</td><td class="center">2</td>
+                            <td class="center">15</td><td>생활관운영팀</td><td class="center">3</td>
+                            <td class="center">26</td><td>평생교육학사지원팀</td><td class="center">5</td>
+                        </tr>
+                        <tr>
+                            <td class="center">5</td><td>국제교류팀</td><td class="center">7</td>
+                            <td class="center">16</td><td>인권센터</td><td class="center">2</td>
+                            <td class="center">27</td><td>학생복지지원팀</td><td class="center">3</td>
+                        </tr>
+                        <tr>
+                            <td class="center">6</td><td>기획인사팀</td><td class="center">4</td>
+                            <td class="center">17</td><td>입학팀</td><td class="center">3</td>
+                            <td class="center">28</td><td>학생상담센터</td><td class="center">5</td>
+                        </tr>
+                        <tr>
+                            <td class="center">7</td><td>대구임상시뮬레이션센터</td><td class="center">5</td>
+                            <td class="center">18</td><td>입학홍보전략팀</td><td class="center">2</td>
+                            <td class="center">29</td><td>학생취업지원팀</td><td class="center">4</td>
+                        </tr>
+                        <tr>
+                            <td class="center">8</td><td>대학성과관리팀</td><td class="center">4</td>
+                            <td class="center">19</td><td>장애학생지원센터</td><td class="center">1</td>
+                            <td class="center">30</td><td>한달빛봉사단(DHC)</td><td class="center">2</td>
+                        </tr>
+                        <tr>
+                            <td class="center">9</td><td>도서운영팀</td><td class="center">6</td>
+                            <td class="center">20</td><td>재무팀</td><td class="center">2</td>
+                            <td class="center">31</td><td>현장실습지원센터</td><td class="center">4</td>
+                        </tr>
+                        <tr>
+                            <td class="center">10</td><td>방사선안전관리센터</td><td class="center">2</td>
+                            <td class="center">21</td><td>전산지원센터</td><td class="center">3</td>
+                            <td class="center">32</td><td>홍보팀</td><td class="center">2</td>
+                        </tr>
+                        <tr>
+                            <td class="center">11</td><td>보건실</td><td class="center">2</td>
+                            <td class="center">22</td><td>직업교육콘텐츠연구센터</td><td class="center">2</td>
+                            <td class="center"></td><td></td><td class="center"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="8" class="center" style="font-weight:bold; background-color:#f9f9f9;">총 계</td>
+                            <td class="center" style="font-weight:bold; background-color:#eef8fc; color:var(--primary-color);">115</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
         </section>
 
         <!-- Section 2: System Access -->
