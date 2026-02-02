@@ -82,6 +82,26 @@
         /* PDF 캔버스 스타일 */
         #pdf-container {
             background-color: #525659; /* 일반적인 PDF 뷰어 배경색 */
+            position: relative; /* 돋보기 위치 기준점 */
+            overflow: hidden; /* 돋보기가 영역 밖으로 나가는 것 방지 */
+        }
+        /* 돋보기 스타일 */
+        #magnifier {
+            display: none;
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border: 3px solid #6366f1; /* Indigo-500 */
+            border-radius: 50%;
+            overflow: hidden;
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            background-color: white;
+            pointer-events: none; /* 마우스 이벤트가 캔버스에 전달되도록 */
+        }
+        /* 돋보기 내부 캔버스 */
+        #magnifier canvas {
+            display: block;
         }
     </style>
 </head>
@@ -262,21 +282,69 @@
         <!-- 오른쪽 패널: PDF.js 뷰어 -->
         <div id="right-panel" class="flex-1 h-1/2 md:h-full flex flex-col bg-gray-50 border-l border-gray-200">
             <!-- 툴바 -->
-            <div class="flex items-center justify-between p-2 bg-white border-b border-gray-200 shadow-sm">
-                <div class="flex items-center space-x-2">
-                    <button id="prev-page" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 text-sm font-medium">이전</button>
-                    <span class="text-sm font-medium text-gray-700">Page: <span id="page-num">--</span> / <span id="page-count">--</span></span>
-                    <button id="next-page" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 text-sm font-medium">다음</button>
+            <div class="flex items-center justify-between p-2 bg-white border-b border-gray-200 shadow-sm flex-wrap">
+                <!-- 페이지 이동 -->
+                <div class="flex items-center space-x-2 mb-2 sm:mb-0">
+                    <button id="prev-page" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 text-xs font-medium" title="이전 페이지">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <span class="text-xs font-medium text-gray-700 whitespace-nowrap">
+                        <span id="page-num">--</span> / <span id="page-count">--</span>
+                    </span>
+                    <button id="next-page" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 text-xs font-medium" title="다음 페이지">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
                 </div>
+
+                <!-- 확대/축소 및 도구 -->
                 <div class="flex items-center space-x-2">
-                     <button id="zoom-out" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 text-sm font-medium">-</button>
-                     <span id="zoom-level" class="text-sm font-medium text-gray-700">100%</span>
-                     <button id="zoom-in" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 text-sm font-medium">+</button>
+                     <button id="zoom-out" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 text-xs font-medium" title="축소">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
+                        </svg>
+                     </button>
+                     <span id="zoom-level" class="text-xs font-medium text-gray-700 w-10 text-center">100%</span>
+                     <button id="zoom-in" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 text-xs font-medium" title="확대">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                     </button>
+                     
+                     <!-- 구분선 -->
+                     <div class="w-px h-6 bg-gray-300 mx-2"></div>
+
+                     <!-- 돋보기 버튼 -->
+                     <button id="toggle-magnifier" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 text-xs font-medium flex items-center" title="돋보기 (On/Off)">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                        </svg>
+                        돋보기
+                     </button>
+
+                     <!-- 다운로드 버튼 -->
+                     <button id="download-pdf" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 text-xs font-medium flex items-center" title="다운로드">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                     </button>
+
+                     <!-- 인쇄 버튼 -->
+                     <button id="print-pdf" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 text-xs font-medium flex items-center" title="인쇄">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                        </svg>
+                     </button>
                 </div>
             </div>
             <!-- 캔버스 컨테이너 (스크롤 가능) -->
-            <div id="pdf-container" class="flex-1 overflow-auto flex justify-center p-4 relative">
-                <canvas id="the-canvas" class="shadow-lg border border-gray-200"></canvas>
+            <div id="pdf-container" class="flex-1 overflow-auto flex justify-center p-4 relative bg-gray-100">
+                <canvas id="the-canvas" class="shadow-lg border border-gray-200 bg-white"></canvas>
+                <!-- 돋보기 요소 -->
+                <div id="magnifier"></div>
             </div>
         </div>
     </div>
@@ -582,12 +650,18 @@
     const zoomInBtn = document.getElementById('zoom-in');
     const zoomOutBtn = document.getElementById('zoom-out');
     const zoomLevelEl = document.getElementById('zoom-level');
+    const downloadPdfBtn = document.getElementById('download-pdf');
+    const printPdfBtn = document.getElementById('print-pdf');
+    const toggleMagnifierBtn = document.getElementById('toggle-magnifier');
+    const magnifier = document.getElementById('magnifier');
+    const pdfContainer = document.getElementById('pdf-container');
     // --- END: DOM Element Selections ---
 
     let isDirty = false;
     let previousEvaluator = '';
     let previousDepartment = '';
     let confirmCallback = null;
+    let isMagnifierActive = false;
 
     // --- NEW: Status Tracking & Data Persistence ---
     const completedDepartments = new Set();
@@ -770,11 +844,111 @@
         renderPage(pageNum);
     }
 
+    // PDF 다운로드 기능
+    function onDownloadPdf() {
+        const link = document.createElement('a');
+        link.href = pdfUrl;
+        link.download = '2024 부서운영결과보고서 통합본.pdf';
+        link.click();
+    }
+
+    // PDF 인쇄 기능
+    function onPrintPdf() {
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        iframe.src = pdfUrl;
+        document.body.appendChild(iframe);
+        iframe.onload = function() {
+            setTimeout(function() {
+                iframe.focus();
+                iframe.contentWindow.print();
+            }, 1);
+        };
+    }
+
+    // 돋보기 토글 기능
+    function onToggleMagnifier() {
+        isMagnifierActive = !isMagnifierActive;
+        if (isMagnifierActive) {
+            toggleMagnifierBtn.classList.remove('bg-gray-200');
+            toggleMagnifierBtn.classList.add('bg-indigo-200', 'text-indigo-800');
+            magnifier.style.display = 'block';
+        } else {
+            toggleMagnifierBtn.classList.add('bg-gray-200');
+            toggleMagnifierBtn.classList.remove('bg-indigo-200', 'text-indigo-800');
+            magnifier.style.display = 'none';
+        }
+    }
+
+    // 돋보기 움직임 처리
+    function onMagnifierMove(e) {
+        if (!isMagnifierActive) return;
+
+        const containerRect = pdfContainer.getBoundingClientRect();
+        const canvasRect = canvas.getBoundingClientRect();
+        
+        // 마우스 좌표 (컨테이너 기준)
+        const mouseX = e.clientX - containerRect.left;
+        const mouseY = e.clientY - containerRect.top;
+
+        // 마우스가 캔버스 영역 내에 있는지 확인
+        const relX = e.clientX - canvasRect.left;
+        const relY = e.clientY - canvasRect.top;
+
+        if (relX < 0 || relX > canvasRect.width || relY < 0 || relY > canvasRect.height) {
+            magnifier.style.display = 'none';
+            return;
+        } else {
+            magnifier.style.display = 'block';
+        }
+
+        // 돋보기 위치 이동 (마우스 커서를 중심으로)
+        const glassSize = 200; // 돋보기 크기 (CSS와 동일하게)
+        magnifier.style.left = (mouseX - glassSize / 2) + 'px';
+        magnifier.style.top = (mouseY - glassSize / 2) + 'px';
+
+        // 돋보기 내용 그리기 (원본 캔버스를 확대해서 그림)
+        const zoom = 2; // 확대 배율
+        const glassCanvas = document.createElement('canvas');
+        glassCanvas.width = glassSize;
+        glassCanvas.height = glassSize;
+        const glassCtx = glassCanvas.getContext('2d');
+
+        // 캔버스 내부에서의 실제 좌표 계산 (Scale 고려)
+        // 화면상 캔버스 크기와 실제 캔버스 버퍼 크기 비율 계산
+        const scaleX = canvas.width / canvasRect.width;
+        const scaleY = canvas.height / canvasRect.height;
+
+        const sourceX = relX * scaleX - (glassSize / 2 / zoom) * scaleX;
+        const sourceY = relY * scaleY - (glassSize / 2 / zoom) * scaleY;
+        const sourceW = (glassSize / zoom) * scaleX;
+        const sourceH = (glassSize / zoom) * scaleY;
+
+        // 이미지 복사 및 확대 그리기
+        // drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
+        glassCtx.drawImage(canvas, sourceX, sourceY, sourceW, sourceH, 0, 0, glassSize, glassSize);
+        
+        // 기존 내용을 지우고 새 이미지로 교체
+        magnifier.innerHTML = '';
+        magnifier.appendChild(glassCanvas);
+    }
+
     // PDF 뷰어 이벤트 리스너
     document.getElementById('prev-page').addEventListener('click', onPrevPage);
     document.getElementById('next-page').addEventListener('click', onNextPage);
     zoomInBtn.addEventListener('click', onZoomIn);
     zoomOutBtn.addEventListener('click', onZoomOut);
+    downloadPdfBtn.addEventListener('click', onDownloadPdf);
+    printPdfBtn.addEventListener('click', onPrintPdf);
+    toggleMagnifierBtn.addEventListener('click', onToggleMagnifier);
+    pdfContainer.addEventListener('mousemove', onMagnifierMove);
+    pdfContainer.addEventListener('mouseleave', () => {
+        if(isMagnifierActive) magnifier.style.display = 'none';
+    });
+    pdfContainer.addEventListener('mouseenter', () => {
+        if(isMagnifierActive) magnifier.style.display = 'block';
+    });
+
 
     // 글로벌 함수로 노출하여 HTML inline onclick에서 호출 가능하게 함
     window.goToPdfPage = function(num) {
