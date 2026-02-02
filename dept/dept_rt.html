@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>V1평가 결과 분석 - 대구보건대학교 대학성과관리팀</title>
+    <title>평가 결과 분석 - 대구보건대학교 대학성과관리팀</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -85,7 +85,7 @@
             <div class="max-w-7xl mx-auto">
                 <div class="text-center mb-10">
                     <h1 class="text-3xl font-bold text-gray-900 sm:text-4xl">평가 데이터 분석</h1>
-                    <p class="mt-4 text-lg text-gray-600">개별 평가된 평가항목을 통합하여 동적으로 분석합니다.</p>
+                    <p class="mt-4 text-lg text-gray-600">서로 다른 양식의 엑셀(.xlsx) 파일을 통합하여 동적으로 분석합니다.</p>
                 </div>
 
                 <!-- Server File Load Section -->
@@ -98,7 +98,7 @@
                         </div>
                         <h3 class="text-lg font-medium text-gray-900">서버 데이터 자동 분석</h3>
                         <p class="text-gray-500 max-w-lg">
-                            평가된 모든 항목을 분석하여 그 과정을 AI기술이 검증된 내용을 표시합니다.
+                            서버의 <code class="bg-gray-100 px-1 py-0.5 rounded text-sm font-mono text-gray-700">../dept/result/</code> 경로에 지정된 엑셀(.xlsx) 파일 목록을 자동으로 불러와 분석합니다.
                         </p>
                         
                         <div id="loading-status" class="hidden w-full max-w-md bg-gray-100 rounded-lg p-3 text-sm text-left font-mono space-y-1 max-h-40 overflow-y-auto border border-gray-200">
@@ -197,7 +197,19 @@
             const tabSummaryContent = document.getElementById('tab-summary-content');
 
             // Constants
-            const DATA_DIR = 'https://dhcpm.github.io/dept/result/';
+            const DATA_DIR = '../dept/result/';
+
+            // Pre-defined File List (Hardcoded to avoid server directory listing issues)
+            const TARGET_FILES = [
+                '평가항목1.xlsx',
+                '평가항목2.xlsx',
+                '평가항목2-제언사항.xlsx',
+                '평가항목3.xlsx',
+                '평가항목3-제언사항.xlsx',
+                '평가항목4.xlsx',
+                '평가항목5.xlsx',
+                '평가항목5-제언사항.xlsx'
+            ];
 
             // State Variables
             let parsedData = [], departmentAnalysis = [], personAnalysis = [], allAnalysisColumns = [];
@@ -208,49 +220,24 @@
             // --- Server File Handling ---
             async function fetchServerFiles() {
                 try {
-                    // 1. Fetch directory listing
-                    addStatusLog(`폴더 검색 중: ${DATA_DIR}`);
-                    const response = await fetch(DATA_DIR);
-                    if (!response.ok) throw new Error(`폴더 접근 실패 (${response.status})`);
+                    addStatusLog(`대상 파일 목록 로드: ${TARGET_FILES.length}개 파일`);
                     
-                    const text = await response.text();
-                    
-                    // 2. Parse HTML to find .xlsx links (Assumes directory listing is enabled on server)
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(text, 'text/html');
-                    const links = Array.from(doc.querySelectorAll('a'));
-                    
-                    const fileUrls = links
-                        .map(a => a.getAttribute('href'))
-                        .filter(href => href && href.toLowerCase().endsWith('.xlsx'))
-                        .map(href => {
-                            // Handle relative paths correctly
-                            try {
-                                return new URL(href, response.url).href;
-                            } catch (e) {
-                                return href;
-                            }
-                        });
-                    
-                    const uniqueUrls = [...new Set(fileUrls)];
-                    
-                    if (uniqueUrls.length === 0) {
-                        throw new Error("폴더 내에 엑셀 파일(.xlsx)이 없습니다.");
-                    }
-                    
-                    addStatusLog(`총 ${uniqueUrls.length}개의 파일을 찾았습니다.`);
-                    
-                    // 3. Fetch each file
-                    const fileDataPromises = uniqueUrls.map(async (url) => {
+                    const fileDataPromises = TARGET_FILES.map(async (fileName) => {
+                        const url = DATA_DIR + fileName;
                         try {
-                            const fileName = url.split('/').pop();
                             addStatusLog(`다운로드 중: ${fileName}...`);
-                            const fileRes = await fetch(url);
-                            if (!fileRes.ok) throw new Error(`다운로드 실패 (${fileRes.status})`);
+                            // Add cache busting to prevent stale data
+                            const fileRes = await fetch(url + '?t=' + new Date().getTime());
+                            
+                            if (!fileRes.ok) {
+                                // If 404, it might be expected for some files, just log it as a soft error/warning
+                                throw new Error(`다운로드 실패 (${fileRes.status})`);
+                            }
+                            
                             const arrayBuffer = await fileRes.arrayBuffer();
                             return { name: fileName, data: arrayBuffer };
                         } catch (e) {
-                            addStatusLog(`[오류] ${url}: ${e.message}`, true);
+                            addStatusLog(`[건너뜀] ${fileName}: ${e.message}`, true);
                             return null;
                         }
                     });
@@ -301,7 +288,7 @@
                     const fetchedFiles = await fetchServerFiles();
                     
                     if (fetchedFiles.length === 0) {
-                        throw new Error("분석할 파일이 없습니다.");
+                        throw new Error("분석할 파일이 없거나 모두 다운로드에 실패했습니다.");
                     }
 
                     addStatusLog(`데이터 병합 및 분석 시작...`);
@@ -312,7 +299,11 @@
                             try {
                                 const workbook = XLSX.read(new Uint8Array(file.data), { type: 'array' });
                                 const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-                                resolve(XLSX.utils.sheet_to_json(worksheet, { defval: "" }));
+                                const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
+                                
+                                // Check if file is likely a supplementary file (e.g. 제언사항) that might not have scores
+                                // We'll handle this by checking required columns inside the filter
+                                resolve(jsonData);
                             } catch (error) {
                                 addStatusLog(`[파싱 오류] ${file.name}: ${error.message}`, true);
                                 resolve([]); // Skip failed files
@@ -320,19 +311,22 @@
                         })
                     ));
                     
-                    parsedData = [].concat(...allJsonData).map(row => 
+                    // Flatten data
+                    const flatData = [].concat(...allJsonData).map(row => 
                         Object.fromEntries(Object.entries(row).map(([key, value]) => [key.trim(), value]))
                     );
 
-                    if (parsedData.length === 0) throw new Error("파일 처리 후 유효한 데이터가 없습니다.");
-
-                    // Validate Headers
-                    const firstRowHeaders = Object.keys(parsedData[0] || {});
-                    ['부서명', '페이지', '총점'].forEach(col => {
-                        if (!firstRowHeaders.includes(col)) throw new Error(`필수 항목 '${col}'이(가) 없습니다.`);
+                    // Filter out invalid rows (missing essential columns)
+                    // This allows "제언사항" files to be read but ignored if they don't match the score format
+                    parsedData = flatData.filter(row => {
+                         // Check for minimum required fields to be considered a score record
+                         return row.hasOwnProperty('부서명') && row.hasOwnProperty('총점');
                     });
 
-                    // Identify Analysis Columns
+                    if (parsedData.length === 0) throw new Error("유효한 데이터(부서명, 총점 포함)가 없습니다. 파일 형식을 확인해주세요.");
+
+                    // Identify Analysis Columns dynamically
+                    // We only look at rows that seem valid
                     const analysisColumnsSet = new Set();
                     parsedData.forEach(row => {
                         const headers = Object.keys(row);
