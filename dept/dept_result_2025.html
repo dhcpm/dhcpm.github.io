@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2025 부서운영결과보고서 작성 상세 지침 (+AI 도우미)</title>
+    <title>2025 부서운영결과보고서 작성 상세 지침</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -18,7 +18,6 @@
             --text-color: #0D0D0D;      /* Almost Black - 5 */
             
             --bg-color: #f8f9fa;        /* Light Background */
-            --ai-color: #7c3aed;        /* AI Feature Color (Kept distinctive) */
             --warning-color: #ef4444;   /* Warning/Must Read (Kept semantic) */
             
             --sidebar-width: 280px;
@@ -87,17 +86,6 @@
             background-color: #eef8fc; /* Very light blue tint */
             color: var(--primary-color);
             border-left: 5px solid var(--secondary-color);
-        }
-
-        .nav-link.ai-link {
-            color: var(--ai-color);
-            background-color: #f3e8ff;
-            font-weight: bold;
-        }
-        
-        .nav-link.ai-link:hover {
-            background-color: #e9d5ff;
-            border-left: 5px solid var(--ai-color);
         }
 
         /* Must Read Highlight Styles */
@@ -222,102 +210,6 @@
             margin-bottom: 8px;
         }
 
-        /* AI Section Specifics */
-        section#ai-assistant {
-            border: 2px solid var(--ai-color);
-            background: linear-gradient(to bottom right, #fff, #fbf7ff);
-        }
-        
-        section#ai-assistant h2 {
-            color: var(--ai-color);
-            border-bottom-color: #e9d5ff;
-        }
-        
-        section#ai-assistant h2 i {
-            color: var(--ai-color);
-        }
-
-        .ai-container {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .ai-tool-box {
-            flex: 1;
-            min-width: 300px;
-            background: #fff;
-            border: 1px solid var(--neutral-gray);
-            border-radius: 8px;
-            padding: 25px;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        .ai-tool-header {
-            font-weight: bold;
-            font-size: 1.1rem;
-            margin-bottom: 15px;
-            color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .ai-input-area textarea, .ai-input-area input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            font-family: inherit;
-            resize: vertical;
-        }
-
-        .ai-input-area textarea:focus, .ai-input-area input:focus {
-            outline: none;
-            border-color: var(--ai-color);
-            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
-        }
-
-        .ai-btn {
-            background-color: var(--ai-color);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: background 0.2s;
-            width: 100%;
-            font-size: 1rem;
-        }
-
-        .ai-btn:hover {
-            background-color: #6d28d9;
-        }
-
-        .ai-btn:disabled {
-            background-color: #a78bfa;
-            cursor: not-allowed;
-        }
-
-        .ai-result-area {
-            margin-top: 15px;
-            padding: 15px;
-            background-color: #f3f4f6;
-            border-radius: 6px;
-            min-height: 100px;
-            white-space: pre-wrap;
-            font-size: 0.95rem;
-            border: 1px solid #e5e7eb;
-        }
-
         /* Tables */
         .table-container {
             overflow-x: auto;
@@ -411,21 +303,6 @@
         .badge-blue { background-color: var(--secondary-color); color: #fff; }
         .badge-red { background-color: #fee2e2; color: #b91c1c; }
 
-        /* Loading Spinner */
-        .loading-spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
         /* Scroll to top button */
         .scroll-top {
             position: fixed;
@@ -499,10 +376,6 @@
                 margin-left: 0;
                 padding: 20px;
             }
-            
-            .ai-container {
-                flex-direction: column;
-            }
         }
     </style>
 </head>
@@ -521,8 +394,6 @@
             <li class="nav-item"><a href="#evaluation" class="nav-link"><i class="fa-solid fa-scale-balanced"></i> 평가 기준 및 배점</a></li>
             <li class="nav-item"><a href="#examples" class="nav-link"><i class="fa-solid fa-file-pen"></i> 작성 예시 (Template)</a></li>
             <li class="nav-item"><a href="#tips" class="nav-link highlight-link"><i class="fa-solid fa-star"></i> 실적 vs 성과 & 총평 <span class="badge badge-red">필독</span></a></li>
-            <!-- New Feature Link -->
-            <li class="nav-item"><a href="#ai-assistant" class="nav-link ai-link"><i class="fa-solid fa-wand-magic-sparkles"></i> AI 보고서 도우미</a></li>
         </ul>
     </nav>
 
@@ -532,8 +403,8 @@
             <h1>2025학년도 부서운영결과보고서 작성 지침</h1>
             <p>작성기준 학년도: 2025학년도 (2025.3 ~ 2026.2) | 작성: 행정부서 | 2026.1</p>
             
-            <!-- Download Button Added Here -->
-            <a href="../dept/file/붙임1. 2025학년도 부서운영결과보고서 작성 지침서.pdf" target = "_blank" class="download-btn" download>
+            <!-- Download Button -->
+            <a href="붙임1. 2025학년도 부서운영결과보고서 작성 지침서.pdf" class="download-btn" download>
                 <i class="fa-solid fa-file-arrow-down"></i> 작성지침서 다운로드
             </a>
         </div>
@@ -558,7 +429,7 @@
                     </tr>
                     <tr>
                         <td><strong>작성 기간</strong></td>
-                        <td><strong>2026. 02. 02(월) ~ 02. 06(금)</strong></td>
+                        <td><strong>2026. 01. 28(수) ~ 02. 06(금)</strong></td>
                     </tr>
                     <tr>
                         <td><strong>작성 부서</strong></td>
@@ -880,234 +751,12 @@
             </div>
         </section>
 
-        <!-- NEW Section: Gemini AI Assistant -->
-        <section id="ai-assistant">
-            <h2><i class="fa-solid fa-wand-magic-sparkles"></i> ✨ AI 보고서 도우미 (Gemini Powered)</h2>
-            <p>Gemini AI를 활용하여 보고서 작성을 더 쉽고 빠르게 도와드립니다. 아래 세 가지 기능을 체험해보세요.</p>
-            
-            <div class="ai-container">
-                <!-- Feature 1: Report Drafter -->
-                <div class="ai-tool-box">
-                    <div class="ai-tool-header">
-                        <i class="fa-solid fa-pen-to-square"></i> 실적 텍스트 변환기
-                    </div>
-                    <p style="font-size: 0.9rem; color: #666;">
-                        대략적인 활동 내용을 입력하면, 지침에 맞는 <strong>[투입/산출/성과]</strong> 형식으로 변환해줍니다.
-                    </p>
-                    <div class="ai-input-area">
-                        <textarea id="draftInput" rows="5" placeholder="예: 취업캠프를 열었고 예산은 500만원 들었음. 학생 30명이 왔고 만족도가 작년보다 5점 올랐음."></textarea>
-                    </div>
-                    <button class="ai-btn" onclick="generateDraft()">
-                        <span id="draftBtnText">변환하기</span>
-                    </button>
-                    <div id="draftResult" class="ai-result-area" style="display:none;"></div>
-                </div>
-
-                <!-- Feature 3: Bullet Points Converter -->
-                <div class="ai-tool-box">
-                    <div class="ai-tool-header">
-                        <i class="fa-solid fa-list-ul"></i> 개조식 문장 변환기
-                    </div>
-                    <p style="font-size: 0.9rem; color: #666;">
-                        서술형 문장을 보고서에 적합한 <strong>개조식(명사형 종결)</strong> 문체로 변환합니다.
-                    </p>
-                    <div class="ai-input-area">
-                        <textarea id="bulletInput" rows="5" placeholder="예: 학생들의 의견을 수렴하기 위해 공청회를 3번 열었고, 많은 학생들이 참여하여 좋은 반응을 얻었습니다."></textarea>
-                    </div>
-                    <button class="ai-btn" onclick="convertToBulletPoints()">
-                        <span id="bulletBtnText">변환하기</span>
-                    </button>
-                    <div id="bulletResult" class="ai-result-area" style="display:none;"></div>
-                </div>
-
-                <!-- Feature 2: Guideline Q&A -->
-                <div class="ai-tool-box">
-                    <div class="ai-tool-header">
-                        <i class="fa-solid fa-robot"></i> 지침서 Q&A 봇
-                    </div>
-                    <p style="font-size: 0.9rem; color: #666;">
-                        지침서 내용에 대해 궁금한 점을 물어보세요. (예: "제출 마감일이 언제야?", "성과랑 실적 차이가 뭐야?")
-                    </p>
-                    <div class="ai-input-area">
-                        <input type="text" id="qaInput" placeholder="질문을 입력하세요...">
-                    </div>
-                    <button class="ai-btn" onclick="askGuideline()">
-                        <span id="qaBtnText">질문하기</span>
-                    </button>
-                    <div id="qaResult" class="ai-result-area" style="display:none;"></div>
-                </div>
-            </div>
-        </section>
-
     </main>
 
     <!-- Scroll to Top Button -->
     <div class="scroll-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">
         <i class="fa-solid fa-arrow-up"></i>
     </div>
-
-    <!-- Gemini API Logic -->
-    <script>
-        const apiKey = "AIzaSyB7WmcKytVOJaqhtudVecQO2bS8YDKxzYQ"; // The execution environment provides the key at runtime.
-
-        async function callGemini(promptText) {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-            const payload = {
-                contents: [{ parts: [{ text: promptText }] }]
-            };
-
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`API Error: ${response.status}`);
-                }
-
-                const data = await response.json();
-                return data.candidates?.[0]?.content?.parts?.[0]?.text || "죄송합니다. 답변을 생성하지 못했습니다.";
-            } catch (error) {
-                console.error("Gemini API Error:", error);
-                return "오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
-            }
-        }
-
-        // Feature 1: Draft Generator
-        async function generateDraft() {
-            const input = document.getElementById('draftInput').value;
-            if (!input.trim()) {
-                alert("내용을 입력해주세요.");
-                return;
-            }
-
-            const btn = document.querySelector('button[onclick="generateDraft()"]');
-            const btnText = document.getElementById('draftBtnText');
-            const resultDiv = document.getElementById('draftResult');
-
-            // Loading State
-            btn.disabled = true;
-            btnText.innerHTML = '<span class="loading-spinner"></span> 생성 중...';
-            resultDiv.style.display = 'none';
-
-            const prompt = `
-                당신은 대학 행정 보고서 작성 전문가입니다.
-                사용자가 입력한 대략적인 업무 내용을 바탕으로, 다음 지침에 맞춰 '정량적 성과' 텍스트를 작성해주세요.
-
-                [작성 지침]
-                1. 투입(Input) / 산출(Output) / 성과(Outcome) 형식으로 구분하여 작성할 것.
-                2. '성과'는 단순 결과가 아니라 전년 대비 향상이나 개선된 점을 강조할 것.
-                3. 개조식으로 명확하게 작성할 것.
-                4. 불필요한 미사여구는 제외할 것.
-
-                [사용자 입력 내용]
-                ${input}
-
-                [출력 예시]
-                ■ 투입: 국고 000원
-                ■ 산출: 프로그램 0회 운영 (참여 00명)
-                ■ 성과: 참여자 만족도 전년 대비 00점 향상
-            `;
-
-            const result = await callGemini(prompt);
-
-            resultDiv.innerText = result;
-            resultDiv.style.display = 'block';
-            
-            // Reset Button
-            btn.disabled = false;
-            btnText.innerText = '변환하기';
-        }
-
-        // Feature 3: Bullet Points Converter
-        async function convertToBulletPoints() {
-            const input = document.getElementById('bulletInput').value;
-            if (!input.trim()) {
-                alert("내용을 입력해주세요.");
-                return;
-            }
-
-            const btn = document.querySelector('button[onclick="convertToBulletPoints()"]');
-            const btnText = document.getElementById('bulletBtnText');
-            const resultDiv = document.getElementById('bulletResult');
-
-            // Loading State
-            btn.disabled = true;
-            btnText.innerHTML = '<span class="loading-spinner"></span> 변환 중...';
-            resultDiv.style.display = 'none';
-
-            const prompt = `
-                당신은 행정 보고서 작성 전문가입니다.
-                사용자가 입력한 '줄글(서술형)' 문장을 보고서용 '개조식' 문체로 변환해주세요.
-
-                [작성 지침]
-                1. 명사형이나 '~함', '~음', '~완료' 등의 종결어미를 사용할 것.
-                2. 불필요한 조사나 미사여구를 제거하고 간결하게 핵심만 요약할 것.
-                3. 내용이 여러 개인 경우 글머리 기호(·, - 등)를 사용하여 구분할 것.
-
-                [사용자 입력]
-                ${input}
-
-                [출력 예시]
-                · 학생 의견 수렴을 위한 공청회 3회 개최
-                · 다수 학생 참여 및 긍정적 반응 도출
-            `;
-
-            const result = await callGemini(prompt);
-
-            resultDiv.innerText = result;
-            resultDiv.style.display = 'block';
-            
-            // Reset Button
-            btn.disabled = false;
-            btnText.innerText = '변환하기';
-        }
-
-        // Feature 2: Q&A Bot
-        async function askGuideline() {
-            const question = document.getElementById('qaInput').value;
-            if (!question.trim()) {
-                alert("질문을 입력해주세요.");
-                return;
-            }
-
-            const btn = document.querySelector('button[onclick="askGuideline()"]');
-            const btnText = document.getElementById('qaBtnText');
-            const resultDiv = document.getElementById('qaResult');
-
-            // Loading State
-            btn.disabled = true;
-            btnText.innerHTML = '<span class="loading-spinner"></span> 답변 중...';
-            resultDiv.style.display = 'none';
-
-            // Get context from the page content (excluding the script/nav to save tokens if needed, but innerText is usually fine)
-            const context = document.querySelector('main').innerText;
-
-            const prompt = `
-                당신은 '2025학년도 부서운영결과보고서 작성 지침'에 대한 AI 챗봇입니다.
-                아래 제공된 [지침서 내용]을 바탕으로 사용자의 [질문]에 대해 친절하고 정확하게 답변해주세요.
-                지침서에 없는 내용은 "지침서에 해당 내용이 나와있지 않습니다."라고 답변하세요.
-
-                [지침서 내용]
-                ${context.substring(0, 15000)} 
-                (내용의 앞부분 위주로 참조함)
-
-                [질문]
-                ${question}
-            `;
-
-            const result = await callGemini(prompt);
-
-            resultDiv.innerText = result;
-            resultDiv.style.display = 'block';
-
-            // Reset Button
-            btn.disabled = false;
-            btnText.innerText = '질문하기';
-        }
-    </script>
 
 </body>
 </html>
