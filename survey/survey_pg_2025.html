@@ -296,30 +296,53 @@
             
             // TOC 생성
             tocList.innerHTML = '';
-            // 목차는 파일 내 링크 기능을 지원하지 않는 경우 단순 정보용으로 표시하거나
-            // 페이지 번호만 알려주는 용도로 사용 (Native Viewer는 외부 JS로 페이지 제어 불가한 경우가 많음)
             createTocItem(tocList, 1, "표지 (Cover)");
             data.toc.forEach(item => {
                 createTocItem(tocList, item.page, item.title);
             });
 
-            // PDF 로드
-            loadPdf(data.file);
+            // PDF 로드 (1페이지부터)
+            loadPdf(data.file, 1);
         }
 
         function createTocItem(parent, page, title) {
             const li = document.createElement('li');
             li.innerHTML = `
-                <div class="toc-item w-full text-left px-3 py-2.5 rounded-lg text-sm transition-all flex items-center group mb-1 border border-transparent hover:border-teal-100 cursor-default">
+                <button onclick="goToPage(${page})" class="toc-item w-full text-left px-3 py-2.5 rounded-lg text-sm transition-all flex items-center group mb-1 border border-transparent hover:border-teal-100">
                     <span class="toc-page-badge mr-3 font-mono">p.${page}</span>
                     <span class="truncate font-medium text-gray-600 group-hover:text-teal-700 flex-1" title="${title}">${title}</span>
-                </div>
+                </button>
             `;
             parent.appendChild(li);
         }
 
+        function goToPage(pageNum) {
+            if (!currentKey) return;
+            
+            closeSidebarOnMobile();
+            
+            // 데이터 가져오기
+            const data = surveyData[currentKey];
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                // 모바일 Google Docs Viewer는 페이지 파라미터를 공식 지원하지 않으므로 알림
+                // 필요 시 페이지별 이미지를 보여주는 방식으로 전환해야 하나, 현재 구조에서는 알림으로 대체
+                // 혹은 로드 자체를 다시 시도해 볼 수 있음 (캐시 문제로 안 될 수 있음)
+            } else {
+                // 데스크탑: #page=N 프래그먼트를 사용하여 해당 페이지로 이동
+                const container = document.getElementById('pdf-viewer-container');
+                const object = container.querySelector('object');
+                if (object) {
+                    object.data = data.file + "#page=" + pageNum;
+                } else {
+                    loadPdf(data.file, pageNum);
+                }
+            }
+        }
+
         // --- Native/Google Viewer Logic ---
-        function loadPdf(url) {
+        function loadPdf(url, pageNum = 1) {
             const container = document.getElementById('pdf-viewer-container');
             const loading = document.getElementById('loading');
             
@@ -338,8 +361,9 @@
                 container.appendChild(iframe);
             } else {
                 // 데스크탑: Native <object> 태그 사용 (최고 품질, 자체 툴바 포함)
+                // #page=N 프래그먼트 추가
                 const object = document.createElement('object');
-                object.data = url;
+                object.data = url + "#page=" + pageNum;
                 object.type = "application/pdf";
                 object.className = "w-full h-full";
                 
