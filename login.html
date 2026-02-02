@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>대구보건대학교 부서운영결과보고서 평가시스템</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* 폰트 설정 */
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        /* 요청하신 컬러 팔레트 적용 */
+        :root {
+            --color-primary: #024059;   /* 메인 딥 블루 */
+            --color-secondary: #0CB1F2; /* 밝은 블루 (버튼 호버 등) */
+            --color-accent: #05C7F2;    /* 시안 (강조) */
+            --color-neutral: #BF9B7A;   /* 베이지 (보더, 배경 포인트) */
+            --color-dark: #592202;      /* 다크 브라운 (텍스트) */
+            --color-error: #ef4444;     /* 에러 레드 */
+        }
+
+        /* 커스텀 클래스 매핑 */
+        .bg-theme-primary { background-color: var(--color-primary); }
+        .bg-theme-secondary { background-color: var(--color-secondary); }
+        .text-theme-primary { color: var(--color-primary); }
+        .text-theme-dark { color: var(--color-dark); }
+        .border-theme-neutral { border-color: var(--color-neutral); }
+        .focus-ring-accent { --tw-ring-color: var(--color-accent); }
+
+        /* 그라디언트 배경 */
+        .login-bg {
+            background: linear-gradient(135deg, var(--color-primary) 0%, #001f2e 100%);
+        }
+
+        /* 유리 모피즘 효과 (카드 디자인) */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body class="login-bg min-h-screen flex items-center justify-center p-4">
+
+    <!-- 메인 컨테이너 -->
+    <div class="glass-card w-full max-w-md rounded-2xl overflow-hidden animate-[fadeIn_0.5s_ease-out]">
+        
+        <!-- 상단 헤더 라인 -->
+        <div class="h-2 w-full bg-theme-secondary"></div>
+
+        <div class="p-8 pt-10">
+            <!-- 로고 및 타이틀 영역 -->
+            <div class="text-center mb-10">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4 text-theme-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                </div>
+                <h2 class="text-theme-primary text-sm font-bold tracking-widest uppercase mb-1">대구보건대학교</h2>
+                <h1 class="text-2xl font-bold text-gray-800 break-keep leading-tight">
+                    부서운영결과보고서<br>평가시스템
+                </h1>
+            </div>
+
+            <!-- 로그인 폼 -->
+            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-6">
+                <!-- 아이디 입력 -->
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <input type="text" id="userid" required 
+                        class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus-ring-accent focus:border-transparent transition-all placeholder-gray-400 text-gray-700" 
+                        placeholder="아이디를 입력하세요">
+                </div>
+
+                <!-- 비밀번호 입력 -->
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <input type="password" id="password" required 
+                        class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus-ring-accent focus:border-transparent transition-all placeholder-gray-400 text-gray-700" 
+                        placeholder="비밀번호를 입력하세요">
+                </div>
+
+                <!-- 로그인 버튼 -->
+                <button type="submit" 
+                    class="w-full bg-theme-primary hover:bg-theme-secondary text-white font-bold py-3 px-4 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200">
+                    로그인
+                </button>
+
+                <!-- 하단 옵션 -->
+                <div class="flex items-center justify-between text-sm">
+                    <label class="flex items-center text-gray-600 cursor-pointer">
+                        <input type="checkbox" class="form-checkbox h-4 w-4 text-theme-primary rounded border-gray-300 focus:ring-accent">
+                        <span class="ml-2">아이디 저장</span>
+                    </label>
+                    <a href="#" class="text-theme-primary hover:text-theme-secondary font-medium transition-colors">비밀번호 초기화</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- 푸터 / 문의처 -->
+        <div class="bg-gray-50 px-8 py-6 border-t border-theme-neutral border-opacity-30">
+            <div class="text-center">
+                <p class="text-theme-dark font-bold text-sm mb-2">시스템 이용 문의</p>
+                <div class="text-xs text-gray-600 space-y-1">
+                    <p class="font-medium">대학성과관리팀</p>
+                    <div class="flex justify-center items-center space-x-3 mt-2">
+                        <span class="flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                            053-320-1294
+                        </span>
+                        <span class="text-gray-300">|</span>
+                        <span class="flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                            kimdg82@dhc.ac.kr
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 성공 알림 모달 -->
+    <div id="toast-success" class="fixed top-4 right-4 bg-white border-l-4 border-theme-secondary shadow-lg rounded-r p-4 hidden transform transition-all duration-300 translate-x-full">
+        <div class="flex items-center">
+            <div class="flex-shrink-0 text-theme-secondary">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <div class="ml-3">
+                <p class="text-sm font-medium text-gray-900">로그인 성공</p>
+                <p class="text-sm text-gray-500">시스템으로 이동합니다...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 실패 알림 모달 -->
+    <div id="toast-error" class="fixed top-4 right-4 bg-white border-l-4 border-red-500 shadow-lg rounded-r p-4 hidden transform transition-all duration-300 translate-x-full">
+        <div class="flex items-center">
+            <div class="flex-shrink-0 text-red-500">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <div class="ml-3">
+                <p class="text-sm font-medium text-gray-900">로그인 실패</p>
+                <p class="text-sm text-gray-500">아이디 또는 비밀번호를 확인하세요.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // SHA-256 구현 (외부 라이브러리 의존성 제거, file:// 프로토콜 호환용)
+        function sha256(ascii) {
+            function rightRotate(value, amount) {
+                return (value >>> amount) | (value << (32 - amount));
+            }
+            var mathPow = Math.pow;
+            var maxWord = mathPow(2, 32);
+            var lengthProperty = 'length';
+            var i, j;
+            var result = '';
+            var words = {};
+            var asciiBitLength = ascii[lengthProperty] * 8;
+            var hash = [0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19];
+            var k = [0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+                     0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+                     0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+                     0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+                     0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+                     0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+                     0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+                     0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2];
+            ascii += '\x80';
+            while (ascii[lengthProperty] % 64 - 56) ascii += '\x00';
+            for (i = 0; i < ascii[lengthProperty]; i++) {
+                j = ascii.charCodeAt(i);
+                if (j >> 8) return;
+                words[i >> 2] |= j << ((3 - i) % 4) * 8;
+            }
+            words[words[lengthProperty]] = ((asciiBitLength / maxWord) | 0);
+            words[words[lengthProperty]] = (asciiBitLength)
+            for (j = 0; j < words[lengthProperty];) {
+                var w = words.slice(j, j += 16);
+                var oldHash = hash;
+                hash = hash.slice(0, 8);
+                for (i = 0; i < 64; i++) {
+                    var i2 = i + j;
+                    var w15 = w[i - 15], w2 = w[i - 2];
+                    var a = hash[0], e = hash[4];
+                    var temp1 = hash[7] + (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25)) + ((e & hash[5]) ^ ((~e) & hash[6])) + k[i] + (w[i] = (i < 16) ? w[i] : (w[i - 16] + (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3)) + w[i - 7] + (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10))) | 0);
+                    var temp2 = (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22)) + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
+                    hash = [(temp1 + temp2) | 0].concat(hash);
+                    hash[4] = (hash[4] + temp1) | 0;
+                }
+                for (i = 0; i < 8; i++) {
+                    hash[i] = (hash[i] + oldHash[i]) | 0;
+                }
+            }
+            for (i = 0; i < 8; i++) {
+                for (j = 3; j + 1; j--) {
+                    var b = (hash[i] >> (j * 8)) & 255;
+                    result += ((b < 16) ? 0 : '') + b.toString(16);
+                }
+            }
+            return result;
+        }
+
+        // 설정된 ID/PW 해시값
+        // admin
+        const TARGET_ID_HASH = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918";
+        
+        // 현재 설정: 1234
+        // dhc1294로 변경하시려면, 브라우저 콘솔(F12)을 열어 출력된 dhc1294의 해시값을 복사하여 아래 값을 교체하세요.
+        const TARGET_PW_HASH = "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"; 
+
+        // [개발자용] dhc1294 해시값 확인용 로그
+        console.log("-----------------------------------------");
+        console.log("TIP: 원래 비밀번호(dhc1294)를 사용하시려면 아래 값을 복사해 TARGET_PW_HASH에 넣으세요.");
+        console.log("dhc1294 SHA-256 Hash:", sha256("dhc1294"));
+        console.log("-----------------------------------------");
+
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const useridInput = document.getElementById('userid').value;
+            const passwordInput = document.getElementById('password').value;
+            const btn = event.target.querySelector('button');
+            const originalText = btn.innerText;
+
+            if(useridInput && passwordInput) {
+                // 버튼 로딩 상태
+                btn.disabled = true;
+                btn.innerHTML = `<svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> 인증 중...`;
+                btn.classList.add('opacity-75');
+
+                // 암호화 및 검증
+                setTimeout(() => {
+                    try {
+                        const hashedId = sha256(useridInput);
+                        const hashedPw = sha256(passwordInput);
+
+                        // console.log("입력된 ID 해시:", hashedId); // 디버깅용
+                        // console.log("입력된 PW 해시:", hashedPw); // 디버깅용
+
+                        if (hashedId === TARGET_ID_HASH && hashedPw === TARGET_PW_HASH) {
+                            showToast('success');
+                            setTimeout(() => {
+                                window.location.href = '/pg/pg001.html';
+                            }, 1500);
+                        } else {
+                            showToast('error');
+                            btn.disabled = false;
+                            btn.innerText = originalText;
+                            btn.classList.remove('opacity-75');
+                            document.getElementById('password').value = '';
+                            document.getElementById('password').focus();
+                        }
+                    } catch (e) {
+                        console.error(e);
+                        alert("인증 처리 중 오류가 발생했습니다.");
+                        btn.disabled = false;
+                        btn.innerText = originalText;
+                        btn.classList.remove('opacity-75');
+                    }
+                }, 800);
+            }
+        }
+
+        function showToast(type) {
+            const toastId = type === 'success' ? 'toast-success' : 'toast-error';
+            const toast = document.getElementById(toastId);
+            
+            toast.classList.remove('hidden', 'translate-x-full');
+            toast.classList.add('translate-x-0');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => {
+                    toast.classList.remove('translate-x-0');
+                    toast.classList.add('hidden');
+                }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
