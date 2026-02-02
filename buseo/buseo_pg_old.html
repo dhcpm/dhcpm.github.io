@@ -161,7 +161,7 @@
                             </a>
                         </div>
                     </div>
-                    <p class="text-red-600 font-bold text-sm mt-2 mb-4">[부서별 점수 입력 후 반드시 저장을 누른 후 다음 부서를 평가하세요]</p>
+                    <p class="text-red-600 font-bold text-sm mt-2 mb-4">[부서별 점수 입력 후 반드시 엑셀저장을 누른 후 다음 부서를 평가하세요]</p>
                     <div class="overflow-x-auto">
                         <table class="min-w-full bg-white border border-gray-200 rounded-lg evaluation-table">
                             <thead id="table-head">
@@ -202,48 +202,12 @@
                     </div>
                 </div>
 
-                <!-- 저장 버튼 (명칭 변경) -->
+                <!-- 엑셀 저장 버튼 -->
                 <div class="mt-8 text-right">
                     <button id="export-excel-button" class="px-8 py-3 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all">
-                        저장
+                        엑셀저장
                     </button>
                 </div>
-
-                <!-- NEW: 평가 진행 현황 섹션 -->
-                <div id="status-section" class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- 완료된 부서 -->
-                    <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
-                        <div class="flex items-center justify-between mb-3 border-b pb-2 border-gray-100">
-                            <h3 class="font-bold text-lg text-blue-600 flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                </svg>
-                                완료된 부서
-                            </h3>
-                            <span id="completed-count" class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">0</span>
-                        </div>
-                        <ul id="completed-list" class="list-none text-sm text-gray-700 h-40 overflow-y-auto space-y-1 pr-2">
-                            <li class="text-gray-400 italic text-center py-10">완료된 부서가 없습니다.</li>
-                        </ul>
-                    </div>
-
-                    <!-- 미완료 부서 -->
-                    <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
-                        <div class="flex items-center justify-between mb-3 border-b pb-2 border-gray-100">
-                            <h3 class="font-bold text-lg text-gray-500 flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-                                </svg>
-                                미완료 부서
-                            </h3>
-                            <span id="incomplete-count" class="bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded">0</span>
-                        </div>
-                        <ul id="incomplete-list" class="list-none text-sm text-gray-600 h-40 overflow-y-auto space-y-1 pr-2">
-                            <!-- JS로 채워짐 -->
-                        </ul>
-                    </div>
-                </div>
-
             </div>
         </div>
 
@@ -287,10 +251,9 @@
                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                     </svg>
                 </div>
-                <h3 class="text-lg font-medium text-gray-900">확인</h3>
+                <h3 class="text-lg font-medium text-gray-900">경고</h3>
                 <div class="mt-2">
-                    <!-- 줄바꿈을 허용하도록 whitespace-pre-wrap 클래스 추가 -->
-                    <p id="confirm-message" class="text-sm text-gray-500 whitespace-pre-wrap"></p>
+                    <p id="confirm-message" class="text-sm text-gray-500"></p>
                 </div>
             </div>
             <div class="p-4 bg-gray-50 text-center flex justify-center space-x-4">
@@ -535,94 +498,12 @@
     const criteriaBtnFeedback = document.getElementById('criteria-btn-feedback');
     const suggestionTextarea = document.getElementById('suggestion-textarea');
     const charCounter = document.getElementById('char-counter');
-    
-    // Status Section Elements
-    const completedListEl = document.getElementById('completed-list');
-    const incompleteListEl = document.getElementById('incomplete-list');
-    const completedCountEl = document.getElementById('completed-count');
-    const incompleteCountEl = document.getElementById('incomplete-count');
     // --- END: DOM Element Selections ---
 
     let isDirty = false;
     let previousEvaluator = '';
     let previousDepartment = '';
     let confirmCallback = null;
-
-    // --- NEW: Status Tracking ---
-    const completedDepartments = new Set();
-    
-    // 상태 초기화 및 렌더링 함수
-    function updateStatusSection() {
-        const allDepartments = Object.keys(tasksByDepartment).sort();
-        
-        // 목록 초기화
-        completedListEl.innerHTML = '';
-        incompleteListEl.innerHTML = '';
-
-        let completedCount = 0;
-        let incompleteCount = 0;
-
-        allDepartments.forEach(dept => {
-            const isCompleted = completedDepartments.has(dept);
-            const li = document.createElement('li');
-            
-            // Flexbox를 사용하여 텍스트 정렬 및 스타일링
-            // 기본 스타일
-            li.className = "flex items-center justify-between py-1 border-b border-gray-50 last:border-0";
-
-            if (isCompleted) {
-                li.innerHTML = `<span class="text-blue-600 font-medium">${dept}</span><span class="text-xs text-blue-400">완료</span>`;
-                completedListEl.appendChild(li);
-                completedCount++;
-            } else {
-                // 미완료 항목 스타일 (커서 포인터, 호버 효과 추가)
-                li.className = "flex items-center justify-between py-1 border-b border-gray-50 last:border-0 cursor-pointer hover:bg-gray-50 transition-colors";
-                li.innerHTML = `<span class="text-gray-600 font-medium">${dept}</span><span class="text-xs text-gray-400">미완료</span>`;
-                
-                // 클릭 이벤트 추가: 해당 부서 선택
-                li.addEventListener('click', () => {
-                   selectDepartment(dept);
-                });
-
-                incompleteListEl.appendChild(li);
-                incompleteCount++;
-            }
-        });
-
-        // 카운트 업데이트
-        completedCountEl.textContent = completedCount;
-        incompleteCountEl.textContent = incompleteCount;
-
-        // 완료된 목록이 비어있을 때 메시지 표시
-        if (completedCount === 0) {
-            completedListEl.innerHTML = '<li class="text-gray-400 italic text-center py-10">완료된 부서가 없습니다.</li>';
-        }
-        
-        // 모든 부서가 완료되었을 때 미완료 목록 메시지
-        if (incompleteCount === 0) {
-            incompleteListEl.innerHTML = '<li class="text-gray-400 italic text-center py-10">모든 부서 평가가 완료되었습니다.</li>';
-        }
-    }
-
-    // 부서 선택 함수 (미완료 목록 클릭 시 사용)
-    function selectDepartment(deptName) {
-        // 현재 선택된 부서와 같으면 무시
-        if (departmentSelect.value === deptName) return;
-
-        if (isDirty) {
-            showCustomConfirm('저장되지 않은 점수와 제언사항이 사라집니다. 계속하시겠습니까?', (confirmed) => {
-                if (confirmed) {
-                    departmentSelect.value = deptName;
-                    previousDepartment = deptName;
-                    updateTableView();
-                }
-            });
-        } else {
-            departmentSelect.value = deptName;
-            previousDepartment = deptName;
-            updateTableView();
-        }
-    }
     
     // --- START: Password Protection Logic ---
     // 중요: 여기에 원하는 암호를 설정하세요.
@@ -901,7 +782,6 @@
         }
         departmentSelect.value = ''; // 부서 선택 초기화
         updateTableView();
-        updateStatusSection(); // 평가위원 변경 시 상태 초기화 (필요하다면 로직 추가)
     }
 
     // --- START: Event Listeners ---
@@ -922,9 +802,6 @@
                 if (confirmed) {
                     handleEvaluatorChange(selectedValue);
                     previousEvaluator = selectedValue;
-                    // 평가위원이 바뀌면 완료 내역을 초기화하려면 아래 주석 해제
-                    // completedDepartments.clear();
-                    // updateStatusSection();
                 } else {
                     evaluatorSelect.value = previousEvaluator;
                 }
@@ -952,7 +829,7 @@
         }
     });
 
-    // 저장 버튼 클릭 이벤트 (엑셀 저장 기능을 이 안에 래핑)
+    // 엑셀 저장 버튼 클릭 이벤트
     exportExcelButton.addEventListener('click', () => {
         // 1. 유효성 검사
         let allScoresEntered = true;
@@ -972,94 +849,70 @@
             return;
         }
 
-        // 2. 데이터 수집 (메시지 표시용)
+        // 2. 데이터 수집
         const evaluator = evaluatorSelect.value;
         const department = departmentSelect.value;
         const evalTypeRadio = document.querySelector('input[name="evaluation-item"]:checked');
         const evalTypeLabel = evalTypeRadio ? evalTypeRadio.nextElementSibling.textContent : '평가항목';
         const departmentForFilename = department || '전체부서';
 
-        // 확인 메시지 구성
-        const confirmMsg = `평가 부서: ${departmentForFilename}\n평가 위원: ${evaluator}\n평가 항목: ${evalTypeLabel}\n\n위 내용으로 저장을 완료하시겠습니까?`;
+        const excelData = [
+            ["2025 부서운영 자체평가 결과"],
+            [],
+            ["평가위원", evaluator],
+            ["평가부서", departmentForFilename],
+            ["평가항목", evalTypeLabel],
+            []
+        ];
+        
+        const headerElements = tableHead.querySelectorAll('th');
+        const headers = Array.from(headerElements).map(th => th.innerText.replace(/\n/g, ' '));
+        excelData.push(headers);
 
-        // 3. 확인 창 호출 및 저장 로직
-        showCustomConfirm(confirmMsg, (confirmed) => {
-            if (confirmed) {
-                // 사용자가 '예'를 선택한 경우
-                
-                // --- 엑셀 저장 로직 주석 처리 ---
-                /*
-                // 엑셀 데이터 구성
-                const excelData = [
-                    ["2025 부서운영 자체평가 결과"],
-                    [],
-                    ["평가위원", evaluator],
-                    ["평가부서", departmentForFilename],
-                    ["평가항목", evalTypeLabel],
-                    []
-                ];
-                
-                const headerElements = tableHead.querySelectorAll('th');
-                const headers = Array.from(headerElements).map(th => th.innerText.replace(/\n/g, ' '));
-                excelData.push(headers);
-
-                const rows = tableBody.querySelectorAll('tr');
-                rows.forEach(row => {
-                    const rowData = [];
-                    const cells = row.querySelectorAll('td');
-                    cells.forEach((cell, index) => {
-                        if (cell.querySelector('select')) {
-                            rowData.push(cell.querySelector('select').value);
-                        } else {
-                            rowData.push(cell.textContent);
-                        }
-                    });
-                    excelData.push(rowData);
-                });
-                
-                // 총계, 평균 데이터 추가
-                const footerRows = tableFoot.querySelectorAll('tr');
-                if (footerRows.length > 0) {
-                    excelData.push([]); // 빈 줄 추가
-                    footerRows.forEach(row => {
-                        const rowData = [];
-                        const cells = row.querySelectorAll('td');
-                        cells.forEach(cell => {
-                            rowData.push(cell.textContent);
-                        });
-                        excelData.push(rowData);
-                    });
+        const rows = tableBody.querySelectorAll('tr');
+        rows.forEach(row => {
+            const rowData = [];
+            const cells = row.querySelectorAll('td');
+            cells.forEach((cell, index) => {
+                if (cell.querySelector('select')) {
+                    rowData.push(cell.querySelector('select').value);
+                } else {
+                    rowData.push(cell.textContent);
                 }
-
-                // 제언사항 데이터 추가
-                const suggestionText = suggestionTextarea.value;
-                if (suggestionText) {
-                    excelData.push([]); // 빈 줄 추가
-                    excelData.push(["제언사항"]);
-                    excelData.push([suggestionText]);
-                }
-
-                // 엑셀 파일 생성 및 다운로드
-                const fileName = `${evalTypeLabel}_${departmentForFilename}_${evaluator}.xlsx`;
-                const worksheet = XLSX.utils.aoa_to_sheet(excelData);
-                const workbook = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(workbook, worksheet, '평가결과');
-                XLSX.writeFile(workbook, fileName);
-                */
-                // --- 엑셀 저장 로직 주석 처리 끝 ---
-
-                // 부서 완료 처리 및 UI 업데이트
-                if (department) {
-                    completedDepartments.add(department);
-                    updateStatusSection();
-                }
-                
-                isDirty = false; // 저장 후 초기화
-                
-                // 저장 완료 알림
-                showCustomAlert("저장이 완료되었습니다.");
-            }
+            });
+            excelData.push(rowData);
         });
+        
+        // 총계, 평균 데이터 추가
+        const footerRows = tableFoot.querySelectorAll('tr');
+        if (footerRows.length > 0) {
+            excelData.push([]); // 빈 줄 추가
+            footerRows.forEach(row => {
+                const rowData = [];
+                const cells = row.querySelectorAll('td');
+                cells.forEach(cell => {
+                    rowData.push(cell.textContent);
+                });
+                excelData.push(rowData);
+            });
+        }
+
+        // 제언사항 데이터 추가
+        const suggestionText = suggestionTextarea.value;
+        if (suggestionText) {
+            excelData.push([]); // 빈 줄 추가
+            excelData.push(["제언사항"]);
+            excelData.push([suggestionText]);
+        }
+
+
+        // 3. 엑셀 파일 생성 및 다운로드
+        const fileName = `${evalTypeLabel}_${departmentForFilename}_${evaluator}.xlsx`;
+        const worksheet = XLSX.utils.aoa_to_sheet(excelData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, '평가결과');
+        XLSX.writeFile(workbook, fileName);
+        isDirty = false; // 저장 후 초기화
     });
 
     // 모달 닫기 이벤트
@@ -1119,7 +972,6 @@
         previousEvaluator = evaluatorSelect.value;
         populateDepartments();
         updateTableView(); 
-        updateStatusSection(); // 초기 상태 렌더링
     });
 
 </script>
