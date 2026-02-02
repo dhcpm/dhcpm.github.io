@@ -177,13 +177,21 @@
 
                 // 단순 ID/PW 비교 (암호화 제거됨)
                 setTimeout(() => {
-                    // ID: admin, PW: 1234
+                    // 관리자 (admin) 로그인
                     if (useridInput === "admin" && passwordInput === "1234") {
                         showToast('success');
                         setTimeout(() => {
                             window.location.href = '/buseo/buseo_pg.html';
                         }, 1000);
-                    } else {
+                    } 
+                    // 부서 (dondesard) 로그인 추가
+                    else if (useridInput === "dondesard" && passwordInput === "13001300") {
+                        showToast('success');
+                        setTimeout(() => {
+                            window.location.href = '/dept/dept_pg.html';
+                        }, 1000);
+                    }
+                    else {
                         showToast('error');
                         // 버튼 복구
                         btn.disabled = false;
