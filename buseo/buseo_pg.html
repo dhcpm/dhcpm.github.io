@@ -212,7 +212,7 @@
                 <!-- NEW: 평가 진행 현황 섹션 -->
                 <div id="status-section" class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- 완료된 부서 -->
-                    <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
+                    <div class="bg-white p-5 rounded-lg shadow border border-gray-200 flex flex-col">
                         <div class="flex items-center justify-between mb-3 border-b pb-2 border-gray-100">
                             <h3 class="font-bold text-lg text-blue-600 flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
@@ -222,9 +222,12 @@
                             </h3>
                             <span id="completed-count" class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">0</span>
                         </div>
-                        <ul id="completed-list" class="list-none text-sm text-gray-700 h-40 overflow-y-auto space-y-1 pr-2">
+                        <ul id="completed-list" class="list-none text-sm text-gray-700 h-40 overflow-y-auto space-y-1 pr-2 mb-4 flex-grow">
                             <li class="text-gray-400 italic text-center py-10">완료된 부서가 없습니다.</li>
                         </ul>
+                        <button id="export-all-button" class="w-full py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors text-sm shadow">
+                            완료 결과 전체 반출 (Excel)
+                        </button>
                     </div>
 
                     <!-- 미완료 부서 -->
@@ -519,6 +522,7 @@
     const evaluationTitle = document.getElementById('evaluation-title');
     const radioButtons = document.querySelectorAll('input[name="evaluation-item"]');
     const exportExcelButton = document.getElementById('export-excel-button');
+    const exportAllButton = document.getElementById('export-all-button');
     const alertModal = document.getElementById('alert-modal');
     const alertMessage = document.getElementById('alert-message');
     const alertOkButton = document.getElementById('alert-ok-button');
@@ -548,8 +552,9 @@
     let previousDepartment = '';
     let confirmCallback = null;
 
-    // --- NEW: Status Tracking ---
+    // --- NEW: Status Tracking & Data Persistence ---
     const completedDepartments = new Set();
+    const evaluationResults = {}; // 저장된 평가 결과: { 부서명: { scores: [...], suggestion: "..." } }
     
     // 상태 초기화 및 렌더링 함수
     function updateStatusSection() {
@@ -567,11 +572,16 @@
             const li = document.createElement('li');
             
             // Flexbox를 사용하여 텍스트 정렬 및 스타일링
-            // 기본 스타일
-            li.className = "flex items-center justify-between py-1 border-b border-gray-50 last:border-0";
-
             if (isCompleted) {
+                // 완료 항목도 클릭 가능하게 변경 (커서 포인터, 호버 효과)
+                li.className = "flex items-center justify-between py-1 border-b border-gray-50 last:border-0 cursor-pointer hover:bg-gray-50 transition-colors";
                 li.innerHTML = `<span class="text-blue-600 font-medium">${dept}</span><span class="text-xs text-blue-400">완료</span>`;
+                
+                // 클릭 이벤트 추가: 해당 부서 선택
+                li.addEventListener('click', () => {
+                   selectDepartment(dept);
+                });
+                
                 completedListEl.appendChild(li);
                 completedCount++;
             } else {
@@ -821,6 +831,35 @@
                 });
             }
         }
+        
+        // --- NEW: Load Saved Data Logic ---
+        if (evaluationResults[selectedDepartment]) {
+            const savedData = evaluationResults[selectedDepartment];
+            
+            // Restore suggestion
+            suggestionTextarea.value = savedData.suggestion || '';
+            charCounter.textContent = suggestionTextarea.value.length;
+
+            // Restore scores
+            const scoreSelects = document.querySelectorAll('.score-select');
+            // 저장된 점수 개수와 현재 선택 상자 개수가 일치하는지 확인 (평가항목 변경 시 에러 방지)
+            if (savedData.scores && savedData.scores.length === scoreSelects.length) {
+                scoreSelects.forEach((select, index) => {
+                    select.value = savedData.scores[index];
+                });
+            }
+        }
+        
+        // Manually calculate totals after loading values
+        const rows = document.querySelectorAll('.evaluation-row');
+        rows.forEach(row => {
+             const scoreSelects = row.querySelectorAll('.score-select');
+             const totalScoreCell = row.querySelector('.total-score');
+             let total = 0;
+             scoreSelects.forEach(s => { total += parseFloat(s.value) || 0; });
+             totalScoreCell.textContent = total.toFixed(1);
+        });
+
         addScoreCalculationListeners();
         updateTableFooter();
     }
@@ -900,8 +939,13 @@
             }
         }
         departmentSelect.value = ''; // 부서 선택 초기화
+        
+        // 평가위원이 변경되면 기존 입력 데이터와 완료 현황 초기화
+        completedDepartments.clear();
+        for (let key in evaluationResults) delete evaluationResults[key];
+        
         updateTableView();
-        updateStatusSection(); // 평가위원 변경 시 상태 초기화 (필요하다면 로직 추가)
+        updateStatusSection(); 
     }
 
     // --- START: Event Listeners ---
@@ -922,9 +966,6 @@
                 if (confirmed) {
                     handleEvaluatorChange(selectedValue);
                     previousEvaluator = selectedValue;
-                    // 평가위원이 바뀌면 완료 내역을 초기화하려면 아래 주석 해제
-                    // completedDepartments.clear();
-                    // updateStatusSection();
                 } else {
                     evaluatorSelect.value = previousEvaluator;
                 }
@@ -998,68 +1039,126 @@
                     ["평가항목", evalTypeLabel],
                     []
                 ];
-                
-                const headerElements = tableHead.querySelectorAll('th');
-                const headers = Array.from(headerElements).map(th => th.innerText.replace(/\n/g, ' '));
-                excelData.push(headers);
-
-                const rows = tableBody.querySelectorAll('tr');
-                rows.forEach(row => {
-                    const rowData = [];
-                    const cells = row.querySelectorAll('td');
-                    cells.forEach((cell, index) => {
-                        if (cell.querySelector('select')) {
-                            rowData.push(cell.querySelector('select').value);
-                        } else {
-                            rowData.push(cell.textContent);
-                        }
-                    });
-                    excelData.push(rowData);
-                });
-                
-                // 총계, 평균 데이터 추가
-                const footerRows = tableFoot.querySelectorAll('tr');
-                if (footerRows.length > 0) {
-                    excelData.push([]); // 빈 줄 추가
-                    footerRows.forEach(row => {
-                        const rowData = [];
-                        const cells = row.querySelectorAll('td');
-                        cells.forEach(cell => {
-                            rowData.push(cell.textContent);
-                        });
-                        excelData.push(rowData);
-                    });
-                }
-
-                // 제언사항 데이터 추가
-                const suggestionText = suggestionTextarea.value;
-                if (suggestionText) {
-                    excelData.push([]); // 빈 줄 추가
-                    excelData.push(["제언사항"]);
-                    excelData.push([suggestionText]);
-                }
-
-                // 엑셀 파일 생성 및 다운로드
-                const fileName = `${evalTypeLabel}_${departmentForFilename}_${evaluator}.xlsx`;
-                const worksheet = XLSX.utils.aoa_to_sheet(excelData);
-                const workbook = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(workbook, worksheet, '평가결과');
+                // ... (중략) ...
                 XLSX.writeFile(workbook, fileName);
                 */
                 // --- 엑셀 저장 로직 주석 처리 끝 ---
 
-                // 부서 완료 처리 및 UI 업데이트
+                // --- NEW: Save Data Logic ---
+                const currentScores = [];
+                document.querySelectorAll('.score-select').forEach(select => {
+                    currentScores.push(select.value);
+                });
+                const currentSuggestion = suggestionTextarea.value;
+
+                // 결과 저장
                 if (department) {
+                    evaluationResults[department] = {
+                        scores: currentScores,
+                        suggestion: currentSuggestion
+                    };
                     completedDepartments.add(department);
                     updateStatusSection();
                 }
-                
+
                 isDirty = false; // 저장 후 초기화
                 
                 // 저장 완료 알림
                 showCustomAlert("저장이 완료되었습니다.");
             }
         });
+    });
+
+    // 전체 반출 버튼 클릭 이벤트
+    exportAllButton.addEventListener('click', () => {
+        // 유효성 검사
+        if (completedDepartments.size === 0) {
+            showCustomAlert('반출할 완료된 부서가 없습니다.');
+            return;
+        }
+
+        const evaluator = evaluatorSelect.value;
+        const evalTypeRadio = document.querySelector('input[name="evaluation-item"]:checked');
+        const evalTypeLabel = evalTypeRadio ? evalTypeRadio.nextElementSibling.textContent : '평가항목';
+        const evalTypeValue = evalTypeRadio ? evalTypeRadio.value : '';
+
+        const excelData = [
+            ["2025 부서운영 자체평가 결과 (전체 반출)"],
+            [],
+            ["평가위원", evaluator],
+            ["평가항목", evalTypeLabel],
+            []
+        ];
+
+        // 헤더 구성
+        let headers = [];
+        if (evalTypeValue === 'plan') {
+            headers = ["부서명", "담당자", "업무명", "페이지", "개선계획의 적극성", "계획의 구체성과 적정성", "총점"];
+        } else if (evalTypeValue === 'performance') {
+            headers = ["부서명", "담당자", "업무명", "페이지", "성실도", "문제분석", "개선노력", "총점"];
+        } else if (evalTypeValue === 'feedback') {
+            headers = ["부서명", "업무명", "페이지", "우수사항", "미흡사항", "환류방안의 적정성", "총점"];
+        }
+        excelData.push(headers);
+
+        // 데이터 반복
+        completedDepartments.forEach(dept => {
+            const result = evaluationResults[dept];
+            if (!result) return;
+
+            const savedScores = result.scores; // 값 배열
+            let scoreIndex = 0;
+
+            let items = [];
+            if (evalTypeValue === 'feedback') {
+                 items = overallEvalsByDepartment[dept] || [];
+            } else {
+                 items = tasksByDepartment[dept] || [];
+            }
+
+            items.forEach(item => {
+                const row = [];
+                row.push(dept);
+                
+                if (evalTypeValue !== 'feedback') {
+                    row.push(item.person);
+                }
+                
+                row.push(item.task);
+                row.push(item.page);
+
+                // 이 행의 점수 추가
+                // 타입에 따라 행당 점수 개수 결정
+                let scoresPerRow = 2; // plan 기본값
+                if (evalTypeValue === 'performance' || evalTypeValue === 'feedback') scoresPerRow = 3;
+
+                let rowTotal = 0;
+                for(let i=0; i<scoresPerRow; i++) {
+                    const val = parseFloat(savedScores[scoreIndex]) || 0;
+                    row.push(val);
+                    rowTotal += val;
+                    scoreIndex++;
+                }
+                row.push(rowTotal.toFixed(1)); // 총점
+                
+                excelData.push(row);
+            });
+
+            // 제언사항 행 추가
+            if (result.suggestion) {
+                excelData.push(["제언사항", result.suggestion]);
+            }
+            
+            // 빈 행으로 구분
+            excelData.push([]);
+        });
+
+        // 엑셀 파일 생성 및 다운로드
+        const fileName = `전체반출_${evalTypeLabel}_${evaluator}.xlsx`;
+        const worksheet = XLSX.utils.aoa_to_sheet(excelData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, '전체결과');
+        XLSX.writeFile(workbook, fileName);
     });
 
     // 모달 닫기 이벤트
