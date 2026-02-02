@@ -39,8 +39,10 @@
             <div class="flex items-center justify-between h-16">
                 <!-- Logo and Team Name -->
                 <div class="flex-shrink-0 flex items-center">
+                    <!-- 로고 이미지 경로가 로컬이 아닌 경우 깨질 수 있으므로 대체 텍스트 표시 -->
+                    <!--<div class="h-8 w-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold mr-2">D</div>-->
                     <img class="h-8 w-auto" src="../img/logo.png" alt="대구보건대학교 로고">
-                    <a href="../index.html" class="ml-3 text-xl font-bold text-gray-800 hover:text-blue-700">대학성과관리팀</a>
+                    <a href="../index.html" class="text-xl font-bold text-gray-800 hover:text-blue-700">대학성과관리팀</a>
                 </div>
                 <!-- Desktop Navigation -->
                 <nav class="hidden md:flex items-center space-x-5">
@@ -104,6 +106,14 @@
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
                 <p class="text-lg font-medium text-gray-600 mt-2">전체 분석 데이터를 불러오고 있습니다...</p>
+                <p class="text-sm text-gray-400 mt-1">데이터가 많을 경우 5~10초 정도 소요될 수 있습니다.</p>
+            </div>
+
+            <!-- Error Message Container -->
+            <div id="errorMessage" class="hidden text-center my-10 bg-red-50 p-6 rounded-lg border border-red-200">
+                <div class="text-red-500 text-xl font-bold mb-2">데이터 로딩 실패</div>
+                <p id="errorDetails" class="text-gray-700"></p>
+                <button onclick="location.reload()" class="mt-4 px-4 py-2 bg-red-100 text-red-700 rounded hover:bg-red-200 transition">새로고침</button>
             </div>
 
             <!-- Tab Content Panels -->
@@ -140,7 +150,7 @@
 
                 <!-- Suggestions Report Tab -->
                 <div id="suggestionsReport" class="tab-content">
-                    <div class="w-full max-w-2xl mx-auto bg-white p-6 rounded-xl shadow-md">
+                    <div class="w-full max-w-2xl mx-auto bg-white p-6 rounded-xl shadow-md border border-gray-100">
                          <div class="mb-4">
                             <label for="sugg_departmentDropdown" class="block text-lg font-medium text-gray-700 mb-2">부서 선택</label>
                             <select id="sugg_departmentDropdown" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 bg-white">
@@ -170,9 +180,11 @@
         // --- Header Mobile Menu Logic ---
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
 
         // Global state
         const dashboardData = {
@@ -184,15 +196,19 @@
 
         // DOM Elements
         const loadingSpinner = document.getElementById('loadingSpinner');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorDetails = document.getElementById('errorDetails');
         const tabContentsContainer = document.getElementById('tabContentsContainer');
         const tabButtons = document.querySelectorAll('.tab-button');
 
         // Initializer
         window.onload = async () => {
+            // Timestamp added to bypass cache
+            const timestamp = new Date().getTime();
             const fileUrls = {
-                dept: 'https://dhcpm.github.io/dept/file/dept.xlsx',
-                employee: 'https://dhcpm.github.io/dept/file/dept_sub.xlsx',
-                suggestions: 'https://dhcpm.github.io/dept/file/dept_adv.xlsx'
+                dept: `https://dhcpm.github.io/dept/file/dept.xlsx?t=${timestamp}`,
+                employee: `https://dhcpm.github.io/dept/file/dept_sub.xlsx?t=${timestamp}`,
+                suggestions: `https://dhcpm.github.io/dept/file/dept_adv.xlsx?t=${timestamp}`
             };
 
             try {
@@ -212,25 +228,61 @@
                 tabContentsContainer.classList.remove('hidden');
 
             } catch (error) {
-                console.error("One or more files failed to load:", error);
-                loadingSpinner.innerHTML = `<p class="text-red-500 font-bold">데이터 로딩에 실패했습니다. 페이지를 새로고침 해주세요.</p>`;
+                console.error("Critical Error loading files:", error);
+                loadingSpinner.classList.add('hidden');
+                errorMessage.classList.remove('hidden');
+                errorDetails.innerHTML = `
+                    서버에서 엑셀 파일을 불러오는데 실패했습니다.<br>
+                    <span class="text-sm font-mono mt-2 block bg-white p-2 border rounded text-left overflow-auto max-h-32">
+                        ${error.message}
+                    </span>
+                    <br>
+                    <span class="text-sm text-gray-500">
+                        * GitHub Pages URL이 정확한지 확인해주세요.<br>
+                        * 파일명 대소문자가 정확한지 확인해주세요 (dept.xlsx vs Dept.xlsx).
+                    </span>
+                `;
             }
         };
 
         // --- Data Fetching and Processing ---
         async function fetchAndParseExcel(url) {
-            const proxiedUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
-            const response = await fetch(proxiedUrl);
-            if (!response.ok) throw new Error(`Failed to fetch ${url}`);
-            const arrayBuffer = await response.arrayBuffer();
-            const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-            const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-            const jsonData = XLSX.utils.sheet_to_json(worksheet);
-            if (jsonData.length === 0) throw new Error(`Excel file is empty: ${url}`);
-            return { headers: Object.keys(jsonData[0]), data: jsonData };
+            console.log(`Fetching URL: ${url}`);
+            
+            // Removed corsproxy.io as GitHub Pages supports CORS natively for hosted files.
+            // Using a proxy often causes 502/503 errors or is blocked.
+            
+            try {
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP Error: ${response.status} ${response.statusText} for ${url}`);
+                }
+                
+                const arrayBuffer = await response.arrayBuffer();
+                const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+                
+                if (workbook.SheetNames.length === 0) {
+                    throw new Error(`Excel file is empty or invalid: ${url}`);
+                }
+
+                const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                const jsonData = XLSX.utils.sheet_to_json(worksheet);
+                
+                if (jsonData.length === 0) {
+                     throw new Error(`Excel sheet has no data rows: ${url}`);
+                }
+
+                return { headers: Object.keys(jsonData[0]), data: jsonData };
+
+            } catch (err) {
+                throw new Error(`Failed to load ${url.split('/').pop()}: ${err.message}`);
+            }
         }
         
         function processTscores(originalData, idKeys, excludedKeys) {
+            if (!originalData || originalData.length === 0) return { tScoresData: [], originalData: [], scoreColumns: [] };
+
             const headers = Object.keys(originalData[0]);
             const scoreColumns = headers.filter(h => h && ![...idKeys, ...excludedKeys].some(key => h.includes(key)));
             
@@ -258,6 +310,8 @@
 
         function processDeptData({ headers, data }) {
             const deptKey = headers.find(h => h.includes('부서명'));
+            if (!deptKey) console.error("Could not find '부서명' column in Dept data");
+            
             const excluded = ['총점', '순위', '성과지표 목표값의 적절성', '성과지표 목표값의 달성도'];
             const processed = processTscores(data, [deptKey], excluded);
             return { ...processed, departmentKey: deptKey };
@@ -266,14 +320,15 @@
         function processEmployeeData({ headers, data }) {
             const deptKey = headers.find(h => h.includes('부서명'));
             const empKey = headers.find(h => h.includes('담당자'));
+            
             const excluded = ['총점', '순위', '성과지표 목표값의 적절성', '성과지표 목표값의 달성도'];
             const processed = processTscores(data, [deptKey, empKey], excluded);
 
             const deptAverages = {};
-            const depts = [...new Set(data.map(d => d[deptKey]))];
+            // Filter out undefined department names
+            const depts = [...new Set(data.map(d => d[deptKey]))].filter(d => d);
 
             depts.forEach(deptName => {
-                if (!deptName) return;
                 const employeesInDept = processed.tScoresData.filter(d => d[deptKey] === deptName);
                 if (employeesInDept.length > 0) {
                     deptAverages[deptName] = {};
@@ -309,7 +364,8 @@
                     button.classList.add('active');
                     
                     document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-                    document.getElementById(button.dataset.tab).classList.add('active');
+                    const targetContent = document.getElementById(button.dataset.tab);
+                    if (targetContent) targetContent.classList.add('active');
                 });
             });
         }
@@ -318,9 +374,11 @@
         function initDeptAnalysisTab() {
             const { originalData, departmentKey } = dashboardData.dept;
             const dropdown = document.getElementById('dept_departmentDropdown');
+            if (!dropdown) return;
+
             dropdown.innerHTML = '<option value="">-- 부서 선택 --</option>';
 
-            const allDepts = [...new Set(originalData.map(d => d[departmentKey]))].filter(Boolean).sort((a,b) => a.localeCompare(b, 'ko'));
+            const allDepts = [...new Set(originalData.map(d => d[departmentKey]))].filter(Boolean).sort((a,b) => String(a).localeCompare(String(b), 'ko'));
             allDepts.forEach(deptName => {
                 const option = document.createElement('option');
                 option.value = deptName;
@@ -354,8 +412,10 @@
             const deptDropdown = document.getElementById('emp_departmentDropdown');
             const empDropdown = document.getElementById('emp_employeeDropdown');
 
+            if (!deptDropdown) return;
+
             deptDropdown.innerHTML = '<option value="">-- 부서 선택 --</option>';
-            const allDepts = [...new Set(originalData.map(d => d[departmentKey]))].filter(Boolean).sort((a,b) => a.localeCompare(b, 'ko'));
+            const allDepts = [...new Set(originalData.map(d => d[departmentKey]))].filter(Boolean).sort((a,b) => String(a).localeCompare(String(b), 'ko'));
             allDepts.forEach(deptName => {
                 const option = document.createElement('option');
                 option.value = deptName;
@@ -369,7 +429,11 @@
                 document.getElementById('emp_analysisDisplay').classList.add('hidden');
 
                 if (selectedDept) {
-                    const employees = originalData.filter(item => item[departmentKey] === selectedDept).map(item => item[employeeKey]);
+                    const employees = originalData
+                        .filter(item => item[departmentKey] === selectedDept)
+                        .map(item => item[employeeKey])
+                        .filter(Boolean); // Filter out null/undefined
+
                     employees.forEach(emp => {
                         const option = document.createElement('option');
                         option.value = emp;
@@ -408,9 +472,11 @@
         function initSuggestionsReportTab() {
             const { originalData, departmentKey } = dashboardData.suggestions;
             const dropdown = document.getElementById('sugg_departmentDropdown');
+            if (!dropdown) return;
+
             dropdown.innerHTML = '<option value="">-- 부서를 선택하세요 --</option>';
 
-            const allDepts = [...new Set(originalData.map(d => d[departmentKey]))].filter(Boolean).sort((a,b) => a.localeCompare(b, 'ko'));
+            const allDepts = [...new Set(originalData.map(d => d[departmentKey]))].filter(Boolean).sort((a,b) => String(a).localeCompare(String(b), 'ko'));
             allDepts.forEach(deptName => {
                 const option = document.createElement('option');
                 option.value = deptName;
@@ -449,7 +515,7 @@
 
             Object.keys(suggestionsByItem).forEach(itemName => {
                 const li = document.createElement('li');
-                li.className = 'p-2 rounded-md cursor-pointer hover:bg-gray-200 transition';
+                li.className = 'p-2 rounded-md cursor-pointer hover:bg-gray-200 transition text-sm';
                 li.textContent = itemName;
                 li.onclick = () => {
                     displaySuggestionDetails(itemName, suggestionsByItem[itemName]);
@@ -466,21 +532,20 @@
             const detailsContainer = document.getElementById('sugg_detailsContainer');
             const suggestionText = suggestions.length > 0
                 ? suggestions.join('<div class="w-full my-4 border-t-2 border-dotted border-gray-300"></div>')
-                : '내용 없음';
+                : '제언사항 내용이 없습니다.';
             
             detailsContainer.innerHTML = `
                 <div class="w-full">
-                    <h3 class="text-lg font-semibold text-indigo-700 bg-indigo-50 p-3 rounded-t-md">${itemName}</h3>
-                    <div class="text-gray-700 bg-white border border-t-0 border-gray-200 p-4 rounded-b-md" style="white-space: pre-wrap; line-height: 1.75;">
-                        ${suggestionText}
-                    </div>
+                    <h3 class="text-lg font-semibold text-indigo-700 bg-indigo-50 p-3 rounded-t-md border-b border-indigo-100">${itemName}</h3>
+                    <div class="text-gray-700 bg-white border border-t-0 border-gray-200 p-4 rounded-b-md" style="white-space: pre-wrap; line-height: 1.75;">${suggestionText}</div>
                 </div>
             `;
         }
 
         // --- Reusable Rendering Functions ---
         function createComparisonTableHTML(scoreColumns, data, entityName, averageLabel) {
-             if (!data) return '';
+             if (!data) return '<p class="text-center text-gray-500">데이터가 없습니다.</p>';
+             
              let tableHTML = `
                 <h3 class="text-xl font-semibold text-gray-700 mb-4 text-center">T-점수 비교</h3>
                 <div class="overflow-x-auto rounded-lg shadow-md border border-gray-200 max-w-2xl mx-auto">
@@ -495,12 +560,17 @@
                         <tbody class="bg-white divide-y divide-gray-200">`;
 
             scoreColumns.forEach(col => {
-                const value = data[col] ? data[col].toFixed(2) : 'N/A';
+                const value = typeof data[col] === 'number' ? data[col].toFixed(2) : 'N/A';
                 let colorClass = 'text-gray-700';
-                if (value >= 60) colorClass = 'text-blue-600 font-bold';
-                else if (value >= 55) colorClass = 'text-green-600';
-                else if (value < 45) colorClass = 'text-red-700 font-bold';
-                else if (value < 50) colorClass = 'text-red-500';
+                
+                // Only color if value is a number
+                if (value !== 'N/A') {
+                    const numVal = parseFloat(value);
+                    if (numVal >= 60) colorClass = 'text-blue-600 font-bold';
+                    else if (numVal >= 55) colorClass = 'text-green-600';
+                    else if (numVal < 45) colorClass = 'text-red-700 font-bold';
+                    else if (numVal < 50) colorClass = 'text-red-500';
+                }
 
                 tableHTML += `
                     <tr>
@@ -514,7 +584,8 @@
         }
         
         function createEmpComparisonTableHTML(scoreColumns, empData, deptAvgData, empName, deptName) {
-            if (!empData || !deptAvgData) return '';
+            if (!empData) return '<p class="text-center text-gray-500">담당자 데이터가 없습니다.</p>';
+            
              let tableHTML = `
                 <h3 class="text-xl font-semibold text-gray-700 mb-4 text-center">T-점수 비교</h3>
                 <div class="overflow-x-auto rounded-lg shadow-md border border-gray-200 max-w-4xl mx-auto">
@@ -524,12 +595,14 @@
                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">평가항목</th>
                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">${empName}</th>
                                 <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">${deptName} 평균</th>
-                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">전체 담당자 평균</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">전체 평균</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">`;
             
-            function getColorClass(value) {
+            function getColorClass(val) {
+                if (val === 'N/A') return 'text-gray-400';
+                const value = parseFloat(val);
                 if (value >= 60) return 'text-blue-600 font-bold';
                 if (value >= 55) return 'text-green-600';
                 if (value < 45) return 'text-red-700 font-bold';
@@ -538,8 +611,8 @@
             }
 
             scoreColumns.forEach(col => {
-                const empValue = empData[col] ? empData[col].toFixed(2) : 'N/A';
-                const deptAvgValue = deptAvgData[col] ? deptAvgData[col].toFixed(2) : 'N/A';
+                const empValue = typeof empData[col] === 'number' ? empData[col].toFixed(2) : 'N/A';
+                const deptAvgValue = deptAvgData && typeof deptAvgData[col] === 'number' ? deptAvgData[col].toFixed(2) : 'N/A';
                 
                 tableHTML += `
                     <tr>
@@ -606,11 +679,22 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: { legend: { position: 'top', labels: { font: { size: 14 }}}},
-                    scales: { r: { suggestedMin: 20, suggestedMax: 80, pointLabels: { font: { size: 12 }}}}
+                    scales: { 
+                        r: { 
+                            suggestedMin: 20, 
+                            suggestedMax: 80, 
+                            pointLabels: { 
+                                font: { size: 12 },
+                                // Handle long labels if necessary
+                                callback: function(label) {
+                                    return label.length > 10 ? label.substr(0, 10) + '...' : label;
+                                }
+                            }
+                        }
+                    }
                 }
             });
         }
     </script>
 </body>
 </html>
-
