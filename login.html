@@ -161,76 +161,6 @@
     </div>
 
     <script>
-        // SHA-256 구현 (외부 라이브러리 의존성 제거, file:// 프로토콜 호환용)
-        function sha256(ascii) {
-            function rightRotate(value, amount) {
-                return (value >>> amount) | (value << (32 - amount));
-            }
-            var mathPow = Math.pow;
-            var maxWord = mathPow(2, 32);
-            var lengthProperty = 'length';
-            var i, j;
-            var result = '';
-            var words = {};
-            var asciiBitLength = ascii[lengthProperty] * 8;
-            var hash = [0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19];
-            var k = [0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
-                     0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
-                     0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
-                     0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
-                     0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
-                     0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
-                     0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
-                     0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2];
-            ascii += '\x80';
-            while (ascii[lengthProperty] % 64 - 56) ascii += '\x00';
-            for (i = 0; i < ascii[lengthProperty]; i++) {
-                j = ascii.charCodeAt(i);
-                if (j >> 8) return;
-                words[i >> 2] |= j << ((3 - i) % 4) * 8;
-            }
-            words[words[lengthProperty]] = ((asciiBitLength / maxWord) | 0);
-            words[words[lengthProperty]] = (asciiBitLength)
-            for (j = 0; j < words[lengthProperty];) {
-                var w = words.slice(j, j += 16);
-                var oldHash = hash;
-                hash = hash.slice(0, 8);
-                for (i = 0; i < 64; i++) {
-                    var i2 = i + j;
-                    var w15 = w[i - 15], w2 = w[i - 2];
-                    var a = hash[0], e = hash[4];
-                    var temp1 = hash[7] + (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25)) + ((e & hash[5]) ^ ((~e) & hash[6])) + k[i] + (w[i] = (i < 16) ? w[i] : (w[i - 16] + (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3)) + w[i - 7] + (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10))) | 0);
-                    var temp2 = (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22)) + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
-                    hash = [(temp1 + temp2) | 0].concat(hash);
-                    hash[4] = (hash[4] + temp1) | 0;
-                }
-                for (i = 0; i < 8; i++) {
-                    hash[i] = (hash[i] + oldHash[i]) | 0;
-                }
-            }
-            for (i = 0; i < 8; i++) {
-                for (j = 3; j + 1; j--) {
-                    var b = (hash[i] >> (j * 8)) & 255;
-                    result += ((b < 16) ? 0 : '') + b.toString(16);
-                }
-            }
-            return result;
-        }
-
-        // 설정된 ID/PW 해시값
-        // admin
-        const TARGET_ID_HASH = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918";
-        
-        // 현재 설정: 1234
-        // dhc1294로 변경하시려면, 브라우저 콘솔(F12)을 열어 출력된 dhc1294의 해시값을 복사하여 아래 값을 교체하세요.
-        const TARGET_PW_HASH = "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"; 
-
-        // [개발자용] dhc1294 해시값 확인용 로그
-        console.log("-----------------------------------------");
-        console.log("TIP: 원래 비밀번호(dhc1294)를 사용하시려면 아래 값을 복사해 TARGET_PW_HASH에 넣으세요.");
-        console.log("dhc1294 SHA-256 Hash:", sha256("dhc1294"));
-        console.log("-----------------------------------------");
-
         function handleLogin(event) {
             event.preventDefault();
             
@@ -245,36 +175,26 @@
                 btn.innerHTML = `<svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> 인증 중...`;
                 btn.classList.add('opacity-75');
 
-                // 암호화 및 검증
+                // 단순 ID/PW 비교 (암호화 제거됨)
                 setTimeout(() => {
-                    try {
-                        const hashedId = sha256(useridInput);
-                        const hashedPw = sha256(passwordInput);
-
-                        // console.log("입력된 ID 해시:", hashedId); // 디버깅용
-                        // console.log("입력된 PW 해시:", hashedPw); // 디버깅용
-
-                        if (hashedId === TARGET_ID_HASH && hashedPw === TARGET_PW_HASH) {
-                            showToast('success');
-                            setTimeout(() => {
-                                window.location.href = '/pg/pg001.html';
-                            }, 1500);
-                        } else {
-                            showToast('error');
-                            btn.disabled = false;
-                            btn.innerText = originalText;
-                            btn.classList.remove('opacity-75');
-                            document.getElementById('password').value = '';
-                            document.getElementById('password').focus();
-                        }
-                    } catch (e) {
-                        console.error(e);
-                        alert("인증 처리 중 오류가 발생했습니다.");
+                    // ID: admin, PW: 1234
+                    if (useridInput === "admin" && passwordInput === "1234") {
+                        showToast('success');
+                        setTimeout(() => {
+                            window.location.href = '/pg/pg001.html';
+                        }, 1000);
+                    } else {
+                        showToast('error');
+                        // 버튼 복구
                         btn.disabled = false;
                         btn.innerText = originalText;
                         btn.classList.remove('opacity-75');
+                        
+                        // 비밀번호 입력창 초기화 및 포커스
+                        document.getElementById('password').value = '';
+                        document.getElementById('password').focus();
                     }
-                }, 800);
+                }, 800); // 사용자 경험을 위한 약간의 딜레이
             }
         }
 
