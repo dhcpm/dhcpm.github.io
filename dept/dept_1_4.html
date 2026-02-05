@@ -21,22 +21,23 @@
 </head>
 <body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
 
+    <!-- Header -->
     <header id="header" class="bg-white/80 backdrop-blur-lg shadow-sm fixed top-0 left-0 right-0 z-50 transition-all duration-300">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <!-- Logo and Team Name -->
                 <div class="flex-shrink-0 flex items-center">
                     <img class="h-8 w-auto" src="../img/logo.png" alt="대구보건대학교 로고">
-                    <a href="../index.html" class="ml-3 text-xl font-bold text-gray-800 hover:text-blue-700">대학성과관리팀</a>
+                    <a href="../dept/dept_pg.html" class="ml-3 text-xl font-bold text-gray-800 hover:text-blue-700">부서운영결과보고서 평가시스템</a>
                 </div>
                 <!-- Desktop Navigation -->
                 <nav class="hidden md:flex items-center space-x-5">
-                    <a href="../gongsi/gongsi_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">대학정보공시</a>
+                    <!--<a href="../gongsi/gongsi_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">대학정보공시</a>
                     <a href="../buseo/buseo_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">부서자체평가</a>
                     <a href="../seonggwa/seonggwa_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">성과분석</a>
-                    <a href="../survey/survey_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">교육수요자 만족도 조사</a>
-                    <a href="../dept/dept_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">부서운영</a>
-                    <a href="../edu/edu_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">교육</a>
+                    <a href="../survey/survey_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">교육수요자 만족도 조사</a>-->
+                    <a href="../dept/dept_pg.html" class="text-blue-600 font-bold text-sm">부서운영</a>
+                    <!--<a href="../edu/edu_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">교육</a>-->
                 </nav>
                 <!-- Mobile Menu Button -->
                 <div class="md:hidden">
@@ -52,12 +53,12 @@
         <!-- Mobile Menu -->
         <div id="mobile-menu" class="md:hidden hidden">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <a href="../gongsi/gongsi_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">대학정보공시</a>
+                <!--<a href="../gongsi/gongsi_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">대학정보공시</a>
                 <a href="../buseo/buseo_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">부서자체평가</a>
                 <a href="../seonggwa/seonggwa_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">성과분석</a>
-                <a href="../survey/survey_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">교육수요자 만족도 조사</a>
-                <a href="../dept/dept_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">부서운영</a>
-                <a href="../edu/edu_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">교육</a>
+                <a href="../survey/survey_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">교육수요자 만족도 조사</a>-->
+                <a href="../dept/dept_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-blue-700 bg-blue-50">부서운영</a>
+                <!--<a href="../edu/edu_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">교육</a>-->
             </div>
         </div>
     </header>
@@ -72,10 +73,11 @@
                         <p class="mt-1 text-gray-500">표현된 버튼 순서대로 데이터를 처리하세요.</p>
                     </div>
                     <div class="flex items-center gap-2 flex-wrap">
-                        <!-- 파일 업로드를 위한 숨겨진 input 요소 -->
+                        <!-- 파일 업로드를 위한 숨겨진 input 요소 (사용하지 않으므로 제거하거나 그대로 두어도 됨) -->
                         <input type="file" id="file-input" class="hidden" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
-                        <button id="upload-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-200 ease-in-out transform hover:scale-105">
-                           파일 업로드
+                        <!-- 버튼 명칭 변경: 파일 업로드 -> 서버연결 -->
+                        <button id="server-connect-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-200 ease-in-out transform hover:scale-105">
+                           서버연결
                         </button>
                         <button id="calculate-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-200 ease-in-out transform hover:scale-105">
                             달성률 계산
@@ -89,8 +91,9 @@
                         <button id="calculate-average-btn" class="bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-200 ease-in-out transform hover:scale-105">
                             평균값 산출
                         </button>
-                        <button id="export-btn" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-200 ease-in-out transform hover:scale-105">
-                            결과 반출
+                        <!-- 버튼 명칭 변경: 결과 반출 -> 최종 확정 -->
+                        <button id="final-confirm-btn" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-200 ease-in-out transform hover:scale-105">
+                            최종 확정
                         </button>
                         <button id="refresh-btn" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-200 ease-in-out transform hover:scale-105">
                             새로고침
@@ -294,7 +297,7 @@
             function calculateAchievementRate() {
                 const tableHeader = document.querySelector('#table-header tr');
                 if (!tableHeader) {
-                    alert("데이터가 없습니다. 먼저 파일을 업로드해주세요.");
+                    alert("데이터가 없습니다. 먼저 서버연결을 진행해주세요.");
                     return;
                 }
                 const tableBody = document.getElementById('table-body');
@@ -359,7 +362,7 @@
             function calculateAdequacy() {
                 const tableHeader = document.querySelector('#table-header tr');
                 if (!tableHeader) {
-                    alert("데이터가 없습니다. 먼저 파일을 업로드해주세요.");
+                    alert("데이터가 없습니다. 먼저 서버연결을 진행해주세요.");
                     return;
                 }
                 const tableBody = document.getElementById('table-body');
@@ -438,7 +441,7 @@
             function calculateAchievementLevel() {
                 const tableHeader = document.querySelector('#table-header tr');
                 if (!tableHeader) {
-                    alert("데이터가 없습니다. 먼저 파일을 업로드해주세요.");
+                    alert("데이터가 없습니다. 먼저 서버연결을 진행해주세요.");
                     return;
                 }
                 const tableBody = document.getElementById('table-body');
@@ -499,7 +502,7 @@
             function calculateAndFillAverages() {
                 const tableHeader = document.querySelector('#table-header tr');
                 if (!tableHeader) {
-                    alert("데이터가 없습니다. 먼저 파일을 업로드해주세요.");
+                    alert("데이터가 없습니다. 먼저 서버연결을 진행해주세요.");
                     return;
                 }
                 const tableBody = document.getElementById('table-body');
@@ -568,39 +571,59 @@
             }
             
             /**
-             * 현재 테이블 데이터를 엑셀 파일로 내보냅니다.
+             * 최종 확정 버튼 처리
              */
-            function exportToExcel() {
-                const tableHeader = document.querySelector('#table-header tr');
-                const tableBody = document.getElementById('table-body');
-                if (!tableHeader || tableBody.rows.length === 0) {
-                    alert("내보낼 데이터가 없습니다.");
-                    return;
-                }
-
-                const dataToExport = [];
-                // 헤더 데이터 추출
-                const headers = Array.from(tableHeader.querySelectorAll('th')).map(th => th.textContent.trim());
-                dataToExport.push(headers);
-                
-                // 본문 데이터 추출
-                tableBody.querySelectorAll('tr').forEach(row => {
-                    const rowData = Array.from(row.querySelectorAll('td')).map(td => td.textContent.trim());
-                    dataToExport.push(rowData);
-                });
-
-                // SheetJS를 사용하여 엑셀 파일 생성
-                const worksheet = XLSX.utils.aoa_to_sheet(dataToExport);
-                const workbook = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(workbook, worksheet, "평가점수결과");
-
-                // 파일 다운로드 트리거
-                XLSX.writeFile(workbook, "평가점수결과.xlsx");
+            function handleFinalConfirmation() {
+                alert("모든 결과가 서버로 전송되었습니다");
+                location.reload();
             }
 
+            /**
+             * 서버 파일 연결 함수 (파일 업로드 대체)
+             */
+            async function fetchServerFile() {
+                const url = "https://dhcpm.github.io/dept/file/dept_1_4.xlsx";
+                
+                try {
+                    // 사용자에게 로딩 중임을 알림 (선택 사항)
+                    const btn = document.getElementById('server-connect-btn');
+                    const originalText = btn.textContent;
+                    btn.textContent = "연결 중...";
+                    btn.disabled = true;
+
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const arrayBuffer = await response.arrayBuffer();
+                    
+                    // 기존 파일 처리 로직 활용
+                    const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    csvData = XLSX.utils.sheet_to_csv(worksheet);
+                    
+                    createTable(); // 테이블 생성
+                    
+                    alert("서버 연결 및 데이터 로드 성공!");
+                    
+                    // 버튼 상태 복구
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                    
+                } catch (error) {
+                    console.error("서버 파일 로드 실패:", error);
+                    alert("서버 파일을 불러오는 중 오류가 발생했습니다: " + error.message);
+                    
+                    const btn = document.getElementById('server-connect-btn');
+                    btn.textContent = "서버연결";
+                    btn.disabled = false;
+                }
+            }
 
             /**
-             * 파일 업로드 이벤트를 처리합니다.
+             * 기존 로컬 파일 업로드 이벤트를 처리합니다. (혹시 모를 대비용)
              */
             function handleFileUpload(event) {
                 const file = event.target.files[0];
@@ -651,21 +674,24 @@
             document.getElementById('calculate-adequacy-btn').addEventListener('click', calculateAdequacy);
             document.getElementById('calculate-achievement-level-btn').addEventListener('click', calculateAchievementLevel);
             document.getElementById('calculate-average-btn').addEventListener('click', calculateAndFillAverages);
-            document.getElementById('export-btn').addEventListener('click', exportToExcel);
+            
+            // 변경된 이벤트 리스너: 최종 확정
+            document.getElementById('final-confirm-btn').addEventListener('click', handleFinalConfirmation);
+            
             document.getElementById('refresh-btn').addEventListener('click', () => {
                 location.reload();
             });
             document.getElementById('department-filter').addEventListener('change', filterTableByDepartment);
 
-            const uploadBtn = document.getElementById('upload-btn');
+            // 변경된 이벤트 리스너: 서버 연결
+            const serverConnectBtn = document.getElementById('server-connect-btn');
+            serverConnectBtn.addEventListener('click', fetchServerFile);
+            
+            // 기존 파일 인풋 리스너는 유지하되 버튼 연결은 해제됨
             const fileInput = document.getElementById('file-input');
-            uploadBtn.addEventListener('click', () => {
-                fileInput.click();
-            });
             fileInput.addEventListener('change', handleFileUpload);
 
         });
     </script>
 </body>
 </html>
-

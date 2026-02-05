@@ -8,8 +8,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- SheetJS (js-xlsx) CDN for Excel Export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <!-- PDF.js CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <!-- Google Fonts: Noto Sans KR -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -78,30 +76,6 @@
             flex-shrink: 0;
             cursor: col-resize;
             z-index: 10;
-        }
-        /* PDF 캔버스 스타일 */
-        #pdf-container {
-            background-color: #525659; /* 일반적인 PDF 뷰어 배경색 */
-            position: relative; /* 돋보기 위치 기준점 */
-            overflow: hidden; /* 돋보기가 영역 밖으로 나가는 것 방지 */
-        }
-        /* 돋보기 스타일 */
-        #magnifier {
-            display: none;
-            position: absolute;
-            width: 200px;
-            height: 200px;
-            border: 3px solid #6366f1; /* Indigo-500 */
-            border-radius: 50%;
-            overflow: hidden;
-            z-index: 100;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            background-color: white;
-            pointer-events: none; /* 마우스 이벤트가 캔버스에 전달되도록 */
-        }
-        /* 돋보기 내부 캔버스 */
-        #magnifier canvas {
-            display: block;
         }
     </style>
 </head>
@@ -187,7 +161,7 @@
                             </a>
                         </div>
                     </div>
-                    <p class="text-red-600 font-bold text-sm mt-2 mb-4">[부서별 점수 입력 후 반드시 저장을 누른 후 다음 부서를 평가하세요]</p>
+                    <p class="text-red-600 font-bold text-sm mt-2 mb-4">[부서별 점수 입력 후 반드시 엑셀저장을 누른 후 다음 부서를 평가하세요]</p>
                     <div class="overflow-x-auto">
                         <table class="min-w-full bg-white border border-gray-200 rounded-lg evaluation-table">
                             <thead id="table-head">
@@ -228,124 +202,23 @@
                     </div>
                 </div>
 
-                <!-- 저장 버튼 (명칭 변경) -->
+                <!-- 엑셀 저장 버튼 -->
                 <div class="mt-8 text-right">
                     <button id="export-excel-button" class="px-8 py-3 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all">
-                        저장
+                        엑셀저장
                     </button>
                 </div>
-
-                <!-- NEW: 평가 진행 현황 섹션 -->
-                <div id="status-section" class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- 완료된 부서 -->
-                    <div class="bg-white p-5 rounded-lg shadow border border-gray-200 flex flex-col">
-                        <div class="flex items-center justify-between mb-3 border-b pb-2 border-gray-100">
-                            <h3 class="font-bold text-lg text-blue-600 flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                </svg>
-                                완료된 부서
-                            </h3>
-                            <span id="completed-count" class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">0</span>
-                        </div>
-                        <ul id="completed-list" class="list-none text-sm text-gray-700 h-40 overflow-y-auto space-y-1 pr-2 mb-4 flex-grow">
-                            <li class="text-gray-400 italic text-center py-10">완료된 부서가 없습니다.</li>
-                        </ul>
-                        <button id="export-all-button" class="w-full py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors text-sm shadow">
-                            완료 결과 전체 반출 (Excel)
-                        </button>
-                    </div>
-
-                    <!-- 미완료 부서 -->
-                    <div class="bg-white p-5 rounded-lg shadow border border-gray-200">
-                        <div class="flex items-center justify-between mb-3 border-b pb-2 border-gray-100">
-                            <h3 class="font-bold text-lg text-gray-500 flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-                                </svg>
-                                미완료 부서
-                            </h3>
-                            <span id="incomplete-count" class="bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded">0</span>
-                        </div>
-                        <ul id="incomplete-list" class="list-none text-sm text-gray-600 h-40 overflow-y-auto space-y-1 pr-2">
-                            <!-- JS로 채워짐 -->
-                        </ul>
-                    </div>
-                </div>
-
             </div>
         </div>
 
         <!-- 화면 비율 조절 핸들 -->
         <div id="resizer" class="w-2 bg-gray-200 hover:bg-blue-500 transition-colors"></div>
 
-        <!-- 오른쪽 패널: PDF.js 뷰어 -->
-        <div id="right-panel" class="flex-1 h-1/2 md:h-full flex flex-col bg-gray-50 border-l border-gray-200">
-            <!-- 툴바 -->
-            <div class="flex items-center justify-between p-2 bg-white border-b border-gray-200 shadow-sm flex-wrap">
-                <!-- 페이지 이동 -->
-                <div class="flex items-center space-x-2 mb-2 sm:mb-0">
-                    <button id="prev-page" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 text-xs font-medium" title="이전 페이지">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                        </svg>
-                    </button>
-                    <span class="text-xs font-medium text-gray-700 whitespace-nowrap">
-                        <span id="page-num">--</span> / <span id="page-count">--</span>
-                    </span>
-                    <button id="next-page" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 text-xs font-medium" title="다음 페이지">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                        </svg>
-                    </button>
-                </div>
-
-                <!-- 확대/축소 및 도구 -->
-                <div class="flex items-center space-x-2">
-                     <button id="zoom-out" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 text-xs font-medium" title="축소">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
-                        </svg>
-                     </button>
-                     <span id="zoom-level" class="text-xs font-medium text-gray-700 w-10 text-center">100%</span>
-                     <button id="zoom-in" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 text-xs font-medium" title="확대">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                        </svg>
-                     </button>
-                     
-                     <!-- 구분선 -->
-                     <div class="w-px h-6 bg-gray-300 mx-2"></div>
-
-                     <!-- 돋보기 버튼 -->
-                     <button id="toggle-magnifier" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 text-xs font-medium flex items-center" title="돋보기 (On/Off)">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-                        </svg>
-                        돋보기
-                     </button>
-
-                     <!-- 다운로드 버튼 -->
-                     <button id="download-pdf" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 text-xs font-medium flex items-center" title="다운로드">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                        </svg>
-                     </button>
-
-                     <!-- 인쇄 버튼 -->
-                     <button id="print-pdf" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 text-xs font-medium flex items-center" title="인쇄">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                        </svg>
-                     </button>
-                </div>
-            </div>
-            <!-- 캔버스 컨테이너 (스크롤 가능) -->
-            <div id="pdf-container" class="flex-1 overflow-auto flex justify-center p-4 relative bg-gray-100">
-                <canvas id="the-canvas" class="shadow-lg border border-gray-200 bg-white"></canvas>
-                <!-- 돋보기 요소 -->
-                <div id="magnifier"></div>
-            </div>
+        <!-- 오른쪽 패널: PDF 뷰어 -->
+        <div id="right-panel" class="flex-1 h-1/2 md:h-full">
+            <iframe id="pdf-viewer" src="2024 부서운영결과보고서 통합본.pdf" class="w-full h-full border-l border-gray-200" title="부서운영결과보고서 PDF">
+                <p>현재 브라우저는 PDF를 지원하지 않습니다. <a href="2024 부서운영결과보고서 통합본.pdf">PDF 파일을 다운로드</a>하여 확인해주세요.</p>
+            </iframe>
         </div>
     </div>
 
@@ -378,10 +251,9 @@
                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                     </svg>
                 </div>
-                <h3 class="text-lg font-medium text-gray-900">확인</h3>
+                <h3 class="text-lg font-medium text-gray-900">경고</h3>
                 <div class="mt-2">
-                    <!-- 줄바꿈을 허용하도록 whitespace-pre-wrap 클래스 추가 -->
-                    <p id="confirm-message" class="text-sm text-gray-500 whitespace-pre-wrap"></p>
+                    <p id="confirm-message" class="text-sm text-gray-500"></p>
                 </div>
             </div>
             <div class="p-4 bg-gray-50 text-center flex justify-center space-x-4">
@@ -393,9 +265,6 @@
 
 
 <script>
-    // PDF.js 워커 설정 (필수)
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-
     // 제공된 업무 목록 데이터
     const taskData = `
 교무지원팀,양영은,수업시간 관리,13
@@ -609,10 +478,10 @@
     const tableHead = document.getElementById('table-head');
     const tableBody = document.getElementById('table-body');
     const tableFoot = document.getElementById('table-foot');
+    const pdfViewer = document.getElementById('pdf-viewer');
     const evaluationTitle = document.getElementById('evaluation-title');
     const radioButtons = document.querySelectorAll('input[name="evaluation-item"]');
     const exportExcelButton = document.getElementById('export-excel-button');
-    const exportAllButton = document.getElementById('export-all-button');
     const alertModal = document.getElementById('alert-modal');
     const alertMessage = document.getElementById('alert-message');
     const alertOkButton = document.getElementById('alert-ok-button');
@@ -629,121 +498,12 @@
     const criteriaBtnFeedback = document.getElementById('criteria-btn-feedback');
     const suggestionTextarea = document.getElementById('suggestion-textarea');
     const charCounter = document.getElementById('char-counter');
-    
-    // Status Section Elements
-    const completedListEl = document.getElementById('completed-list');
-    const incompleteListEl = document.getElementById('incomplete-list');
-    const completedCountEl = document.getElementById('completed-count');
-    const incompleteCountEl = document.getElementById('incomplete-count');
-
-    // PDF Elements
-    const pdfUrl = '2024 부서운영결과보고서 통합본.pdf';
-    let pdfDoc = null;
-    let pageNum = 1;
-    let pageRendering = false;
-    let pageNumPending = null;
-    let scale = 1.0;
-    const canvas = document.getElementById('the-canvas');
-    const ctx = canvas.getContext('2d');
-    const pageNumEl = document.getElementById('page-num');
-    const pageCountEl = document.getElementById('page-count');
-    const zoomInBtn = document.getElementById('zoom-in');
-    const zoomOutBtn = document.getElementById('zoom-out');
-    const zoomLevelEl = document.getElementById('zoom-level');
-    const downloadPdfBtn = document.getElementById('download-pdf');
-    const printPdfBtn = document.getElementById('print-pdf');
-    const toggleMagnifierBtn = document.getElementById('toggle-magnifier');
-    const magnifier = document.getElementById('magnifier');
-    const pdfContainer = document.getElementById('pdf-container');
     // --- END: DOM Element Selections ---
 
     let isDirty = false;
     let previousEvaluator = '';
     let previousDepartment = '';
     let confirmCallback = null;
-    let isMagnifierActive = false;
-
-    // --- NEW: Status Tracking & Data Persistence ---
-    const completedDepartments = new Set();
-    const evaluationResults = {}; // 저장된 평가 결과: { 부서명: { scores: [...], suggestion: "..." } }
-    
-    // 상태 초기화 및 렌더링 함수
-    function updateStatusSection() {
-        const allDepartments = Object.keys(tasksByDepartment).sort();
-        
-        // 목록 초기화
-        completedListEl.innerHTML = '';
-        incompleteListEl.innerHTML = '';
-
-        let completedCount = 0;
-        let incompleteCount = 0;
-
-        allDepartments.forEach(dept => {
-            const isCompleted = completedDepartments.has(dept);
-            const li = document.createElement('li');
-            
-            // Flexbox를 사용하여 텍스트 정렬 및 스타일링
-            if (isCompleted) {
-                // 완료 항목도 클릭 가능하게 변경 (커서 포인터, 호버 효과)
-                li.className = "flex items-center justify-between py-1 border-b border-gray-50 last:border-0 cursor-pointer hover:bg-gray-50 transition-colors";
-                li.innerHTML = `<span class="text-blue-600 font-medium">${dept}</span><span class="text-xs text-blue-400">완료</span>`;
-                
-                // 클릭 이벤트 추가: 해당 부서 선택
-                li.addEventListener('click', () => {
-                   selectDepartment(dept);
-                });
-                
-                completedListEl.appendChild(li);
-                completedCount++;
-            } else {
-                // 미완료 항목 스타일 (커서 포인터, 호버 효과 추가)
-                li.className = "flex items-center justify-between py-1 border-b border-gray-50 last:border-0 cursor-pointer hover:bg-gray-50 transition-colors";
-                li.innerHTML = `<span class="text-gray-600 font-medium">${dept}</span><span class="text-xs text-gray-400">미완료</span>`;
-                
-                // 클릭 이벤트 추가: 해당 부서 선택
-                li.addEventListener('click', () => {
-                   selectDepartment(dept);
-                });
-
-                incompleteListEl.appendChild(li);
-                incompleteCount++;
-            }
-        });
-
-        // 카운트 업데이트
-        completedCountEl.textContent = completedCount;
-        incompleteCountEl.textContent = incompleteCount;
-
-        // 완료된 목록이 비어있을 때 메시지 표시
-        if (completedCount === 0) {
-            completedListEl.innerHTML = '<li class="text-gray-400 italic text-center py-10">완료된 부서가 없습니다.</li>';
-        }
-        
-        // 모든 부서가 완료되었을 때 미완료 목록 메시지
-        if (incompleteCount === 0) {
-            incompleteListEl.innerHTML = '<li class="text-gray-400 italic text-center py-10">모든 부서 평가가 완료되었습니다.</li>';
-        }
-    }
-
-    // 부서 선택 함수 (미완료 목록 클릭 시 사용)
-    function selectDepartment(deptName) {
-        // 현재 선택된 부서와 같으면 무시
-        if (departmentSelect.value === deptName) return;
-
-        if (isDirty) {
-            showCustomConfirm('저장되지 않은 점수와 제언사항이 사라집니다. 계속하시겠습니까?', (confirmed) => {
-                if (confirmed) {
-                    departmentSelect.value = deptName;
-                    previousDepartment = deptName;
-                    updateTableView();
-                }
-            });
-        } else {
-            departmentSelect.value = deptName;
-            previousDepartment = deptName;
-            updateTableView();
-        }
-    }
     
     // --- START: Password Protection Logic ---
     // 중요: 여기에 원하는 암호를 설정하세요.
@@ -755,211 +515,12 @@
             // 암호가 맞을 경우
             passwordModal.classList.add('hidden');
             mainContent.classList.remove('hidden');
-            
-            // PDF 로드 시작
-            loadPdf();
         } else {
             // 암호가 틀릴 경우
             window.location.href = '/index.html'; // 지정된 페이지로 이동
         }
     }
     // --- END: Password Protection Logic ---
-
-    // --- START: PDF.js Logic ---
-    function loadPdf() {
-        pdfjsLib.getDocument(pdfUrl).promise.then(function(pdfDoc_) {
-            pdfDoc = pdfDoc_;
-            pageCountEl.textContent = pdfDoc.numPages;
-
-            // Initial/first page rendering
-            renderPage(pageNum);
-        });
-    }
-
-    function renderPage(num) {
-        pageRendering = true;
-        
-        // Fetch page
-        pdfDoc.getPage(num).then(function(page) {
-            const viewport = page.getViewport({scale: scale});
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
-
-            // Render PDF page into canvas context
-            const renderContext = {
-                canvasContext: ctx,
-                viewport: viewport
-            };
-            const renderTask = page.render(renderContext);
-
-            // Wait for render to finish
-            renderTask.promise.then(function() {
-                pageRendering = false;
-                if (pageNumPending !== null) {
-                    // New page rendering is pending
-                    renderPage(pageNumPending);
-                    pageNumPending = null;
-                }
-            });
-        });
-
-        // Update page counters
-        pageNumEl.textContent = num;
-    }
-
-    function queueRenderPage(num) {
-        if (pageRendering) {
-            pageNumPending = num;
-        } else {
-            renderPage(num);
-        }
-    }
-
-    function onPrevPage() {
-        if (pageNum <= 1) {
-            return;
-        }
-        pageNum--;
-        queueRenderPage(pageNum);
-    }
-
-    function onNextPage() {
-        if (pageNum >= pdfDoc.numPages) {
-            return;
-        }
-        pageNum++;
-        queueRenderPage(pageNum);
-    }
-
-    function onZoomIn() {
-        scale += 0.1;
-        zoomLevelEl.textContent = Math.round(scale * 100) + "%";
-        renderPage(pageNum);
-    }
-
-    function onZoomOut() {
-        if (scale <= 0.5) return;
-        scale -= 0.1;
-        zoomLevelEl.textContent = Math.round(scale * 100) + "%";
-        renderPage(pageNum);
-    }
-
-    // PDF 다운로드 기능
-    function onDownloadPdf() {
-        const link = document.createElement('a');
-        link.href = pdfUrl;
-        link.download = '2024 부서운영결과보고서 통합본.pdf';
-        link.click();
-    }
-
-    // PDF 인쇄 기능
-    function onPrintPdf() {
-        const iframe = document.createElement('iframe');
-        iframe.style.display = 'none';
-        iframe.src = pdfUrl;
-        document.body.appendChild(iframe);
-        iframe.onload = function() {
-            setTimeout(function() {
-                iframe.focus();
-                iframe.contentWindow.print();
-            }, 1);
-        };
-    }
-
-    // 돋보기 토글 기능
-    function onToggleMagnifier() {
-        isMagnifierActive = !isMagnifierActive;
-        if (isMagnifierActive) {
-            toggleMagnifierBtn.classList.remove('bg-gray-200');
-            toggleMagnifierBtn.classList.add('bg-indigo-200', 'text-indigo-800');
-            magnifier.style.display = 'block';
-        } else {
-            toggleMagnifierBtn.classList.add('bg-gray-200');
-            toggleMagnifierBtn.classList.remove('bg-indigo-200', 'text-indigo-800');
-            magnifier.style.display = 'none';
-        }
-    }
-
-    // 돋보기 움직임 처리
-    function onMagnifierMove(e) {
-        if (!isMagnifierActive) return;
-
-        const containerRect = pdfContainer.getBoundingClientRect();
-        const canvasRect = canvas.getBoundingClientRect();
-        
-        // 마우스 좌표 (컨테이너 기준)
-        const mouseX = e.clientX - containerRect.left;
-        const mouseY = e.clientY - containerRect.top;
-
-        // 마우스가 캔버스 영역 내에 있는지 확인
-        const relX = e.clientX - canvasRect.left;
-        const relY = e.clientY - canvasRect.top;
-
-        if (relX < 0 || relX > canvasRect.width || relY < 0 || relY > canvasRect.height) {
-            magnifier.style.display = 'none';
-            return;
-        } else {
-            magnifier.style.display = 'block';
-        }
-
-        // 돋보기 위치 이동 (마우스 커서를 중심으로)
-        const glassSize = 200; // 돋보기 크기 (CSS와 동일하게)
-        magnifier.style.left = (mouseX - glassSize / 2) + 'px';
-        magnifier.style.top = (mouseY - glassSize / 2) + 'px';
-
-        // 돋보기 내용 그리기 (원본 캔버스를 확대해서 그림)
-        const zoom = 2; // 확대 배율
-        const glassCanvas = document.createElement('canvas');
-        glassCanvas.width = glassSize;
-        glassCanvas.height = glassSize;
-        const glassCtx = glassCanvas.getContext('2d');
-
-        // 캔버스 내부에서의 실제 좌표 계산 (Scale 고려)
-        // 화면상 캔버스 크기와 실제 캔버스 버퍼 크기 비율 계산
-        const scaleX = canvas.width / canvasRect.width;
-        const scaleY = canvas.height / canvasRect.height;
-
-        const sourceX = relX * scaleX - (glassSize / 2 / zoom) * scaleX;
-        const sourceY = relY * scaleY - (glassSize / 2 / zoom) * scaleY;
-        const sourceW = (glassSize / zoom) * scaleX;
-        const sourceH = (glassSize / zoom) * scaleY;
-
-        // 이미지 복사 및 확대 그리기
-        // drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
-        glassCtx.drawImage(canvas, sourceX, sourceY, sourceW, sourceH, 0, 0, glassSize, glassSize);
-        
-        // 기존 내용을 지우고 새 이미지로 교체
-        magnifier.innerHTML = '';
-        magnifier.appendChild(glassCanvas);
-    }
-
-    // PDF 뷰어 이벤트 리스너
-    document.getElementById('prev-page').addEventListener('click', onPrevPage);
-    document.getElementById('next-page').addEventListener('click', onNextPage);
-    zoomInBtn.addEventListener('click', onZoomIn);
-    zoomOutBtn.addEventListener('click', onZoomOut);
-    downloadPdfBtn.addEventListener('click', onDownloadPdf);
-    printPdfBtn.addEventListener('click', onPrintPdf);
-    toggleMagnifierBtn.addEventListener('click', onToggleMagnifier);
-    pdfContainer.addEventListener('mousemove', onMagnifierMove);
-    pdfContainer.addEventListener('mouseleave', () => {
-        if(isMagnifierActive) magnifier.style.display = 'none';
-    });
-    pdfContainer.addEventListener('mouseenter', () => {
-        if(isMagnifierActive) magnifier.style.display = 'block';
-    });
-
-
-    // 글로벌 함수로 노출하여 HTML inline onclick에서 호출 가능하게 함
-    window.goToPdfPage = function(num) {
-        // 숫자형 변환 확인
-        const targetPage = parseInt(num);
-        if (pdfDoc && targetPage > 0 && targetPage <= pdfDoc.numPages) {
-            pageNum = targetPage;
-            queueRenderPage(pageNum);
-        }
-    };
-    // --- END: PDF.js Logic ---
 
     // 점수 드롭다운 생성 헬퍼 함수
     function createScoreDropdown(min, max, step = 1) {
@@ -1141,35 +702,6 @@
                 });
             }
         }
-        
-        // --- NEW: Load Saved Data Logic ---
-        if (evaluationResults[selectedDepartment]) {
-            const savedData = evaluationResults[selectedDepartment];
-            
-            // Restore suggestion
-            suggestionTextarea.value = savedData.suggestion || '';
-            charCounter.textContent = suggestionTextarea.value.length;
-
-            // Restore scores
-            const scoreSelects = document.querySelectorAll('.score-select');
-            // 저장된 점수 개수와 현재 선택 상자 개수가 일치하는지 확인 (평가항목 변경 시 에러 방지)
-            if (savedData.scores && savedData.scores.length === scoreSelects.length) {
-                scoreSelects.forEach((select, index) => {
-                    select.value = savedData.scores[index];
-                });
-            }
-        }
-        
-        // Manually calculate totals after loading values
-        const rows = document.querySelectorAll('.evaluation-row');
-        rows.forEach(row => {
-             const scoreSelects = row.querySelectorAll('.score-select');
-             const totalScoreCell = row.querySelector('.total-score');
-             let total = 0;
-             scoreSelects.forEach(s => { total += parseFloat(s.value) || 0; });
-             totalScoreCell.textContent = total.toFixed(1);
-        });
-
         addScoreCalculationListeners();
         updateTableFooter();
     }
@@ -1218,6 +750,13 @@
             });
         });
     }
+
+    // PDF 뷰어 페이지 이동 (전역 스코프로 이동)
+    window.goToPdfPage = function(pageNumber) {
+        if (pdfViewer) {
+            pdfViewer.src = `2024 부서운영결과보고서 통합본.pdf#page=${pageNumber}`;
+        }
+    }
     
     // 알림/확인 모달 표시 함수
     function showCustomAlert(message) {
@@ -1242,13 +781,7 @@
             }
         }
         departmentSelect.value = ''; // 부서 선택 초기화
-        
-        // 평가위원이 변경되면 기존 입력 데이터와 완료 현황 초기화
-        completedDepartments.clear();
-        for (let key in evaluationResults) delete evaluationResults[key];
-        
         updateTableView();
-        updateStatusSection(); 
     }
 
     // --- START: Event Listeners ---
@@ -1296,7 +829,7 @@
         }
     });
 
-    // 저장 버튼 클릭 이벤트 (엑셀 저장 기능을 이 안에 래핑)
+    // 엑셀 저장 버튼 클릭 이벤트
     exportExcelButton.addEventListener('click', () => {
         // 1. 유효성 검사
         let allScoresEntered = true;
@@ -1316,136 +849,70 @@
             return;
         }
 
-        // 2. 데이터 수집 (메시지 표시용)
+        // 2. 데이터 수집
         const evaluator = evaluatorSelect.value;
         const department = departmentSelect.value;
         const evalTypeRadio = document.querySelector('input[name="evaluation-item"]:checked');
         const evalTypeLabel = evalTypeRadio ? evalTypeRadio.nextElementSibling.textContent : '평가항목';
         const departmentForFilename = department || '전체부서';
 
-        // 확인 메시지 구성
-        const confirmMsg = `평가 부서: ${departmentForFilename}\n평가 위원: ${evaluator}\n평가 항목: ${evalTypeLabel}\n\n위 내용으로 저장을 완료하시겠습니까?`;
-
-        // 3. 확인 창 호출 및 저장 로직
-        showCustomConfirm(confirmMsg, (confirmed) => {
-            if (confirmed) {
-                // 사용자가 '예'를 선택한 경우
-                
-                // --- NEW: Save Data Logic ---
-                const currentScores = [];
-                document.querySelectorAll('.score-select').forEach(select => {
-                    currentScores.push(select.value);
-                });
-                const currentSuggestion = suggestionTextarea.value;
-
-                // 결과 저장
-                if (department) {
-                    evaluationResults[department] = {
-                        scores: currentScores,
-                        suggestion: currentSuggestion
-                    };
-                    completedDepartments.add(department);
-                    updateStatusSection();
-                }
-
-                isDirty = false; // 저장 후 초기화
-                
-                // 저장 완료 알림
-                showCustomAlert("저장이 완료되었습니다.");
-            }
-        });
-    });
-
-    // 전체 반출 버튼 클릭 이벤트
-    exportAllButton.addEventListener('click', () => {
-        // 유효성 검사
-        if (completedDepartments.size === 0) {
-            showCustomAlert('반출할 완료된 부서가 없습니다.');
-            return;
-        }
-
-        const evaluator = evaluatorSelect.value;
-        const evalTypeRadio = document.querySelector('input[name="evaluation-item"]:checked');
-        const evalTypeLabel = evalTypeRadio ? evalTypeRadio.nextElementSibling.textContent : '평가항목';
-        const evalTypeValue = evalTypeRadio ? evalTypeRadio.value : '';
-
         const excelData = [
-            ["2025 부서운영 자체평가 결과 (전체 반출)"],
+            ["2025 부서운영 자체평가 결과"],
             [],
             ["평가위원", evaluator],
+            ["평가부서", departmentForFilename],
             ["평가항목", evalTypeLabel],
             []
         ];
-
-        // 헤더 구성
-        let headers = [];
-        if (evalTypeValue === 'plan') {
-            headers = ["부서명", "담당자", "업무명", "페이지", "개선계획의 적극성", "계획의 구체성과 적정성", "총점"];
-        } else if (evalTypeValue === 'performance') {
-            headers = ["부서명", "담당자", "업무명", "페이지", "성실도", "문제분석", "개선노력", "총점"];
-        } else if (evalTypeValue === 'feedback') {
-            headers = ["부서명", "업무명", "페이지", "우수사항", "미흡사항", "환류방안의 적정성", "총점"];
-        }
+        
+        const headerElements = tableHead.querySelectorAll('th');
+        const headers = Array.from(headerElements).map(th => th.innerText.replace(/\n/g, ' '));
         excelData.push(headers);
 
-        // 데이터 반복
-        completedDepartments.forEach(dept => {
-            const result = evaluationResults[dept];
-            if (!result) return;
-
-            const savedScores = result.scores; // 값 배열
-            let scoreIndex = 0;
-
-            let items = [];
-            if (evalTypeValue === 'feedback') {
-                 items = overallEvalsByDepartment[dept] || [];
-            } else {
-                 items = tasksByDepartment[dept] || [];
-            }
-
-            items.forEach(item => {
-                const row = [];
-                row.push(dept);
-                
-                if (evalTypeValue !== 'feedback') {
-                    row.push(item.person);
+        const rows = tableBody.querySelectorAll('tr');
+        rows.forEach(row => {
+            const rowData = [];
+            const cells = row.querySelectorAll('td');
+            cells.forEach((cell, index) => {
+                if (cell.querySelector('select')) {
+                    rowData.push(cell.querySelector('select').value);
+                } else {
+                    rowData.push(cell.textContent);
                 }
-                
-                row.push(item.task);
-                row.push(item.page);
-
-                // 이 행의 점수 추가
-                // 타입에 따라 행당 점수 개수 결정
-                let scoresPerRow = 2; // plan 기본값
-                if (evalTypeValue === 'performance' || evalTypeValue === 'feedback') scoresPerRow = 3;
-
-                let rowTotal = 0;
-                for(let i=0; i<scoresPerRow; i++) {
-                    const val = parseFloat(savedScores[scoreIndex]) || 0;
-                    row.push(val);
-                    rowTotal += val;
-                    scoreIndex++;
-                }
-                row.push(rowTotal.toFixed(1)); // 총점
-                
-                excelData.push(row);
             });
-
-            // 제언사항 행 추가
-            if (result.suggestion) {
-                excelData.push(["제언사항", result.suggestion]);
-            }
-            
-            // 빈 행으로 구분
-            excelData.push([]);
+            excelData.push(rowData);
         });
+        
+        // 총계, 평균 데이터 추가
+        const footerRows = tableFoot.querySelectorAll('tr');
+        if (footerRows.length > 0) {
+            excelData.push([]); // 빈 줄 추가
+            footerRows.forEach(row => {
+                const rowData = [];
+                const cells = row.querySelectorAll('td');
+                cells.forEach(cell => {
+                    rowData.push(cell.textContent);
+                });
+                excelData.push(rowData);
+            });
+        }
 
-        // 엑셀 파일 생성 및 다운로드
-        const fileName = `전체반출_${evalTypeLabel}_${evaluator}.xlsx`;
+        // 제언사항 데이터 추가
+        const suggestionText = suggestionTextarea.value;
+        if (suggestionText) {
+            excelData.push([]); // 빈 줄 추가
+            excelData.push(["제언사항"]);
+            excelData.push([suggestionText]);
+        }
+
+
+        // 3. 엑셀 파일 생성 및 다운로드
+        const fileName = `${evalTypeLabel}_${departmentForFilename}_${evaluator}.xlsx`;
         const worksheet = XLSX.utils.aoa_to_sheet(excelData);
         const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, '전체결과');
+        XLSX.utils.book_append_sheet(workbook, worksheet, '평가결과');
         XLSX.writeFile(workbook, fileName);
+        isDirty = false; // 저장 후 초기화
     });
 
     // 모달 닫기 이벤트
@@ -1505,7 +972,6 @@
         previousEvaluator = evaluatorSelect.value;
         populateDepartments();
         updateTableView(); 
-        updateStatusSection(); // 초기 상태 렌더링
     });
 
 </script>
