@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AWS CLF 실전 모의고사 (DONGGYUN님 전용)</title>
+    <title>AWS CLF 실전 모의고사 (DONGGYUN님 전용 v2)</title>
     <style>
         :root {
             --aws-orange: #FF9900;
@@ -171,7 +171,8 @@
     <div id="start-screen">
         <h1>AWS Cloud Practitioner 실전 모의고사</h1>
         <p style="text-align: center; font-size: 1.1em;">
-            총 50문항 | 합격 기준 70점 (35문제 이상)<br><br>
+            총 50문항 (랜덤 정렬) | 합격 기준 70점<br><br>
+            <strong>개선 사항:</strong> 문제와 보기의 순서가 모두 랜덤으로 섞입니다.<br>
             DONGGYUN님, 준비되셨나요?
         </p>
         <div style="text-align: center;">
@@ -217,8 +218,8 @@
 </div>
 
 <script>
-    // 50문항 데이터셋
-    const allQuestions = [
+    // 50문항 원본 데이터 (정답은 일단 0번 인덱스로 고정되어 있으나, 실행 시 섞임)
+    const rawQuestions = [
         {
             q: "AWS 공동 책임 모델(Shared Responsibility Model)에 따르면, 고객이 책임져야 하는 '클라우드 내부의 보안(Security IN the Cloud)' 항목은 무엇입니까?",
             options: ["IAM 계정 및 암호 관리", "데이터 센터의 물리적 보안", "하드웨어 폐기", "엣지 로케이션 인프라 관리"],
@@ -572,9 +573,10 @@
     ];
 
     // 변수 초기화
+    let currentQuestions = [];
     let currentQuestionIndex = 0;
-    let userAnswers = new Array(allQuestions.length).fill(null);
-    
+    let userAnswers = [];
+
     // 셔플 알고리즘 (Fisher-Yates)
     function shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
@@ -583,25 +585,46 @@
         }
     }
 
+    // 보기(Options) 섞기 알고리즘
+    function createShuffledQuestion(originalQ) {
+        // 객체 복사 (원본 보존)
+        let q = JSON.parse(JSON.stringify(originalQ));
+        
+        // 정답 텍스트 저장
+        const correctAnswerText = q.options[q.answer];
+        
+        // 보기 섞기
+        shuffleArray(q.options);
+        
+        // 정답 인덱스 재설정 (섞인 보기 중에서 정답 텍스트의 위치 찾기)
+        q.answer = q.options.indexOf(correctAnswerText);
+        
+        return q;
+    }
+
     // 퀴즈 시작 (처음 시작 or 재시작)
     function startQuiz() {
         document.getElementById('start-screen').style.display = 'none';
         document.getElementById('result-screen').style.display = 'none';
         document.getElementById('quiz-screen').style.display = 'block';
         
-        // 문제 섞기
-        shuffleArray(allQuestions);
+        // 1. 문제 순서 섞기
+        let shuffledRaw = [...rawQuestions]; // 복사
+        shuffleArray(shuffledRaw);
+        
+        // 2. 각 문제의 보기(Options) 섞기
+        currentQuestions = shuffledRaw.map(q => createShuffledQuestion(q));
         
         // 변수 초기화
         currentQuestionIndex = 0;
-        userAnswers = new Array(allQuestions.length).fill(null);
+        userAnswers = new Array(currentQuestions.length).fill(null);
         
         loadQuestion();
     }
 
     // 문제 로드
     function loadQuestion() {
-        const qData = allQuestions[currentQuestionIndex];
+        const qData = currentQuestions[currentQuestionIndex];
         
         // UI 업데이트
         document.getElementById('q-number').innerText = currentQuestionIndex + 1;
@@ -610,7 +633,7 @@
         document.getElementById('q-hint').innerText = qData.hint;
         
         // 프로그레스 바
-        const progressPercent = ((currentQuestionIndex) / allQuestions.length) * 100;
+        const progressPercent = ((currentQuestionIndex) / currentQuestions.length) * 100;
         document.getElementById('progress').style.width = progressPercent + '%';
 
         // 옵션 생성
@@ -642,7 +665,7 @@
 
         // 버튼 상태
         document.getElementById('prev-btn').disabled = (currentQuestionIndex === 0);
-        document.getElementById('next-btn').innerText = (currentQuestionIndex === allQuestions.length - 1) ? '제출 및 결과 보기' : '다음';
+        document.getElementById('next-btn').innerText = (currentQuestionIndex === currentQuestions.length - 1) ? '제출 및 결과 보기' : '다음';
     }
 
     // 옵션 선택 시 저장
@@ -665,12 +688,7 @@
     }
 
     function nextQuestion() {
-        // 답을 안 골랐으면 경고 (선택 사항)
-        if (userAnswers[currentQuestionIndex] === null) {
-            if(!confirm("답을 선택하지 않았습니다. 그냥 넘어가시겠습니까?")) return;
-        }
-
-        if (currentQuestionIndex < allQuestions.length - 1) {
+        if (currentQuestionIndex < currentQuestions.length - 1) {
             currentQuestionIndex++;
             loadQuestion();
         } else {
@@ -684,7 +702,7 @@
         document.getElementById('result-screen').style.display = 'block';
 
         let score = 0;
-        allQuestions.forEach((q, idx) => {
+        currentQuestions.forEach((q, idx) => {
             if (userAnswers[idx] === q.answer) {
                 score++;
             }
@@ -700,17 +718,17 @@
         if (finalScore >= 70) {
             statusEl.innerText = "🎉 합격 (PASS)";
             statusEl.className = "pass-status pass";
-            detailEl.innerText = "축하합니다! DONGGYUN님, 이대로라면 실제 시험도 문제없습니다.";
+            detailEl.innerText = "축하합니다! DONGGYUN님, 합격권입니다.";
         } else {
             statusEl.innerText = "⚠️ 불합격 (FAIL)";
             statusEl.className = "pass-status fail";
-            detailEl.innerText = "조금 더 분발하세요! 오답 노트를 확인하고 다시 도전해 보세요.";
+            detailEl.innerText = "조금 더 분발하세요! 오답 노트를 확인해 보세요.";
         }
     }
 
     // 재시작 함수
     function restartQuiz() {
-        if(confirm("시험을 처음부터 다시 시작하시겠습니까? 문제는 랜덤으로 섞입니다.")) {
+        if(confirm("시험을 처음부터 다시 시작하시겠습니까? 문제 순서와 보기가 모두 섞입니다.")) {
             startQuiz();
         }
     }
@@ -723,7 +741,7 @@
 
         let wrongCount = 0;
 
-        allQuestions.forEach((q, idx) => {
+        currentQuestions.forEach((q, idx) => {
             const userChoice = userAnswers[idx];
             if (userChoice !== q.answer) {
                 wrongCount++;
