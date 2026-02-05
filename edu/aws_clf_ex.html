@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS CLF 실전 모의고사 (DONGGYUN님 전용)</title>
+    <style>
+        :root {
+            --aws-orange: #FF9900;
+            --aws-blue: #232F3E;
+            --light-gray: #EAEDED;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-gray);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: white;
+            width: 100%;
+            max-width: 800px;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: var(--aws-blue);
+            text-align: center;
+            border-bottom: 2px solid var(--aws-orange);
+            padding-bottom: 10px;
+        }
+        .btn {
+            background-color: var(--aws-orange);
+            color: var(--aws-blue);
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin: 5px;
+        }
+        .btn:hover {
+            background-color: #ffac31;
+        }
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--aws-blue);
+            color: var(--aws-blue);
+        }
+        .btn-outline:hover {
+            background-color: var(--light-gray);
+        }
+        /* Quiz Section */
+        .question-box {
+            display: none;
+        }
+        .question-text {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option-label {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: 0.2s;
+        }
+        .option-label:hover {
+            background-color: #f0f0f0;
+            border-color: var(--aws-orange);
+        }
+        .option-label input {
+            margin-right: 15px;
+            transform: scale(1.2);
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        .progress-bar {
+            width: 100%;
+            background-color: #ddd;
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: var(--aws-blue);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        /* Result Section */
+        .result-box {
+            display: none;
+            text-align: center;
+        }
+        .score-display {
+            font-size: 2em;
+            margin: 20px 0;
+            color: var(--aws-blue);
+        }
+        .pass-status {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .pass { color: green; }
+        .fail { color: red; }
+        
+        .review-box {
+            display: none;
+            text-align: left;
+            margin-top: 20px;
+            max-height: 500px;
+            overflow-y: auto;
+            border-top: 1px solid #ccc;
+        }
+        .review-item {
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+        }
+        .review-correct { color: green; font-weight: bold; }
+        .review-wrong { color: red; font-weight: bold; }
+        .rationale {
+            background-color: #e8f4f8;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 5px;
+            font-size: 0.9em;
+        }
+        .hint-btn {
+            background: none;
+            border: none;
+            color: #0073bb;
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .hint-text {
+            display: none;
+            color: #555;
+            font-style: italic;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="start-screen">
+        <h1>AWS Cloud Practitioner 실전 모의고사</h1>
+        <p style="text-align: center; font-size: 1.1em;">
+            총 50문항 | 합격 기준 70점 (35문제 이상)<br><br>
+            DONGGYUN님, 준비되셨나요?
+        </p>
+        <div style="text-align: center;">
+            <button class="btn" onclick="startQuiz()">시험 시작 (Start Quiz)</button>
+        </div>
+    </div>
+
+    <div id="quiz-screen" class="question-box">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress"></div>
+        </div>
+        <div style="margin-bottom: 10px; color: #666;">
+            문제 <span id="q-number">1</span> / 50
+        </div>
+        <div class="question-text" id="q-text">질문이 여기에 표시됩니다.</div>
+        <div class="options-container" id="options-area">
+            </div>
+        <button class="hint-btn" onclick="toggleHint()">💡 힌트 보기</button>
+        <div class="hint-text" id="q-hint"></div>
+
+        <div class="controls">
+            <button class="btn btn-outline" id="prev-btn" onclick="prevQuestion()" disabled>이전</button>
+            <button class="btn" id="next-btn" onclick="nextQuestion()">다음</button>
+        </div>
+    </div>
+
+    <div id="result-screen" class="result-box">
+        <h1>시험 결과</h1>
+        <div class="score-display">
+            점수: <span id="score">0</span> / 100
+        </div>
+        <div class="pass-status" id="pass-status"></div>
+        <p id="score-detail"></p>
+        
+        <div>
+            <button class="btn" onclick="restartQuiz()">🔄 처음부터 다시 풀기 (Restart)</button>
+            <button class="btn btn-outline" onclick="showReview()">❌ 오답 노트 확인 (Review)</button>
+        </div>
+
+        <div id="review-area" class="review-box">
+            </div>
+    </div>
+</div>
+
+<script>
+    // 50문항 데이터셋
+    const allQuestions = [
+        {
+            q: "AWS 공동 책임 모델(Shared Responsibility Model)에 따르면, 고객이 책임져야 하는 '클라우드 내부의 보안(Security IN the Cloud)' 항목은 무엇입니까?",
+            options: ["IAM 계정 및 암호 관리", "데이터 센터의 물리적 보안", "하드웨어 폐기", "엣지 로케이션 인프라 관리"],
+            answer: 0,
+            rationale: "AWS는 인프라를 보호하지만, 그 위에서 생성하는 사용자 계정과 비밀번호를 안전하게 관리하는 것은 고객의 책임입니다.",
+            hint: "사용자가 콘솔에서 직접 설정하거나 변경할 수 있는 것이 무엇인지 생각해보세요."
+        },
+        {
+            q: "전 세계 사용자에게 정적 및 동적 웹 콘텐츠를 더 빠르게 전송하기 위해 엣지 로케이션(Edge Location)을 사용하는 AWS 서비스는 무엇입니까?",
+            options: ["Amazon CloudFront", "Amazon Route 53", "AWS Global Accelerator", "Amazon S3"],
+            answer: 0,
+            rationale: "글로벌 콘텐츠 전송 네트워크(CDN) 서비스로, 사용자에게 가장 가까운 엣지 로케이션에서 콘텐츠를 캐싱하여 지연 시간을 줄입니다.",
+            hint: "구름(Cloud)의 앞단(Front)에서 배달해 주는 서비스입니다."
+        },
+        {
+            q: "AWS 비용 관리 도구 중, 사용자가 정의한 임계값을 초과할 경우 이메일이나 SNS로 알림을 보내주는 서비스는?",
+            options: ["AWS Budgets", "AWS Cost Explorer", "AWS Pricing Calculator", "AWS Trusted Advisor"],
+            answer: 0,
+            rationale: "비용이나 사용량이 설정한 예산 한도를 넘거나 넘을 것으로 예상될 때 알림을 제공합니다.",
+            hint: "예산(Budget)을 설정하고 감시합니다."
+        },
+        {
+            q: "관계형 데이터베이스(RDBMS)의 관리 작업을 AWS에 위임하여, 운영 체제 패치나 백업 걱정 없이 사용할 수 있는 서비스는?",
+            options: ["Amazon RDS", "Amazon DynamoDB", "Amazon Redshift", "Amazon EC2"],
+            answer: 0,
+            rationale: "MySQL, PostgreSQL 등을 지원하는 관리형 관계형 데이터베이스 서비스입니다.",
+            hint: "관계형(Relational) 데이터베이스 서비스입니다."
+        },
+        {
+            q: "다음 중 AWS 클라우드의 경제적 이점인 '가변 비용(Variable Expense)'을 가장 잘 설명한 것은?",
+            options: ["사용한 컴퓨팅 리소스에 대해서만 비용을 지불한다.", "매달 고정된 금액을 지불한다.", "장기 약정을 통해 할인을 받는다.", "입찰을 통해 가장 저렴한 가격을 지불한다."],
+            answer: 0,
+            rationale: "초기 투자 없이 실제 사용량에 따라 지불하는 종량제 모델을 의미합니다.",
+            hint: "쓴 만큼만 냅니다."
+        },
+        {
+            q: "EC2 인스턴스를 중단 없이 실행해야 하며 1년 또는 3년의 약정을 통해 비용을 절감하고자 할 때 적합한 요금제는?",
+            options: ["예약 인스턴스 (Reserved Instances)", "스팟 인스턴스", "온디맨드 인스턴스", "전용 호스트"],
+            answer: 0,
+            rationale: "장기 약정을 대가로 온디맨드 대비 큰 할인폭을 제공합니다.",
+            hint: "자리를 미리 '예약'해두는 방식입니다."
+        },
+        {
+            q: "AWS 리소스에 대한 접근 권한을 안전하게 제어하기 위해 사용자, 그룹, 역할을 생성하고 관리하는 서비스는?",
+            options: ["AWS IAM", "AWS Shield", "AWS KMS", "Amazon Cognito"],
+            answer: 0,
+            rationale: "AWS 리소스에 대한 액세스를 안전하게 제어하는 핵심 서비스입니다.",
+            hint: "신분(Identity)과 접근(Access)을 관리합니다."
+        },
+        {
+            q: "트래픽 변동에 따라 자동으로 EC2 인스턴스를 추가하거나 제거하여 애플리케이션 가용성을 유지하는 서비스는?",
+            options: ["Amazon EC2 Auto Scaling", "Elastic Load Balancing", "Amazon CloudWatch", "AWS Lambda"],
+            answer: 0,
+            rationale: "수요에 맞춰 리소스 용량을 자동으로 조정(Scale Out/In)합니다.",
+            hint: "자동으로(Auto) 규모를(Scaling) 조절합니다."
+        },
+        {
+            q: "자주 액세스하지 않는 데이터를 저렴하게 장기 보관(아카이빙)하기에 가장 적합한 S3 스토리지 클래스는?",
+            options: ["Amazon S3 Glacier Deep Archive", "Amazon S3 Standard", "Amazon S3 Standard-IA", "Amazon S3 Intelligent-Tiering"],
+            answer: 0,
+            rationale: "S3 클래스 중 가장 비용이 저렴하며, 데이터를 꺼내는 데 시간이 걸리지만 장기 보관에 최적화되어 있습니다.",
+            hint: "깊은(Deep) 빙하(Glacier) 속에 얼려둡니다."
+        },
+        {
+            q: "AWS Well-Architected 프레임워크의 원칙 중 '인프라를 코드로 관리(IaC)'하고, '장애를 예측하고 학습'하는 것과 관련된 원칙은?",
+            options: ["운영 우수성 (Operational Excellence)", "보안", "안정성", "성능 효율성"],
+            answer: 0,
+            rationale: "시스템을 운영하고 모니터링하며 지속적으로 프로세스를 개선하는 능력에 초점을 맞춥니다.",
+            hint: "운영(Operation)을 더 잘하기 위한 원칙입니다."
+        },
+        {
+            q: "VPC 내의 인스턴스에 대한 인바운드 및 아웃바운드 트래픽을 제어하는 '인스턴스 수준'의 상태 저장(Stateful) 방화벽은?",
+            options: ["보안 그룹 (Security Group)", "네트워크 ACL (NACL)", "AWS WAF", "Route Table"],
+            answer: 0,
+            rationale: "EC2 인스턴스 단위로 적용되며, 요청을 허용하면 응답도 자동으로 허용되는 상태 저장 방식입니다.",
+            hint: "인스턴스를 보호하는 그룹입니다."
+        },
+        {
+            q: "서버를 프로비저닝하거나 관리하지 않고도 코드를 실행할 수 있게 해주는 AWS의 대표적인 서버리스 컴퓨팅 서비스는?",
+            options: ["AWS Lambda", "Amazon EC2", "AWS Lightsail", "AWS Batch"],
+            answer: 0,
+            rationale: "이벤트에 대한 응답으로 코드를 실행하고, 실행 시간만큼만 비용을 지불하는 서버리스 서비스입니다.",
+            hint: "그리스 문자 람다(λ)를 사용합니다."
+        },
+        {
+            q: "AWS 리소스의 구성 변경 내역을 기록하고, 규정 준수 여부를 자동으로 평가 및 감사하는 서비스는?",
+            options: ["AWS Config", "AWS CloudTrail", "Amazon CloudWatch", "AWS Trusted Advisor"],
+            answer: 0,
+            rationale: "리소스의 설정(Configuration) 히스토리를 추적하여 변경 사항을 확인하고 규정을 준수하는지 감시합니다.",
+            hint: "설정(Config)을 관리합니다."
+        },
+        {
+            q: "AWS 계정의 모든 API 호출 활동(누가, 언제, 무엇을 했는지)을 기록하여 보안 감사 및 문제 해결을 돕는 서비스는?",
+            options: ["AWS CloudTrail", "Amazon Inspector", "AWS Artifact", "Amazon GuardDuty"],
+            answer: 0,
+            rationale: "계정 내의 모든 작업 이력을 로그로 남겨 추적(Trail)할 수 있게 합니다.",
+            hint: "지나간 흔적(Trail)을 남깁니다."
+        },
+        {
+            q: "여러 AWS 계정을 중앙에서 통합 관리하고, 결제를 통합(Consolidated Billing)하여 볼륨 할인 혜택을 받을 수 있게 해주는 서비스는?",
+            options: ["AWS Organizations", "AWS Cost Explorer", "AWS IAM", "AWS Systems Manager"],
+            answer: 0,
+            rationale: "조직 단위로 계정을 묶어 중앙 정책을 적용하고 비용을 합산하여 관리합니다.",
+            hint: "회사 조직(Organization)처럼 관리합니다."
+        },
+        {
+            q: "DDoS 공격으로부터 AWS에서 실행되는 애플리케이션을 보호해주는 서비스는?",
+            options: ["AWS Shield", "AWS WAF", "Amazon Inspector", "AWS KMS"],
+            answer: 0,
+            rationale: "Standard는 무료로 제공되며, Advanced는 더 강력한 보호를 제공하는 DDoS 방어 서비스입니다.",
+            hint: "공격을 막는 방패(Shield)입니다."
+        },
+        {
+            q: "다음 중 AWS 글로벌 인프라에서 가장 큰 지리적 구분 단위는 무엇입니까?",
+            options: ["리전 (Region)", "가용 영역 (AZ)", "엣지 로케이션", "데이터 센터"],
+            answer: 0,
+            rationale: "전 세계에 분포된 물리적인 위치로, 복수의 가용 영역(AZ)을 포함합니다.",
+            hint: "서울, 도쿄, 런던과 같은 단위입니다."
+        },
+        {
+            q: "NoSQL 데이터베이스 서비스로, 어떤 규모에서도 10밀리초 미만의 지연 시간을 제공하는 키-값(Key-Value) 데이터베이스는?",
+            options: ["Amazon DynamoDB", "Amazon Aurora", "Amazon ElastiCache", "Amazon Redshift"],
+            answer: 0,
+            rationale: "서버리스 기반의 완전 관리형 NoSQL 데이터베이스입니다.",
+            hint: "다이내믹(Dynamic)하게 확장되는 DB입니다."
+        },
+        {
+            q: "AWS Trusted Advisor가 검사를 수행하는 5가지 주요 카테고리에 포함되지 않는 것은?",
+            options: ["네트워크 처리량", "비용 최적화", "보안", "내결함성"],
+            answer: 0,
+            rationale: "Trusted Advisor의 5가지 기둥은 비용 최적화, 성능, 보안, 내결함성, 서비스 한도입니다.",
+            hint: "비용, 성능, 보안, 내결함성, 한도... 나머지를 찾으세요."
+        },
+        {
+            q: "온프레미스와 AWS 간에 전용 네트워크 연결을 제공하여 인터넷을 통하지 않고 데이터를 전송할 수 있게 해주는 서비스는?",
+            options: ["AWS Direct Connect", "AWS VPN", "Amazon Connect", "VPC Peering"],
+            answer: 0,
+            rationale: "안정적이고 보안성이 높은 전용선 연결 서비스입니다.",
+            hint: "직통(Direct)으로 연결합니다."
+        },
+        {
+            q: "사용자가 AWS 리소스를 사용하기 전에 예상 월별 비용을 산출해 볼 수 있는 웹 기반 도구는?",
+            options: ["AWS Pricing Calculator", "AWS Cost Explorer", "AWS Budgets", "TCO Calculator"],
+            answer: 0,
+            rationale: "아키텍처 구성에 따른 예상 비용 견적을 내볼 수 있습니다.",
+            hint: "가격을 계산(Calculator)해 봅니다."
+        },
+        {
+            q: "S3 버킷에 저장된 민감한 데이터(개인정보 등)를 머신 러닝으로 자동 식별하고 경고해주는 보안 서비스는?",
+            options: ["Amazon Macie", "Amazon GuardDuty", "Amazon Inspector", "AWS Shield"],
+            answer: 0,
+            rationale: "S3 내의 민감한 데이터를 검색하고 분류하여 데이터 유출을 방지합니다.",
+            hint: "이름이 '메시'와 비슷합니다."
+        },
+        {
+            q: "개발자가 인프라를 직접 관리하지 않고 애플리케이션 코드만 업로드하면 자동으로 배포 및 관리를 수행해 주는 PaaS 서비스는?",
+            options: ["AWS Elastic Beanstalk", "AWS CloudFormation", "Amazon EC2", "AWS CodeBuild"],
+            answer: 0,
+            rationale: "용량 프로비저닝, 로드 밸런싱, 오토 스케일링 등을 자동으로 처리해 주는 간편 배포 서비스입니다.",
+            hint: "잭과 콩나무(Beanstalk)처럼 앱을 쑥쑥 키워줍니다."
+        },
+        {
+            q: "다음 중 AWS Support Plan에서 'TAM (Technical Account Manager)'의 전담 지원을 받을 수 있는 플랜은?",
+            options: ["Enterprise", "Business", "Developer", "Basic"],
+            answer: 0,
+            rationale: "가장 높은 등급인 엔터프라이즈 플랜에서만 TAM이 배정됩니다.",
+            hint: "기업(Enterprise) 고객을 위한 최고급 플랜입니다."
+        },
+        {
+            q: "페타바이트 규모의 데이터를 물리적 장치를 통해 AWS로 안전하게 이동시킬 수 있는 서비스는?",
+            options: ["AWS Snowball", "AWS DataSync", "AWS Storage Gateway", "AWS DMS"],
+            answer: 0,
+            rationale: "인터넷 속도가 느릴 때, 물리적 하드디스크가 담긴 박스를 배송받아 데이터를 옮기는 서비스입니다.",
+            hint: "눈덩이(Snowball)처럼 데이터를 뭉쳐서 택배로 보냅니다."
+        },
+        {
+            q: "다음 중 AWS 리전(Region)을 선택할 때 고려해야 할 요소가 아닌 것은?",
+            options: ["가용 영역(AZ)의 총 개수", "데이터 규정 준수", "사용자와의 근접성", "서비스 비용"],
+            answer: 0,
+            rationale: "리전 선택의 주된 고려 사항은 지연 시간, 가격, 규정 준수입니다. AZ 개수는 보통 충분하므로 최우선 고려 사항이 아닙니다.",
+            hint: "대부분의 리전은 충분한 AZ를 가지고 있습니다."
+        },
+        {
+            q: "인공지능 서비스를 사용하여 이미지 및 비디오 분석(얼굴 인식 등) 기능을 제공하는 것은?",
+            options: ["Amazon Rekognition", "Amazon Polly", "Amazon Lex", "Amazon Transcribe"],
+            answer: 0,
+            rationale: "딥러닝 기술을 이용한 시각 분석 서비스입니다.",
+            hint: "인식(Recognition)하는 서비스입니다."
+        },
+        {
+            q: "EC2 인스턴스의 운영 체제(OS) 패치 및 구성을 자동화하고 관리할 수 있는 도구는?",
+            options: ["AWS Systems Manager", "AWS Config", "Amazon Inspector", "AWS CloudTrail"],
+            answer: 0,
+            rationale: "Patch Manager 등의 기능을 통해 대규모 인스턴스 관리를 자동화합니다.",
+            hint: "시스템(Systems)을 관리(Manager)합니다."
+        },
+        {
+            q: "AWS의 완전 관리형 데이터 웨어하우스(Data Warehouse) 서비스로, 페타바이트 규모의 데이터를 분석할 수 있는 것은?",
+            options: ["Amazon Redshift", "Amazon RDS", "Amazon DynamoDB", "Amazon Athena"],
+            answer: 0,
+            rationale: "대규모 데이터 분석을 위한 고성능 데이터 웨어하우스입니다.",
+            hint: "붉은색(Red) 로고의 데이터 창고입니다."
+        },
+        {
+            q: "S3에 저장된 데이터에 대해 별도의 서버 없이 표준 SQL을 사용하여 바로 쿼리할 수 있는 서비스는?",
+            options: ["Amazon Athena", "Amazon Redshift", "AWS Glue", "Amazon Kinesis"],
+            answer: 0,
+            rationale: "서버리스 대화형 쿼리 서비스입니다.",
+            hint: "지혜의 여신 아테나처럼 데이터를 바로 들여다봅니다."
+        },
+        {
+            q: "다음 중 AWS 마켓플레이스(Marketplace)의 주된 목적은 무엇입니까?",
+            options: ["타사 소프트웨어 및 서비스를 검색, 구매 및 배포", "AWS 서비스 할인 쿠폰 구매", "중고 AWS 하드웨어 구매", "AWS 기술 지원 요청"],
+            answer: 0,
+            rationale: "서드파티 벤더의 AMI나 SaaS 솔루션을 쉽게 구매하여 사용할 수 있는 장터입니다.",
+            hint: "시장(Market)에서 물건을 사듯 소프트웨어를 삽니다."
+        },
+        {
+            q: "애플리케이션 구성 요소 간의 결합을 끊기(Decoupling) 위해 메시지를 대기열에 저장하는 서비스는?",
+            options: ["Amazon SQS", "Amazon SNS", "Amazon SES", "AWS Step Functions"],
+            answer: 0,
+            rationale: "메시지 큐 서비스로 비동기 통신을 지원하여 시스템 결합도를 낮춥니다.",
+            hint: "줄을 서는 큐(Queue) 서비스입니다."
+        },
+        {
+            q: "AWS 서비스 중 '인프라를 코드로(IaC)' 생성하고 관리할 수 있게 해주는 템플릿 기반 서비스는?",
+            options: ["AWS CloudFormation", "AWS CodeBuild", "AWS Config", "AWS Systems Manager"],
+            answer: 0,
+            rationale: "JSON이나 YAML 형식의 템플릿을 사용하여 전체 인프라 스택을 생성합니다.",
+            hint: "구름(Cloud)을 형성(Formation)하는 설계도입니다."
+        },
+        {
+            q: "기업이 규정 준수 보고서(ISO, PCI 등)를 다운로드할 수 있는 AWS 서비스는?",
+            options: ["AWS Artifact", "AWS Shield", "Amazon Inspector", "AWS Audit Manager"],
+            answer: 0,
+            rationale: "AWS의 보안 및 규정 준수 문서를 제공하는 포털입니다.",
+            hint: "중요한 문서(유물, Artifact)를 보관하는 곳입니다."
+        },
+        {
+            q: "다음 중 AWS 공동 책임 모델에서 '클라우드 인프라 자체의 보안'에 해당하는 것은?",
+            options: ["네트워크 케이블링 및 하드웨어 유지 관리", "게스트 운영 체제 패치", "방화벽 규칙 설정", "클라이언트 측 데이터 암호화"],
+            answer: 0,
+            rationale: "물리적 인프라는 AWS의 책임입니다.",
+            hint: "사용자가 만질 수 없는 영역입니다."
+        },
+        {
+            q: "여러 EC2 인스턴스에서 동시에 액세스할 수 있는 확장 가능한 파일 스토리지(Linux용 NAS)는?",
+            options: ["Amazon EFS", "Amazon EBS", "Amazon S3", "Instance Store"],
+            answer: 0,
+            rationale: "여러 인스턴스에 마운트하여 파일을 공유할 수 있는 스토리지입니다.",
+            hint: "파일(File)을 공유하는 시스템입니다."
+        },
+        {
+            q: "웹 애플리케이션을 SQL 인젝션이나 XSS와 같은 공격으로부터 보호하는 방화벽은?",
+            options: ["AWS WAF", "AWS Shield", "Security Group", "NACL"],
+            answer: 0,
+            rationale: "애플리케이션 계층(Layer 7)에서 웹 공격을 차단합니다.",
+            hint: "웹(Web) 전용 방화벽입니다."
+        },
+        {
+            q: "사용자가 AWS 계정에 로그인할 때 보안을 강화하기 위해 비밀번호 외에 OTP 등을 입력하도록 하는 기능은?",
+            options: ["MFA (Multi-Factor Authentication)", "IAM Role", "Access Key", "Security Group"],
+            answer: 0,
+            rationale: "다중 요소 인증을 통해 계정 보안을 크게 강화합니다.",
+            hint: "두 번 잠그는 이중 잠금 장치입니다."
+        },
+        {
+            q: "AWS 리소스를 논리적으로 격리된 가상 네트워크에서 실행할 수 있게 해주는 서비스는?",
+            options: ["Amazon VPC", "AWS Direct Connect", "Amazon VPN", "AWS Transit Gateway"],
+            answer: 0,
+            rationale: "클라우드 내의 사설 네트워크 공간을 제공합니다.",
+            hint: "나만의 사설 클라우드 네트워크입니다."
+        },
+        {
+            q: "다음 중 TCO(총 소유 비용)를 줄이는 클라우드의 특성이 아닌 것은?",
+            options: ["소프트웨어 라이선스 비용 증가", "운영 비용 절감", "탄력적 리소스 사용", "규모의 경제 활용"],
+            answer: 0,
+            rationale: "클라우드는 보통 라이선스 비용을 포함하거나 유연하게 사용하여 비용을 줄이는 방향이지, 증가시키는 특성은 아닙니다.",
+            hint: "비용을 '줄이는' 게 아닌 것을 찾으세요."
+        },
+        {
+            q: "IAM에서 사용자에게 직접 권한을 부여하는 것보다 권장되는 방식으로, 권한 집합을 만들어 사용자에게 할당하는 것은?",
+            options: ["IAM 그룹", "IAM 역할", "IAM 정책", "액세스 키"],
+            answer: 0,
+            rationale: "비슷한 업무를 하는 사용자를 그룹으로 묶어 권한을 관리하면 효율적입니다.",
+            hint: "여러 명을 묶어서 관리합니다."
+        },
+        {
+            q: "AWS 서비스가 다른 AWS 리소스에 액세스할 수 있도록 임시 권한을 부여할 때 사용하는 IAM 기능은?",
+            options: ["IAM 역할 (Role)", "IAM 사용자", "IAM 그룹", "MFA"],
+            answer: 0,
+            rationale: "EC2 인스턴스나 Lambda 함수와 같은 서비스에 '모자(Role)'를 씌워 권한을 부여합니다.",
+            hint: "서비스가 맡는 배역(Role)입니다."
+        },
+        {
+            q: "다음 중 AWS 요금 계산에 영향을 미치는 요소가 아닌 것은?",
+            options: ["VPC 내부의 프라이빗 IP 주소 개수", "데이터 전송량 (아웃바운드)", "스토리지 저장 용량", "컴퓨팅 시간"],
+            answer: 0,
+            rationale: "사설 IP 주소 자체는 무료입니다.",
+            hint: "사설 IP는 돈을 받지 않습니다."
+        },
+        {
+            q: "암호화 키(Key)를 쉽게 생성하고 관리할 수 있게 해주는 AWS 서비스는?",
+            options: ["AWS KMS", "AWS Certificate Manager", "AWS Secrets Manager", "CloudHSM"],
+            answer: 0,
+            rationale: "데이터 암호화에 사용되는 키를 중앙에서 관리합니다.",
+            hint: "열쇠(Key) 관리 서비스입니다."
+        },
+        {
+            q: "데이터베이스 마이그레이션 도구로, 마이그레이션 중에도 원본 데이터베이스를 계속 사용할 수 있게 해주는 것은?",
+            options: ["AWS DMS", "AWS Schema Conversion Tool", "AWS Snowball", "AWS DataSync"],
+            answer: 0,
+            rationale: "중단 시간을 최소화하며 DB를 옮깁니다.",
+            hint: "이름 자체가 '데이터베이스 마이그레이션'입니다."
+        },
+        {
+            q: "사용자가 윈도우나 리눅스 데스크톱 환경을 클라우드에서 스트리밍 받아 사용할 수 있게 해주는 DaaS 서비스는?",
+            options: ["Amazon WorkSpaces", "Amazon AppStream 2.0", "AWS Cloud9", "Amazon EC2"],
+            answer: 0,
+            rationale: "관리형 가상 데스크톱 서비스입니다.",
+            hint: "일하는 공간(WorkSpaces)을 제공합니다."
+        },
+        {
+            q: "AWS의 알림(Pub/Sub) 서비스로, 이메일, SMS, Lambda 등으로 메시지를 전송하는 것은?",
+            options: ["Amazon SNS", "Amazon SQS", "Amazon SES", "Amazon Connect"],
+            answer: 0,
+            rationale: "주제(Topic)를 구독한 대상에게 메시지를 푸시합니다.",
+            hint: "알림(Notification) 서비스입니다."
+        },
+        {
+            q: "AWS Well-Architected 프레임워크에서 '에너지 소비를 줄이고 효율성을 높이는 것'을 목표로 하는 원칙은?",
+            options: ["지속 가능성 (Sustainability)", "비용 최적화", "성능 효율성", "안정성"],
+            answer: 0,
+            rationale: "환경에 미치는 영향을 최소화하는 것을 목표로 합니다.",
+            hint: "환경 보호와 관련이 있습니다."
+        },
+        {
+            q: "다음 중 AWS Lambda의 과금 기준은 무엇입니까?",
+            options: ["요청 수 및 코드 실행 시간", "프로비저닝된 서버 대수", "운영 체제 라이선스 비용", "유휴 상태의 대기 시간"],
+            answer: 0,
+            rationale: "함수가 호출된 횟수와 실행된 시간(밀리초 단위)에 따라 비용이 청구됩니다.",
+            hint: "몇 번 불렀는지, 얼마나 오래 돌았는지만 봅니다."
+        },
+        {
+            q: "기업이 AWS 계정 활동을 모니터링하고 위협을 탐지하기 위해 활성화해야 하는 지능형 위협 탐지 서비스는?",
+            options: ["Amazon GuardDuty", "AWS WAF", "AWS Shield", "AWS Config"],
+            answer: 0,
+            rationale: "로그를 분석하여 비정상적인 활동이나 해킹 시도를 탐지합니다.",
+            hint: "경비병(Guard)이 근무(Duty)를 섭니다."
+        }
+    ];
+
+    // 변수 초기화
+    let currentQuestionIndex = 0;
+    let userAnswers = new Array(allQuestions.length).fill(null);
+    
+    // 셔플 알고리즘 (Fisher-Yates)
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    // 퀴즈 시작 (처음 시작 or 재시작)
+    function startQuiz() {
+        document.getElementById('start-screen').style.display = 'none';
+        document.getElementById('result-screen').style.display = 'none';
+        document.getElementById('quiz-screen').style.display = 'block';
+        
+        // 문제 섞기
+        shuffleArray(allQuestions);
+        
+        // 변수 초기화
+        currentQuestionIndex = 0;
+        userAnswers = new Array(allQuestions.length).fill(null);
+        
+        loadQuestion();
+    }
+
+    // 문제 로드
+    function loadQuestion() {
+        const qData = allQuestions[currentQuestionIndex];
+        
+        // UI 업데이트
+        document.getElementById('q-number').innerText = currentQuestionIndex + 1;
+        document.getElementById('q-text').innerText = qData.q;
+        document.getElementById('q-hint').style.display = 'none';
+        document.getElementById('q-hint').innerText = qData.hint;
+        
+        // 프로그레스 바
+        const progressPercent = ((currentQuestionIndex) / allQuestions.length) * 100;
+        document.getElementById('progress').style.width = progressPercent + '%';
+
+        // 옵션 생성
+        const optionsArea = document.getElementById('options-area');
+        optionsArea.innerHTML = ''; // 기존 옵션 지우기
+
+        qData.options.forEach((optText, idx) => {
+            const label = document.createElement('label');
+            label.className = 'option-label';
+            
+            const radio = document.createElement('input');
+            radio.type = 'radio';
+            radio.name = 'option';
+            radio.value = idx;
+            
+            // 이전에 선택한 답이 있으면 체크 표시
+            if (userAnswers[currentQuestionIndex] === idx) {
+                radio.checked = true;
+                label.style.borderColor = 'var(--aws-orange)';
+                label.style.backgroundColor = '#f0f0f0';
+            }
+
+            radio.onchange = () => selectOption(idx);
+            
+            label.appendChild(radio);
+            label.appendChild(document.createTextNode(optText));
+            optionsArea.appendChild(label);
+        });
+
+        // 버튼 상태
+        document.getElementById('prev-btn').disabled = (currentQuestionIndex === 0);
+        document.getElementById('next-btn').innerText = (currentQuestionIndex === allQuestions.length - 1) ? '제출 및 결과 보기' : '다음';
+    }
+
+    // 옵션 선택 시 저장
+    function selectOption(idx) {
+        userAnswers[currentQuestionIndex] = idx;
+    }
+
+    // 힌트 토글
+    function toggleHint() {
+        const hintEl = document.getElementById('q-hint');
+        hintEl.style.display = (hintEl.style.display === 'none') ? 'block' : 'none';
+    }
+
+    // 이전/다음 버튼 로직
+    function prevQuestion() {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            loadQuestion();
+        }
+    }
+
+    function nextQuestion() {
+        // 답을 안 골랐으면 경고 (선택 사항)
+        if (userAnswers[currentQuestionIndex] === null) {
+            if(!confirm("답을 선택하지 않았습니다. 그냥 넘어가시겠습니까?")) return;
+        }
+
+        if (currentQuestionIndex < allQuestions.length - 1) {
+            currentQuestionIndex++;
+            loadQuestion();
+        } else {
+            finishQuiz();
+        }
+    }
+
+    // 퀴즈 종료 및 결과 산출
+    function finishQuiz() {
+        document.getElementById('quiz-screen').style.display = 'none';
+        document.getElementById('result-screen').style.display = 'block';
+
+        let score = 0;
+        allQuestions.forEach((q, idx) => {
+            if (userAnswers[idx] === q.answer) {
+                score++;
+            }
+        });
+
+        // 100점 만점으로 환산 (문제당 2점)
+        const finalScore = score * 2;
+        document.getElementById('score').innerText = finalScore;
+
+        const statusEl = document.getElementById('pass-status');
+        const detailEl = document.getElementById('score-detail');
+
+        if (finalScore >= 70) {
+            statusEl.innerText = "🎉 합격 (PASS)";
+            statusEl.className = "pass-status pass";
+            detailEl.innerText = "축하합니다! DONGGYUN님, 이대로라면 실제 시험도 문제없습니다.";
+        } else {
+            statusEl.innerText = "⚠️ 불합격 (FAIL)";
+            statusEl.className = "pass-status fail";
+            detailEl.innerText = "조금 더 분발하세요! 오답 노트를 확인하고 다시 도전해 보세요.";
+        }
+    }
+
+    // 재시작 함수
+    function restartQuiz() {
+        if(confirm("시험을 처음부터 다시 시작하시겠습니까? 문제는 랜덤으로 섞입니다.")) {
+            startQuiz();
+        }
+    }
+
+    // 오답 노트 보기
+    function showReview() {
+        const reviewArea = document.getElementById('review-area');
+        reviewArea.style.display = 'block';
+        reviewArea.innerHTML = '<h2>❌ 오답 노트</h2>';
+
+        let wrongCount = 0;
+
+        allQuestions.forEach((q, idx) => {
+            const userChoice = userAnswers[idx];
+            if (userChoice !== q.answer) {
+                wrongCount++;
+                const item = document.createElement('div');
+                item.className = 'review-item';
+                
+                const userText = (userChoice === null) ? "(미응답)" : q.options[userChoice];
+                const correctText = q.options[q.answer];
+
+                item.innerHTML = `
+                    <div style="font-weight:bold; color:#333;">Q${idx+1}. ${q.q}</div>
+                    <div style="margin: 10px 0;">
+                        <span class="review-wrong">내 답: ${userText}</span> <br>
+                        <span class="review-correct">정답: ${correctText}</span>
+                    </div>
+                    <div class="rationale">💡 <strong>해설:</strong> ${q.rationale}</div>
+                `;
+                reviewArea.appendChild(item);
+            }
+        });
+
+        if (wrongCount === 0) {
+            reviewArea.innerHTML += '<p style="text-align:center; color:green;">틀린 문제가 없습니다. 완벽합니다! 👍</p>';
+        }
+    }
+
+</script>
+
+</body>
+</html>
