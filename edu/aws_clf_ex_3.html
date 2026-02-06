@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AWS CLF-C02 최종 파이널 (100문제)</title>
+    <title>_v3_AWS CLF-C02 최종 파이널 (상세 카테고리)</title>
     <style>
         :root {
             --aws-orange: #FF9900;
@@ -68,7 +68,6 @@
 
         .quiz-content { padding: 30px; flex: 1; display: flex; flex-direction: column; }
         
-        /* 진행바 스타일 */
         .progress-container {
             margin-bottom: 20px;
             background-color: #eee;
@@ -129,7 +128,6 @@
         .options label.selected { border-color: var(--aws-orange); background-color: #fff8e6; }
         .options input { margin-right: 15px; transform: scale(1.3); }
 
-        /* 힌트 박스 */
         .hint-box {
             margin-top: 20px;
             padding: 15px;
@@ -151,7 +149,6 @@
         }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 네비게이션 버튼 */
         .nav-buttons {
             display: flex;
             justify-content: space-between;
@@ -174,7 +171,6 @@
         .nav-btn.primary:hover { background-color: #ec8d00; }
         .nav-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        /* 결과 화면 */
         #result-screen { display: none; padding: 30px; text-align: center; }
         .score-circle {
             width: 150px;
@@ -214,13 +210,13 @@
 
 <div class="container">
     <header>
-        <h1>AWS Cloud Practitioner (D-1)</h1>
-        <p class="subtitle">총 100문항 (Standard 50 / Advanced 50)</p>
+        <h1>AWS Cloud Practitioner (Final Core)</h1>
+        <p class="subtitle">총 100문항 - AWS 서비스별 상세 카테고리 적용</p>
     </header>
 
     <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('standard')">기본 모의고사 (50문항)</button>
-        <button class="tab-btn" onclick="switchTab('advanced')">심화 학습 (50문항)</button>
+        <button class="tab-btn active" onclick="switchTab('standard')">기본 개념 (50문항)</button>
+        <button class="tab-btn" onclick="switchTab('advanced')">심화 개념 (50문항)</button>
     </div>
 
     <!-- 퀴즈 화면 -->
@@ -259,117 +255,119 @@
 </div>
 
 <script>
-    // h: 힌트 추가
+    // Standard: 가장 기초적이고 변하지 않는 핵심 개념 50문제
     const standardData = [
-        { c: "Cloud Concepts", q: "AWS 클라우드 가치 제안 중 초기 투자 비용 없이 사용한 만큼 지불하는 방식은?", a: ["가변 비용", "고정 비용", "총 소유 비용", "예약 비용"], correct: "가변 비용", exp: "초기 데이터 센터 구축 비용(CapEx) 없이 사용량에 따른 운영 비용(OpEx)을 지불합니다.", h: "전기 요금처럼 쓴 만큼만 냅니다." },
-        { c: "Cloud Concepts", q: "수요 변화에 따라 리소스를 자동으로 확장/축소할 수 있는 클라우드의 특징은?", a: ["탄력성(Elasticity)", "신뢰성(Reliability)", "보안(Security)", "민첩성(Agility)"], correct: "탄력성(Elasticity)", exp: "필요할 때 자원을 늘리고 필요 없을 때 줄이는 능력입니다.", h: "고무줄처럼 늘어났다 줄어들었다 하는 성질을 생각해보세요." },
-        { c: "Cloud Concepts", q: "전 세계 여러 지역에 리소스를 몇 분 만에 배포할 수 있는 능력은?", a: ["글로벌 확장성", "고가용성", "내결함성", "보안성"], correct: "글로벌 확장성", exp: "AWS 글로벌 인프라를 통해 전 세계에 빠르게 배포 가능합니다.", h: "전 세계(Global) 범위로 뻗어나가는 능력입니다." },
-        { c: "Cloud Concepts", q: "고객이 하드웨어 관리 없이 애플리케이션 개발에 집중할 수 있게 하는 모델은?", a: ["PaaS", "IaaS", "SaaS", "On-premise"], correct: "PaaS", exp: "Platform as a Service는 인프라 관리를 AWS가 하고 고객은 코드와 데이터만 관리합니다.", h: "플랫폼(Platform)만 빌려 쓰는 형태입니다." },
-        { c: "Cloud Concepts", q: "Gmail이나 Dropbox처럼 소프트웨어 전체를 인터넷을 통해 제공받는 모델은?", a: ["SaaS", "PaaS", "IaaS", "DBaaS"], correct: "SaaS", exp: "Software as a Service는 최종 사용자에게 완전한 제품을 제공합니다.", h: "소프트웨어(Software) 완제품을 서비스로 받습니다." },
-        { c: "Technology", q: "가상 서버를 임대하여 사용할 수 있는 AWS의 가장 기본적인 컴퓨팅 서비스는?", a: ["EC2", "Lambda", "Lightsail", "Batch"], correct: "EC2", exp: "Elastic Compute Cloud는 크기 조정 가능한 컴퓨팅 파워를 제공합니다.", h: "가상 '컴퓨터(Compute)' 클라우드입니다." },
-        { c: "Technology", q: "코드만 업로드하면 서버 관리 없이 실행되는 이벤트 기반 서비스는?", a: ["Lambda", "EC2", "ECS", "Fargate"], correct: "Lambda", exp: "서버리스 컴퓨팅의 대표적인 서비스입니다.", h: "그리스 문자 '람다(λ)'를 사용하는 함수형 서비스입니다." },
-        { c: "Technology", q: "무제한 확장이 가능한 객체 스토리지 서비스는?", a: ["S3", "EBS", "EFS", "Instance Store"], correct: "S3", exp: "Simple Storage Service는 인터넷 규모의 스토리지입니다.", h: "Simple Storage Service의 약자입니다." },
-        { c: "Technology", q: "EC2 인스턴스에 연결하여 사용하는 블록 스토리지(가상 하드디스크)는?", a: ["EBS", "S3", "Glacier", "EFS"], correct: "EBS", exp: "Elastic Block Store는 단일 EC2 인스턴스에 연결되는 영구 블록 스토리지입니다.", h: "블록(Block) 단위로 저장하는 스토리지입니다." },
-        { c: "Technology", q: "관계형 데이터베이스(MySQL 등)를 쉽게 설정하고 운영해주는 관리형 서비스는?", a: ["RDS", "DynamoDB", "Redshift", "ElastiCache"], correct: "RDS", exp: "Relational Database Service입니다.", h: "관계형(Relational) DB 서비스입니다." },
-        { c: "Technology", q: "Key-Value 형태의 NoSQL 데이터베이스 서비스는?", a: ["DynamoDB", "RDS", "Aurora", "Neptune"], correct: "DynamoDB", exp: "빠르고 유연한 NoSQL 데이터베이스입니다.", h: "다이나믹하게 확장되는 NoSQL DB입니다." },
-        { c: "Technology", q: "격리된 가상 네트워크 환경을 구성할 수 있는 서비스는?", a: ["VPC", "Direct Connect", "Route 53", "CloudFront"], correct: "VPC", exp: "Virtual Private Cloud는 논리적으로 격리된 네트워크를 제공합니다.", h: "가상(Virtual) 사설(Private) 클라우드입니다." },
-        { c: "Technology", q: "도메인 이름을 IP 주소로 변환해주는 DNS 웹 서비스는?", a: ["Route 53", "VPC", "CloudFront", "Direct Connect"], correct: "Route 53", exp: "가용성과 확장성이 뛰어난 클라우드 DNS 서비스입니다.", h: "DNS 포트 번호 53번을 떠올리세요." },
-        { c: "Technology", q: "콘텐츠를 전 세계 사용자에게 빠르게 전송하기 위한 CDN 서비스는?", a: ["CloudFront", "Route 53", "Global Accelerator", "S3"], correct: "CloudFront", exp: "엣지 로케이션을 사용하여 콘텐츠를 캐싱하고 전송합니다.", h: "구름(Cloud) 앞(Front)에서 빠르게 배달합니다." },
-        { c: "Technology", q: "들어오는 트래픽을 여러 대상(EC2 등)으로 자동으로 분산시키는 서비스는?", a: ["ELB (Elastic Load Balancing)", "Auto Scaling", "Route 53", "CloudWatch"], correct: "ELB (Elastic Load Balancing)", exp: "부하 분산을 통해 가용성을 높입니다.", h: "부하(Load)를 균형있게(Balancing) 맞춰줍니다." },
-        { c: "Technology", q: "수요에 따라 EC2 인스턴스 수를 자동으로 늘리거나 줄이는 서비스는?", a: ["Auto Scaling", "ELB", "CloudFormation", "Config"], correct: "Auto Scaling", exp: "가용성을 유지하고 비용을 최적화합니다.", h: "자동으로(Auto) 규모(Scaling)를 조절합니다." },
-        { c: "Security", q: "AWS 리소스에 대한 접근 권한(사용자, 그룹, 역할)을 관리하는 서비스는?", a: ["IAM", "Inspector", "Shield", "Macie"], correct: "IAM", exp: "Identity and Access Management는 보안의 핵심입니다.", h: "신원(Identity)과 접근(Access)을 관리합니다." },
-        { c: "Security", q: "IAM에서 '최소 권한의 원칙'이란?", a: ["업무 수행에 꼭 필요한 권한만 부여", "모든 권한 부여 후 차단", "루트 사용자 공유", "항상 관리자 권한 부여"], correct: "업무 수행에 꼭 필요한 권한만 부여", exp: "보안 모범 사례로, 필요한 것보다 많은 권한을 주지 않는 것입니다.", h: "딱 필요한 만큼만 주는 것입니다." },
-        { c: "Security", q: "EC2 인스턴스 레벨에서 트래픽을 제어하는 가상 방화벽은?", a: ["Security Group", "NACL", "WAF", "Shield"], correct: "Security Group", exp: "상태 저장(Stateful) 방식의 인스턴스 방화벽입니다.", h: "인스턴스를 그룹지어 보안(Security)을 설정합니다." },
-        { c: "Security", q: "서브넷 레벨에서 트래픽을 제어하는 방화벽은?", a: ["NACL (Network ACL)", "Security Group", "Inspector", "GuardDuty"], correct: "NACL (Network ACL)", exp: "상태 비저장(Stateless) 방식의 서브넷 방화벽입니다.", h: "네트워크 접근 제어 목록(ACL)입니다." },
-        { c: "Security", q: "DDoS 공격으로부터 애플리케이션을 보호하는 서비스는?", a: ["Shield", "WAF", "Inspector", "Macie"], correct: "Shield", exp: "Standard(무료)와 Advanced(유료)가 있습니다.", h: "공격을 막아주는 방패(Shield)입니다." },
-        { c: "Security", q: "웹 취약점(SQL 인젝션 등)으로부터 웹 애플리케이션을 보호하는 방화벽은?", a: ["WAF", "Shield", "Firewall Manager", "GuardDuty"], correct: "WAF", exp: "Web Application Firewall입니다.", h: "웹(Web) 애플리케이션 방화벽입니다." },
-        { c: "Billing", q: "AWS 비용 및 사용량을 시각화하고 분석할 수 있는 도구는?", a: ["Cost Explorer", "Budgets", "Pricing Calculator", "Marketplace"], correct: "Cost Explorer", exp: "과거 사용량 분석 및 향후 3개월 예측이 가능합니다.", h: "비용(Cost)을 탐험(Explorer)하며 분석합니다." },
-        { c: "Billing", q: "비용이나 사용량이 설정한 임계값을 초과할 때 알림을 보내는 서비스는?", a: ["Budgets", "Cost Explorer", "CloudWatch", "SNS"], correct: "Budgets", exp: "예산 관리에 필수적입니다.", h: "예산(Budget)을 관리합니다." },
-        { c: "Billing", q: "AWS 서비스를 사용하기 전에 예상 비용을 산출해볼 수 있는 도구는?", a: ["Pricing Calculator", "TCO Calculator", "Cost Explorer", "Budgets"], correct: "Pricing Calculator", exp: "아키텍처 구성에 따른 견적을 낼 때 사용합니다.", h: "계산기(Calculator)입니다." },
-        { c: "Billing", q: "여러 계정의 결제를 하나로 통합하여 볼륨 할인을 받을 수 있는 기능은?", a: ["Consolidated Billing", "Cost Allocation Tags", "Savings Plans", "Budgets"], correct: "Consolidated Billing", exp: "AWS Organizations의 주요 기능 중 하나입니다.", h: "통합(Consolidated) 결제(Billing)입니다." },
-        { c: "Billing", q: "온프레미스와 AWS 간의 비용을 비교하여 절감 효과를 보여주는 도구는?", a: ["TCO Calculator", "Pricing Calculator", "Cost Explorer", "Budgets"], correct: "TCO Calculator", exp: "총 소유 비용(Total Cost of Ownership) 비교 도구입니다.", h: "소유 비용(TCO)을 계산합니다." },
-        { c: "Billing", q: "약정 없이 쓴 만큼 초 단위/시간 단위로 지불하는 EC2 요금제는?", a: ["On-Demand", "Reserved", "Spot", "Savings Plans"], correct: "On-Demand", exp: "가장 유연하지만 할인율은 없습니다.", h: "주문형(On-Demand) 비디오처럼 원할 때 봅니다." },
-        { c: "Billing", q: "1년 또는 3년 약정을 통해 온디맨드 대비 큰 할인을 받는 요금제는?", a: ["Reserved Instances (RI)", "Spot Instances", "On-Demand", "Dedicated Hosts"], correct: "Reserved Instances (RI)", exp: "장기적으로 사용량이 예측될 때 유리합니다.", h: "미리 예약(Reserved)하는 것입니다." },
-        { c: "Billing", q: "남는 용량을 사용하여 최대 90%까지 저렴하지만, 중단될 수 있는 인스턴스는?", a: ["Spot Instances", "Reserved Instances", "On-Demand", "Dedicated Instances"], correct: "Spot Instances", exp: "중단되어도 상관없는 배치 작업 등에 적합합니다.", h: "반짝 세일(Spot) 상품입니다." },
-        { c: "Global Infra", q: "AWS가 데이터 센터를 클러스터링하는 물리적 위치 단위는?", a: ["Region", "Availability Zone (AZ)", "Edge Location", "Local Zone"], correct: "Region", exp: "리전은 복수 개의 가용 영역(AZ)으로 구성됩니다.", h: "국가나 큰 지역(Region) 단위입니다." },
-        { c: "Global Infra", q: "하나의 리전 내에 있는 격리된 위치로, 하나 이상의 데이터 센터로 구성된 것은?", a: ["Availability Zone (AZ)", "Region", "Edge Location", "VPC"], correct: "Availability Zone (AZ)", exp: "AZ 간은 지연 시간이 짧은 링크로 연결되어 있습니다.", h: "가용성(Availability)을 위한 구역(Zone)입니다." },
-        { c: "Global Infra", q: "CloudFront가 콘텐츠를 캐싱하기 위해 사용하는 전 세계에 분포된 위치는?", a: ["Edge Location", "Region", "Availability Zone", "Local Zone"], correct: "Edge Location", exp: "사용자에게 가장 가까운 위치에서 콘텐츠를 제공합니다.", h: "네트워크의 가장자리(Edge)에 위치합니다." },
-        { c: "Security", q: "AWS 계정의 루트 사용자(Root User)를 보호하는 가장 강력한 방법은?", a: ["MFA 활성화", "복잡한 암호 사용", "액세스 키 삭제", "사용 안 함"], correct: "MFA 활성화", exp: "Multi-Factor Authentication은 필수적인 보안 조치입니다.", h: "다중 인증(Multi-Factor)입니다." },
-        { c: "Technology", q: "인프라를 코드로 관리(IaC)하여 리소스를 자동으로 프로비저닝하는 서비스는?", a: ["CloudFormation", "Config", "Systems Manager", "OpsWorks"], correct: "CloudFormation", exp: "JSON이나 YAML 템플릿을 사용합니다.", h: "클라우드(Cloud)를 형성(Formation)합니다." },
-        { c: "Technology", q: "AWS 리소스의 구성 변경 사항을 기록하고 규정 준수를 평가하는 서비스는?", a: ["Config", "CloudTrail", "CloudWatch", "Inspector"], correct: "Config", exp: "리소스 인벤토리 및 변경 이력을 관리합니다.", h: "구성(Configuration)을 관리합니다." },
-        { c: "Technology", q: "AWS 계정 내의 모든 API 호출 활동을 기록하는 감사 서비스는?", a: ["CloudTrail", "CloudWatch", "Config", "X-Ray"], correct: "CloudTrail", exp: "누가, 언제, 어떤 리소스에 접근했는지 기록합니다.", h: "누가 지나간 자국(Trail)을 남깁니다." },
-        { c: "Technology", q: "리소스의 지표(CPU 등)를 모니터링하고 알람을 설정하는 서비스는?", a: ["CloudWatch", "CloudTrail", "Config", "Systems Manager"], correct: "CloudWatch", exp: "성능 모니터링 및 로깅 서비스입니다.", h: "클라우드(Cloud)를 감시(Watch)합니다." },
-        { c: "Support", q: "기술 지원(Tech Support)이 포함되지 않은 기본 플랜은?", a: ["Basic", "Developer", "Business", "Enterprise"], correct: "Basic", exp: "Basic 플랜은 고객 서비스 및 문서 접근만 가능합니다.", h: "가장 기초적인(Basic) 플랜입니다." },
-        { c: "Support", q: "24x7 전화, 이메일, 채팅 지원이 가능한 최소 지원 플랜은?", a: ["Business", "Developer", "Basic", "Free Tier"], correct: "Business", exp: "Developer 플랜은 업무 시간 내 이메일 지원만 가능합니다.", h: "비즈니스(Business) 환경에 적합합니다." },
-        { c: "Support", q: "TAM(Technical Account Manager)을 배정받을 수 있는 지원 플랜은?", a: ["Enterprise", "Business", "Developer", "Basic"], correct: "Enterprise", exp: "가장 높은 수준의 지원 플랜입니다.", h: "대기업(Enterprise) 수준의 지원입니다." },
-        { c: "Security", q: "AWS 리소스 설정을 스캔하여 비용 절감, 성능 향상, 보안 구멍 등을 조언해주는 서비스는?", a: ["Trusted Advisor", "Inspector", "GuardDuty", "Config"], correct: "Trusted Advisor", exp: "AWS 모범 사례를 기반으로 조언을 제공합니다.", h: "신뢰할 수 있는(Trusted) 조언자(Advisor)입니다." },
-        { c: "Technology", q: "데이터 웨어하우징을 위한 페타바이트 규모의 완전 관리형 서비스는?", a: ["Redshift", "RDS", "DynamoDB", "Athena"], correct: "Redshift", exp: "대규모 데이터 분석에 사용됩니다.", h: "빨간색(Red) 로고를 가졌으며 시프트(Shift)합니다." },
-        { c: "Technology", q: "메시지 대기열 서비스로, 시스템 간의 결합을 느슨하게(Decoupling) 만드는 것은?", a: ["SQS", "SNS", "SES", "Kinesis"], correct: "SQS", exp: "Simple Queue Service입니다.", h: "큐(Queue) 서비스입니다." },
-        { c: "Technology", q: "주제(Topic)를 기반으로 메시지를 여러 구독자에게 푸시(Push)하는 서비스는?", a: ["SNS", "SQS", "SES", "Lambda"], correct: "SNS", exp: "Simple Notification Service입니다.", h: "알림(Notification) 서비스입니다." },
-        { c: "Migration", q: "페타바이트 규모의 데이터를 물리적 장치를 통해 AWS로 옮기는 서비스는?", a: ["Snowball", "Direct Connect", "VPN", "Storage Gateway"], correct: "Snowball", exp: "네트워크 대역폭 한계를 극복하기 위한 물리적 이동 장치입니다.", h: "눈덩이(Snowball) 같은 물리적 장비입니다." },
-        { c: "Technology", q: "관리형 데스크톱 서비스(DaaS)는?", a: ["WorkSpaces", "AppStream 2.0", "Connect", "Chime"], correct: "WorkSpaces", exp: "클라우드 기반의 가상 데스크톱을 제공합니다.", h: "작업 공간(Workspace)을 제공합니다." },
-        { c: "Technology", q: "사용자에게 이메일을 발송하는 관리형 서비스는?", a: ["SES", "SNS", "SQS", "Connect"], correct: "SES", exp: "Simple Email Service입니다.", h: "이메일(Email) 서비스입니다." },
-        { c: "Shared Resp", q: "공동 책임 모델에서 '고객 데이터'의 보안 책임은 누구에게 있는가?", a: ["고객", "AWS", "파트너", "정부"], correct: "고객", exp: "AWS는 데이터 내용에 접근하지 않으며, 데이터 보안은 고객 책임입니다.", h: "내 데이터는 내가 지킵니다." },
-        { c: "Shared Resp", q: "공동 책임 모델에서 '폐기된 디스크 드라이브 파쇄' 책임은 누구에게 있는가?", a: ["AWS", "고객", "재활용 업체", "규제 기관"], correct: "AWS", exp: "물리적 인프라 관리는 AWS의 책임입니다.", h: "데이터 센터 내부의 일은 AWS가 합니다." }
+        { c: "Cloud Concepts", q: "초기 투자 비용(CapEx)을 운영 비용(OpEx)으로 대체하는 AWS의 가격 모델은?", a: ["Pay-as-you-go (종량제)", "Reserved Pricing", "Fixed Rate", "Upfront Cost"], correct: "Pay-as-you-go (종량제)", exp: "사용한 만큼만 비용을 지불하는 가변 비용 모델입니다.", h: "쓴 만큼만 냅니다." },
+        { c: "Cloud Concepts", q: "리소스를 필요에 따라 즉시 확장하거나 축소할 수 있는 클라우드의 이점은?", a: ["탄력성(Elasticity)", "신뢰성", "보안", "민첩성"], correct: "탄력성(Elasticity)", exp: "수요 변화에 맞춰 리소스를 유연하게 조절하는 능력입니다.", h: "고무줄 같은 성질입니다." },
+        { c: "Cloud Concepts", q: "수 분 만에 전 세계 여러 리전에 애플리케이션을 배포할 수 있는 능력은?", a: ["글로벌 확장성(Global Reach)", "고가용성", "내결함성", "보안성"], correct: "글로벌 확장성(Global Reach)", exp: "AWS의 글로벌 인프라를 활용한 빠른 배포 능력입니다.", h: "전 세계로 뻗어나갑니다." },
+        { c: "Cloud Concepts", q: "고객은 애플리케이션과 데이터만 관리하고, OS와 인프라는 AWS가 관리하는 모델은?", a: ["PaaS", "IaaS", "SaaS", "On-premise"], correct: "PaaS", exp: "Platform as a Service (예: Elastic Beanstalk)입니다.", h: "플랫폼을 빌려 씁니다." },
+        { c: "Cloud Concepts", q: "웹 메일처럼 소프트웨어를 인터넷을 통해 서비스 형태로 제공받는 모델은?", a: ["SaaS", "PaaS", "IaaS", "DBaaS"], correct: "SaaS", exp: "Software as a Service입니다.", h: "소프트웨어 완제품을 사용합니다." },
+        { c: "Compute", q: "크기 조정 가능한 컴퓨팅 용량을 클라우드에서 제공하는 서비스는?", a: ["Amazon EC2", "AWS Lambda", "Amazon Lightsail", "AWS Batch"], correct: "Amazon EC2", exp: "가상 서버(인스턴스)를 제공하는 핵심 서비스입니다.", h: "가상 컴퓨터입니다." },
+        { c: "Compute", q: "서버를 프로비저닝하거나 관리하지 않고 코드를 실행하는 서비스는?", a: ["AWS Lambda", "Amazon EC2", "Amazon ECS", "AWS Fargate"], correct: "AWS Lambda", exp: "이벤트 기반의 서버리스 컴퓨팅 서비스입니다.", h: "서버리스 함수 실행 서비스입니다." },
+        { c: "Storage", q: "인터넷 규모의 무제한 객체 스토리지 서비스는?", a: ["Amazon S3", "Amazon EBS", "Amazon EFS", "Instance Store"], correct: "Amazon S3", exp: "데이터를 객체(Object) 형태로 저장하며 내구성이 매우 높습니다.", h: "버킷(Bucket)에 담습니다." },
+        { c: "Storage", q: "EC2 인스턴스에 연결하여 사용하는 고성능 블록 스토리지 서비스는?", a: ["Amazon EBS", "Amazon S3", "Amazon Glacier", "Amazon EFS"], correct: "Amazon EBS", exp: "EC2의 외장 하드디스크 역할을 합니다.", h: "블록(Block) 단위 저장소입니다." },
+        { c: "Database", q: "MySQL, PostgreSQL 등의 관계형 데이터베이스를 쉽게 운영해주는 서비스는?", a: ["Amazon RDS", "Amazon DynamoDB", "Amazon Redshift", "Amazon ElastiCache"], correct: "Amazon RDS", exp: "패치, 백업 등을 관리해주는 RDB 서비스입니다.", h: "관계형(Relational) DB입니다." },
+        { c: "Database", q: "어떤 규모에서도 10밀리초 미만의 지연 시간을 제공하는 NoSQL 데이터베이스는?", a: ["Amazon DynamoDB", "Amazon RDS", "Amazon Aurora", "Amazon Neptune"], correct: "Amazon DynamoDB", exp: "키-값(Key-Value) 형태의 완전 관리형 DB입니다.", h: "다이나믹하게 확장됩니다." },
+        { c: "Networking & Content Delivery", q: "사용자가 정의한 가상 네트워크 공간에서 AWS 리소스를 시작할 수 있게 해주는 서비스는?", a: ["Amazon VPC", "AWS Direct Connect", "Amazon Route 53", "Amazon CloudFront"], correct: "Amazon VPC", exp: "논리적으로 격리된 가상 네트워크입니다.", h: "가상 사설 클라우드입니다." },
+        { c: "Networking & Content Delivery", q: "높은 가용성과 확장성을 가진 클라우드 DNS 웹 서비스는?", a: ["Amazon Route 53", "Amazon VPC", "Amazon CloudFront", "AWS Direct Connect"], correct: "Amazon Route 53", exp: "도메인 이름을 IP 주소로 변환하고 트래픽을 라우팅합니다.", h: "DNS 포트 53번입니다." },
+        { c: "Networking & Content Delivery", q: "짧은 지연 시간으로 콘텐츠를 전 세계 사용자에게 전송하는 CDN 서비스는?", a: ["Amazon CloudFront", "Amazon Route 53", "AWS Global Accelerator", "Amazon S3"], correct: "Amazon CloudFront", exp: "엣지 로케이션을 통해 콘텐츠를 캐싱하여 빠르게 전송합니다.", h: "구름(Cloud)의 앞단(Front)입니다." },
+        { c: "Networking & Content Delivery", q: "들어오는 애플리케이션 트래픽을 여러 대상(EC2 등)으로 자동 분산시키는 서비스는?", a: ["Elastic Load Balancing (ELB)", "Auto Scaling", "Amazon Route 53", "Amazon CloudWatch"], correct: "Elastic Load Balancing (ELB)", exp: "시스템의 내결함성을 높여줍니다.", h: "부하(Load)를 균형잡습니다(Balancing)." },
+        { c: "Compute", q: "애플리케이션 수요에 따라 EC2 인스턴스 수를 자동으로 조정하는 서비스는?", a: ["AWS Auto Scaling", "Elastic Load Balancing", "AWS CloudFormation", "AWS Config"], correct: "AWS Auto Scaling", exp: "가용성을 유지하고 비용을 절감합니다.", h: "자동으로(Auto) 규모(Scaling)를 조절합니다." },
+        { c: "Security, Identity & Compliance", q: "AWS 리소스에 대한 접근 권한(사용자, 그룹, 역할)을 안전하게 제어하는 서비스는?", a: ["AWS IAM", "Amazon Inspector", "AWS Shield", "Amazon Macie"], correct: "AWS IAM", exp: "Identity and Access Management입니다.", h: "신원(Identity) 관리입니다." },
+        { c: "Security, Identity & Compliance", q: "IAM 보안 모범 사례 중, 업무 수행에 필요한 최소한의 권한만 부여하는 원칙은?", a: ["최소 권한의 원칙", "루트 사용자 접근", "모든 권한 부여", "권한 공유"], correct: "최소 권한의 원칙", exp: "필요 이상의 권한을 부여하지 않아 보안 위험을 줄입니다.", h: "가장 적게(Least) 줍니다." },
+        { c: "Security, Identity & Compliance", q: "EC2 인스턴스에 대한 트래픽을 제어하는 가상 방화벽은?", a: ["Security Group", "Network ACL", "AWS WAF", "AWS Shield"], correct: "Security Group", exp: "인스턴스 수준에서 작동하며 상태 저장(Stateful)입니다.", h: "보안(Security) 그룹입니다." },
+        { c: "Security, Identity & Compliance", q: "서브넷 수준에서 트래픽을 제어하는 방화벽은?", a: ["Network ACL (NACL)", "Security Group", "Amazon Inspector", "Amazon GuardDuty"], correct: "Network ACL (NACL)", exp: "서브넷 경계에서 작동하며 상태 비저장(Stateless)입니다.", h: "네트워크 접근 제어 목록입니다." },
+        { c: "Security, Identity & Compliance", q: "DDoS 공격으로부터 애플리케이션을 보호하는 서비스는?", a: ["AWS Shield", "AWS WAF", "Amazon Inspector", "Amazon Macie"], correct: "AWS Shield", exp: "Standard(무료)와 Advanced(유료) 계층이 있습니다.", h: "방패(Shield)로 막습니다." },
+        { c: "Security, Identity & Compliance", q: "SQL 인젝션 같은 일반적인 웹 공격으로부터 웹 애플리케이션을 보호하는 것은?", a: ["AWS WAF", "AWS Shield", "AWS Firewall Manager", "Amazon GuardDuty"], correct: "AWS WAF", exp: "Web Application Firewall입니다.", h: "웹(Web) 방화벽입니다." },
+        { c: "Cloud Financial Management", q: "AWS 비용 및 사용량을 시각화하고, 향후 3개월간의 비용을 예측하는 도구는?", a: ["AWS Cost Explorer", "AWS Budgets", "AWS Pricing Calculator", "AWS Marketplace"], correct: "AWS Cost Explorer", exp: "그래프를 통해 비용 추세를 분석합니다.", h: "비용(Cost)을 탐색(Explorer)합니다." },
+        { c: "Cloud Financial Management", q: "비용이나 사용량이 설정한 한도를 초과할 때 알림을 보내주는 서비스는?", a: ["AWS Budgets", "AWS Cost Explorer", "Amazon CloudWatch", "Amazon SNS"], correct: "AWS Budgets", exp: "예산 계획을 세우고 알림을 받습니다.", h: "예산(Budget) 관리입니다." },
+        { c: "Cloud Financial Management", q: "아키텍처 구성에 따른 예상 비용을 미리 산출해볼 수 있는 도구는?", a: ["AWS Pricing Calculator", "AWS TCO Calculator", "AWS Cost Explorer", "AWS Budgets"], correct: "AWS Pricing Calculator", exp: "서비스별 예상 요금을 견적 낼 때 사용합니다.", h: "계산기(Calculator)입니다." },
+        { c: "Cloud Financial Management", q: "여러 AWS 계정의 결제를 하나로 묶어 볼륨 할인 혜택을 받는 기능은?", a: ["Consolidated Billing (통합 결제)", "Cost Allocation Tags", "Savings Plans", "AWS Budgets"], correct: "Consolidated Billing (통합 결제)", exp: "AWS Organizations의 기능으로 단일 청구서를 받습니다.", h: "통합(Consolidated)합니다." },
+        { c: "Cloud Financial Management", q: "온프레미스 환경과 AWS 클라우드 환경의 비용을 비교해주는 도구는?", a: ["AWS TCO Calculator", "AWS Pricing Calculator", "AWS Cost Explorer", "AWS Budgets"], correct: "AWS TCO Calculator", exp: "총 소유 비용(Total Cost of Ownership)을 비교 분석합니다.", h: "소유 비용(TCO)입니다." },
+        { c: "Cloud Financial Management", q: "약정 없이 쓴 만큼 초/시간 단위로 지불하는 가장 유연한 EC2 요금제는?", a: ["On-Demand", "Reserved Instances", "Spot Instances", "Savings Plans"], correct: "On-Demand", exp: "중단 없이 유연하게 사용할 때 적합합니다.", h: "요청할 때(On-Demand) 바로 씁니다." },
+        { c: "Cloud Financial Management", q: "1년 또는 3년 약정을 통해 온디맨드 대비 큰 할인을 받는 요금제는?", a: ["Reserved Instances (RI)", "Spot Instances", "On-Demand", "Dedicated Hosts"], correct: "Reserved Instances (RI)", exp: "사용량이 꾸준하고 예측 가능할 때 유리합니다.", h: "예약(Reserved)석과 같습니다." },
+        { c: "Cloud Financial Management", q: "AWS의 남는 유휴 용량을 사용하여 최대 90% 저렴하지만 중단될 수 있는 인스턴스는?", a: ["Spot Instances", "Reserved Instances", "On-Demand", "Dedicated Instances"], correct: "Spot Instances", exp: "시작/종료 시간이 유연한 배치 작업에 적합합니다.", h: "반짝 세일(Spot)입니다." },
+        { c: "Global Infrastructure", q: "AWS가 전 세계에 데이터 센터를 클러스터링하는 물리적 위치의 단위는?", a: ["Region", "Availability Zone (AZ)", "Edge Location", "Local Zone"], correct: "Region", exp: "각 리전은 다른 리전과 완전히 격리되어 있습니다.", h: "가장 큰 지리적 단위입니다." },
+        { c: "Global Infrastructure", q: "하나의 리전 내에 있는 격리된 위치로, 하나 이상의 데이터 센터로 구성된 것은?", a: ["Availability Zone (AZ)", "Region", "Edge Location", "VPC"], correct: "Availability Zone (AZ)", exp: "AZ 간은 지연 시간이 짧은 네트워크로 연결됩니다.", h: "가용성(Availability) 구역입니다." },
+        { c: "Global Infrastructure", q: "CloudFront가 콘텐츠를 캐싱하여 사용자에게 더 빨리 전달하기 위해 사용하는 위치는?", a: ["Edge Location", "Region", "Availability Zone", "Local Zone"], correct: "Edge Location", exp: "사용자와 가장 가까운 네트워크 말단에 위치합니다.", h: "모서리/가장자리(Edge)입니다." },
+        { c: "Security, Identity & Compliance", q: "루트 사용자나 IAM 사용자의 보안을 강화하기 위해 비밀번호 외에 추가 인증을 요구하는 기능은?", a: ["MFA (Multi-Factor Authentication)", "Access Keys", "Password Policy", "Security Groups"], correct: "MFA (Multi-Factor Authentication)", exp: "다중 인증 요소(OTP 등)를 사용하여 계정을 보호합니다.", h: "두 번 인증합니다." },
+        { c: "Management & Governance", q: "인프라를 코드(IaC)로 생성하고 관리하여 리소스 배포를 자동화하는 서비스는?", a: ["AWS CloudFormation", "AWS Config", "AWS Systems Manager", "AWS OpsWorks"], correct: "AWS CloudFormation", exp: "템플릿 파일을 사용해 전체 스택을 생성합니다.", h: "클라우드를 형성(Formation)합니다." },
+        { c: "Management & Governance", q: "AWS 리소스의 구성 변경 사항을 기록하고 규정 준수 여부를 평가하는 서비스는?", a: ["AWS Config", "AWS CloudTrail", "Amazon CloudWatch", "Amazon Inspector"], correct: "AWS Config", exp: "리소스의 설정 히스토리를 감사합니다.", h: "구성(Config)을 봅니다." },
+        { c: "Management & Governance", q: "누가 언제 AWS API를 호출했는지 기록하는 계정 감사 서비스는?", a: ["AWS CloudTrail", "Amazon CloudWatch", "AWS Config", "AWS X-Ray"], correct: "AWS CloudTrail", exp: "사용자 활동 및 API 사용 추적에 필수적입니다.", h: "흔적(Trail)을 남깁니다." },
+        { c: "Management & Governance", q: "AWS 리소스 및 애플리케이션의 지표(Metric)를 모니터링하고 알람을 설정하는 서비스는?", a: ["Amazon CloudWatch", "AWS CloudTrail", "AWS Config", "AWS Systems Manager"], correct: "Amazon CloudWatch", exp: "시스템 성능 감시 및 로그 수집 도구입니다.", h: "클라우드를 감시(Watch)합니다." },
+        { c: "Support Plans", q: "기술 지원(Tech Support)이 포함되지 않고 고객 서비스 접근만 가능한 기본 플랜은?", a: ["Basic", "Developer", "Business", "Enterprise"], correct: "Basic", exp: "모든 AWS 고객에게 무료로 제공됩니다.", h: "기본(Basic)입니다." },
+        { c: "Support Plans", q: "24x7 전화, 이메일, 채팅 기술 지원이 가능한 최소 지원 플랜은?", a: ["Business", "Developer", "Basic", "Enterprise"], correct: "Business", exp: "프로덕션 워크로드를 운영하는 경우 권장됩니다.", h: "비즈니스 용도입니다." },
+        { c: "Support Plans", q: "TAM(Technical Account Manager)이 지정되어 전담 지원을 받을 수 있는 플랜은?", a: ["Enterprise", "Business", "Developer", "Basic"], correct: "Enterprise", exp: "가장 높은 수준의 컨시어지 지원을 제공합니다.", h: "대기업(Enterprise)급 지원입니다." },
+        { c: "Management & Governance", q: "비용 최적화, 성능, 보안, 내결함성 등에 대해 AWS 모범 사례를 기반으로 조언해주는 서비스는?", a: ["AWS Trusted Advisor", "Amazon Inspector", "Amazon GuardDuty", "AWS Config"], correct: "AWS Trusted Advisor", exp: "계정 상태를 점검하고 개선점을 알려줍니다.", h: "믿을 수 있는 조언자입니다." },
+        { c: "Analytics", q: "페타바이트 규모의 정형 데이터를 분석하기 위한 완전 관리형 데이터 웨어하우스는?", a: ["Amazon Redshift", "Amazon RDS", "Amazon DynamoDB", "Amazon Athena"], correct: "Amazon Redshift", exp: "BI 도구와 연동하여 대규모 데이터를 분석합니다.", h: "빨간색(Red) 로고입니다." },
+        { c: "Application Integration", q: "분산 시스템 간의 메시지를 대기열에 저장하여 결합을 느슨하게(Decoupling) 해주는 서비스는?", a: ["Amazon SQS", "Amazon SNS", "Amazon SES", "Amazon Kinesis"], correct: "Amazon SQS", exp: "Simple Queue Service입니다.", h: "줄을 서는 큐(Queue)입니다." },
+        { c: "Application Integration", q: "주제(Topic)를 사용하여 메시지를 여러 구독자에게 푸시(Push)하는 알림 서비스는?", a: ["Amazon SNS", "Amazon SQS", "Amazon SES", "AWS Lambda"], correct: "Amazon SNS", exp: "Simple Notification Service입니다.", h: "알림(Notification)입니다." },
+        { c: "Migration & Transfer", q: "인터넷을 통하지 않고 페타바이트 규모의 데이터를 물리적 장치로 이동시키는 서비스는?", a: ["AWS Snowball", "AWS Direct Connect", "AWS VPN", "AWS Storage Gateway"], correct: "AWS Snowball", exp: "데이터 전송 비용과 시간을 절약합니다.", h: "눈덩이(Snowball) 같은 장비입니다." },
+        { c: "End User Computing", q: "클라우드 기반의 완전 관리형 가상 데스크톱 서비스(DaaS)는?", a: ["Amazon WorkSpaces", "Amazon AppStream 2.0", "Amazon Connect", "Amazon Chime"], correct: "Amazon WorkSpaces", exp: "어디서나 데스크톱 환경에 접속할 수 있습니다.", h: "작업 공간(Workspace)입니다." },
+        { c: "Application Integration", q: "대량의 이메일을 발송하고 수신할 수 있는 관리형 이메일 서비스는?", a: ["Amazon SES", "Amazon SNS", "Amazon SQS", "Amazon Connect"], correct: "Amazon SES", exp: "Simple Email Service입니다.", h: "이메일(Email) 서비스입니다." },
+        { c: "Security, Identity & Compliance", q: "공동 책임 모델에서 '고객 데이터'의 암호화 및 보안 책임은 누구에게 있는가?", a: ["고객", "AWS", "파트너", "정부"], correct: "고객", exp: "클라우드 '내부'의 보안은 고객의 책임입니다.", h: "내 데이터는 내가 지킵니다." },
+        { c: "Security, Identity & Compliance", q: "공동 책임 모델에서 '물리적 데이터 센터의 보안' 책임은 누구에게 있는가?", a: ["AWS", "고객", "보안 업체", "규제 기관"], correct: "AWS", exp: "클라우드 '자체'의 보안은 AWS의 책임입니다.", h: "건물 관리는 주인이 합니다." }
     ];
 
+    // Advanced: 심화 개념이지만 최신/틈새 서비스를 제외한 "전통적인 고급 기능" 위주 50문제
     const advancedData = [
-        { c: "Architecture", q: "Well-Architected Framework의 6가지 원칙 중 '실수로 인한 실패를 복구하는 능력'은?", a: ["신뢰성(Reliability)", "보안(Security)", "성능 효율성", "비용 최적화"], correct: "신뢰성(Reliability)", exp: "장애 복구 및 중단 없는 서비스 제공 능력입니다.", h: "믿을 수 있는(Reliable) 시스템입니다." },
-        { c: "Architecture", q: "시스템 개발 및 운영을 지속적으로 개선하고 비즈니스 가치를 제공하는 원칙은?", a: ["운영 우수성", "성능 효율성", "신뢰성", "지속 가능성"], correct: "운영 우수성", exp: "코드형 인프라 사용, 실패 예상 등을 포함합니다.", h: "운영(Operational)을 잘하는 것입니다." },
-        { c: "Architecture", q: "환경 영향을 최소화하는 것(에너지 소비 절감 등)과 관련된 원칙은?", a: ["지속 가능성", "비용 최적화", "보안", "신뢰성"], correct: "지속 가능성", exp: "가장 최근에 추가된 6번째 원칙입니다.", h: "지구 환경을 생각합니다." },
-        { c: "Architecture", q: "단일 실패 지점(SPOF)을 제거하기 위해 필요한 아키텍처 개념은?", a: ["고가용성(High Availability)", "수직 확장", "단일 AZ 배포", "긴밀한 결합"], correct: "고가용성(High Availability)", exp: "여러 AZ에 배포하여 하나가 죽어도 서비스가 유지되게 합니다.", h: "항상 가용한(Available) 상태입니다." },
-        { c: "Technology", q: "S3 스토리지 클래스 중 데이터에 즉시 액세스할 필요가 없으며 가장 저렴한 옵션은?", a: ["Glacier Deep Archive", "Glacier Flexible Retrieval", "S3 Standard", "S3 One Zone-IA"], correct: "Glacier Deep Archive", exp: "복원에 12~48시간이 걸리지만 비용이 가장 저렴합니다.", h: "빙하(Glacier) 깊은 곳(Deep)에 보관합니다." },
-        { c: "Technology", q: "S3 객체의 액세스 패턴을 모를 때, 자동으로 계층을 이동시켜 비용을 최적화하는 클래스는?", a: ["Intelligent-Tiering", "Standard-IA", "One Zone-IA", "Glacier"], correct: "Intelligent-Tiering", exp: "모니터링 비용 없이 자동으로 최적화합니다.", h: "똑똑하게(Intelligent) 계층을 나눕니다." },
-        { c: "Technology", q: "파일 시스템 서비스로, 여러 EC2 인스턴스가 동시에 마운트할 수 있는 리눅스 호환 스토리지는?", a: ["EFS", "EBS", "S3", "Fsx for Windows"], correct: "EFS", exp: "Elastic File System은 공유 스토리지입니다.", h: "파일 시스템(File System)입니다." },
-        { c: "Technology", q: "Windows 서버를 위한 완전 관리형 네이티브 파일 시스템은?", a: ["FSx for Windows File Server", "EFS", "S3", "EBS"], correct: "FSx for Windows File Server", exp: "SMB 프로토콜을 지원하는 Windows 전용입니다.", h: "윈도우(Windows)용 파일 서버입니다." },
-        { c: "Database", q: "MySQL, PostgreSQL과 호환되며 속도가 5배/3배 빠른 AWS 자체 고성능 DB는?", a: ["Aurora", "RDS", "DynamoDB", "Redshift"], correct: "Aurora", exp: "고가용성과 성능을 갖춘 관리형 RDB입니다.", h: "오로라(Aurora)처럼 빛나는 성능을 가졌습니다." },
-        { c: "Database", q: "DynamoDB의 읽기 성능을 마이크로초 단위로 높여주는 인메모리 캐시는?", a: ["DAX (DynamoDB Accelerator)", "ElastiCache", "CloudFront", "Global Accelerator"], correct: "DAX (DynamoDB Accelerator)", exp: "코드 변경 없이 성능을 10배 향상시킵니다.", h: "DynamoDB Accelerator의 약자입니다." },
-        { c: "Analytics", q: "S3에 있는 데이터를 별도 로딩 없이 SQL로 바로 쿼리할 수 있는 서비스는?", a: ["Athena", "Redshift", "QuickSight", "Glue"], correct: "Athena", exp: "서버리스 쿼리 서비스입니다.", h: "지혜의 여신 아테나(Athena)처럼 데이터를 분석합니다." },
-        { c: "Analytics", q: "데이터를 시각화하고 비즈니스 인텔리전스(BI) 대시보드를 만드는 서비스는?", a: ["QuickSight", "Athena", "Kinesis", "CloudWatch"], correct: "QuickSight", exp: "그래프, 차트 등을 생성하는 BI 도구입니다.", h: "빠르게 시각화(Sight)합니다." },
-        { c: "Analytics", q: "ETL(추출, 변환, 적재) 작업을 수행하는 완전 관리형 서비스는?", a: ["Glue", "EMR", "Athena", "Data Pipeline"], correct: "Glue", exp: "데이터를 준비하고 로드하는 데 사용됩니다.", h: "데이터를 붙이는 풀(Glue) 역할입니다." },
-        { c: "Analytics", q: "대규모 하둡(Hadoop), 스파크(Spark) 클러스터를 운영할 수 있는 서비스는?", a: ["EMR", "EC2", "Glue", "Redshift"], correct: "EMR", exp: "Elastic MapReduce입니다.", h: "MapReduce 작업을 수행합니다." },
-        { c: "Security", q: "암호화 키를 생성하고 관리하는 서비스는?", a: ["KMS", "Secrets Manager", "IAM", "CloudHSM"], correct: "KMS", exp: "Key Management Service는 데이터 암호화의 핵심입니다.", h: "키(Key) 관리 서비스입니다." },
-        { c: "Security", q: "전용 하드웨어 보안 모듈(HSM)을 클라우드에서 사용하는 서비스는?", a: ["CloudHSM", "KMS", "ACM", "IAM"], correct: "CloudHSM", exp: "규정 준수를 위해 전용 하드웨어가 필요할 때 사용합니다.", h: "클라우드에 있는 HSM입니다." },
-        { c: "Security", q: "DB 자격 증명, API 키 등을 안전하게 저장하고 '자동 교체' 기능을 제공하는 서비스는?", a: ["Secrets Manager", "Systems Manager Parameter Store", "KMS", "IAM"], correct: "Secrets Manager", exp: "Parameter Store와 달리 자동 교체(Rotation) 기능이 특징입니다.", h: "비밀(Secret)을 관리합니다." },
-        { c: "Security", q: "지능형 위협 탐지 서비스로, CloudTrail 로그 등을 분석하여 비정상 행위를 알리는 것은?", a: ["GuardDuty", "Inspector", "Macie", "Shield"], correct: "GuardDuty", exp: "머신러닝을 사용하여 위협을 탐지합니다.", h: "보초(Guard)를 서는 의무(Duty)를 가집니다." },
-        { c: "Security", q: "S3에 저장된 민감한 데이터(PII 등)를 머신러닝으로 식별하고 경고하는 서비스는?", a: ["Macie", "GuardDuty", "Inspector", "Artifact"], correct: "Macie", exp: "개인정보 보호 및 데이터 프라이버시를 위한 서비스입니다.", h: "데이터 프라이버시를 보호합니다." },
-        { c: "Security", q: "EC2 인스턴스의 OS 취약점 및 네트워크 노출을 스캔하는 서비스는?", a: ["Inspector", "GuardDuty", "Trusted Advisor", "Shield"], correct: "Inspector", exp: "자동 보안 평가 서비스입니다.", h: "조사관(Inspector)처럼 취약점을 찾습니다." },
-        { c: "Security", q: "여러 AWS 계정에 대한 싱글 사인온(SSO) 접근을 관리하는 서비스의 최신 명칭은?", a: ["IAM Identity Center", "AWS SSO", "Cognito", "Directory Service"], correct: "IAM Identity Center", exp: "구 AWS SSO입니다.", h: "신원(Identity)의 중심(Center)입니다." },
-        { c: "App Integration", q: "서버리스 워크플로 오케스트레이션 서비스(순서 지정, 상태 관리)는?", a: ["Step Functions", "Lambda", "EventBridge", "SQS"], correct: "Step Functions", exp: "여러 AWS 서비스를 시각적 워크플로로 연결합니다.", h: "단계(Step)별로 함수를 실행합니다." },
-        { c: "App Integration", q: "다양한 소스의 데이터/이벤트를 연결하고 라우팅하는 서버리스 이벤트 버스는?", a: ["EventBridge", "SNS", "SQS", "Step Functions"], correct: "EventBridge", exp: "구 CloudWatch Events의 진화형입니다.", h: "이벤트(Event)를 연결하는 다리(Bridge)입니다." },
-        { c: "Containers", q: "쿠버네티스(Kubernetes)를 AWS에서 관리형으로 실행하는 서비스는?", a: ["EKS", "ECS", "Fargate", "ECR"], correct: "EKS", exp: "Elastic Kubernetes Service입니다.", h: "K는 Kubernetes의 K입니다." },
-        { c: "Containers", q: "컨테이너 이미지를 저장하고 관리하는 레지스트리 서비스는?", a: ["ECR", "Docker Hub", "S3", "EKS"], correct: "ECR", exp: "Elastic Container Registry입니다.", h: "R은 Registry의 R입니다." },
-        { c: "Containers", q: "EC2 인스턴스 관리 없이 컨테이너를 실행할 수 있는 서버리스 엔진은?", a: ["Fargate", "ECS", "EKS", "Lambda"], correct: "Fargate", exp: "ECS와 EKS 모두에서 작동하는 서버리스 컴퓨팅 엔진입니다.", h: "서버 관리 없이 컨테이너만 띄웁니다." },
-        { c: "Networking", q: "인터넷을 통하지 않고 온프레미스와 AWS를 연결하는 전용선 서비스는?", a: ["Direct Connect", "VPN", "Internet Gateway", "Transit Gateway"], correct: "Direct Connect", exp: "보안과 전송 속도가 일정합니다.", h: "직접(Direct) 연결(Connect)합니다." },
-        { c: "Networking", q: "여러 VPC와 온프레미스 네트워크를 단일 허브로 연결하는 서비스는?", a: ["Transit Gateway", "VPC Peering", "Direct Connect", "VPN"], correct: "Transit Gateway", exp: "복잡한 피어링 관계를 단순화합니다.", h: "교통(Transit)의 허브 게이트웨이입니다." },
-        { c: "Networking", q: "프라이빗 서브넷의 인스턴스가 인터넷으로 나갈 수 있게 해주는(들어오는 건 차단) 게이트웨이는?", a: ["NAT Gateway", "Internet Gateway", "Egress-only Gateway", "VPN Gateway"], correct: "NAT Gateway", exp: "IPv4용이며, IPv6는 Egress-only를 사용합니다.", h: "주소 변환(NAT)을 수행합니다." },
-        { c: "Networking", q: "AWS 네트워크 내에서 트래픽을 비공개로 유지하며 AWS 서비스에 연결하는 기술은?", a: ["PrivateLink", "Direct Connect", "VPN", "VPC Peering"], correct: "PrivateLink", exp: "인터넷 게이트웨이 없이 VPC 내에서 서비스에 접근합니다.", h: "비공개(Private) 링크입니다." },
-        { c: "Hybrid", q: "AWS 인프라와 서비스를 고객의 데이터 센터(온프레미스)에 설치해주는 서비스는?", a: ["Outposts", "Local Zones", "Wavelength", "Direct Connect"], correct: "Outposts", exp: "진정한 하이브리드 클라우드 경험을 제공합니다.", h: "전초 기지(Outpost)를 설치합니다." },
-        { c: "Hybrid", q: "5G 네트워크 엣지에서 초저지연 애플리케이션을 실행하게 해주는 서비스는?", a: ["Wavelength", "Local Zones", "Outposts", "CloudFront"], correct: "Wavelength", exp: "통신사 5G 네트워크 내에 AWS 리소스를 배치합니다.", h: "파장(Wavelength)과 5G를 연관지어보세요." },
-        { c: "Migration", q: "서버 마이그레이션 진행 상황을 중앙에서 추적하고 관리하는 서비스는?", a: ["Migration Hub", "Application Discovery Service", "DMS", "SMS"], correct: "Migration Hub", exp: "여러 마이그레이션 도구의 현황을 한곳에서 봅니다.", h: "마이그레이션의 허브(Hub)입니다." },
-        { c: "Migration", q: "온프레미스 서버의 자원 사용량과 의존성을 수집하여 마이그레이션을 돕는 도구는?", a: ["Application Discovery Service", "Migration Hub", "Inspector", "Config"], correct: "Application Discovery Service", exp: "마이그레이션 계획 단계에서 사용합니다.", h: "애플리케이션을 발견(Discovery)합니다." },
-        { c: "Billing", q: "특정 인스턴스 유형이 아닌, '컴퓨팅 사용량($/hr)'을 1~3년 약정하여 EC2, Fargate, Lambda에 적용되는 유연한 할인 모델은?", a: ["Savings Plans", "Reserved Instances", "Spot Instances", "On-Demand"], correct: "Savings Plans", exp: "RI보다 유연하며 최신 할인 모델입니다.", h: "비용을 절약(Savings)하는 계획입니다." },
-        { c: "Billing", q: "비용을 부서, 프로젝트, 환경 별로 분류하기 위해 리소스에 붙이는 메타데이터는?", a: ["Cost Allocation Tags", "IAM Policies", "Resource Groups", "CloudTrail"], correct: "Cost Allocation Tags", exp: "비용 할당 태그를 활성화해야 청구서에서 구분 가능합니다.", h: "태그(Tag)를 붙입니다." },
-        { c: "Compliance", q: "AWS 규정 준수 보고서(ISO, PCI DSS 등)를 다운로드할 수 있는 서비스는?", a: ["Artifact", "Inspector", "Audit Manager", "Config"], correct: "Artifact", exp: "AWS Artifact입니다.", h: "유물(Artifact)처럼 문서를 보관합니다." },
-        { c: "Management", q: "승인된 IT 서비스 제품(EC2, S3 구성 등)을 카탈로그로 만들어 사용자가 배포하게 하는 서비스는?", a: ["Service Catalog", "Marketplace", "Systems Manager", "Config"], correct: "Service Catalog", exp: "조직 내 표준 준수를 돕습니다.", h: "서비스 목록(Catalog)을 제공합니다." },
-        { c: "Management", q: "여러 AWS 계정의 보안 정책을 중앙에서 설정하고 관리하는 '환경 설정' 서비스는?", a: ["Control Tower", "Organizations", "Config", "Trusted Advisor"], correct: "Control Tower", exp: "Landing Zone을 자동으로 설정합니다.", h: "관제탑(Control Tower)에서 전체를 조망합니다." },
-        { c: "Management", q: "EC2 인스턴스나 온프레미스 서버를 에이전트를 통해 패치, 구성 관리하는 서비스는?", a: ["Systems Manager", "OpsWorks", "Config", "CloudWatch"], correct: "Systems Manager", exp: "SSM Agent를 사용합니다.", h: "시스템(System)을 관리(Manager)합니다." },
-        { c: "DevOps", q: "소스 코드 저장소(Git)를 제공하는 서비스는?", a: ["CodeCommit", "CodeBuild", "CodeDeploy", "CodePipeline"], correct: "CodeCommit", exp: "GitHub와 유사한 AWS 관리형 소스 제어 서비스입니다.", h: "코드를 커밋(Commit)합니다." },
-        { c: "DevOps", q: "코드를 컴파일하고 테스트하여 배포 패키지를 만드는 빌드 서비스는?", a: ["CodeBuild", "CodeCommit", "CodeDeploy", "Jenkins"], correct: "CodeBuild", exp: "서버리스 빌드 서비스입니다.", h: "코드를 빌드(Build)합니다." },
-        { c: "DevOps", q: "애플리케이션 배포를 자동화하는 서비스는?", a: ["CodeDeploy", "CodeBuild", "CloudFormation", "OpsWorks"], correct: "CodeDeploy", exp: "EC2, Lambda, 온프레미스 등에 배포합니다.", h: "코드를 배포(Deploy)합니다." },
-        { c: "DevOps", q: "릴리스 파이프라인(빌드-테스트-배포)을 시각화하고 자동화하는 서비스는?", a: ["CodePipeline", "Step Functions", "X-Ray", "CodeStar"], correct: "CodePipeline", exp: "CI/CD 파이프라인을 구축합니다.", h: "파이프라인(Pipeline)을 만듭니다." },
-        { c: "DevOps", q: "분산 애플리케이션의 디버깅 및 트레이싱을 돕는 서비스는?", a: ["X-Ray", "CloudWatch", "CloudTrail", "Inspector"], correct: "X-Ray", exp: "요청이 애플리케이션을 통과하는 경로를 추적합니다.", h: "X-Ray 찍듯이 내부를 들여다봅니다." },
-        { c: "AI/ML", q: "기계 학습 모델을 구축, 훈련, 배포하는 완전 관리형 서비스는?", a: ["SageMaker", "Rekognition", "Polly", "Lex"], correct: "SageMaker", exp: "ML 개발자를 위한 통합 환경입니다.", h: "현자(Sage)가 만드는 것(Maker)입니다." },
-        { c: "AI/ML", q: "이미지 및 비디오 분석(얼굴 인식 등)을 제공하는 AI 서비스는?", a: ["Rekognition", "SageMaker", "Textract", "Polly"], correct: "Rekognition", exp: "시각적 분석 서비스입니다.", h: "인식(Recognition)에서 이름을 따왔습니다." },
-        { c: "AI/ML", q: "텍스트를 음성으로 변환(TTS)해주는 서비스는?", a: ["Polly", "Transcribe", "Lex", "Connect"], correct: "Polly", exp: "Lifelike한 음성을 생성합니다.", h: "앵무새 이름(Polly)입니다." },
-        { c: "AI/ML", q: "음성을 텍스트로 변환(STT)해주는 서비스는?", a: ["Transcribe", "Polly", "Translate", "Comprehend"], correct: "Transcribe", exp: "음성 인식 서비스입니다.", h: "받아적다(Transcribe)라는 뜻입니다." },
-        { c: "Etc", q: "클라우드 마이그레이션을 가속화하기 위해 AWS 파트너와 전문가의 도움을 받는 프로그램은?", a: ["AWS Professional Services", "AWS Support", "TAM", "Marketplace"], correct: "AWS Professional Services", exp: "Global 팀으로, 고객의 클라우드 도입을 돕습니다.", h: "전문가(Professional) 서비스입니다." }
+        { c: "Cloud Concepts", q: "Well-Architected 프레임워크 6대 원칙 중 '장애 발생 시 자동으로 복구하는 능력'과 관련된 것은?", a: ["신뢰성(Reliability)", "보안성", "성능 효율성", "비용 최적화"], correct: "신뢰성(Reliability)", exp: "시스템이 중단 없이 의도한 기능을 수행하는 능력입니다.", h: "믿음직한 시스템입니다." },
+        { c: "Cloud Concepts", q: "운영 프로세스를 지속적으로 개선하고 비즈니스 가치를 제공하는 원칙은?", a: ["운영 우수성", "성능 효율성", "신뢰성", "보안성"], correct: "운영 우수성", exp: "코드형 인프라 수행, 실패 예측 등이 포함됩니다.", h: "운영을 잘하는 것입니다." },
+        { c: "Cloud Financial Management", q: "비용 최적화 원칙 중, 사용자의 요구 사항에 가장 적합한 리소스 유형과 크기를 선택하는 것은?", a: ["Rightsizing (크기 조정)", "Auto Scaling", "Reserved Instance", "Spot Instance"], correct: "Rightsizing (크기 조정)", exp: "필요한 만큼의 자원만 할당하여 낭비를 줄입니다.", h: "딱 맞는 사이즈를 고릅니다." },
+        { c: "Cloud Concepts", q: "단일 실패 지점(SPOF)을 제거하기 위해 시스템을 여러 가용 영역(AZ)에 배치하는 개념은?", a: ["고가용성(High Availability)", "수직 확장", "단일 배포", "결합"], correct: "고가용성(High Availability)", exp: "하나의 AZ가 중단되어도 서비스가 계속 유지됩니다.", h: "항상 사용 가능합니다." },
+        { c: "Storage", q: "S3 스토리지 클래스 중 1년에 한두 번 액세스하며, 가장 저렴하지만 복원 시간이 긴 아카이브용은?", a: ["S3 Glacier Deep Archive", "S3 Standard", "S3 Standard-IA", "S3 Intelligent-Tiering"], correct: "S3 Glacier Deep Archive", exp: "테이프 라이브러리를 대체하는 최저가 스토리지입니다.", h: "매우 깊은(Deep) 곳에 보관합니다." },
+        { c: "Storage", q: "데이터 액세스 패턴이 불규칙할 때, 자동으로 스토리지 계층을 이동시켜 비용을 최적화하는 S3 클래스는?", a: ["S3 Intelligent-Tiering", "S3 Standard-IA", "S3 One Zone-IA", "S3 Glacier"], correct: "S3 Intelligent-Tiering", exp: "모니터링 비용 없이 자동 최적화를 제공합니다.", h: "똑똑하게(Intelligent) 분류합니다." },
+        { c: "Storage", q: "여러 EC2 인스턴스에서 동시에 마운트하여 파일 공유가 가능한 리눅스용 파일 시스템은?", a: ["Amazon EFS", "Amazon EBS", "Amazon S3", "Amazon FSx"], correct: "Amazon EFS", exp: "Elastic File System은 확장 가능한 공유 스토리지입니다.", h: "파일 시스템(File System)입니다." },
+        { c: "Storage", q: "Windows 파일 서버(SMB 프로토콜) 호환이 필요한 경우 사용하는 완전 관리형 파일 시스템은?", a: ["Amazon FSx for Windows", "Amazon EFS", "Amazon S3", "Amazon EBS"], correct: "Amazon FSx for Windows", exp: "Active Directory와 통합되어 윈도우 환경을 지원합니다.", h: "윈도우용 파일 시스템입니다." },
+        { c: "Database", q: "MySQL 및 PostgreSQL과 호환되며, 상용 DB급 성능을 제공하는 AWS의 고성능 관계형 DB는?", a: ["Amazon Aurora", "Amazon RDS", "Amazon DynamoDB", "Amazon Redshift"], correct: "Amazon Aurora", exp: "RDS의 일종으로, 고가용성과 고성능을 제공합니다.", h: "오로라(Aurora)입니다." },
+        { c: "Database", q: "DynamoDB의 읽기 성능을 마이크로초 단위로 높이기 위해 사용하는 인메모리 캐시는?", a: ["DAX (DynamoDB Accelerator)", "Amazon ElastiCache", "Amazon CloudFront", "Global Accelerator"], correct: "DAX (DynamoDB Accelerator)", exp: "애플리케이션 코드 변경 없이 성능을 가속화합니다.", h: "가속기(Accelerator)입니다." },
+        { c: "Analytics", q: "S3에 저장된 데이터를 서버 없이 표준 SQL로 바로 쿼리하여 분석하는 서비스는?", a: ["Amazon Athena", "Amazon Redshift", "Amazon QuickSight", "AWS Glue"], correct: "Amazon Athena", exp: "별도의 서버 구축 없이 즉시 분석이 가능합니다.", h: "지혜의 여신 아테나입니다." },
+        { c: "Analytics", q: "데이터를 시각화하여 비즈니스 인텔리전스(BI) 대시보드를 생성하는 서비스는?", a: ["Amazon QuickSight", "Amazon Athena", "Amazon Kinesis", "Amazon CloudWatch"], correct: "Amazon QuickSight", exp: "그래프와 차트를 통해 인사이트를 제공합니다.", h: "빠르게 봅니다(Quick Sight)." },
+        { c: "Analytics", q: "데이터를 추출, 변환, 적재(ETL)하는 완전 관리형 데이터 준비 서비스는?", a: ["AWS Glue", "Amazon EMR", "Amazon Athena", "AWS Data Pipeline"], correct: "AWS Glue", exp: "데이터 분석을 위해 데이터를 정리하고 준비합니다.", h: "데이터를 붙이는 풀(Glue)입니다." },
+        { c: "Analytics", q: "대규모 하둡(Hadoop), 스파크(Spark) 클러스터를 쉽고 빠르게 운영할 수 있게 해주는 서비스는?", a: ["Amazon EMR", "Amazon EC2", "AWS Glue", "Amazon Redshift"], correct: "Amazon EMR", exp: "Elastic MapReduce의 약자입니다.", h: "MapReduce를 실행합니다." },
+        { c: "Security, Identity & Compliance", q: "데이터 암호화에 사용되는 암호화 키를 생성하고 관리하는 중앙 집중식 서비스는?", a: ["AWS KMS", "AWS Secrets Manager", "AWS IAM", "AWS CloudHSM"], correct: "AWS KMS", exp: "Key Management Service입니다.", h: "키(Key)를 관리합니다." },
+        { c: "Security, Identity & Compliance", q: "규정 준수를 위해 전용 하드웨어 보안 모듈(HSM)을 클라우드에서 직접 제어해야 할 때 쓰는 서비스는?", a: ["AWS CloudHSM", "AWS KMS", "AWS ACM", "AWS IAM"], correct: "AWS CloudHSM", exp: "단독 점유 하드웨어 보안 장비를 제공합니다.", h: "클라우드용 HSM입니다." },
+        { c: "Security, Identity & Compliance", q: "데이터베이스 자격 증명, API 키 등을 안전하게 저장하고 주기적으로 자동 교체해주는 서비스는?", a: ["AWS Secrets Manager", "AWS Systems Manager Parameter Store", "AWS KMS", "AWS IAM"], correct: "AWS Secrets Manager", exp: "비밀번호 수명 주기를 자동으로 관리합니다.", h: "비밀(Secret) 관리자입니다." },
+        { c: "Security, Identity & Compliance", q: "지능형 위협 탐지 서비스로, CloudTrail 로그 등을 머신러닝으로 분석해 비정상 행위를 경고하는 것은?", a: ["Amazon GuardDuty", "Amazon Inspector", "Amazon Macie", "AWS Shield"], correct: "Amazon GuardDuty", exp: "계정 침해나 악의적 정찰 활동을 탐지합니다.", h: "경비(Guard) 임무(Duty)를 섭니다." },
+        { c: "Security, Identity & Compliance", q: "S3에 저장된 민감한 데이터(개인정보 등)를 머신러닝으로 식별하고 경고하는 서비스는?", a: ["Amazon Macie", "Amazon GuardDuty", "Amazon Inspector", "AWS Artifact"], correct: "Amazon Macie", exp: "데이터 프라이버시 및 보안을 위한 서비스입니다.", h: "메시(Macie)가 데이터를 봅니다." },
+        { c: "Security, Identity & Compliance", q: "EC2 인스턴스의 OS 취약점이나 네트워크 노출 상태를 자동으로 스캔하고 평가하는 서비스는?", a: ["Amazon Inspector", "Amazon GuardDuty", "AWS Trusted Advisor", "AWS Shield"], correct: "Amazon Inspector", exp: "자동화된 보안 평가 서비스입니다.", h: "조사관(Inspector)입니다." },
+        { c: "Security, Identity & Compliance", q: "모바일 및 웹 앱에 대한 사용자 가입/로그인 및 접근 제어를 관리하는 서비스는?", a: ["Amazon Cognito", "AWS IAM", "AWS Directory Service", "AWS SSO"], correct: "Amazon Cognito", exp: "소셜 로그인(페이스북, 구글 등) 기능도 지원합니다.", h: "인지하다(Cognito)에서 유래했습니다." },
+        { c: "Security, Identity & Compliance", q: "Microsoft Active Directory를 AWS 클라우드에서 관리형으로 사용할 수 있게 해주는 서비스는?", a: ["AWS Directory Service", "AWS IAM", "Amazon Cognito", "AWS SSO"], correct: "AWS Directory Service", exp: "기존 AD와 호환되는 디렉토리 서비스입니다.", h: "디렉토리(Directory) 서비스입니다." },
+        { c: "Application Integration", q: "여러 AWS 서비스를 시각적 워크플로로 연결하여 순서대로 실행하고 상태를 관리하는 서비스는?", a: ["AWS Step Functions", "AWS Lambda", "Amazon SNS", "Amazon SQS"], correct: "AWS Step Functions", exp: "서버리스 애플리케이션의 오케스트레이션을 담당합니다.", h: "단계(Step)별 기능입니다." },
+        { c: "Analytics", q: "대규모 데이터 스트림(로그, 이벤트 등)을 실시간으로 수집하고 처리하는 서비스는?", a: ["Amazon Kinesis", "Amazon SQS", "Amazon SNS", "AWS Glue"], correct: "Amazon Kinesis", exp: "실시간 비디오 및 데이터 스트림 처리에 사용됩니다.", h: "키네틱(Kinetic) 에너지처럼 흐릅니다." },
+        { c: "Containers", q: "쿠버네티스(Kubernetes) 애플리케이션을 AWS에서 쉽게 실행하게 해주는 관리형 서비스는?", a: ["Amazon EKS", "Amazon ECS", "AWS Fargate", "Amazon ECR"], correct: "Amazon EKS", exp: "Elastic Kubernetes Service입니다.", h: "K는 Kubernetes입니다." },
+        { c: "Containers", q: "도커 컨테이너 이미지를 저장, 관리, 배포하는 완전 관리형 레지스트리는?", a: ["Amazon ECR", "Docker Hub", "Amazon S3", "Amazon EKS"], correct: "Amazon ECR", exp: "Elastic Container Registry입니다.", h: "R은 Registry입니다." },
+        { c: "Containers", q: "EC2 인스턴스를 관리할 필요 없이 컨테이너를 실행할 수 있는 서버리스 컴퓨팅 엔진은?", a: ["AWS Fargate", "Amazon ECS", "Amazon EKS", "AWS Lambda"], correct: "AWS Fargate", exp: "ECS와 EKS 모두에서 작동합니다.", h: "서버 관리가 필요 없습니다." },
+        { c: "Networking & Content Delivery", q: "인터넷을 통하지 않고 온프레미스 데이터 센터와 AWS를 전용선으로 연결하는 서비스는?", a: ["AWS Direct Connect", "AWS VPN", "VPC Peering", "Transit Gateway"], correct: "AWS Direct Connect", exp: "안정적이고 보안성이 높은 전용 네트워크 연결입니다.", h: "직접(Direct) 연결합니다." },
+        { c: "Networking & Content Delivery", q: "서로 다른 두 VPC 간에 트래픽을 라우팅하여 마치 같은 네트워크처럼 통신하게 하는 기능은?", a: ["VPC Peering", "AWS Direct Connect", "AWS VPN", "Transit Gateway"], correct: "VPC Peering", exp: "비공개 IP 주소를 사용하여 두 VPC를 연결합니다.", h: "동료(Peer)처럼 연결합니다." },
+        { c: "Networking & Content Delivery", q: "프라이빗 서브넷의 인스턴스가 인터넷으로 나갈 수 있게(아웃바운드) 해주는 게이트웨이는?", a: ["NAT Gateway", "Internet Gateway", "Egress-only Gateway", "VPN Gateway"], correct: "NAT Gateway", exp: "외부에서 들어오는 트래픽은 차단하고 나가는 것만 허용합니다.", h: "주소 변환(NAT)을 합니다." },
+        { c: "Networking & Content Delivery", q: "AWS 서비스(S3 등)에 대해 인터넷을 통하지 않고 VPC 내부에서 비공개로 접근하게 해주는 기술은?", a: ["VPC Endpoint", "AWS Direct Connect", "AWS VPN", "VPC Peering"], correct: "VPC Endpoint", exp: "PrivateLink를 사용하여 보안을 강화합니다.", h: "VPC의 끝점(Endpoint)입니다." },
+        { c: "Storage", q: "온프레미스 애플리케이션이 AWS 클라우드 스토리지에 원활하게 접근할 수 있도록 해주는 하이브리드 서비스는?", a: ["AWS Storage Gateway", "AWS Snowball", "AWS Direct Connect", "AWS Outposts"], correct: "AWS Storage Gateway", exp: "로컬 캐싱 등을 통해 온프레미스와 클라우드 스토리지를 연결합니다.", h: "스토리지의 관문(Gateway)입니다." },
+        { c: "Networking & Content Delivery", q: "인터넷을 통해 온프레미스 네트워크와 AWS VPC 사이에 암호화된 터널을 생성하는 서비스는?", a: ["AWS VPN", "AWS Direct Connect", "VPC Peering", "Transit Gateway"], correct: "AWS VPN", exp: "공용 인터넷을 사용하지만 데이터를 암호화합니다.", h: "가상 사설망(VPN)입니다." },
+        { c: "Migration & Transfer", q: "여러 마이그레이션 도구의 진행 상황을 한곳에서 추적하고 관리하는 서비스는?", a: ["AWS Migration Hub", "AWS Application Discovery Service", "AWS DMS", "AWS SMS"], correct: "AWS Migration Hub", exp: "마이그레이션의 중앙 대시보드 역할을 합니다.", h: "허브(Hub)입니다." },
+        { c: "Migration & Transfer", q: "마이그레이션 계획을 위해 온프레미스 서버의 사양, 성능, 의존성 정보를 수집하는 도구는?", a: ["AWS Application Discovery Service", "AWS Migration Hub", "Amazon Inspector", "AWS Config"], correct: "AWS Application Discovery Service", exp: "서버 자산 현황을 파악하여 마이그레이션을 돕습니다.", h: "발견(Discovery)하는 서비스입니다." },
+        { c: "Cloud Financial Management", q: "1년 또는 3년 약정으로 '컴퓨팅 사용량(달러/시간)'을 약정하여 EC2, Fargate, Lambda에 유연하게 적용되는 할인 모델은?", a: ["Savings Plans", "Reserved Instances", "Spot Instances", "On-Demand"], correct: "Savings Plans", exp: "RI보다 유연하며 최신 할인 모델입니다.", h: "비용 절약(Savings) 계획입니다." },
+        { c: "Cloud Financial Management", q: "비용을 부서, 프로젝트, 환경 별로 분류하기 위해 리소스에 부여하는 메타데이터는?", a: ["Cost Allocation Tags", "IAM Policies", "Resource Groups", "CloudTrail"], correct: "Cost Allocation Tags", exp: "태그를 활성화해야 청구서에서 비용을 구분할 수 있습니다.", h: "비용 할당 태그입니다." },
+        { c: "Security, Identity & Compliance", q: "AWS의 규정 준수 보고서(ISO, PCI DSS 등)를 다운로드할 수 있는 포털 서비스는?", a: ["AWS Artifact", "Amazon Inspector", "AWS Audit Manager", "AWS Config"], correct: "AWS Artifact", exp: "감사 및 규정 준수 문서를 제공합니다.", h: "유물(Artifact)처럼 문서를 보관합니다." },
+        { c: "Management & Governance", q: "조직에서 승인한 IT 서비스 제품(EC2, S3 구성 등)을 카탈로그화하여 사용자가 쉽게 배포하게 하는 서비스는?", a: ["AWS Service Catalog", "AWS Marketplace", "AWS Systems Manager", "AWS Config"], correct: "AWS Service Catalog", exp: "거버넌스와 규정 준수를 유지하며 셀프 서비스를 가능하게 합니다.", h: "서비스 목록(Catalog)입니다." },
+        { c: "Compute", q: "코드만 업로드하면 용량 프로비저닝, 로드 밸런싱, 모니터링 등을 자동으로 처리해주는 간편한 배포 서비스는?", a: ["AWS Elastic Beanstalk", "AWS CloudFormation", "AWS OpsWorks", "Amazon EC2"], correct: "AWS Elastic Beanstalk", exp: "가장 전통적이고 쉬운 웹 애플리케이션 배포 서비스입니다.", h: "콩나무(Beanstalk)처럼 쑥 자라납니다." },
+        { c: "Management & Governance", q: "EC2 인스턴스나 온프레미스 서버를 에이전트를 통해 패치, 구성, 자동화 관리하는 서비스는?", a: ["AWS Systems Manager", "AWS OpsWorks", "AWS Config", "Amazon CloudWatch"], correct: "AWS Systems Manager", exp: "SSM 에이전트를 사용하여 운영 작업을 자동화합니다.", h: "시스템 관리자입니다." },
+        { c: "Developer Tools", q: "Git 기반의 프라이빗 소스 코드 저장소를 제공하는 서비스는?", a: ["AWS CodeCommit", "AWS CodeBuild", "AWS CodeDeploy", "AWS CodePipeline"], correct: "AWS CodeCommit", exp: "GitHub와 유사한 AWS 관리형 소스 제어 서비스입니다.", h: "코드를 커밋(Commit)합니다." },
+        { c: "Developer Tools", q: "소소 코드를 컴파일하고 테스트하여 배포 패키지를 생성하는 완전 관리형 빌드 서비스는?", a: ["AWS CodeBuild", "AWS CodeCommit", "AWS CodeDeploy", "Jenkins"], correct: "AWS CodeBuild", exp: "서버를 프로비저닝할 필요 없이 빌드를 수행합니다.", h: "코드를 빌드(Build)합니다." },
+        { c: "Developer Tools", q: "EC2, Lambda, 온프레미스 등에 애플리케이션 배포를 자동화하는 서비스는?", a: ["AWS CodeDeploy", "AWS CodeBuild", "AWS CloudFormation", "AWS OpsWorks"], correct: "AWS CodeDeploy", exp: "수동 배포의 오류를 줄이고 배포 속도를 높입니다.", h: "코드를 배포(Deploy)합니다." },
+        { c: "Developer Tools", q: "소프트웨어 릴리스 프로세스(빌드-테스트-배포)를 시각화하고 자동화하는 파이프라인 서비스는?", a: ["AWS CodePipeline", "AWS Step Functions", "AWS X-Ray", "AWS CodeStar"], correct: "AWS CodePipeline", exp: "지속적 통합 및 지속적 전달(CI/CD)을 구현합니다.", h: "파이프라인(Pipeline)을 만듭니다." },
+        { c: "Developer Tools", q: "분산 애플리케이션(마이크로서비스)의 성능 병목 현상을 분석하고 디버깅하는 서비스는?", a: ["AWS X-Ray", "Amazon CloudWatch", "AWS CloudTrail", "Amazon Inspector"], correct: "AWS X-Ray", exp: "요청의 경로를 추적하여 문제를 파악합니다.", h: "X-Ray 찍듯이 내부를 봅니다." },
+        { c: "Machine Learning", q: "머신러닝 모델을 빠르게 구축, 훈련, 배포할 수 있는 완전 관리형 서비스는?", a: ["Amazon SageMaker", "Amazon Rekognition", "Amazon Polly", "Amazon Lex"], correct: "Amazon SageMaker", exp: "데이터 과학자와 개발자를 위한 ML 통합 서비스입니다.", h: "현자(Sage)가 만듭니다." },
+        { c: "Machine Learning", q: "이미지 및 비디오 분석(얼굴 인식, 사물 감지 등)을 제공하는 AI 서비스는?", a: ["Amazon Rekognition", "Amazon SageMaker", "Amazon Textract", "Amazon Polly"], correct: "Amazon Rekognition", exp: "딥러닝 기술을 활용한 시각적 분석 API입니다.", h: "인식(Recognition)합니다." },
+        { c: "Machine Learning", q: "텍스트를 생생한 음성으로 변환(TTS)해주는 서비스는?", a: ["Amazon Polly", "Amazon Transcribe", "Amazon Lex", "Amazon Connect"], correct: "Amazon Polly", exp: "다양한 언어와 음성을 지원합니다.", h: "앵무새 이름 폴리(Polly)입니다." },
+        { c: "Machine Learning", q: "음성을 텍스트로 변환(STT)해주는 자동 음성 인식 서비스는?", a: ["Amazon Transcribe", "Amazon Polly", "Amazon Translate", "Amazon Comprehend"], correct: "Amazon Transcribe", exp: "회의록 작성이나 자막 생성에 사용됩니다.", h: "받아쓰기(Transcribe)입니다." },
+        { c: "Cloud Concepts", q: "클라우드 마이그레이션을 가속화하기 위해 AWS 파트너와 전문가의 도움을 받는 프로그램은?", a: ["AWS Professional Services", "AWS Support", "Technical Account Manager", "AWS Marketplace"], correct: "AWS Professional Services", exp: "고객의 클라우드 도입을 돕는 글로벌 전문가 팀입니다.", h: "전문가(Professional) 서비스입니다." }
     ];
 
     let currentMode = 'standard';
     let currentQuestions = [];
     let currentQuestionIndex = 0;
-    let userAnswers = {}; // { index: "Selected Answer" }
+    let userAnswers = {};
     
     function shuffleArray(array) {
         const newArray = [...array];
@@ -394,9 +392,7 @@
 
         const sourceData = currentMode === 'standard' ? standardData : advancedData;
         
-        // 데이터 준비
         currentQuestions = shuffleArray(sourceData);
-        // 보기 순서도 미리 섞어둠 (렌더링 시 섞으면 뒤로가기 했을 때 바뀜)
         currentQuestions.forEach(q => {
             q.shuffledOptions = shuffleArray(q.a);
         });
@@ -411,12 +407,10 @@
         const item = currentQuestions[index];
         const container = document.getElementById('question-area');
         
-        // 진행상황 업데이트
         const total = currentQuestions.length;
         document.getElementById('progress-text').innerText = `문제 ${index + 1} / ${total}`;
         document.getElementById('progress-bar').style.width = `${((index + 1) / total) * 100}%`;
 
-        // 버튼 상태 업데이트
         document.getElementById('prev-btn').disabled = index === 0;
         const nextBtn = document.getElementById('next-btn');
         if (index === total - 1) {
@@ -427,9 +421,8 @@
             nextBtn.onclick = nextQuestion;
         }
 
-        // 렌더링
         let optionsHTML = '';
-        const savedAnswer = userAnswers[index]; // 이전에 선택한 답
+        const savedAnswer = userAnswers[index];
 
         item.shuffledOptions.forEach(opt => {
             const isChecked = savedAnswer === opt ? 'checked' : '';
@@ -458,12 +451,9 @@
     }
 
     function selectOption(labelElement, value) {
-        // UI 업데이트
         document.querySelectorAll('.options label').forEach(lbl => lbl.classList.remove('selected'));
         labelElement.classList.add('selected');
         labelElement.querySelector('input').checked = true;
-        
-        // 답안 저장
         userAnswers[currentQuestionIndex] = value;
     }
 
@@ -494,28 +484,27 @@
         let score = 0;
         let wrongNotes = [];
         let total = currentQuestions.length;
-        let unansweredCount = 0;
-
+        
+        // unansweredCount 변수 제거: 확인 절차 없이 즉시 처리
+        
         currentQuestions.forEach((item, index) => {
             const myAnswer = userAnswers[index];
-            
-            if (!myAnswer) unansweredCount++;
+            // 응답 여부 체크 로직 제거 (unansweredCount 증가 로직 삭제)
 
             if(myAnswer === item.correct) {
                 score++;
             } else {
                 wrongNotes.push({
                     q: item.q,
-                    my: myAnswer || "선택 안 함",
+                    c: item.c, 
+                    my: myAnswer || "선택 안 함", // 선택하지 않은 경우 "선택 안 함"으로 표시
                     correct: item.correct,
                     exp: item.exp
                 });
             }
         });
 
-        if(unansweredCount > 0) {
-            if(!confirm(`아직 풀지 않은 문제가 ${unansweredCount}개 있습니다. 정말 제출하시겠습니까?`)) return;
-        }
+        // confirm() 확인 절차 코드 블록 전체 삭제
 
         const finalScore = Math.round((score / total) * 100);
         const passed = finalScore >= 70;
@@ -541,6 +530,7 @@
                 const div = document.createElement('div');
                 div.className = 'note-item';
                 div.innerHTML = `
+                    <div style="margin-bottom:5px;"><span class="badge" style="background:#eee; color:#555;">${note.c}</span></div>
                     <strong>Q. ${note.q}</strong><br>
                     <span style="color:#d13212; text-decoration:line-through">내 답: ${note.my}</span><br>
                     <span style="color:#1d8102; font-weight:bold">정답: ${note.correct}</span>
@@ -558,15 +548,15 @@
         if(!list.innerText) return;
         let textToCopy = `[AWS CLF-C02 오답노트 (${currentMode})]\n\n`;
         list.querySelectorAll('.note-item').forEach((item, idx) => {
+            const category = item.querySelector('.badge').innerText;
             const q = item.querySelector('strong').innerText;
             const correct = item.querySelector('span:nth-of-type(2)').innerText;
             const exp = item.querySelector('.explanation').innerText;
-            textToCopy += `${idx+1}. ${q}\n${correct}\n${exp}\n\n`;
+            textToCopy += `[${category}] ${q}\n${correct}\n${exp}\n\n`;
         });
         navigator.clipboard.writeText(textToCopy).then(() => alert("오답노트 복사 완료!"));
     }
 
-    // 초기 실행
     window.onload = resetQuiz;
 </script>
 </body>
