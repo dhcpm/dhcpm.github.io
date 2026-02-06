@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS CLF-C02 최종 파이널 (100문제)</title>
+    <style>
+        :root {
+            --aws-orange: #FF9900;
+            --aws-blue: #232F3E;
+            --light-bg: #F2F4F8;
+            --border-color: #D5DBDB;
+            --success: #1D8102;
+            --error: #D13212;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--light-bg);
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            background-color: var(--aws-blue);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 { margin: 0; font-size: 1.5rem; }
+        .subtitle { margin: 5px 0 0 0; font-size: 0.9rem; opacity: 0.8; }
+        
+        .tabs {
+            display: flex;
+            background-color: #eee;
+            border-bottom: 2px solid var(--border-color);
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            background: none;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+            color: #555;
+        }
+        .tab-btn.active {
+            background-color: white;
+            color: var(--aws-orange);
+            border-bottom: 3px solid var(--aws-orange);
+        }
+        .tab-btn:hover:not(.active) {
+            background-color: #e0e0e0;
+        }
+
+        .quiz-content { padding: 30px; flex: 1; display: flex; flex-direction: column; }
+        
+        /* 진행바 스타일 */
+        .progress-container {
+            margin-bottom: 20px;
+            background-color: #eee;
+            border-radius: 10px;
+            height: 10px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: var(--aws-orange);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .progress-text {
+            text-align: right;
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .question-card {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 25px;
+            margin-bottom: 20px;
+            flex: 1;
+        }
+        .q-meta {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .badge {
+            background-color: #E7F2FA;
+            color: #0073BB;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+        .q-text { font-size: 1.25rem; font-weight: 600; margin-bottom: 25px; }
+        
+        .options { display: flex; flex-direction: column; gap: 10px; }
+        .options label {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .options label:hover { background-color: #f9f9f9; border-color: #ccc; }
+        .options label.selected { border-color: var(--aws-orange); background-color: #fff8e6; }
+        .options input { margin-right: 15px; transform: scale(1.3); }
+
+        /* 힌트 박스 */
+        .hint-box {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #17a2b8;
+            border-radius: 4px;
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+        .hint-btn {
+            background: none;
+            border: none;
+            color: #0073bb;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0;
+            font-size: 0.9rem;
+            text-decoration: underline;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 네비게이션 버튼 */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .nav-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            background-color: #e0e0e0;
+            color: #333;
+        }
+        .nav-btn:hover { background-color: #d0d0d0; }
+        .nav-btn.primary { background-color: var(--aws-orange); color: white; }
+        .nav-btn.primary:hover { background-color: #ec8d00; }
+        .nav-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* 결과 화면 */
+        #result-screen { display: none; padding: 30px; text-align: center; }
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 8px solid #ddd;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        .pass { border-color: var(--success); color: var(--success); }
+        .fail { border-color: var(--error); color: var(--error); }
+        
+        .wrong-note-area { text-align: left; margin-top: 30px; border-top: 2px dashed #ccc; padding-top: 20px; }
+        .note-item {
+            background: #FFF5F5;
+            border-left: 4px solid var(--error);
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .explanation {
+            margin-top: 8px;
+            font-size: 0.95rem;
+            color: #444;
+            background: rgba(255,255,255,0.7);
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .copy-btn { width: 100%; padding: 15px; background-color: #545b62; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>AWS Cloud Practitioner (D-1)</h1>
+        <p class="subtitle">총 100문항 (Standard 50 / Advanced 50)</p>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('standard')">기본 모의고사 (50문항)</button>
+        <button class="tab-btn" onclick="switchTab('advanced')">심화 학습 (50문항)</button>
+    </div>
+
+    <!-- 퀴즈 화면 -->
+    <div id="quiz-screen" class="quiz-content">
+        <div class="progress-text" id="progress-text">1 / 50</div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        
+        <div id="question-area">
+            <!-- 질문 카드가 여기에 렌더링됩니다 -->
+        </div>
+
+        <div class="nav-buttons">
+            <button class="nav-btn" id="prev-btn" onclick="prevQuestion()">이전</button>
+            <button class="nav-btn primary" id="next-btn" onclick="nextQuestion()">다음</button>
+        </div>
+    </div>
+
+    <!-- 결과 화면 -->
+    <div id="result-screen">
+        <h2>시험 결과</h2>
+        <div id="score-circle" class="score-circle">0점</div>
+        <h3 id="result-msg"></h3>
+        
+        <div style="display:flex; gap:10px; justify-content: center; margin-bottom: 20px;">
+            <button class="nav-btn" style="background-color:var(--aws-blue); color:white;" onclick="resetQuiz()">다시 풀기 (랜덤 재배치)</button>
+        </div>
+
+        <div id="wrong-note-container" class="wrong-note-area" style="display:none;">
+            <h3>📝 오답 노트</h3>
+            <button class="copy-btn" onclick="copyWrongNotes()">오답노트 복사하기</button>
+            <div id="wrong-list" style="margin-top:20px;"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // h: 힌트 추가
+    const standardData = [
+        { c: "Cloud Concepts", q: "AWS 클라우드 가치 제안 중 초기 투자 비용 없이 사용한 만큼 지불하는 방식은?", a: ["가변 비용", "고정 비용", "총 소유 비용", "예약 비용"], correct: "가변 비용", exp: "초기 데이터 센터 구축 비용(CapEx) 없이 사용량에 따른 운영 비용(OpEx)을 지불합니다.", h: "전기 요금처럼 쓴 만큼만 냅니다." },
+        { c: "Cloud Concepts", q: "수요 변화에 따라 리소스를 자동으로 확장/축소할 수 있는 클라우드의 특징은?", a: ["탄력성(Elasticity)", "신뢰성(Reliability)", "보안(Security)", "민첩성(Agility)"], correct: "탄력성(Elasticity)", exp: "필요할 때 자원을 늘리고 필요 없을 때 줄이는 능력입니다.", h: "고무줄처럼 늘어났다 줄어들었다 하는 성질을 생각해보세요." },
+        { c: "Cloud Concepts", q: "전 세계 여러 지역에 리소스를 몇 분 만에 배포할 수 있는 능력은?", a: ["글로벌 확장성", "고가용성", "내결함성", "보안성"], correct: "글로벌 확장성", exp: "AWS 글로벌 인프라를 통해 전 세계에 빠르게 배포 가능합니다.", h: "전 세계(Global) 범위로 뻗어나가는 능력입니다." },
+        { c: "Cloud Concepts", q: "고객이 하드웨어 관리 없이 애플리케이션 개발에 집중할 수 있게 하는 모델은?", a: ["PaaS", "IaaS", "SaaS", "On-premise"], correct: "PaaS", exp: "Platform as a Service는 인프라 관리를 AWS가 하고 고객은 코드와 데이터만 관리합니다.", h: "플랫폼(Platform)만 빌려 쓰는 형태입니다." },
+        { c: "Cloud Concepts", q: "Gmail이나 Dropbox처럼 소프트웨어 전체를 인터넷을 통해 제공받는 모델은?", a: ["SaaS", "PaaS", "IaaS", "DBaaS"], correct: "SaaS", exp: "Software as a Service는 최종 사용자에게 완전한 제품을 제공합니다.", h: "소프트웨어(Software) 완제품을 서비스로 받습니다." },
+        { c: "Technology", q: "가상 서버를 임대하여 사용할 수 있는 AWS의 가장 기본적인 컴퓨팅 서비스는?", a: ["EC2", "Lambda", "Lightsail", "Batch"], correct: "EC2", exp: "Elastic Compute Cloud는 크기 조정 가능한 컴퓨팅 파워를 제공합니다.", h: "가상 '컴퓨터(Compute)' 클라우드입니다." },
+        { c: "Technology", q: "코드만 업로드하면 서버 관리 없이 실행되는 이벤트 기반 서비스는?", a: ["Lambda", "EC2", "ECS", "Fargate"], correct: "Lambda", exp: "서버리스 컴퓨팅의 대표적인 서비스입니다.", h: "그리스 문자 '람다(λ)'를 사용하는 함수형 서비스입니다." },
+        { c: "Technology", q: "무제한 확장이 가능한 객체 스토리지 서비스는?", a: ["S3", "EBS", "EFS", "Instance Store"], correct: "S3", exp: "Simple Storage Service는 인터넷 규모의 스토리지입니다.", h: "Simple Storage Service의 약자입니다." },
+        { c: "Technology", q: "EC2 인스턴스에 연결하여 사용하는 블록 스토리지(가상 하드디스크)는?", a: ["EBS", "S3", "Glacier", "EFS"], correct: "EBS", exp: "Elastic Block Store는 단일 EC2 인스턴스에 연결되는 영구 블록 스토리지입니다.", h: "블록(Block) 단위로 저장하는 스토리지입니다." },
+        { c: "Technology", q: "관계형 데이터베이스(MySQL 등)를 쉽게 설정하고 운영해주는 관리형 서비스는?", a: ["RDS", "DynamoDB", "Redshift", "ElastiCache"], correct: "RDS", exp: "Relational Database Service입니다.", h: "관계형(Relational) DB 서비스입니다." },
+        { c: "Technology", q: "Key-Value 형태의 NoSQL 데이터베이스 서비스는?", a: ["DynamoDB", "RDS", "Aurora", "Neptune"], correct: "DynamoDB", exp: "빠르고 유연한 NoSQL 데이터베이스입니다.", h: "다이나믹하게 확장되는 NoSQL DB입니다." },
+        { c: "Technology", q: "격리된 가상 네트워크 환경을 구성할 수 있는 서비스는?", a: ["VPC", "Direct Connect", "Route 53", "CloudFront"], correct: "VPC", exp: "Virtual Private Cloud는 논리적으로 격리된 네트워크를 제공합니다.", h: "가상(Virtual) 사설(Private) 클라우드입니다." },
+        { c: "Technology", q: "도메인 이름을 IP 주소로 변환해주는 DNS 웹 서비스는?", a: ["Route 53", "VPC", "CloudFront", "Direct Connect"], correct: "Route 53", exp: "가용성과 확장성이 뛰어난 클라우드 DNS 서비스입니다.", h: "DNS 포트 번호 53번을 떠올리세요." },
+        { c: "Technology", q: "콘텐츠를 전 세계 사용자에게 빠르게 전송하기 위한 CDN 서비스는?", a: ["CloudFront", "Route 53", "Global Accelerator", "S3"], correct: "CloudFront", exp: "엣지 로케이션을 사용하여 콘텐츠를 캐싱하고 전송합니다.", h: "구름(Cloud) 앞(Front)에서 빠르게 배달합니다." },
+        { c: "Technology", q: "들어오는 트래픽을 여러 대상(EC2 등)으로 자동으로 분산시키는 서비스는?", a: ["ELB (Elastic Load Balancing)", "Auto Scaling", "Route 53", "CloudWatch"], correct: "ELB (Elastic Load Balancing)", exp: "부하 분산을 통해 가용성을 높입니다.", h: "부하(Load)를 균형있게(Balancing) 맞춰줍니다." },
+        { c: "Technology", q: "수요에 따라 EC2 인스턴스 수를 자동으로 늘리거나 줄이는 서비스는?", a: ["Auto Scaling", "ELB", "CloudFormation", "Config"], correct: "Auto Scaling", exp: "가용성을 유지하고 비용을 최적화합니다.", h: "자동으로(Auto) 규모(Scaling)를 조절합니다." },
+        { c: "Security", q: "AWS 리소스에 대한 접근 권한(사용자, 그룹, 역할)을 관리하는 서비스는?", a: ["IAM", "Inspector", "Shield", "Macie"], correct: "IAM", exp: "Identity and Access Management는 보안의 핵심입니다.", h: "신원(Identity)과 접근(Access)을 관리합니다." },
+        { c: "Security", q: "IAM에서 '최소 권한의 원칙'이란?", a: ["업무 수행에 꼭 필요한 권한만 부여", "모든 권한 부여 후 차단", "루트 사용자 공유", "항상 관리자 권한 부여"], correct: "업무 수행에 꼭 필요한 권한만 부여", exp: "보안 모범 사례로, 필요한 것보다 많은 권한을 주지 않는 것입니다.", h: "딱 필요한 만큼만 주는 것입니다." },
+        { c: "Security", q: "EC2 인스턴스 레벨에서 트래픽을 제어하는 가상 방화벽은?", a: ["Security Group", "NACL", "WAF", "Shield"], correct: "Security Group", exp: "상태 저장(Stateful) 방식의 인스턴스 방화벽입니다.", h: "인스턴스를 그룹지어 보안(Security)을 설정합니다." },
+        { c: "Security", q: "서브넷 레벨에서 트래픽을 제어하는 방화벽은?", a: ["NACL (Network ACL)", "Security Group", "Inspector", "GuardDuty"], correct: "NACL (Network ACL)", exp: "상태 비저장(Stateless) 방식의 서브넷 방화벽입니다.", h: "네트워크 접근 제어 목록(ACL)입니다." },
+        { c: "Security", q: "DDoS 공격으로부터 애플리케이션을 보호하는 서비스는?", a: ["Shield", "WAF", "Inspector", "Macie"], correct: "Shield", exp: "Standard(무료)와 Advanced(유료)가 있습니다.", h: "공격을 막아주는 방패(Shield)입니다." },
+        { c: "Security", q: "웹 취약점(SQL 인젝션 등)으로부터 웹 애플리케이션을 보호하는 방화벽은?", a: ["WAF", "Shield", "Firewall Manager", "GuardDuty"], correct: "WAF", exp: "Web Application Firewall입니다.", h: "웹(Web) 애플리케이션 방화벽입니다." },
+        { c: "Billing", q: "AWS 비용 및 사용량을 시각화하고 분석할 수 있는 도구는?", a: ["Cost Explorer", "Budgets", "Pricing Calculator", "Marketplace"], correct: "Cost Explorer", exp: "과거 사용량 분석 및 향후 3개월 예측이 가능합니다.", h: "비용(Cost)을 탐험(Explorer)하며 분석합니다." },
+        { c: "Billing", q: "비용이나 사용량이 설정한 임계값을 초과할 때 알림을 보내는 서비스는?", a: ["Budgets", "Cost Explorer", "CloudWatch", "SNS"], correct: "Budgets", exp: "예산 관리에 필수적입니다.", h: "예산(Budget)을 관리합니다." },
+        { c: "Billing", q: "AWS 서비스를 사용하기 전에 예상 비용을 산출해볼 수 있는 도구는?", a: ["Pricing Calculator", "TCO Calculator", "Cost Explorer", "Budgets"], correct: "Pricing Calculator", exp: "아키텍처 구성에 따른 견적을 낼 때 사용합니다.", h: "계산기(Calculator)입니다." },
+        { c: "Billing", q: "여러 계정의 결제를 하나로 통합하여 볼륨 할인을 받을 수 있는 기능은?", a: ["Consolidated Billing", "Cost Allocation Tags", "Savings Plans", "Budgets"], correct: "Consolidated Billing", exp: "AWS Organizations의 주요 기능 중 하나입니다.", h: "통합(Consolidated) 결제(Billing)입니다." },
+        { c: "Billing", q: "온프레미스와 AWS 간의 비용을 비교하여 절감 효과를 보여주는 도구는?", a: ["TCO Calculator", "Pricing Calculator", "Cost Explorer", "Budgets"], correct: "TCO Calculator", exp: "총 소유 비용(Total Cost of Ownership) 비교 도구입니다.", h: "소유 비용(TCO)을 계산합니다." },
+        { c: "Billing", q: "약정 없이 쓴 만큼 초 단위/시간 단위로 지불하는 EC2 요금제는?", a: ["On-Demand", "Reserved", "Spot", "Savings Plans"], correct: "On-Demand", exp: "가장 유연하지만 할인율은 없습니다.", h: "주문형(On-Demand) 비디오처럼 원할 때 봅니다." },
+        { c: "Billing", q: "1년 또는 3년 약정을 통해 온디맨드 대비 큰 할인을 받는 요금제는?", a: ["Reserved Instances (RI)", "Spot Instances", "On-Demand", "Dedicated Hosts"], correct: "Reserved Instances (RI)", exp: "장기적으로 사용량이 예측될 때 유리합니다.", h: "미리 예약(Reserved)하는 것입니다." },
+        { c: "Billing", q: "남는 용량을 사용하여 최대 90%까지 저렴하지만, 중단될 수 있는 인스턴스는?", a: ["Spot Instances", "Reserved Instances", "On-Demand", "Dedicated Instances"], correct: "Spot Instances", exp: "중단되어도 상관없는 배치 작업 등에 적합합니다.", h: "반짝 세일(Spot) 상품입니다." },
+        { c: "Global Infra", q: "AWS가 데이터 센터를 클러스터링하는 물리적 위치 단위는?", a: ["Region", "Availability Zone (AZ)", "Edge Location", "Local Zone"], correct: "Region", exp: "리전은 복수 개의 가용 영역(AZ)으로 구성됩니다.", h: "국가나 큰 지역(Region) 단위입니다." },
+        { c: "Global Infra", q: "하나의 리전 내에 있는 격리된 위치로, 하나 이상의 데이터 센터로 구성된 것은?", a: ["Availability Zone (AZ)", "Region", "Edge Location", "VPC"], correct: "Availability Zone (AZ)", exp: "AZ 간은 지연 시간이 짧은 링크로 연결되어 있습니다.", h: "가용성(Availability)을 위한 구역(Zone)입니다." },
+        { c: "Global Infra", q: "CloudFront가 콘텐츠를 캐싱하기 위해 사용하는 전 세계에 분포된 위치는?", a: ["Edge Location", "Region", "Availability Zone", "Local Zone"], correct: "Edge Location", exp: "사용자에게 가장 가까운 위치에서 콘텐츠를 제공합니다.", h: "네트워크의 가장자리(Edge)에 위치합니다." },
+        { c: "Security", q: "AWS 계정의 루트 사용자(Root User)를 보호하는 가장 강력한 방법은?", a: ["MFA 활성화", "복잡한 암호 사용", "액세스 키 삭제", "사용 안 함"], correct: "MFA 활성화", exp: "Multi-Factor Authentication은 필수적인 보안 조치입니다.", h: "다중 인증(Multi-Factor)입니다." },
+        { c: "Technology", q: "인프라를 코드로 관리(IaC)하여 리소스를 자동으로 프로비저닝하는 서비스는?", a: ["CloudFormation", "Config", "Systems Manager", "OpsWorks"], correct: "CloudFormation", exp: "JSON이나 YAML 템플릿을 사용합니다.", h: "클라우드(Cloud)를 형성(Formation)합니다." },
+        { c: "Technology", q: "AWS 리소스의 구성 변경 사항을 기록하고 규정 준수를 평가하는 서비스는?", a: ["Config", "CloudTrail", "CloudWatch", "Inspector"], correct: "Config", exp: "리소스 인벤토리 및 변경 이력을 관리합니다.", h: "구성(Configuration)을 관리합니다." },
+        { c: "Technology", q: "AWS 계정 내의 모든 API 호출 활동을 기록하는 감사 서비스는?", a: ["CloudTrail", "CloudWatch", "Config", "X-Ray"], correct: "CloudTrail", exp: "누가, 언제, 어떤 리소스에 접근했는지 기록합니다.", h: "누가 지나간 자국(Trail)을 남깁니다." },
+        { c: "Technology", q: "리소스의 지표(CPU 등)를 모니터링하고 알람을 설정하는 서비스는?", a: ["CloudWatch", "CloudTrail", "Config", "Systems Manager"], correct: "CloudWatch", exp: "성능 모니터링 및 로깅 서비스입니다.", h: "클라우드(Cloud)를 감시(Watch)합니다." },
+        { c: "Support", q: "기술 지원(Tech Support)이 포함되지 않은 기본 플랜은?", a: ["Basic", "Developer", "Business", "Enterprise"], correct: "Basic", exp: "Basic 플랜은 고객 서비스 및 문서 접근만 가능합니다.", h: "가장 기초적인(Basic) 플랜입니다." },
+        { c: "Support", q: "24x7 전화, 이메일, 채팅 지원이 가능한 최소 지원 플랜은?", a: ["Business", "Developer", "Basic", "Free Tier"], correct: "Business", exp: "Developer 플랜은 업무 시간 내 이메일 지원만 가능합니다.", h: "비즈니스(Business) 환경에 적합합니다." },
+        { c: "Support", q: "TAM(Technical Account Manager)을 배정받을 수 있는 지원 플랜은?", a: ["Enterprise", "Business", "Developer", "Basic"], correct: "Enterprise", exp: "가장 높은 수준의 지원 플랜입니다.", h: "대기업(Enterprise) 수준의 지원입니다." },
+        { c: "Security", q: "AWS 리소스 설정을 스캔하여 비용 절감, 성능 향상, 보안 구멍 등을 조언해주는 서비스는?", a: ["Trusted Advisor", "Inspector", "GuardDuty", "Config"], correct: "Trusted Advisor", exp: "AWS 모범 사례를 기반으로 조언을 제공합니다.", h: "신뢰할 수 있는(Trusted) 조언자(Advisor)입니다." },
+        { c: "Technology", q: "데이터 웨어하우징을 위한 페타바이트 규모의 완전 관리형 서비스는?", a: ["Redshift", "RDS", "DynamoDB", "Athena"], correct: "Redshift", exp: "대규모 데이터 분석에 사용됩니다.", h: "빨간색(Red) 로고를 가졌으며 시프트(Shift)합니다." },
+        { c: "Technology", q: "메시지 대기열 서비스로, 시스템 간의 결합을 느슨하게(Decoupling) 만드는 것은?", a: ["SQS", "SNS", "SES", "Kinesis"], correct: "SQS", exp: "Simple Queue Service입니다.", h: "큐(Queue) 서비스입니다." },
+        { c: "Technology", q: "주제(Topic)를 기반으로 메시지를 여러 구독자에게 푸시(Push)하는 서비스는?", a: ["SNS", "SQS", "SES", "Lambda"], correct: "SNS", exp: "Simple Notification Service입니다.", h: "알림(Notification) 서비스입니다." },
+        { c: "Migration", q: "페타바이트 규모의 데이터를 물리적 장치를 통해 AWS로 옮기는 서비스는?", a: ["Snowball", "Direct Connect", "VPN", "Storage Gateway"], correct: "Snowball", exp: "네트워크 대역폭 한계를 극복하기 위한 물리적 이동 장치입니다.", h: "눈덩이(Snowball) 같은 물리적 장비입니다." },
+        { c: "Technology", q: "관리형 데스크톱 서비스(DaaS)는?", a: ["WorkSpaces", "AppStream 2.0", "Connect", "Chime"], correct: "WorkSpaces", exp: "클라우드 기반의 가상 데스크톱을 제공합니다.", h: "작업 공간(Workspace)을 제공합니다." },
+        { c: "Technology", q: "사용자에게 이메일을 발송하는 관리형 서비스는?", a: ["SES", "SNS", "SQS", "Connect"], correct: "SES", exp: "Simple Email Service입니다.", h: "이메일(Email) 서비스입니다." },
+        { c: "Shared Resp", q: "공동 책임 모델에서 '고객 데이터'의 보안 책임은 누구에게 있는가?", a: ["고객", "AWS", "파트너", "정부"], correct: "고객", exp: "AWS는 데이터 내용에 접근하지 않으며, 데이터 보안은 고객 책임입니다.", h: "내 데이터는 내가 지킵니다." },
+        { c: "Shared Resp", q: "공동 책임 모델에서 '폐기된 디스크 드라이브 파쇄' 책임은 누구에게 있는가?", a: ["AWS", "고객", "재활용 업체", "규제 기관"], correct: "AWS", exp: "물리적 인프라 관리는 AWS의 책임입니다.", h: "데이터 센터 내부의 일은 AWS가 합니다." }
+    ];
+
+    const advancedData = [
+        { c: "Architecture", q: "Well-Architected Framework의 6가지 원칙 중 '실수로 인한 실패를 복구하는 능력'은?", a: ["신뢰성(Reliability)", "보안(Security)", "성능 효율성", "비용 최적화"], correct: "신뢰성(Reliability)", exp: "장애 복구 및 중단 없는 서비스 제공 능력입니다.", h: "믿을 수 있는(Reliable) 시스템입니다." },
+        { c: "Architecture", q: "시스템 개발 및 운영을 지속적으로 개선하고 비즈니스 가치를 제공하는 원칙은?", a: ["운영 우수성", "성능 효율성", "신뢰성", "지속 가능성"], correct: "운영 우수성", exp: "코드형 인프라 사용, 실패 예상 등을 포함합니다.", h: "운영(Operational)을 잘하는 것입니다." },
+        { c: "Architecture", q: "환경 영향을 최소화하는 것(에너지 소비 절감 등)과 관련된 원칙은?", a: ["지속 가능성", "비용 최적화", "보안", "신뢰성"], correct: "지속 가능성", exp: "가장 최근에 추가된 6번째 원칙입니다.", h: "지구 환경을 생각합니다." },
+        { c: "Architecture", q: "단일 실패 지점(SPOF)을 제거하기 위해 필요한 아키텍처 개념은?", a: ["고가용성(High Availability)", "수직 확장", "단일 AZ 배포", "긴밀한 결합"], correct: "고가용성(High Availability)", exp: "여러 AZ에 배포하여 하나가 죽어도 서비스가 유지되게 합니다.", h: "항상 가용한(Available) 상태입니다." },
+        { c: "Technology", q: "S3 스토리지 클래스 중 데이터에 즉시 액세스할 필요가 없으며 가장 저렴한 옵션은?", a: ["Glacier Deep Archive", "Glacier Flexible Retrieval", "S3 Standard", "S3 One Zone-IA"], correct: "Glacier Deep Archive", exp: "복원에 12~48시간이 걸리지만 비용이 가장 저렴합니다.", h: "빙하(Glacier) 깊은 곳(Deep)에 보관합니다." },
+        { c: "Technology", q: "S3 객체의 액세스 패턴을 모를 때, 자동으로 계층을 이동시켜 비용을 최적화하는 클래스는?", a: ["Intelligent-Tiering", "Standard-IA", "One Zone-IA", "Glacier"], correct: "Intelligent-Tiering", exp: "모니터링 비용 없이 자동으로 최적화합니다.", h: "똑똑하게(Intelligent) 계층을 나눕니다." },
+        { c: "Technology", q: "파일 시스템 서비스로, 여러 EC2 인스턴스가 동시에 마운트할 수 있는 리눅스 호환 스토리지는?", a: ["EFS", "EBS", "S3", "Fsx for Windows"], correct: "EFS", exp: "Elastic File System은 공유 스토리지입니다.", h: "파일 시스템(File System)입니다." },
+        { c: "Technology", q: "Windows 서버를 위한 완전 관리형 네이티브 파일 시스템은?", a: ["FSx for Windows File Server", "EFS", "S3", "EBS"], correct: "FSx for Windows File Server", exp: "SMB 프로토콜을 지원하는 Windows 전용입니다.", h: "윈도우(Windows)용 파일 서버입니다." },
+        { c: "Database", q: "MySQL, PostgreSQL과 호환되며 속도가 5배/3배 빠른 AWS 자체 고성능 DB는?", a: ["Aurora", "RDS", "DynamoDB", "Redshift"], correct: "Aurora", exp: "고가용성과 성능을 갖춘 관리형 RDB입니다.", h: "오로라(Aurora)처럼 빛나는 성능을 가졌습니다." },
+        { c: "Database", q: "DynamoDB의 읽기 성능을 마이크로초 단위로 높여주는 인메모리 캐시는?", a: ["DAX (DynamoDB Accelerator)", "ElastiCache", "CloudFront", "Global Accelerator"], correct: "DAX (DynamoDB Accelerator)", exp: "코드 변경 없이 성능을 10배 향상시킵니다.", h: "DynamoDB Accelerator의 약자입니다." },
+        { c: "Analytics", q: "S3에 있는 데이터를 별도 로딩 없이 SQL로 바로 쿼리할 수 있는 서비스는?", a: ["Athena", "Redshift", "QuickSight", "Glue"], correct: "Athena", exp: "서버리스 쿼리 서비스입니다.", h: "지혜의 여신 아테나(Athena)처럼 데이터를 분석합니다." },
+        { c: "Analytics", q: "데이터를 시각화하고 비즈니스 인텔리전스(BI) 대시보드를 만드는 서비스는?", a: ["QuickSight", "Athena", "Kinesis", "CloudWatch"], correct: "QuickSight", exp: "그래프, 차트 등을 생성하는 BI 도구입니다.", h: "빠르게 시각화(Sight)합니다." },
+        { c: "Analytics", q: "ETL(추출, 변환, 적재) 작업을 수행하는 완전 관리형 서비스는?", a: ["Glue", "EMR", "Athena", "Data Pipeline"], correct: "Glue", exp: "데이터를 준비하고 로드하는 데 사용됩니다.", h: "데이터를 붙이는 풀(Glue) 역할입니다." },
+        { c: "Analytics", q: "대규모 하둡(Hadoop), 스파크(Spark) 클러스터를 운영할 수 있는 서비스는?", a: ["EMR", "EC2", "Glue", "Redshift"], correct: "EMR", exp: "Elastic MapReduce입니다.", h: "MapReduce 작업을 수행합니다." },
+        { c: "Security", q: "암호화 키를 생성하고 관리하는 서비스는?", a: ["KMS", "Secrets Manager", "IAM", "CloudHSM"], correct: "KMS", exp: "Key Management Service는 데이터 암호화의 핵심입니다.", h: "키(Key) 관리 서비스입니다." },
+        { c: "Security", q: "전용 하드웨어 보안 모듈(HSM)을 클라우드에서 사용하는 서비스는?", a: ["CloudHSM", "KMS", "ACM", "IAM"], correct: "CloudHSM", exp: "규정 준수를 위해 전용 하드웨어가 필요할 때 사용합니다.", h: "클라우드에 있는 HSM입니다." },
+        { c: "Security", q: "DB 자격 증명, API 키 등을 안전하게 저장하고 '자동 교체' 기능을 제공하는 서비스는?", a: ["Secrets Manager", "Systems Manager Parameter Store", "KMS", "IAM"], correct: "Secrets Manager", exp: "Parameter Store와 달리 자동 교체(Rotation) 기능이 특징입니다.", h: "비밀(Secret)을 관리합니다." },
+        { c: "Security", q: "지능형 위협 탐지 서비스로, CloudTrail 로그 등을 분석하여 비정상 행위를 알리는 것은?", a: ["GuardDuty", "Inspector", "Macie", "Shield"], correct: "GuardDuty", exp: "머신러닝을 사용하여 위협을 탐지합니다.", h: "보초(Guard)를 서는 의무(Duty)를 가집니다." },
+        { c: "Security", q: "S3에 저장된 민감한 데이터(PII 등)를 머신러닝으로 식별하고 경고하는 서비스는?", a: ["Macie", "GuardDuty", "Inspector", "Artifact"], correct: "Macie", exp: "개인정보 보호 및 데이터 프라이버시를 위한 서비스입니다.", h: "데이터 프라이버시를 보호합니다." },
+        { c: "Security", q: "EC2 인스턴스의 OS 취약점 및 네트워크 노출을 스캔하는 서비스는?", a: ["Inspector", "GuardDuty", "Trusted Advisor", "Shield"], correct: "Inspector", exp: "자동 보안 평가 서비스입니다.", h: "조사관(Inspector)처럼 취약점을 찾습니다." },
+        { c: "Security", q: "여러 AWS 계정에 대한 싱글 사인온(SSO) 접근을 관리하는 서비스의 최신 명칭은?", a: ["IAM Identity Center", "AWS SSO", "Cognito", "Directory Service"], correct: "IAM Identity Center", exp: "구 AWS SSO입니다.", h: "신원(Identity)의 중심(Center)입니다." },
+        { c: "App Integration", q: "서버리스 워크플로 오케스트레이션 서비스(순서 지정, 상태 관리)는?", a: ["Step Functions", "Lambda", "EventBridge", "SQS"], correct: "Step Functions", exp: "여러 AWS 서비스를 시각적 워크플로로 연결합니다.", h: "단계(Step)별로 함수를 실행합니다." },
+        { c: "App Integration", q: "다양한 소스의 데이터/이벤트를 연결하고 라우팅하는 서버리스 이벤트 버스는?", a: ["EventBridge", "SNS", "SQS", "Step Functions"], correct: "EventBridge", exp: "구 CloudWatch Events의 진화형입니다.", h: "이벤트(Event)를 연결하는 다리(Bridge)입니다." },
+        { c: "Containers", q: "쿠버네티스(Kubernetes)를 AWS에서 관리형으로 실행하는 서비스는?", a: ["EKS", "ECS", "Fargate", "ECR"], correct: "EKS", exp: "Elastic Kubernetes Service입니다.", h: "K는 Kubernetes의 K입니다." },
+        { c: "Containers", q: "컨테이너 이미지를 저장하고 관리하는 레지스트리 서비스는?", a: ["ECR", "Docker Hub", "S3", "EKS"], correct: "ECR", exp: "Elastic Container Registry입니다.", h: "R은 Registry의 R입니다." },
+        { c: "Containers", q: "EC2 인스턴스 관리 없이 컨테이너를 실행할 수 있는 서버리스 엔진은?", a: ["Fargate", "ECS", "EKS", "Lambda"], correct: "Fargate", exp: "ECS와 EKS 모두에서 작동하는 서버리스 컴퓨팅 엔진입니다.", h: "서버 관리 없이 컨테이너만 띄웁니다." },
+        { c: "Networking", q: "인터넷을 통하지 않고 온프레미스와 AWS를 연결하는 전용선 서비스는?", a: ["Direct Connect", "VPN", "Internet Gateway", "Transit Gateway"], correct: "Direct Connect", exp: "보안과 전송 속도가 일정합니다.", h: "직접(Direct) 연결(Connect)합니다." },
+        { c: "Networking", q: "여러 VPC와 온프레미스 네트워크를 단일 허브로 연결하는 서비스는?", a: ["Transit Gateway", "VPC Peering", "Direct Connect", "VPN"], correct: "Transit Gateway", exp: "복잡한 피어링 관계를 단순화합니다.", h: "교통(Transit)의 허브 게이트웨이입니다." },
+        { c: "Networking", q: "프라이빗 서브넷의 인스턴스가 인터넷으로 나갈 수 있게 해주는(들어오는 건 차단) 게이트웨이는?", a: ["NAT Gateway", "Internet Gateway", "Egress-only Gateway", "VPN Gateway"], correct: "NAT Gateway", exp: "IPv4용이며, IPv6는 Egress-only를 사용합니다.", h: "주소 변환(NAT)을 수행합니다." },
+        { c: "Networking", q: "AWS 네트워크 내에서 트래픽을 비공개로 유지하며 AWS 서비스에 연결하는 기술은?", a: ["PrivateLink", "Direct Connect", "VPN", "VPC Peering"], correct: "PrivateLink", exp: "인터넷 게이트웨이 없이 VPC 내에서 서비스에 접근합니다.", h: "비공개(Private) 링크입니다." },
+        { c: "Hybrid", q: "AWS 인프라와 서비스를 고객의 데이터 센터(온프레미스)에 설치해주는 서비스는?", a: ["Outposts", "Local Zones", "Wavelength", "Direct Connect"], correct: "Outposts", exp: "진정한 하이브리드 클라우드 경험을 제공합니다.", h: "전초 기지(Outpost)를 설치합니다." },
+        { c: "Hybrid", q: "5G 네트워크 엣지에서 초저지연 애플리케이션을 실행하게 해주는 서비스는?", a: ["Wavelength", "Local Zones", "Outposts", "CloudFront"], correct: "Wavelength", exp: "통신사 5G 네트워크 내에 AWS 리소스를 배치합니다.", h: "파장(Wavelength)과 5G를 연관지어보세요." },
+        { c: "Migration", q: "서버 마이그레이션 진행 상황을 중앙에서 추적하고 관리하는 서비스는?", a: ["Migration Hub", "Application Discovery Service", "DMS", "SMS"], correct: "Migration Hub", exp: "여러 마이그레이션 도구의 현황을 한곳에서 봅니다.", h: "마이그레이션의 허브(Hub)입니다." },
+        { c: "Migration", q: "온프레미스 서버의 자원 사용량과 의존성을 수집하여 마이그레이션을 돕는 도구는?", a: ["Application Discovery Service", "Migration Hub", "Inspector", "Config"], correct: "Application Discovery Service", exp: "마이그레이션 계획 단계에서 사용합니다.", h: "애플리케이션을 발견(Discovery)합니다." },
+        { c: "Billing", q: "특정 인스턴스 유형이 아닌, '컴퓨팅 사용량($/hr)'을 1~3년 약정하여 EC2, Fargate, Lambda에 적용되는 유연한 할인 모델은?", a: ["Savings Plans", "Reserved Instances", "Spot Instances", "On-Demand"], correct: "Savings Plans", exp: "RI보다 유연하며 최신 할인 모델입니다.", h: "비용을 절약(Savings)하는 계획입니다." },
+        { c: "Billing", q: "비용을 부서, 프로젝트, 환경 별로 분류하기 위해 리소스에 붙이는 메타데이터는?", a: ["Cost Allocation Tags", "IAM Policies", "Resource Groups", "CloudTrail"], correct: "Cost Allocation Tags", exp: "비용 할당 태그를 활성화해야 청구서에서 구분 가능합니다.", h: "태그(Tag)를 붙입니다." },
+        { c: "Compliance", q: "AWS 규정 준수 보고서(ISO, PCI DSS 등)를 다운로드할 수 있는 서비스는?", a: ["Artifact", "Inspector", "Audit Manager", "Config"], correct: "Artifact", exp: "AWS Artifact입니다.", h: "유물(Artifact)처럼 문서를 보관합니다." },
+        { c: "Management", q: "승인된 IT 서비스 제품(EC2, S3 구성 등)을 카탈로그로 만들어 사용자가 배포하게 하는 서비스는?", a: ["Service Catalog", "Marketplace", "Systems Manager", "Config"], correct: "Service Catalog", exp: "조직 내 표준 준수를 돕습니다.", h: "서비스 목록(Catalog)을 제공합니다." },
+        { c: "Management", q: "여러 AWS 계정의 보안 정책을 중앙에서 설정하고 관리하는 '환경 설정' 서비스는?", a: ["Control Tower", "Organizations", "Config", "Trusted Advisor"], correct: "Control Tower", exp: "Landing Zone을 자동으로 설정합니다.", h: "관제탑(Control Tower)에서 전체를 조망합니다." },
+        { c: "Management", q: "EC2 인스턴스나 온프레미스 서버를 에이전트를 통해 패치, 구성 관리하는 서비스는?", a: ["Systems Manager", "OpsWorks", "Config", "CloudWatch"], correct: "Systems Manager", exp: "SSM Agent를 사용합니다.", h: "시스템(System)을 관리(Manager)합니다." },
+        { c: "DevOps", q: "소스 코드 저장소(Git)를 제공하는 서비스는?", a: ["CodeCommit", "CodeBuild", "CodeDeploy", "CodePipeline"], correct: "CodeCommit", exp: "GitHub와 유사한 AWS 관리형 소스 제어 서비스입니다.", h: "코드를 커밋(Commit)합니다." },
+        { c: "DevOps", q: "코드를 컴파일하고 테스트하여 배포 패키지를 만드는 빌드 서비스는?", a: ["CodeBuild", "CodeCommit", "CodeDeploy", "Jenkins"], correct: "CodeBuild", exp: "서버리스 빌드 서비스입니다.", h: "코드를 빌드(Build)합니다." },
+        { c: "DevOps", q: "애플리케이션 배포를 자동화하는 서비스는?", a: ["CodeDeploy", "CodeBuild", "CloudFormation", "OpsWorks"], correct: "CodeDeploy", exp: "EC2, Lambda, 온프레미스 등에 배포합니다.", h: "코드를 배포(Deploy)합니다." },
+        { c: "DevOps", q: "릴리스 파이프라인(빌드-테스트-배포)을 시각화하고 자동화하는 서비스는?", a: ["CodePipeline", "Step Functions", "X-Ray", "CodeStar"], correct: "CodePipeline", exp: "CI/CD 파이프라인을 구축합니다.", h: "파이프라인(Pipeline)을 만듭니다." },
+        { c: "DevOps", q: "분산 애플리케이션의 디버깅 및 트레이싱을 돕는 서비스는?", a: ["X-Ray", "CloudWatch", "CloudTrail", "Inspector"], correct: "X-Ray", exp: "요청이 애플리케이션을 통과하는 경로를 추적합니다.", h: "X-Ray 찍듯이 내부를 들여다봅니다." },
+        { c: "AI/ML", q: "기계 학습 모델을 구축, 훈련, 배포하는 완전 관리형 서비스는?", a: ["SageMaker", "Rekognition", "Polly", "Lex"], correct: "SageMaker", exp: "ML 개발자를 위한 통합 환경입니다.", h: "현자(Sage)가 만드는 것(Maker)입니다." },
+        { c: "AI/ML", q: "이미지 및 비디오 분석(얼굴 인식 등)을 제공하는 AI 서비스는?", a: ["Rekognition", "SageMaker", "Textract", "Polly"], correct: "Rekognition", exp: "시각적 분석 서비스입니다.", h: "인식(Recognition)에서 이름을 따왔습니다." },
+        { c: "AI/ML", q: "텍스트를 음성으로 변환(TTS)해주는 서비스는?", a: ["Polly", "Transcribe", "Lex", "Connect"], correct: "Polly", exp: "Lifelike한 음성을 생성합니다.", h: "앵무새 이름(Polly)입니다." },
+        { c: "AI/ML", q: "음성을 텍스트로 변환(STT)해주는 서비스는?", a: ["Transcribe", "Polly", "Translate", "Comprehend"], correct: "Transcribe", exp: "음성 인식 서비스입니다.", h: "받아적다(Transcribe)라는 뜻입니다." },
+        { c: "Etc", q: "클라우드 마이그레이션을 가속화하기 위해 AWS 파트너와 전문가의 도움을 받는 프로그램은?", a: ["AWS Professional Services", "AWS Support", "TAM", "Marketplace"], correct: "AWS Professional Services", exp: "Global 팀으로, 고객의 클라우드 도입을 돕습니다.", h: "전문가(Professional) 서비스입니다." }
+    ];
+
+    let currentMode = 'standard';
+    let currentQuestions = [];
+    let currentQuestionIndex = 0;
+    let userAnswers = {}; // { index: "Selected Answer" }
+    
+    function shuffleArray(array) {
+        const newArray = [...array];
+        for (let i = newArray.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+        }
+        return newArray;
+    }
+
+    function switchTab(mode) {
+        currentMode = mode;
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        if(mode === 'standard') document.querySelector('.tab-btn:nth-child(1)').classList.add('active');
+        else document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
+        resetQuiz();
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-screen').style.display = 'flex';
+        document.getElementById('result-screen').style.display = 'none';
+
+        const sourceData = currentMode === 'standard' ? standardData : advancedData;
+        
+        // 데이터 준비
+        currentQuestions = shuffleArray(sourceData);
+        // 보기 순서도 미리 섞어둠 (렌더링 시 섞으면 뒤로가기 했을 때 바뀜)
+        currentQuestions.forEach(q => {
+            q.shuffledOptions = shuffleArray(q.a);
+        });
+
+        currentQuestionIndex = 0;
+        userAnswers = {};
+        
+        loadQuestion(0);
+    }
+
+    function loadQuestion(index) {
+        const item = currentQuestions[index];
+        const container = document.getElementById('question-area');
+        
+        // 진행상황 업데이트
+        const total = currentQuestions.length;
+        document.getElementById('progress-text').innerText = `문제 ${index + 1} / ${total}`;
+        document.getElementById('progress-bar').style.width = `${((index + 1) / total) * 100}%`;
+
+        // 버튼 상태 업데이트
+        document.getElementById('prev-btn').disabled = index === 0;
+        const nextBtn = document.getElementById('next-btn');
+        if (index === total - 1) {
+            nextBtn.innerText = "제출 및 채점";
+            nextBtn.onclick = submitQuiz;
+        } else {
+            nextBtn.innerText = "다음";
+            nextBtn.onclick = nextQuestion;
+        }
+
+        // 렌더링
+        let optionsHTML = '';
+        const savedAnswer = userAnswers[index]; // 이전에 선택한 답
+
+        item.shuffledOptions.forEach(opt => {
+            const isChecked = savedAnswer === opt ? 'checked' : '';
+            const isSelectedClass = savedAnswer === opt ? 'selected' : '';
+            optionsHTML += `
+                <label class="${isSelectedClass}" onclick="selectOption(this, '${opt}')">
+                    <input type="radio" name="current_q" value="${opt}" ${isChecked}>
+                    <span>${opt}</span>
+                </label>
+            `;
+        });
+
+        container.innerHTML = `
+            <div class="question-card">
+                <div class="q-meta">
+                    <span class="badge">${item.c}</span>
+                    <button class="hint-btn" onclick="toggleHint()">💡 힌트 보기</button>
+                </div>
+                <div class="q-text">Q${index + 1}. ${item.q}</div>
+                <div class="options">${optionsHTML}</div>
+                <div id="hint-display" class="hint-box">
+                    <strong>Hint:</strong> ${item.h || "힌트가 없는 문제입니다."}
+                </div>
+            </div>
+        `;
+    }
+
+    function selectOption(labelElement, value) {
+        // UI 업데이트
+        document.querySelectorAll('.options label').forEach(lbl => lbl.classList.remove('selected'));
+        labelElement.classList.add('selected');
+        labelElement.querySelector('input').checked = true;
+        
+        // 답안 저장
+        userAnswers[currentQuestionIndex] = value;
+    }
+
+    function toggleHint() {
+        const hintBox = document.getElementById('hint-display');
+        if (hintBox.style.display === 'block') {
+            hintBox.style.display = 'none';
+        } else {
+            hintBox.style.display = 'block';
+        }
+    }
+
+    function nextQuestion() {
+        if (currentQuestionIndex < currentQuestions.length - 1) {
+            currentQuestionIndex++;
+            loadQuestion(currentQuestionIndex);
+        }
+    }
+
+    function prevQuestion() {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            loadQuestion(currentQuestionIndex);
+        }
+    }
+
+    function submitQuiz() {
+        let score = 0;
+        let wrongNotes = [];
+        let total = currentQuestions.length;
+        let unansweredCount = 0;
+
+        currentQuestions.forEach((item, index) => {
+            const myAnswer = userAnswers[index];
+            
+            if (!myAnswer) unansweredCount++;
+
+            if(myAnswer === item.correct) {
+                score++;
+            } else {
+                wrongNotes.push({
+                    q: item.q,
+                    my: myAnswer || "선택 안 함",
+                    correct: item.correct,
+                    exp: item.exp
+                });
+            }
+        });
+
+        if(unansweredCount > 0) {
+            if(!confirm(`아직 풀지 않은 문제가 ${unansweredCount}개 있습니다. 정말 제출하시겠습니까?`)) return;
+        }
+
+        const finalScore = Math.round((score / total) * 100);
+        const passed = finalScore >= 70;
+
+        document.getElementById('quiz-screen').style.display = 'none';
+        document.getElementById('result-screen').style.display = 'block';
+
+        const circle = document.getElementById('score-circle');
+        circle.innerText = `${finalScore}점`;
+        circle.className = `score-circle ${passed ? 'pass' : 'fail'}`;
+
+        document.getElementById('result-msg').innerHTML = passed 
+            ? "축하합니다! 합격 안정권입니다. 🎉" 
+            : `불합격입니다. ${total - score}문제를 더 맞혀야 합니다. 💪`;
+
+        const wrongContainer = document.getElementById('wrong-note-container');
+        const wrongList = document.getElementById('wrong-list');
+        wrongList.innerHTML = '';
+
+        if(wrongNotes.length > 0) {
+            wrongContainer.style.display = 'block';
+            wrongNotes.forEach((note, idx) => {
+                const div = document.createElement('div');
+                div.className = 'note-item';
+                div.innerHTML = `
+                    <strong>Q. ${note.q}</strong><br>
+                    <span style="color:#d13212; text-decoration:line-through">내 답: ${note.my}</span><br>
+                    <span style="color:#1d8102; font-weight:bold">정답: ${note.correct}</span>
+                    <div class="explanation">💡 <b>해설:</b> ${note.exp}</div>
+                `;
+                wrongList.appendChild(div);
+            });
+        } else {
+            wrongContainer.style.display = 'none';
+        }
+    }
+
+    function copyWrongNotes() {
+        const list = document.getElementById('wrong-list');
+        if(!list.innerText) return;
+        let textToCopy = `[AWS CLF-C02 오답노트 (${currentMode})]\n\n`;
+        list.querySelectorAll('.note-item').forEach((item, idx) => {
+            const q = item.querySelector('strong').innerText;
+            const correct = item.querySelector('span:nth-of-type(2)').innerText;
+            const exp = item.querySelector('.explanation').innerText;
+            textToCopy += `${idx+1}. ${q}\n${correct}\n${exp}\n\n`;
+        });
+        navigator.clipboard.writeText(textToCopy).then(() => alert("오답노트 복사 완료!"));
+    }
+
+    // 초기 실행
+    window.onload = resetQuiz;
+</script>
+</body>
+</html>
