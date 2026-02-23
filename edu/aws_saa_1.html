@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS SAA 실전 문제풀이 (상세해설/핵심노트)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+        body { font-family: 'Noto Sans KR', sans-serif; }
+        
+        .option-label { cursor: pointer; transition: all 0.2s; border: 2px solid transparent; }
+        .option-label:hover { background-color: #f3f4f6; }
+        
+        /* 기본 선택 상태 */
+        .option-input:checked + .option-content-wrapper { background-color: #eff6ff; border-color: #3b82f6; }
+        .option-label.selected { border-color: #3b82f6; background-color: #eff6ff; }
+
+        /* 정답 확인 후 스타일 */
+        .correct-answer { border-color: #10b981 !important; background-color: #d1fae5 !important; } /* 초록색 */
+        .wrong-answer { border-color: #ef4444 !important; background-color: #fee2e2 !important; }   /* 빨간색 */
+        .missed-answer { border-color: #10b981 !important; border-style: dashed !important; }       /* 정답인데 선택 안함 (점선) */
+        
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen text-gray-800">
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2 cursor-pointer" onclick="location.reload()">
+                <i class="fab fa-aws text-yellow-500 text-3xl"></i>
+                <h1 class="text-xl font-bold text-gray-800 hidden sm:block">AWS SAA Practice</h1>
+                <h1 class="text-xl font-bold text-gray-800 sm:hidden">AWS SAA</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="text-sm font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+                    <span id="current-score">0</span> / <span id="total-count">30</span> 정답
+                </div>
+                <div class="text-sm font-medium text-gray-500" id="progress-text">1 / 30</div>
+            </div>
+        </div>
+        <div class="h-1 bg-gray-200 w-full">
+            <div id="progress-bar" class="h-1 bg-yellow-500 w-0 transition-all duration-300"></div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 py-8">
+        
+        <!-- Start Screen -->
+        <div id="screen-start" class="bg-white rounded-xl shadow-lg p-8 text-center fade-in">
+            <div class="mb-6">
+                <i class="fas fa-clipboard-check text-6xl text-indigo-500 mb-4"></i>
+                <h2 class="text-2xl font-bold mb-2">실전 문제풀이 및 핵심분석</h2>
+                <p class="text-gray-600">문제 풀이 방식 선택</p>
+            </div>
+
+            <!-- Mode Selection -->
+            <div class="max-w-md mx-auto mb-8 bg-gray-50 p-6 rounded-xl border border-gray-200">
+                <h3 class="text-left text-sm font-bold text-gray-500 mb-4 uppercase">Mode Selection</h3>
+                
+                <label class="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer bg-white hover:bg-gray-50 mb-3 transition">
+                    <input type="radio" name="quizMode" value="normal" class="w-5 h-5 text-blue-600 focus:ring-blue-500" checked>
+                    <div class="ml-3 text-left">
+                        <span class="block font-bold text-gray-800">일반 모드 (순서대로)</span>
+                        <span class="block text-sm text-gray-500">PDF 원본 순서대로 학습합니다.</span>
+                    </div>
+                </label>
+
+                <label class="flex items-center p-3 border border-purple-300 rounded-lg cursor-pointer bg-purple-50 hover:bg-purple-100 transition ring-2 ring-transparent focus-within:ring-purple-500">
+                    <input type="radio" name="quizMode" value="random" class="w-5 h-5 text-purple-600 focus:ring-purple-500">
+                    <div class="ml-3 text-left">
+                        <span class="block font-bold text-purple-800"><i class="fas fa-shuffle mr-1"></i> 랜덤 모드 (완전 셔플)</span>
+                        <span class="block text-sm text-purple-600">문제와 보기 순서가 무작위로 섞입니다.</span>
+                    </div>
+                </label>
+            </div>
+            
+            <div class="bg-indigo-50 p-4 rounded-lg text-left mb-6 text-sm text-indigo-800 border border-indigo-200">
+                <h3 class="font-bold mb-1"><i class="fas fa-star"></i> 기능 안내</h3>
+                <ul class="list-disc pl-5 space-y-1">
+                    <li><strong>상세 해설:</strong> 정답 이유와 오답 이유를 모두 제공합니다.</li>
+                    <li><strong>핵심 노트:</strong> 풀이 후 모든 문제의 핵심 개념을 요약하여 볼 수 있습니다.</li>
+                    <li><strong>즉시 피드백:</strong> 한 문제를 풀 때마다 바로 결과를 확인합니다.</li>
+                </ul>
+            </div>
+
+            <button onclick="startQuiz()" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow transition transform hover:scale-105">
+                학습 시작
+            </button>
+            <div class="mt-4">
+                <button onclick="resetHistory()" class="text-xs text-gray-400 underline hover:text-gray-600">기존 기록 초기화</button>
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="screen-quiz" class="hidden fade-in">
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="p-6 border-b border-gray-100">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="flex gap-2">
+                            <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">Q. <span id="q-seq-num">1</span></span>
+                            <span class="inline-block bg-gray-100 text-gray-500 text-xs font-mono px-2 py-0.5 rounded">ID: <span id="q-original-id">01</span></span>
+                        </div>
+                        <div id="status-badge"></div> 
+                    </div>
+                    <h3 id="q-text" class="text-lg font-medium leading-relaxed text-gray-800">문제 내용...</h3>
+                    <p id="q-instruction" class="text-sm text-red-500 mt-2 font-bold hidden">* 2개를 선택하십시오.</p>
+                </div>
+                
+                <div id="q-options" class="p-6 space-y-3">
+                    <!-- Options generated by JS -->
+                </div>
+
+                <!-- Feedback Section -->
+                <div id="feedback-area" class="hidden bg-gray-50 p-6 border-t border-gray-200">
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-check-circle text-green-600 mr-2 text-xl" id="feedback-icon"></i>
+                        <span class="font-bold text-lg" id="feedback-title">정답입니다!</span>
+                    </div>
+                    <div class="bg-white p-4 rounded border border-gray-200 text-sm leading-relaxed" id="feedback-content">
+                        <!-- Detailed Note Goes Here -->
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 p-4 flex justify-between items-center border-t border-gray-100">
+                    <button onclick="prevQuestion()" id="btn-prev" class="text-gray-500 hover:text-gray-700 font-medium px-4 py-2 rounded disabled:opacity-50">
+                        <i class="fas fa-arrow-left mr-1"></i> 이전
+                    </button>
+                    
+                    <div>
+                        <button onclick="checkAnswer()" id="btn-check" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded shadow transition">
+                            정답 확인 <i class="fas fa-search ml-1"></i>
+                        </button>
+                        
+                        <button onclick="nextQuestion()" id="btn-next" class="hidden bg-gray-800 hover:bg-gray-900 text-white font-bold py-2 px-6 rounded shadow transition">
+                            다음 문제 <i class="fas fa-arrow-right ml-1"></i>
+                        </button>
+
+                        <button onclick="finishQuiz()" id="btn-finish" class="hidden bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded shadow transition">
+                            결과 보기 <i class="fas fa-flag-checkered ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="screen-result" class="hidden fade-in">
+            <div class="bg-white rounded-xl shadow-lg p-8 text-center mb-6">
+                <div id="score-icon" class="mb-4 text-5xl"></div>
+                <h2 class="text-3xl font-bold mb-2">학습 완료!</h2>
+                <div class="flex justify-center items-end gap-2 mb-6">
+                    <span class="text-gray-600 text-lg">최종 점수:</span>
+                    <span id="score-text" class="text-4xl font-extrabold text-blue-600">0</span>
+                    <span class="text-gray-400 text-xl">/ 100</span>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row justify-center gap-3">
+                    <button onclick="showSection('screen-review')" class="bg-white border-2 border-red-500 text-red-500 hover:bg-red-50 font-bold py-3 px-6 rounded-lg transition">
+                        <i class="fas fa-book-open mr-2"></i> 오답 노트 (상세해설)
+                    </button>
+                    <button onclick="showSection('screen-core')" class="bg-white border-2 border-indigo-500 text-indigo-600 hover:bg-indigo-50 font-bold py-3 px-6 rounded-lg transition">
+                        <i class="fas fa-lightbulb mr-2"></i> 핵심 개념 노트
+                    </button>
+                    <button onclick="location.reload()" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg transition">
+                        <i class="fas fa-redo mr-2"></i> 홈으로
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Review Note -->
+        <div id="screen-review" class="hidden fade-in">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-gray-800"><i class="fas fa-times-circle text-red-500 mr-2"></i>오답 노트 & 상세 해설</h2>
+                <button onclick="showSection('screen-result')" class="text-blue-600 hover:underline">결과 화면으로</button>
+            </div>
+            <div id="review-list" class="space-y-6"></div>
+        </div>
+
+        <!-- Core Concept Note -->
+        <div id="screen-core" class="hidden fade-in">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-indigo-800"><i class="fas fa-lightbulb text-yellow-500 mr-2"></i>핵심 개념 노트</h2>
+                <button onclick="showSection('screen-result')" class="text-blue-600 hover:underline">결과 화면으로</button>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="bg-indigo-50 px-6 py-4 border-b border-indigo-100">
+                    <p class="text-indigo-800 text-sm">이번 시험에 출제된 주요 AWS 서비스와 핵심 아키텍처 패턴입니다.</p>
+                </div>
+                <div id="core-list" class="divide-y divide-gray-100">
+                    <!-- Core items generated by JS -->
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // --- SOURCE DATA (Enhanced with Concepts & Detailed Explanation) ---
+        const sourceQuizData = [
+            {
+                id: 1,
+                question: "회사에 데이터를 수집하여 온프레미스 NFS 서버에 저장하는 온프레미스 애플리케이션이 있습니다. 이 회사는 최근 10Gbps AWS Direct Connect 연결을 설정했습니다. 회사의 구내 스토리지 용량이 부족합니다. 회사는 온프레미스 애플리케이션의 데이터에 대한 짧은 지연 시간 액세스를 유지하면서 애플리케이션 데이터를 온프레미스에서 AWS 클라우드로 마이그레이션해야 합니다. 이러한 요구 사항을 충족하기 위해 솔루션 설계자는 무엇을 해야 합니까?",
+                options: [
+                    "A. 애플리케이션 데이터용 AWS Storage Gateway를 배포하고 파일 게이트웨이를 사용하여 Amazon S3에 데이터를 저장합니다. NFS를 사용하여 온프레미스 애플리케이션 서버를 파일 게이트웨이에 연결합니다.",
+                    "B. Amazon Elastic File System(Amazon EFS) 파일 시스템을 NFS 서버에 연결하고 애플리케이션 데이터를 EFS 파일 시스템에 복사합니다. 그런 다음 온프레미스 애플리케이션을 Amazon EFS에 연결합니다.",
+                    "C. AWS Storage Gateway를 볼륨 게이트웨이로 구성합니다. NFS 서버의 온프레미스 애플리케이션과 Amazon Elastic Block Store(Amazon EBS) 스냅샷을 통해 애플리케이션 데이터를 사용할 수 있도록 합니다.",
+                    "D. NFS 서버를 소스 위치로, Amazon Elastic File System (Amazon EFS) 파일 시스템을 애플리케이션 데이터 전송 대상으로 사용하여 AWS DataSync 에이전트를 생성합니다. 온프레미스 애플리케이션을 EFS 파일 시스템에 연결합니다."
+                ],
+                answer: "A",
+                concept: "AWS Storage Gateway (File Gateway)",
+                note: `
+                    <div class='space-y-2'>
+                        <div>
+                            <strong class='text-green-600'>✅ 정답 분석 (A):</strong>
+                            <p class='text-gray-700 ml-2'><strong>File Gateway</strong>는 온프레미스 애플리케이션이 <strong>NFS</strong> 또는 SMB 프로토콜을 사용하여 S3에 객체로 데이터를 저장할 수 있게 해줍니다. 또한, 자주 액세스하는 데이터를 로컬에 <strong>캐싱</strong>하여 '짧은 지연 시간' 요구사항을 충족합니다.</p>
+                        </div>
+                        <div class='mt-2'>
+                            <strong class='text-red-500'>❌ 오답 분석:</strong>
+                            <ul class='list-disc pl-5 text-gray-600 text-sm mt-1'>
+                                <li><strong>B:</strong> EFS는 AWS 클라우드 내의 관리형 파일 시스템입니다. 온프레미스에서 Direct Connect로 연결할 수는 있지만, 별도의 로컬 캐싱 메커니즘 없이는 File Gateway만큼 효율적인 저지연 액세스를 제공하기 어렵습니다.</li>
+                                <li><strong>C:</strong> Volume Gateway는 iSCSI(블록 스토리지)를 제공합니다. 문제에서는 NFS(파일 스토리지)를 요구하고 있습니다.</li>
+                                <li><strong>D:</strong> DataSync는 데이터 전송 도구입니다. 지속적인 하이브리드 스토리지 액세스 및 로컬 캐싱을 제공하는 Gateway 서비스가 아닙니다.</li>
+                            </ul>
+                        </div>
+                    </div>`
+            },
+            {
+                id: 2,
+                question: "게임 회사는 AWS에서 브라우저 기반 애플리케이션을 호스팅합니다. 애플리케이션 사용자는 Amazon S3에 저장된 많은 수의 비디오와 이미지를 소비합니다. 이 콘텐츠는 모든 사용자에게 동일합니다. 응용 프로그램의 인기가 높아졌으며 전 세계 수백만 명의 사용자가 이러한 미디어 파일에 액세스하고 있습니다. 회사는 원본의 부하를 줄이면서 사용자에게 파일을 제공하고자 합니다. 어떤 솔루션이 이러한 요구 사항을 가장 비용 효율적으로 충족합니까?",
+                options: [
+                    "A. 웹 서버 앞에 AWS Global Accelerator 액셀러레이터 배포",
+                    "B. S3 버킷 앞에 Amazon CloudFront 웹 배포 배포",
+                    "C. 웹 서버 앞에 Amazon ElastiCache for Redis 인스턴스 배포",
+                    "D. 웹 서버 앞에 Amazon ElastiCache for Memcached 인스턴스 배포"
+                ],
+                answer: "B",
+                concept: "Amazon CloudFront (CDN)",
+                note: `
+                    <div class='space-y-2'>
+                        <div>
+                            <strong class='text-green-600'>✅ 정답 분석 (B):</strong>
+                            <p class='text-gray-700 ml-2'><strong>CloudFront</strong>는 전 세계 엣지 로케이션을 통해 정적 콘텐츠(이미지, 비디오)를 캐싱하여 제공합니다. 이는 S3 오리진의 부하를 줄이고 사용자에게 가장 낮은 지연 시간을 제공하는 가장 비용 효율적인 방법입니다.</p>
+                        </div>
+                        <div class='mt-2'>
+                            <strong class='text-red-500'>❌ 오답 분석:</strong>
+                            <ul class='list-disc pl-5 text-gray-600 text-sm mt-1'>
+                                <li><strong>A:</strong> Global Accelerator는 게임의 UDP 트래픽이나 비 HTTP 트래픽의 네트워크 경로 최적화에 좋지만, S3 콘텐츠 캐싱(부하 분산) 기능은 없습니다.</li>
+                                <li><strong>C, D:</strong> ElastiCache는 데이터베이스 쿼리 캐싱 등에 사용되는 인메모리 스토리지입니다. S3에 저장된 대용량 미디어 파일 배포용으로는 적합하지 않습니다.</li>
+                            </ul>
+                        </div>
+                    </div>`
+            },
+            {
+                id: 3,
+                question: "대기업의 관리자가 회사의 AWS 계정에 대한 암호 화폐 관련 공격을 모니터링 하고 방지하려고 합니다. 관리자가 공격으로부터 회사를 보호하기 위해 사용할 수 있는 AWS 서비스는 무엇입니까?",
+                options: [
+                    "A. Amazon Cognito",
+                    "B. Amazon GuardDuty",
+                    "C. Amazon Inspector",
+                    "D. Amazon Macie"
+                ],
+                answer: "B",
+                concept: "Amazon GuardDuty (위협 탐지)",
+                note: `
+                    <div class='space-y-2'>
+                        <div>
+                            <strong class='text-green-600'>✅ 정답 분석 (B):</strong>
+                            <p class='text-gray-700 ml-2'><strong>Amazon GuardDuty</strong>는 지능형 위협 탐지 서비스로, CloudTrail 로그, VPC Flow Logs 등을 분석하여 암호 화폐 채굴, 승인되지 않은 접근 등의 악의적 활동을 탐지합니다.</p>
+                        </div>
+                        <div class='mt-2'>
+                            <strong class='text-red-500'>❌ 오답 분석:</strong>
+                            <ul class='list-disc pl-5 text-gray-600 text-sm mt-1'>
+                                <li><strong>A:</strong> Cognito는 사용자 인증 및 권한 부여 서비스입니다.</li>
+                                <li><strong>C:</strong> Inspector는 EC2 인스턴스의 취약점(CVE)을 스캔하는 서비스입니다.</li>
+                                <li><strong>D:</strong> Macie는 S3에 저장된 민감한 데이터(PII 등)를 식별하고 보호하는 서비스입니다.</li>
+                            </ul>
+                        </div>
+                    </div>`
+            },
+            {
+                id: 4,
+                question: "솔루션 설계자는 Amazon S3 오리진과 함께 Amazon CloudFront를 사용하여 정적 웹 사이트를 저장하는 솔루션을 설계해야 합니다. 회사의 보안 정책에 따라 모든 웹 사이트 트래픽은 AWS WAF에서 검사해야 합니다. 솔루션 설계자는 이러한 요구 사항을 어떻게 준수해야 합니까?",
+                options: [
+                    "A. AWS WAF Amazon 리소스 이름(ARN)에서 오는 요청만 수락하도록 S3 버킷 정책을 구성",
+                    "B. S3 오리진에서 콘텐츠를 요청하기 전에 수신되는 모든 요청을 AWS WAF로 전달하도록 Amazon CloudFront를 구성합니다.",
+                    "C. Amazon CloudFront IP 주소가 Amazon S3에만 액세스하도록 허용하는 보안 그룹을 구성합니다. AWS WAF를 CloudFront에 연결합니다.",
+                    "D. 원본 액세스 ID(OAI)를 사용하여 S3 버킷에 대한 액세스를 제한하도록 Amazon CloudFront 및 Amazon S3 구성. 배포에서 AWS WAF 활성화"
+                ],
+                answer: "D",
+                concept: "CloudFront OAI & WAF Integration",
+                note: `
+                    <div class='space-y-2'>
+                        <div>
+                            <strong class='text-green-600'>✅ 정답 분석 (D):</strong>
+                            <p class='text-gray-700 ml-2'>S3에 대한 직접 접근을 막고 CloudFront를 통해서만 접근하게 하려면 <strong>OAI(Origin Access Identity)</strong>를 사용해야 합니다. 그리고 <strong>WAF</strong>는 CloudFront 배포에 연결(Association)하여 트래픽을 검사합니다. (최근에는 OAI 대신 OAC도 사용되지만, 문제 문맥상 OAI가 정답입니다.)</p>
+                        </div>
+                        <div class='mt-2'>
+                            <strong class='text-red-500'>❌ 오답 분석:</strong>
+                            <ul class='list-disc pl-5 text-gray-600 text-sm mt-1'>
+                                <li><strong>A:</strong> S3 버킷 정책에서 WAF를 직접 조건으로 걸 수 없습니다. WAF는 CloudFront나 ALB 레벨에서 동작합니다.</li>
+                                <li><strong>C:</strong> S3는 보안 그룹을 사용하지 않습니다(버킷 정책 사용).</li>
+                            </ul>
+                        </div>
+                    </div>`
+            },
+            {
+                id: 5,
+                question: "한 회사는 최근 AWS Direct Connect를 사용하여 하이브리드 클라우드 연결을 구현했으며 데이터를 Amazon S3로 마이그레이션하고 있습니다. 이 회사는 온프레미스 스토리지 시스템과 AWS 스토리지 서비스 간의 데이터 복제를 자동화하고 가속화하는 완전 관리형 솔루션을 찾고 있습니다. 솔루션 설계자는 데이터를 비공개로 유지하기 위해 어떤 솔루션을 권장해야 합니까?",
+                options: [
+                    "A. 온프레미스 환경용 AWS DataSync 에이전트 배포 데이터를 복제하고 AWS 서비스 엔드포인트와 연결하도록 동기화 작업을 구성합니다.",
+                    "B. 온프레미스 환경을 위한 AWS DataSync 에이전트를 배포합니다. 특정 시점 스냅샷을 AWS에 복제하도록 배치 작업을 예약합니다.",
+                    "C. 온프레미스 환경을 위한 AWS Storage Gateway 볼륨 게이트웨이를 배포합니다. 데이터를 로컬에 저장하도록 구성하고 특정 시점 스냅샷을 AWS에 비동기식으로 백업합니다.",
+                    "D. 온프레미스 환경용 AWS Storage Gateway 파일 게이트웨이 배포 데이터를 로컬에 저장하고 시점 스냅샷을 AWS에 비동기식으로 백업하도록 구성합니다."
+                ],
+                answer: "A",
+                concept: "AWS DataSync",
+                note: `
+                    <div class='space-y-2'>
+                        <div>
+                            <strong class='text-green-600'>✅ 정답 분석 (A):</strong>
+                            <p class='text-gray-700 ml-2'><strong>AWS DataSync</strong>는 온프레미스와 AWS 스토리지 간의 대용량 데이터 전송을 자동화하고 가속화하는 서비스입니다. Direct Connect를 통해 프라이빗하게 데이터를 전송할 수 있습니다.</p>
+                        </div>
+                        <div class='mt-2'>
+                            <strong class='text-red-500'>❌ 오답 분석:</strong>
+                            <ul class='list-disc pl-5 text-gray-600 text-sm mt-1'>
+                                <li><strong>C, D:</strong> Storage Gateway는 '하이브리드 액세스'가 주 목적이며, 대량 마이그레이션/복제 가속화가 주 목적일 때는 DataSync가 더 효율적입니다. 문제의 핵심은 '데이터 복제 자동화 및 가속화'입니다.</li>
+                            </ul>
+                        </div>
+                    </div>`
+            },
+            {
+                id: 6,
+                question: "최근에 만든 스타트업이 3계층 웹 애플리케이션을 구축했습니다. 프론트 엔드는 정적 콘텐츠를 가집니다. 응용 프로그램 계층은 마이크로서비스를 기반으로 합니다. 사용자 데이터는 짧은 대기 시간으로 액세스해야 하는 JSON 문서로 저장됩니다. 회사는 첫 해 동안 매달 새로운 기능을 공개할 때 트래픽이 최고조에 달하는 정기적인 트래픽 발생을 예상합니다. 시작 팀은 운영 오버헤드 비용을 최소화해야 합니다. 이를 달성하기 위해 솔루션 설계자는 무엇을 권장해야 합니까?",
+                options: [
+                    "A. Amazon S3 정적 웹 사이트 호스팅을 사용하여 프런트 엔드 저장 및 서비스. AWS Elastic Beanstalk를 애플리케이션 계층에 사용. Amazon DynamoDB를 사용하여 사용자 데이터 저장",
+                    "B. Amazon S3 정적 웹 사이트 호스팅을 사용하여 프런트 엔드 저장 및 서비스. Amazon Elastic Kubernetes Service 사용. 애플리케이션 계층에 Amazon EKS 사용. 사용자 데이터 저장에 Amazon DynamoDB 사용",
+                    "C. Amazon S3 정적 웹 사이트 호스팅을 사용하여 프런트 엔드 저장 및 제공. 애플리케이션 계층에 Amazon API Gateway 및 AWS Lambda 함수 사용. Amazon DynamoDB를 사용하여 사용자 데이터 저장",
+                    "D. Amazon S3 정적 웹 사이트 호스팅을 사용하여 프런트 엔드 저장 및 제공. 애플리케이션 계층에 Amazon API Gateway 및 AWS Lambda 함수 사용. 읽기 전용 복제본과 함께 Amazon RDS를 사용하여 사용자 데이터 저장"
+                ],
+                answer: "C",
+                concept: "Serverless Architecture (S3, Lambda, DynamoDB)",
+                note: `
+                    <div class='space-y-2'>
+                        <div>
+                            <strong class='text-green-600'>✅ 정답 분석 (C):</strong>
+                            <p class='text-gray-700 ml-2'><strong>서버리스 아키텍처</strong>는 운영 오버헤드를 최소화하는 가장 좋은 방법입니다. 
+                            <br>- 프론트엔드: S3 정적 호스팅
+                            <br>- 앱 계층: API Gateway + Lambda (서버 관리 불필요)
+                            <br>- 데이터: DynamoDB (JSON 문서 저장에 최적화, 관리형 NoSQL)</p>
+                        </div>
+                        <div class='mt-2'>
+                            <strong class='text-red-500'>❌ 오답 분석:</strong>
+                            <ul class='list-disc pl-5 text-gray-600 text-sm mt-1'>
+                                <li><strong>A:</strong> Elastic Beanstalk는 서버(EC2)를 프로비저닝하므로 Lambda보다 관리 요소가 더 있습니다.</li>
+                                <li><strong>B:</strong> EKS(Kubernetes)는 관리 복잡도가 매우 높습니다.</li>
+                                <li><strong>D:</strong> JSON 데이터 저장에는 RDS보다 DynamoDB가 더 적합하며, RDS는 관계형 DB 관리가 필요합니다.</li>
+                            </ul>
+                        </div>
+                    </div>`
+            },
+            {
+                id: 7,
+                question: "회사에 프로덕션 AWS 계정에 기밀 정보가 포함된 Amazon S3 버킷이 있습니다. 회사는 해당 계정에 대해 AWS CloudTrail을 설정했습니다. 계정은 로그 사본을 Amazon CloudWatch Logs로 보냅니다. 회사는 읽기 및 쓰기 데이터 이벤트를 기록하도록 S3 버킷을 구성했습니다. 회사 감사자가 S3 버킷의 일부 객체가 삭제되었음을 발견했습니다. 솔루션 설계자는 감사자에게 객체를 삭제한 사람에 대한 정보를 제공해야 합니다. 솔루션 설계자는 이 정보를 제공하기 위해 무엇을 해야 합니까?",
+                options: [
+                    "A. CloudWatch Logs 필터를 생성하여 S3 버킷에 대한 S3 쓰기 API 호출을 추출",
+                    "B. Amazon Athena로 CloudTrail Logs를 쿼리하여 S3 버킷에 대한 S3 쓰기 API 호출을 식별",
+                    "C. AWS Trusted Advisor를 사용하여 콘텐츠를 삭제한 S3 쓰기 API 호출에 대한 보안 검사 수행",
+                    "D. AWS Config를 사용하여 S3 버킷의 구성 변경 추적 이 세부 정보를 사용하여 콘텐츠를 삭제한 S3 쓰기 API 호출 추적"
+                ],
+                answer: "B",
+                concept: "Amazon Athena & CloudTrail Analysis",
+                note: `
+                    <div class='space-y-2'>
+                        <div>
+                            <strong class='text-green-600'>✅ 정답 분석 (B):</strong>
+                            <p class='text-gray-700 ml-2'><strong>Amazon Athena</strong>는 S3에 저장된 CloudTrail 로그와 같은 대량의 데이터를 표준 SQL을 사용하여 간편하게 쿼리하고 분석할 수 있는 서비스입니다. 특정 객체 삭제 이벤트를 찾기에 가장 효율적입니다.</p>
+                        </div>
+                        <div class='mt-2'>
+                            <strong class='text-red-500'>❌ 오답 분석:</strong>
+                            <ul class='list-disc pl-5 text-gray-600 text-sm mt-1'>
+                                <li><strong>A:</strong> CloudWatch Logs 필터는 실시간 모니터링엔 좋지만, 대량의 과거 로그 분석에는 Athena보다 불편하고 제한적일 수 있습니다.</li>
+                                <li><strong>D:</strong> AWS Config는 리소스의 '설정(Configuration)' 변경을 추적하는 것이지, 데이터(객체) 삭제 이벤트를 추적하는 도구가 아닙니다.</li>
+                            </ul>
+                        </div>
+                    </div>`
+            },
+            {
+                id: 8,
+                question: "회사는 대규모 Amazon EC2 인스턴스 집합에서 애플리케이션을 실행합니다. 애플리케이션은 Amazon DynamoDB 테이블에 항목을 읽고 씁니다. DynamoDB 테이블의 크기는 계속 증가하지만 애플리케이션은 지난 30일 동안의 데이터만 필요합니다. 회사는 비용과 개발 노력을 최소화하는 솔루션이 필요합니다. 이 요구 사항을 충족하는 솔루션은?",
+                options: [
+                    "A. AWS CloudFormation 템플릿을 사용하여 전체 솔루션 배포 30일마다 Cloud Formation 스택을 재배포하고 원본 스택 삭제",
+                    "B. AWS Marketplace에서 모니터링 애플리케이션을 실행하는 EC2 인스턴스 사용 Amazon DynamoDB 스트림을 사용하여 테이블에 새 항목이 생성될 때 타임스탬프를 저장하도록 모니터링 애플리케이션 구성 EC2 인스턴스에서 실행되는 스크립트를 사용하여 30일보다 오래된 타임스탬프가 있는 항목 삭제",
+                    "C. 테이블에 새 항목이 생성될 때 AWS Lambda 함수를 호출하도록 Amazon DynamoDB Streams 구성 테이블에서 30일보다 오래된 항목을 삭제하도록 Lambda 함수 구성",
+                    "D. 현재 타임스탬프 값에 30일을 더한 속성을 테이블에 생성된 각각의 새 항목에 추가하도록 애플리케이션을 확장. 이 속성을 TTL 속성으로 사용하도록 DynamoDB를 구성"
+                ],
+                answer: "D",
+                concept: "DynamoDB TTL (Time To Live)",
+                note: `
+                    <div class='space-y-2'>
+                        <div>
+                            <strong class='text-green-600'>✅ 정답 분석 (D):</strong>
+                            <p class='text-gray-700 ml-2'><strong>DynamoDB TTL(Time To Live)</strong> 기능을 사용하면, 특정 속성(타임스탬프)을 기준으로 만료된 항목을 AWS가 자동으로 삭제해 줍니다. 이는 추가 비용이 들지 않으며, 별도의 삭제 로직을 개발할 필요가 없어 개발 노력을 최소화합니다.</p>
+                        </div>
+                        <div class='mt-2'>
+                            <strong class='text-red-500'>❌ 오답 분석:</strong>
+                            <ul class='list-disc pl-5 text-gray-600 text-sm mt-1'>
+                                <li><strong>B, C:</strong> 별도의 컴퓨팅 리소스(EC2, Lambda)와 로직이 필요하여 개발 및 운영 비용이 증가합니다.</li>
+                                <li><strong>A:</strong> 스택 전체를 재배포하는 것은 데이터 지속성 관리 측면에서 매우 비효율적이고 위험합니다.</li>
+                            </ul>
+                        </div>
+                    </div>`
+            },
+            {
+                id: 9,
+                question: "회사는 활성화된 컴퓨팅 리소스가 없는 작은 데이터 클로짓(small room) 내의 지사에서 애플리케이션을 실행합니다. 애플리케이션 데이터는 NFS 볼륨에 저장됩니다. 규정 준수 표준은 NFS 볼륨의 매일 오프사이트 백업을 요구합니다. 어떤 솔루션이 이러한 요구 사항을 충족합니까?",
+                options: [
+                    "A. 데이터를 Amazon S3에 복제하기 위해 온프레미스에 AWS Storage Gateway 게이트웨이를 설치합니다.",
+                    "B. AWS Storage Gateway 파일 게이트웨이 하드웨어 어플라이언스를 온프레미스에 설치하여 Amazon S3에 데이터를 복제합니다.",
+                    "C. 데이터를 Amazon S3에 복제하기 위해 온프레미스에 볼륨이 저장된 AWS Storage Gateway 볼륨 게이트웨이를 설치합니다.",
+                    "D. 데이터를 Amazon S3에 복제하기 위해 온프레미스에 캐시된 볼륨이 있는 AWS Storage Gateway 볼륨 게이트웨이를 설치합니다."
+                ],
+                answer: "B",
+                concept: "AWS Storage Gateway Hardware Appliance",
+                note: `
+                    <div class='space-y-2'>
+                        <div>
+                            <strong class='text-green-600'>✅ 정답 분석 (B):</strong>
+                            <p class='text-gray-700 ml-2'>문제에서 <strong>'활성화된 컴퓨팅 리소스가 없다'</strong>고 했습니다. 즉, VM(가상머신)을 띄울 서버가 없다는 뜻입니다. 따라서 물리적인 <strong>하드웨어 어플라이언스</strong> 형태의 Storage Gateway를 설치해야 합니다. NFS를 사용하므로 <strong>파일 게이트웨이</strong>가 적합합니다.</p>
+                        </div>
+                        <div class='mt-2'>
+                            <strong class='text-red-500'>❌ 오답 분석:</strong>
+                            <ul class='list-disc pl-5 text-gray-600 text-sm mt-1'>
+                                <li><strong>A, C, D:</strong> 이 옵션들은 가상 어플라이언스(VMware/Hyper-V 등)를 설치하는 것을 암시하는데, 컴퓨팅 리소스가 없으므로 불가능합니다.</li>
+                            </ul>
+                        </div>
+                    </div>`
+            },
+            {
+                id: 10,
+                question: "회사는 의료 애플리케이션의 데이터를 저장해야 합니다. 애플리케이션의 데이터는 자주 변경됩니다. 새로운 규정은 저장된 데이터의 모든 수준에 대한 감사 액세스를 요구합니다. 회사는 스토리지 용량이 부족한 온프레미스 인프라에서 애플리케이션을 호스팅합니다. 솔루션 설계자는 새로운 규정을 충족하면서 기존 데이터를 AWS로 안전하게 마이그레이션해야 합니다. 어떤 솔루션이 이러한 요구 사항을 충족합니까?",
+                options: [
+                    "A. AWS DataSync를 사용하여 기존 데이터를 Amazon S3로 이동합니다. AWS CloudTrail을 사용하여 데이터 이벤트를 기록합니다.",
+                    "B. AWS Snowcone을 사용하여 기존 데이터를 Amazon S3로 이동합니다. AWS CloudTrail을 사용하여 관리 이벤트를 기록합니다.",
+                    "C. Amazon S3 Transfer Acceleration을 사용하여 기존 데이터를 Amazon S3로 이동합니다. AWS CloudTrail을 사용하여 데이터 이벤트를 기록합니다.",
+                    "D. AWS Storage Gateway를 사용하여 기존 데이터를 Amazon S3로 이동합니다. AWS CloudTrail을 사용하여 관리 이벤트를 기록합니다."
+                ],
+                answer: "A",
+                concept: "DataSync Migration & CloudTrail Data Events",
+                note: `
+                    <div class='space-y-2'>
+                        <div>
+                            <strong class='text-green-600'>✅ 정답 분석 (A):</strong>
+                            <p class='text-gray-700 ml-2'>온프레미스 데이터를 효율적으로 S3로 이동하는 데는 <strong>DataSync</strong>가 적합합니다. 또한, '저장된 데이터의 모든 수준에 대한 감사'를 위해서는 CloudTrail의 <strong>데이터 이벤트(Data Events)</strong> 로깅을 활성화해야 합니다(S3 객체 수준 API 호출 기록).</p>
+                        </div>
+                        <div class='mt-2'>
+                            <strong class='text-red-500'>❌ 오답 분석:</strong>
+                            <ul class='list-disc pl-5 text-gray-600 text-sm mt-1'>
+                                <li><strong>B, D:</strong> '관리 이벤트(Management Events)'는 버킷 생성/삭제 같은 제어 평면 작업만 기록하므로, 데이터 접근 감사를 충족하지 못합니다.</li>
+                                <li><strong>C:</strong> Transfer Acceleration은 장거리 전송 가속화용이며, 대량 마이그레이션 자동화 도구로는 DataSync가 더 우선 고려됩니다.</li>
+                            </ul>
+                        </div>
+                    </div>`
+            },
+            {
+                id: 11,
+                question: "전 세계에 기자가 있는 뉴스 회사가 AWS에서 방송 시스템을 호스팅하고 있습니다. 기자가 방송 시스템에 라이브 방송을 보냅니다. 기자는 휴대폰에서 소프트웨어를 사용하여 RTMP(실시간 메시징 프로토콜)를 통해 라이브 스트림을 보냅니다. 솔루션 설계자는 기자에게 최고 품질의 스트림을 보낼 수 있는 기능을 제공하는 솔루션을 설계해야 합니다. 솔루션은 브로드캐스트 시스템에 대한 가속화된 TCP 연결을 다시 제공해야 합니다. 이러한 요구 사항을 충족하기 위해 솔루션은 무엇을 사용해야 합니까?",
+                options: [
+                    "A. Amazon CloudFront",
+                    "B. AWS 글로벌 액셀러레이터 (Global Accelerator)",
+                    "C. AWS 클라이언트 VPN",
+                    "D. Amazon EC2 인스턴스 및 AWS 탄력적 IP 주소"
+                ],
+                answer: "B",
+                concept: "AWS Global Accelerator (Non-HTTP)",
+                note: `
+                    <div class='space-y-2'>
+                        <div>
+                            <strong class='text-green-600'>✅ 정답 분석 (B):</strong>
+                            <p class='text-gray-700 ml-2'>RTMP는 TCP 기반 프로토콜이지만 HTTP가 아닙니다. <strong>AWS Global Accelerator</strong>는 HTTP뿐만 아니라 TCP/UDP 등 IP 기반 트래픽 전반을 AWS 글로벌 네트워크를 통해 가속화하여 지연 시간을 줄이고 안정성을 높입니다. '가속화된 TCP 연결'이라는 키워드에 부합합니다.</p>
+                        </div>
+                        <div class='mt-2'>
+                            <strong class='text-red-500'>❌ 오답 분석:</strong>
+                            <ul class='list-disc pl-5 text-gray-600 text-sm mt-1'>
+                                <li><strong>A:</strong> CloudFront는 주로 HTTP/HTTPS 콘텐츠(웹, 비디오 스트리밍 시청) 전송에 최적화되어 있습니다. RTMP 인제스트(업로드) 가속에는 Global Accelerator가 적합합니다.</li>
+                            </ul>
+                        </div>
+                    </div>`
+            },
+            {
+                id: 12,
+                question: "회사는 단일 VPC의 여러 가용 영역에 분산된 여러 Amazon EC2 인스턴스에서 미디어 스토어를 실행하고 있습니다. 이 회사는 모든 EC2 인스턴스 간에 데이터를 공유하는 고성능 솔루션을 원하고 데이터를 VPC 내에서만 유지하는 것을 선호합니다. 솔루션 설계자는 무엇을 권장해야 합니까?",
+                options: [
+                    "A. Amazon S3 버킷을 생성하고 각 인스턴스의 애플리케이션에서 서비스 API를 호출",
+                    "B. Amazon S3 버킷을 생성하고 탑재된 볼륨으로 액세스하도록 모든 인스턴스를 구성",
+                    "C. Amazon Elastic Block Store(Amazon EBS) 볼륨을 구성하고 모든 인스턴스에 마운트",
+                    "D. Amazon Elastic File System (Amazon EFS) 파일 시스템을 구성하고 모든 인스턴스에 마운트"
+                ],
+                answer: "D",
+                concept: "Amazon EFS (공유 파일 시스템)",
+                note: `
+                    <div class='space-y-2'>
+                        <div>
+                            <strong class='text-green-600'>✅ 정답 분석 (D):</strong>
+                            <p class='text-gray-700 ml-2'>여러 AZ에 걸친 EC2 인스턴스들이 동시에 데이터를 공유하고 액세스하려면 <strong>Amazon EFS</strong>가 정답입니다. EFS는 VPC 내부에서 작동하며 NFS 프로토콜을 지원하는 완전 관리형 파일 시스템입니다.</p>
+                        </div>
+                        <div class='mt-2'>
+                            <strong class='text-red-500'>❌ 오답 분석:</strong>
+                            <ul class='list-disc pl-5 text-gray-600 text-sm mt-1'>
+                                <li><strong>A, B:</strong> S3는 객체 스토리지이며 파일 시스템처럼 마운트하여 고성능을 내기에는 적합하지 않습니다(특히 B는 비권장).</li>
+                                <li><strong>C:</strong> EBS는 기본적으로 단일 AZ, 단일 인스턴스 연결용입니다(Multi-Attach가 있긴 하지만 제약이 많고 EFS가 일반적인 답입니다).</li>
+                            </ul>
+                        </div>
+                    </div>`
+            },
+            {
+                id: 13,
+                question: "솔루션 설계자는 여러 가용 영역에 배포되는 웹 애플리케이션용 공유 스토리지 솔루션을 설계하고 있습니다. 웹 애플리케이션은 Auto Scaling 그룹에 있는 Amazon EC2 인스턴스에서 실행됩니다. 회사는 콘텐츠를 수시로 변경할 계획입니다. 솔루션은 변경 사항이 발생하는 즉시 새 콘텐츠를 반환하는 강력한 일관성을 가져야 합니다. 어떤 솔루션이 이러한 요구 사항을 충족합니까?",
+                options: [
+                    "A. 개별 EC2 인스턴스에 탑재된 AWS Storage Gateway 볼륨 게이트웨이 ISCSI 블록 스토리지를 사용합니다.",
+                    "B. Amazon Elastic File System (Amazon EFS) 파일 시스템을 생성합니다. 개별 EC2 인스턴스에 EFS 파일 시스템을 탑재합니다.",
+                    "C. 공유 Amazon Elastic Block Store (Amazon EBS) 볼륨을 생성합니다. 개별 EC2 인스턴스에 EBS 볼륨을 탑재합니다.",
+                    "D. AWS DataSync를 사용하여 Auto Scaling 그룹의 EC2 호스트 간에 데이터를 지속적으로 동기화합니다.",
+                    "E. 웹 콘텐츠를 저장할 Amazon S3 버킷을 생성합니다. Cache-Control 헤더의 메타데이터를 no-cache로 설정합니다. Amazon CloudFront를 사용하여 콘텐츠를 전송합니다."
+                ],
+                answer: "B",
+                concept: "EFS Strong Consistency",
+                note: `
+                    <div class='space-y-2'>
+                        <div>
+                            <strong class='text-green-600'>✅ 정답 분석 (B):</strong>
+                            <p class='text-gray-700 ml-2'><strong>Amazon EFS</strong>는 여러 AZ의 인스턴스가 동시에 마운트할 수 있고, 파일 잠금 및 <strong>강력한 일관성(Strong Consistency)</strong>을 제공합니다. Auto Scaling 그룹의 인스턴스들이 공유 스토리지로 사용하기에 가장 적합합니다.</p>
+                        </div>
+                        <div class='mt-2'>
+                            <strong class='text-red-500'>❌ 오답 분석:</strong>
+                            <ul class='list-disc pl-5 text-gray-600 text-sm mt-1'>
+                                <li><strong>C:</strong> EBS는 다중 AZ 공유를 지원하지 않습니다.</li>
+                                <li><strong>E:</strong> S3 + CloudFront는 강력한 일관성보다는 최종 일관성 모델에 가깝거나, 갱신 지연이 발생할 수 있습니다(캐시 무효화 필요 등). EFS가 요구사항에 더 부합합니다.</li>
+                            </ul>
+                        </div>
+                    </div>`
+            },
+            {
+                id: 14,
+                question: "회사는 수백만 명의 사용자로부터 매일 총 약 1TB의 데이터를 수신합니다. 회사는 사용자에게 12개월 전의 사용 보고서를 제공합니다. 정기적 및 감사 요구 사항을 준수하려면 모든 사용 데이터를 최소 5년 동안 저장해야 합니다. 가장 비용 효율적인 스토리지 솔루션은 무엇입니까?",
+                options: [
+                    "A. Amazon S3 Standard에 데이터 저장. 1년 후 데이터를 S3 Glacier Deep Archive로 전송하는 수명 주기 규칙을 설정. 5년 후 데이터를 삭제하도록 데이터에 수명 주기 규칙을 설정합니다.",
+                    "B. Amazon S3 One Zone-Infrequent Access(S3 One Zone-IA)에 데이터 저장. 1년 후 데이터를 S3 Glacier로 전환하는 수명 주기 규칙 설정. 5년 후 데이터를 삭제하도록 수명 주기 규칙을 설정합니다.",
+                    "C. Amazon Standard에 데이터 저장. 1년 후 데이터를 S3 Standard-infrequence Access(S3 Standard-IA)로 전송하는 수명 주기 규칙을 설정. 5년 후에 데이터를 삭제하는 수명 주기 규칙을 설정합니다.",
+                    "D. Amazon S3 Standard에 데이터 저장. 1년 후에 데이터를 S3 Zone-Infrequent Access(S3 One Zones-IA)로 전환하는 수명 주기 규칙을 설정. 5년 후 데이터를 삭제하는 수명 주기 규칙을 설정합니다."
+                ],
+                answer: "A",
+                concept: "S3 Lifecycle & Glacier Deep Archive",
+                note: `
+                    <div class='space-y-2'>
+                        <div>
+                            <strong class='text-green-600'>✅ 정답 분석 (A):</strong>
+                            <p class='text-gray-700 ml-2'>데이터는 12개월(1년) 동안은 보고서용으로 액세스될 수 있으므로 Standard에 두고, 그 이후 4년(총 5년)은 감사용으로만 보관하면 됩니다. 장기 보관 비용이 가장 저렴한 <strong>S3 Glacier Deep Archive</strong>로 전환하는 것이 가장 비용 효율적입니다.</p>
+                        </div>
+                        <div class='mt-2'>
+                            <strong class='text-red-500'>❌ 오답 분석:</strong>
+                            <ul class='list-disc pl-5 text-gray-600 text-sm mt-1'>
+                                <li><strong>B:</strong> 처음부터 One Zone-IA를 쓰면 데이터 유실 위험이 있고, Glacier Deep Archive가 Glacier보다 더 저렴합니다.</li>
+                                <li><strong>C, D:</strong> IA 클래스는 Glacier 계열보다 보관 비용이 비쌉니다.</li>
+                            </ul>
+                        </div>
+                    </div>`
+            },
+            {
+                id: 15,
+                question: "회사는 재해 발생 시 복구하기 위해 데이터를 AWS에 복제하려고 합니다. 현재 시스템 관리자는 데이터를 NFS 공유에 복사하는 스크립트를 보유하고 있습니다. 애플리케이션 관리자는 처리 오류를 처리하기 위해 짧은 지연 시간으로 개별 백업 파일에 액세스해야 합니다. 솔루션 설계자가 이러한 요구 사항을 충족하도록 무엇을 권장해야 합니까?",
+                options: [
+                    "A. 온프레미스 NFS 공유 대신 Amazon S3 버킷에 데이터를 복사하도록 스크립트 수정",
+                    "B. 온프레미스 NFS 공유 대신 Amazon S3 Glacier 아카이브에 데이터를 복사하도록 스크립트 수정",
+                    "C. 온프레미스 NFS 공유 대신 Amazon Elastic File System (Amazon EFS) 볼륨에 데이터를 복사하도록 스크립트 수정",
+                    "D. 온프레미스 NFS 공유 대신 AWS Storage Gateway for File Gateway 가상 어플라이언스에 데이터를 복사하도록 스크립트 수정"
+                ],
+                answer: "D",
+                concept: "File Gateway (NFS Support & Caching)",
+                note: `
+                    <div class='space-y-2'>
+                        <div>
+                            <strong class='text-green-600'>✅ 정답 분석 (D):</strong>
+                            <p class='text-gray-700 ml-2'><strong>File Gateway</strong>는 NFS 인터페이스를 제공하므로 기존 스크립트를 최소한으로 수정하여 사용할 수 있습니다. 또한 로컬 캐싱을 통해 최근 백업 파일에 대한 '짧은 지연 시간' 액세스를 제공합니다.</p>
+                        </div>
+                        <div class='mt-2'>
+                            <strong class='text-red-500'>❌ 오답 분석:</strong>
+                            <ul class='list-disc pl-5 text-gray-600 text-sm mt-1'>
+                                <li><strong>A:</strong> 스크립트가 S3 API를 사용하도록 로직을 변경해야 합니다(NFS 미지원).</li>
+                                <li><strong>C:</strong> EFS는 Direct Connect 없이는 온프레미스에서 직접 마운트하기 어렵고 지연 시간이 발생할 수 있습니다.</li>
+                            </ul>
+                        </div>
+                    </div>`
+            },
+            {
+                id: 16,
+                question: "회사는 us-east-1 리전의 Amazon S3 버킷에서 정적 웹 사이트 콘텐츠를 호스팅합니다. 콘텐츠는 해당 버킷을 가리키는 Amazon CloudFront 오리진을 통해 제공됩니다. 리전 간 복제는 버킷의 두 번째 복사본을 ap-southeast-1에 생성하도록 설정됩니다. 리전 관리자는 웹 사이트에 더 큰 가용성을 제공하는 솔루션을 원합니다. 가용성을 높이기 위해 솔루션 설계자는 어떤 작업 조합을 취해야 합니까? (2개를 선택하세요)",
+                options: [
+                    "A. 두 버킷을 CloudFront 오리진에 추가",
+                    "B. Amazon Route 53에서 장애 조치 라우팅 구성",
+                    "C. 복제본 버킷을 가리키는 Amazon Route 53에 레코드 생성",
+                    "D. ap-southeast-1 버킷을 가리키는 추가 CloudFront 오리진 생성",
+                    "E. us-east-1 버킷을 기본으로, ap-southeast-1 버킷을 보조로 사용하여 CloudFront 오리진 그룹을 설정"
+                ],
+                answer: ["D", "E"],
+                concept: "CloudFront Origin Group (High Availability)",
+                note: `
+                    <div class='space-y-2'>
+                        <div>
+                            <strong class='text-green-600'>✅ 정답 분석 (D, E):</strong>
+                            <p class='text-gray-700 ml-2'>CloudFront에서 고가용성을 확보하는 표준 방법은 <strong>오리진 그룹(Origin Group)</strong>을 사용하는 것입니다. 
+                            <br>1. 두 번째 버킷(ap-southeast-1)을 CloudFront 오리진으로 추가 등록하고 (D)
+                            <br>2. 두 오리진을 묶어 기본(Primary)과 보조(Secondary)로 설정하여 자동 장애 조치를 구성합니다 (E).</p>
+                        </div>
+                        <div class='mt-2'>
+                            <strong class='text-red-500'>❌ 오답 분석:</strong>
+                            <ul class='list-disc pl-5 text-gray-600 text-sm mt-1'>
+                                <li><strong>B, C:</strong> CloudFront 앞단이 아닌 뒷단(Origin)의 가용성을 높이는 문제이므로 Route 53 장애 조치는 적절하지 않습니다(CloudFront가 단일 진입점).</li>
+                            </ul>
+                        </div>
+                    </div>`
+            },
+            {
+                id: 17,
+                question: "회사는 온프레미스 서버를 사용하여 애플리케이션을 호스팅합니다. 회사의 스토리지 용량이 부족합니다. 애플리케이션은 블록 스토리지와 NFS 스토리지를 모두 사용합니다. 회사는 기존 애플리케이션을 재설계하지 않고 로컬 캐싱을 지원하는 고성능 솔루션이 필요합니다. 이러한 요구 사항을 충족하기 위해 솔루션 설계자는 어떤 조치를 취해야 합니까? (2개를 선택하십시오.)",
+                options: [
+                    "A. Amazon S3를 온프레미스 서버에 파일 시스템으로 탑재",
+                    "B. NFS 스토리지를 대체할 AWS Storage Gateway 파일 게이트웨이 배포",
+                    "C. AWS Snowball Edge를 배포하여 온프레미스 서버에 NFS 마운트 프로비저닝",
+                    "D. 블록 스토리지를 대체할 AWS Storage Gateway 볼륨 게이트웨이 배포",
+                    "E. Amazon Elastic File System(Amazon EFS) 볼륨 배포 및 온프레미스 서버에 탑재"
+                ],
+                answer: ["B", "D"],
+                concept: "Storage Gateway Types (File vs Volume)",
+                note: `
+                    <div class='space-y-2'>
+                        <div>
+                            <strong class='text-green-600'>✅ 정답 분석 (B, D):</strong>
+                            <p class='text-gray-700 ml-2'>문제에서 <strong>블록 스토리지</strong>와 <strong>NFS 스토리지</strong>가 모두 필요하다고 했습니다.
+                            <br>- NFS용: <strong>File Gateway</strong> (B)
+                            <br>- 블록 스토리지용: <strong>Volume Gateway</strong> (Stored 또는 Cached) (D)
+                            <br>두 게이트웨이 모두 로컬 캐싱을 지원하여 성능 요구사항을 충족합니다.</p>
+                        </div>
+                    </div>`
+            },
+            {
+                id: 18,
+                question: "회사는 Elastic Load Balancer 뒤의 Amazon EC2 인스턴스에서 실행할 새로운 웹 서비스를 설계하고 있습니다. 그러나 많은 웹 서비스 클라이언트는 방화벽에 허용된 IP 주소에만 연결할 수 있습니다. 솔루션 설계자는 클라이언트의 요구 사항을 충족하기 위해 무엇을 권장해야 합니까?",
+                options: [
+                    "A. 연결된 탄력적 IP 주소가 있는 Network Load Balancer (NLB)",
+                    "B. 연결된 탄력적 IP 주소가 있는 Application Load Balancer.",
+                    "C. 탄력적 IP 주소를 가리키는 Amazon Route 53 호스팅 영역의 A 레코드",
+                    "D. 로드 밸런서 앞에서 프록시로 실행되는 퍼블릭 IP 주소가 있는 EC2 인스턴스."
+                ],
+                answer: "A",
+                concept: "Network Load Balancer (Static IP)",
+                note: `
+                    <div class='space-y-2'>
+                        <div>
+                            <strong class='text-green-600'>✅ 정답 분석 (A):</strong>
+                            <p class='text-gray-700 ml-2'>방화벽 화이트리스팅을 위해 <strong>고정 IP</strong>가 필요합니다. <strong>Network Load Balancer (NLB)</strong>는 가용 영역당 하나의 고정 IP(탄력적 IP 할당 가능)를 가질 수 있는 유일한 로드 밸런서입니다.</p>
+                        </div>
+                        <div class='mt-2'>
+                            <strong class='text-red-500'>❌ 오답 분석:</strong>
+                            <ul class='list-disc pl-5 text-gray-600 text-sm mt-1'>
+                                <li><strong>B:</strong> ALB는 IP가 유동적으로 변하므로 방화벽 등록용으로 부적합합니다.</li>
+                            </ul>
+                        </div>
+                    </div>`
+            },
+            {
+                id: 19,
+                question: "회사는 사용자에게 글로벌 속보 지역 경보 및 날씨 업데이트를 제공하는 웹 기반 포털을 운영합니다. 포털은 정적 및 동적 콘텐츠를 혼합하여 각 사용자에게 개인화된 보기를 제공합니다. 콘텐츠는 ALB(Application Load Balancer) 뒤에 있는 Amazon EC2 인스턴스 실행되는 API 서버를 통해 HTTPS로 제공됩니다. 이 회사는 포털에서 이 콘텐츠를 가능한 한 빨리 전 세계 사용자에게 제공하기를 원합니다. 솔루션 설계자는 모든 사용자의 지연 시간을 최소화하도록 애플리케이션을 어떻게 설계해야 합니까?",
+                options: [
+                    "A. 단일 AWS 리전에 애플리케이션 스택 배포 Amazon CloudFront를 사용하여 ALB를 오리진으로 지정하여 모든 정적 및 동적 콘텐츠 제공",
+                    "B. 두 AWS 리전에 애플리케이션 스택 배포 Amazon Route 53 지연 시간 라우팅 정책을 사용하여 가장 가까운 리전에서 ALB의 모든 콘텐츠 제공",
+                    "C. 단일 AWS 리전에 애플리케이션 스택 배포 Amazon CloudFront를 사용하여 정적 콘텐츠 제공 ALB에서 직접 동적 콘텐츠 제공",
+                    "D. 두 AWS 리전에 애플리케이션 스택 배포 Amazon Route 53 지리적 위치 라우팅 정책을 사용하여 가장 가까운 리전에서 ALB의 모든 콘텐츠 제공"
+                ],
+                answer: "A",
+                concept: "CloudFront for Dynamic Content",
+                note: `
+                    <div class='space-y-2'>
+                        <div>
+                            <strong class='text-green-600'>✅ 정답 분석 (A):</strong>
+                            <p class='text-gray-700 ml-2'><strong>Amazon CloudFront</strong>는 정적 콘텐츠 캐싱뿐만 아니라, AWS 백본 네트워크를 이용해 동적 콘텐츠(API 호출 등)의 전송 경로를 최적화(TCP 핸드셰이크 단축 등)하여 성능을 높여줍니다. 단일 리전 ALB라도 CloudFront를 앞단에 두는 것이 전 세계 사용자에게 가장 빠른 응답을 줄 수 있는 효율적인 방법입니다.</p>
+                        </div>
+                        <div class='mt-2'>
+                            <strong class='text-red-500'>❌ 오답 분석:</strong>
+                            <ul class='list-disc pl-5 text-gray-600 text-sm mt-1'>
+                                <li><strong>B, D:</strong> 다중 리전 배포는 비용과 복잡도가 높으며, 데이터 동기화 이슈가 있습니다. 단순 가속 목적이라면 CloudFront가 우선입니다.</li>
+                            </ul>
+                        </div>
+                    </div>`
+            },
+            {
+                id: 20,
+                question: "회사의 웹 애플리케이션은 Amazon RDS PostgreSQL DB 인스턴스를 사용하여 애플리케이션 데이터를 저장합니다. 매월 초 회계 마감 기간 동안 회계사는 높은 사용량으로 인해 데이터베이스 성능에 영향을 미치는 대규모 쿼리를 실행합니다. 보고서 활동이 웹 애플리케이션에 미치는 영향을 최소한으로 줄이길 원합니다. 솔루션 설계자는 최소한의 노력으로 데이터베이스에 대한 영향을 줄이기 위해 무엇을 해야 합니까?",
+                options: [
+                    "A. 읽기 전용 복제본을 만들고 복제본으로 보고서 트래픽을 연결합니다.",
+                    "B. 다중 AZ 데이터베이스를 생성하고 대기(Standby)에 보고서 트래픽을 연결합니다.",
+                    "C. 교차 리전 읽기 전용 복제본을 만들고 복제본으로 보고서 트래픽을 연결합니다.",
+                    "D. Amazon Redshift 데이터베이스를 생성하고 Amazon Redshift 데이터베이스로 보고서 트래픽을 연결 합니다."
+                ],
+                answer: "A",
+                concept: "RDS Read Replica",
+                note: `
+                    <div class='space-y-2'>
+                        <div>
+                            <strong class='text-green-600'>✅ 정답 분석 (A):</strong>
+                            <p class='text-gray-700 ml-2'>보고서 쿼리는 주로 '읽기(Read)' 작업입니다. 마스터 DB의 부하를 줄이기 위해 <strong>읽기 전용 복제본(Read Replica)</strong>을 생성하고, 보고서 트래픽을 이곳으로 분산시키는 것이 표준적인 해결책입니다.</p>
+                        </div>
+                        <div class='mt-2'>
+                            <strong class='text-red-500'>❌ 오답 분석:</strong>
+                            <ul class='list-disc pl-5 text-gray-600 text-sm mt-1'>
+                                <li><strong>B:</strong> 다중 AZ의 대기(Standby) 인스턴스는 장애 조치용이며, 평소에는 액세스할 수 없습니다.</li>
+                                <li><strong>D:</strong> Redshift로 데이터를 옮기는 것은 '최소한의 노력'이 아닙니다(ETL 파이프라인 필요).</li>
+                            </ul>
+                        </div>
+                    </div>`
+            },
+            {
+                id: 21,
+                question: "회사에서 Docker 컨테이너로 애플리케이션을 구축했으며 AWS 클라우드에서 애플리케이션을 실행해야 합니다. 회사는 관리 서비스를 사용하여 애플리케이션을 호스팅하려고 합니다. 솔루션은 개별 컨테이너 서비스에 대한 수요에 따라 적절하게 확장 및 축소되어야 합니다. 또한 솔루션은 관리해야 할 추가 운영 오버헤드나 인프라를 초래해서는 안 됩니다. 어떤 솔루션이 이러한 요구 사항을 충족합니까? (2개를 선택하십시오.)",
+                options: [
+                    "A. AWS Fargate와 함께 Amazon Elastic Container Service(Amazon ECS)를 사용합니다.",
+                    "B. AWS Fargate와 함께 Amazon Elastic Kubernetes Service(Amazon EKS)를 사용합니다.",
+                    "C. Amazon API Gateway API를 프로비저닝합니다. API를 AWS Lambda에 연결하여 컨테이너를 실행합니다.",
+                    "D. Amazon EC2 작업자 노드(worker nodes)와 함께 Amazon Elastic Container Service(Amazon ECS)를 사용합니다.",
+                    "E. Amazon EC2 작업자 노드와 함께 Amazon Elastic Kubernetes Service(Amazon EKS)를 사용합니다."
+                ],
+                answer: ["A", "B"],
+                concept: "AWS Fargate (Serverless Containers)",
+                note: `
+                    <div class='space-y-2'>
+                        <div>
+                            <strong class='text-green-600'>✅ 정답 분석 (A, B):</strong>
+                            <p class='text-gray-700 ml-2'><strong>AWS Fargate</strong>는 서버리스 컴퓨팅 엔진으로, EC2 인스턴스를 관리할 필요 없이 컨테이너를 실행할 수 있습니다. '운영 오버헤드나 인프라 관리 부담 없음'이라는 조건에 부합합니다. ECS와 EKS 모두 Fargate 모드를 지원합니다.</p>
+                        </div>
+                        <div class='mt-2'>
+                            <strong class='text-red-500'>❌ 오답 분석:</strong>
+                            <ul class='list-disc pl-5 text-gray-600 text-sm mt-1'>
+                                <li><strong>D, E:</strong> EC2 시작 유형을 사용하면 인스턴스(노드)를 직접 프로비저닝하고 관리(패치, 스케일링 등)해야 하므로 운영 오버헤드가 발생합니다.</li>
+                            </ul>
+                        </div>
+                    </div>`
+            },
+            {
+                id: 22,
+                question: "미디어 회사는 시스템을 AWS 클라우드로 이전할 가능성을 평가하고 있습니다. 회사에는 비디오 처리를 위해 가능한 최대 I/O 성능과 함께 최소 10TB의 스토리지가 필요합니다. 미디어 콘텐츠를 저장하기 위한 내구성이 뛰어난 300TB의 스토리지와 더 이상 사용하지 않는 아카이브 미디어에 대한 요구 사항을 충족하는 900TB의 스토리지 솔루션 설계자가 이러한 요구 사항을 충족하기 위해 권장해야 하는 서비스 세트는 무엇입니까?",
+                options: [
+                    "A. 최대 성능을 위한 Amazon EBS, 내구성 있는 데이터 스토리지를 위한 Amazon S3, 아카이브 스토리지를 위한 Amazon S3 Glacier",
+                    "B. 최대 성능을 위한 Amazon EBS, 내구성 있는 데이터 스토리지를 위한 Amazon EFS 및 아카이브 스토리지를 위한 Amazon S3 Glacier",
+                    "C. 최대 성능을 위한 Amazon EC2 인스턴스 스토어. 내구성 있는 데이터 스토리지를 위한 Amazon EFS 및 아카이브 스토리지를 위한 Amazon S3",
+                    "D. 최대 성능을 위한 Amazon EC2 인스턴스 스토어. 내구성 있는 데이터 스토리지를 위한 Amazon S3 및 아카이브 스토리지를 위한 Amazon S3 Glacier"
+                ],
+                answer: "D",
+                concept: "Storage Types (Instance Store, S3, Glacier)",
+                note: `
+                    <div class='space-y-2'>
+                        <div>
+                            <strong class='text-green-600'>✅ 정답 분석 (D):</strong>
+                            <p class='text-gray-700 ml-2'>
+                            1. <strong>최대 I/O 성능:</strong> 네트워크를 타지 않고 로컬 디스크를 사용하는 <strong>EC2 Instance Store</strong>가 EBS보다 I/O 성능이 뛰어납니다 (비디오 처리 스크래치 공간용).
+                            <br>2. <strong>내구성 있는 300TB:</strong> 대용량 객체 저장소인 <strong>Amazon S3</strong>가 적합합니다.
+                            <br>3. <strong>아카이브 900TB:</strong> 비용 효율적인 <strong>S3 Glacier</strong>가 정답입니다.
+                            </p>
+                        </div>
+                    </div>`
+            },
+            {
+                id: 23,
+                question: "회사의 애플리케이션이 Elastic Load Balancer 뒤의 Auto Scaling 그룹 내 Amazon EC2 인스턴스에서 실행되고 있습니다. 이 회사는 애플리케이션의 이력을 기반으로 매년 휴일 동안 트래픽이 급증할 것으로 예상합니다. 솔루션 설계자는 Auto Scaling 그룹이 사전에 용량을 늘려 애플리케이션 사용자에 대한 성능 영향을 최소화하도록 전략을 설계해야 합니다. 어떤 솔루션이 이러한 요구 사항을 충족합니까?",
+                options: [
+                    "A. CPU 사용률이 90%를 초과할 때 EC2 인스턴스를 확장하는 Amazon CloudWatch 경보 생성",
+                    "B. 예상되는 피크 수요 기간 전에 Auto Scaling 그룹을 확장하기 위해 반복되는 예약된 작업을 생성",
+                    "C. 피크 수요 기간 동안 Auto Scaling 그룹의 최소 및 최대 EC2 인스턴스 수를 늘립니다.",
+                    "D. Auto Scaling EC2_INSTANCE_LAUNCH 이벤트가 있을 때 알림을 보내도록 Amazon Simple Notification Service(Amazon SNS) 알림을 구성"
+                ],
+                answer: "B",
+                concept: "Scheduled Auto Scaling",
+                note: `
+                    <div class='space-y-2'>
+                        <div>
+                            <strong class='text-green-600'>✅ 정답 분석 (B):</strong>
+                            <p class='text-gray-700 ml-2'>트래픽 급증 시점이 '매년 휴일'로 <strong>예측 가능</strong>합니다. 이 경우 반응형 조정(동적 조정)보다 미리 인스턴스를 늘려놓는 <strong>예약된 조정(Scheduled Scaling)</strong>이 성능 영향을 최소화하는 가장 좋은 방법입니다.</p>
+                        </div>
+                        <div class='mt-2'>
+                            <strong class='text-red-500'>❌ 오답 분석:</strong>
+                            <ul class='list-disc pl-5 text-gray-600 text-sm mt-1'>
+                                <li><strong>A:</strong> CPU 부하가 걸린 후 확장하면 이미 사용자는 느린 속도를 경험하게 됩니다(반응형).</li>
+                                <li><strong>C:</strong> 이것도 하나의 방법일 수 있으나, B의 '예약된 작업'이 이를 자동화하는 구체적인 기능입니다.</li>
+                            </ul>
+                        </div>
+                    </div>`
+            },
+            {
+                id: 24,
+                question: "회사는 AWS에서 설문 조사 웹 사이트를 호스팅할 계획입니다. 회사는 예측할 수 없는 양의 트래픽을 예상합니다. 이 트래픽으로 인해 데이터베이스에 대한 비동기 업데이트가 발생합니다. 회사는 AWS에서 호스팅되는 데이터베이스에 대한 쓰기가 드롭(Drop)되지 않도록 하려고 합니다. 회사는 이러한 데이터베이스 요청에 전달할 애플리케이션을 어떻게 작성해야 합니까?",
+                options: [
+                    "A. Amazon Simple Notification Service(Amazon SNS) 주제에 게시하도록 애플리케이션을 구성합니다. SNS 주제에 데이터베이스를 구독",
+                    "B. Amazon Simple Notification Service(Amazon SNS) 주제를 구독하도록 애플리케이션을 구성합니다. SNS 주제에 데이터베이스 업데이트 게시",
+                    "C. Amazon Simple Queue Service(Amazon SQS) FIFO 대기열을 사용하여 데이터베이스에 데이터를 쓸 리소스가 있을 때까지 데이터베이스 연결을 대기",
+                    "D. Amazon Simple Queue Service(Amazon SQS) FIFO 대기열을 사용하여 쓰기를 캡처하고 데이터베이스에 쓸 때마다 대기열을 비웁니다."
+                ],
+                answer: "D",
+                concept: "SQS for Decoupling & Buffering",
+                note: `
+                    <div class='space-y-2'>
+                        <div>
+                            <strong class='text-green-600'>✅ 정답 분석 (D):</strong>
+                            <p class='text-gray-700 ml-2'>예측 불가능한 트래픽 폭주 시 데이터 유실을 막으려면 <strong>SQS</strong>를 버퍼로 사용하여 요청을 큐에 쌓아두고, 백엔드가 처리 가능한 속도로 데이터를 가져가서(Polling) DB에 쓰도록 해야 합니다. DB 연결 대기나 SNS는 적절한 버퍼링 메커니즘이 아닙니다.</p>
+                        </div>
+                    </div>`
+            },
+            {
+                id: 25,
+                question: "회사는 사용자가 웹 사이트를 통해 사진을 업로드하고 저장할 수 있도록 허용합니다. 웹 사이트에는 전 세계의 사용자가 있습니다. 사용자가 업로드하는 모든 이미지는 중앙 집중식 Amazon S3 버킷에 저장됩니다. 회사는 전체 사용자 기반이 웹 사이트를 통해 사진을 업로드할 수 있는 속도를 높이고자 합니다. 이러한 요구 사항을 충족하기 위해 솔루션 설계자는 무엇을 권장해야 합니까?",
+                options: [
+                    "A. Amazon CloudFront 배포를 생성합니다. Amazon S3 Standard 스토리지 클래스를 사용하여 파일 저장",
+                    "B. Amazon CloudFront 배포를 생성합니다. 배포 설정 및 오리진을 구성합니다.",
+                    "C. S3 버킷에서 S3 Transfer Acceleration 구성 표준 S3 엔드포인트를 사용하여 파일 업로드",
+                    "D. S3 버킷에서 S3 Transfer Acceleration 구성 S3 Accelerate 엔드포인트를 사용하여 파일 업로드"
+                ],
+                answer: "D",
+                concept: "S3 Transfer Acceleration",
+                note: `
+                    <div class='space-y-2'>
+                        <div>
+                            <strong class='text-green-600'>✅ 정답 분석 (D):</strong>
+                            <p class='text-gray-700 ml-2'>S3로의 장거리 업로드 속도를 높이려면 <strong>S3 Transfer Acceleration</strong>을 활성화해야 합니다. 이 기능은 전 세계 엣지 로케이션을 이용하여 AWS 백본 네트워크로 데이터를 빠르게 라우팅합니다. 사용할 때는 일반 엔드포인트가 아닌 <strong>Accelerate 엔드포인트</strong>를 사용해야 합니다.</p>
+                        </div>
+                        <div class='mt-2'>
+                            <strong class='text-red-500'>❌ 오답 분석:</strong>
+                            <ul class='list-disc pl-5 text-gray-600 text-sm mt-1'>
+                                <li><strong>A, B:</strong> CloudFront는 주로 다운로드(배포) 가속에 쓰이며, PUT/POST 가속도 가능하긴 하지만 문제의 문맥상 S3 자체 기능인 Transfer Acceleration이 더 직접적인 정답입니다.</li>
+                            </ul>
+                        </div>
+                    </div>`
+            },
+            {
+                id: 26,
+                question: "회사는 회계 시스템을 온프레미스 데이터 센터에서 단일 AWS 리전의 AWS 클라우드로 마이그레이션하려고 합니다. 데이터 보안 및 변경할 수 없는 감사 로그가 최우선 순위입니다. 회사는 규정 준수 감사를 위해 모든 AWS 활동을 모니터링해야 합니다. AWS CloudTrail을 활성화했지만 요구 사항을 충족하는지 확인하고자 합니다. 회사 솔루션 설계자는 CloudTrail을 안전하게 보호하기 위해 어떤 조치를 취해야 합니까? (2개를 선택하십시오.)",
+                options: [
+                    "A. CloudTrail 로그 파일 유효성(무결성) 검사를 활성화합니다.",
+                    "B. CloudTrail 진행 라이브러리를 활성화합니다.",
+                    "C. CloudTrail에서 Insights 이벤트 로깅을 활성화합니다.",
+                    "D. 온-프레미스 리소스에서 사용자 지정 로깅 사용",
+                    "E. CloudTrail 이 AWS KMS 관리형 암호화 키(SSE-KMS)와 함께 서버 측 암호화를 사용하도록 구성되었는지 여부를 모니터링하는 AWS Config 규칙을 생성합니다."
+                ],
+                answer: ["A", "E"],
+                concept: "CloudTrail Integrity & Security",
+                note: `
+                    <div class='space-y-2'>
+                        <div>
+                            <strong class='text-green-600'>✅ 정답 분석 (A, E):</strong>
+                            <p class='text-gray-700 ml-2'>
+                            1. <strong>로그 파일 무결성 검사(Validation):</strong> 로그가 수정되거나 삭제되지 않았음을 암호화 방식으로 증명합니다 (A).
+                            <br>2. <strong>AWS Config & KMS:</strong> 로그가 안전하게 암호화(KMS)되어 저장되는지 지속적으로 감시(Config)해야 합니다 (E).
+                            </p>
+                        </div>
+                    </div>`
+            },
+            {
+                id: 27,
+                question: "회사는 Amazon RDS에서 지원하는 웹 애플리케이션을 실행합니다. 새로운 데이터베이스 관리자가 실수로 데이터베이스 테이블의 정보를 편집하여 데이터 손실을 일으켰습니다. 이러한 유형의 사고를 복구하기 위해 회사는 지난 30일 이내에 변경 사항이 발생하기 5분 전의 상태로 데이터베이스를 복원할 수 있는 기능을 원합니다. 이 요구 사항을 충족하기 위해 솔루션 설계자가 설계에 포함해야 하는 기능은 무엇입니까?",
+                options: [
+                    "A. 읽기 전용 복제본",
+                    "B. 수동 스냅샷",
+                    "C. 자동 백업",
+                    "D. 다중 AZ 배포"
+                ],
+                answer: "C",
+                concept: "RDS Point-In-Time Recovery",
+                note: `
+                    <div class='space-y-2'>
+                        <div>
+                            <strong class='text-green-600'>✅ 정답 분석 (C):</strong>
+                            <p class='text-gray-700 ml-2'>RDS의 <strong>자동 백업(Automated Backups)</strong>을 활성화하면 트랜잭션 로그를 5분마다 S3에 저장하여, 보존 기간(최대 35일) 내의 <strong>특정 시점 복구(Point-In-Time Recovery)</strong>가 가능합니다. '사고 발생 5분 전'으로 되돌리려면 이 기능이 필수입니다.</p>
+                        </div>
+                        <div class='mt-2'>
+                            <strong class='text-red-500'>❌ 오답 분석:</strong>
+                            <ul class='list-disc pl-5 text-gray-600 text-sm mt-1'>
+                                <li><strong>B:</strong> 수동 스냅샷은 사용자가 찍은 시점으로만 복구 가능하며, 5분 단위의 정밀한 복구는 불가능합니다.</li>
+                            </ul>
+                        </div>
+                    </div>`
+            },
+            {
+                id: 28,
+                question: "소셜 미디어 회사는 사용자가 웹사이트에 이미지를 업로드할 수 있도록 합니다. 웹사이트는 Amazon EC2 인스턴스에서 실행됩니다. 업로드 요청 중에 웹 사이트는 이미지의 크기를 표준 크기로 조정하고 크기가 조정된 이미지를 Amazon S3에 저장합니다. 사용자가 웹사이트에 대한 느린 업로드 요청을 경험하고 있습니다. 회사는 애플리케이션 내 결합을 줄이고 웹사이트 성능을 개선해야 합니다. 솔루션 설계자는 이미지 업로드를 위해 가장 운영 효율적인 프로세스를 설계해야 합니다. 이러한 요구 사항을 충족하기 위해 솔루션 설계자는 어떤 작업 조합을 취해야 합니까? (2개를 선택하십시오.)",
+                options: [
+                    "A. S3 Glacier에 이미지를 업로드하도록 애플리케이션을 구성합니다.",
+                    "B. 원본 이미지를 Amazon S3에 업로드하도록 웹 서버를 구성합니다.",
+                    "C. 미리 서명된 URL을 사용하여 각 사용자의 브라우저에서 Amazon S3로 이미지를 직접 업로드하도록 애플리케이션을 구성합니다.",
+                    "D. 이미지가 업로드 될 때 AWS Lambda 함수를 호출하도록 S3 이벤트 알림을 구성합니다. 함수를 사용하여 이미지 크기를 조정 합니다.",
+                    "E. 업로드된 이미지의 크기를 조정하기 위해 일정에 따라 AWS Lambda 함수를 호출하는 Amazon EventBridge(Amazon CloudWatch Events) 규칙을 생성합니다."
+                ],
+                answer: ["C", "D"],
+                concept: "S3 Presigned URL & Lambda Trigger",
+                note: `
+                    <div class='space-y-2'>
+                        <div>
+                            <strong class='text-green-600'>✅ 정답 분석 (C, D):</strong>
+                            <p class='text-gray-700 ml-2'>
+                            1. <strong>성능 개선 (C):</strong> 웹 서버(EC2)를 거치지 않고 사용자 브라우저에서 S3로 직접 업로드하면 부하가 줄고 속도가 빨라집니다. 이를 위해 <strong>Presigned URL</strong>을 사용합니다.
+                            <br>2. <strong>결합 감소 (D):</strong> 업로드 완료 시 S3 이벤트 알림으로 <strong>Lambda</strong>를 트리거하여 비동기로 이미지를 처리하면 웹 서버와 이미지 처리 로직의 결합을 끊을 수 있습니다.
+                            <br>*(참고: PDF 원본 정답표는 B, D일 수 있으나, 현대적 아키텍처 관점 및 성능 개선 목적상 C가 더 적합합니다. 다만 PDF 풀이를 따른다면 B, D가 정답일 수 있으니 주의 바랍니다. 여기서는 효율적인 설계를 묻는 질문 의도에 맞춰 C, D로 설명합니다.)*</p>
+                        </div>
+                    </div>`
+            },
+            {
+                id: 29,
+                question: "한 회사는 AWS Direct Connect 연결을 사용하여 코로케이션 시설에서 us-east-1 리전의 Amazon S3 버킷으로 1PB의 데이터를 복사했습니다. 이제 회사는 us-west-2 리전의 다른 S3 버킷에 데이터를 복사하려고 합니다. 이 요구 사항을 충족하는 솔루션은 무엇입니까?",
+                options: [
+                    "A. AWS Snowball Edge Storage Optimized 디바이스를 사용하여 코로케이션 시설에서 us-west- 2로 데이터 복사",
+                    "B. S3 콘솔을 사용하여 소스 S3 버킷의 데이터를 대상 S3 버킷으로 복사",
+                    "C. S3 Transfer Acceleration 및 S3 copy-object 명령을 사용하여 원본 S3 버킷에서 대상 S3 버킷으로 데이터 복사",
+                    "D. S3 교차 리전 복제 구성을 추가하여 소스 S3 버킷에서 대상 S3 버킷으로 데이터를 복사"
+                ],
+                answer: "D",
+                concept: "S3 Cross-Region Replication (CRR)",
+                note: `
+                    <div class='space-y-2'>
+                        <div>
+                            <strong class='text-green-600'>✅ 정답 분석 (D):</strong>
+                            <p class='text-gray-700 ml-2'>이미 데이터가 AWS(us-east-1)에 올라와 있습니다. AWS 리전 간에 대량의 데이터를 복사하는 가장 효율적이고 관리형인 방법은 <strong>교차 리전 복제(Cross-Region Replication, CRR)</strong>를 설정하는 것입니다. (기존 데이터 복제를 위해서는 배치 복제 기능을 사용할 수 있습니다.)</p>
+                        </div>
+                        <div class='mt-2'>
+                            <strong class='text-red-500'>❌ 오답 분석:</strong>
+                            <ul class='list-disc pl-5 text-gray-600 text-sm mt-1'>
+                                <li><strong>A:</strong> 이미 클라우드에 있는 데이터를 다시 Snowball로 옮기는 것은 비효율적입니다.</li>
+                            </ul>
+                        </div>
+                    </div>`
+            },
+            {
+                id: 30,
+                question: "회사에 사내 네트워크가 있고 AWS 클라우드에 3개의 VPC가 있습니다. 회사에는 개발, 테스트 및 프로덕션에 대해 각각 하나의 VPC가 있습니다. 회사는 시스템 관리자가 회사 네트워크에서 VPC의 Amazon EC2 인스턴스에 대한 원격 커맨드라인(command-line) 액세스를 안전하게 얻기를 원합니다. 어떤 솔루션이 이러한 요구 사항을 가장 비용 효율적으로 충족합니까?",
+                options: [
+                    "A. AWS VPN을 사용하여 회사 네트워크와 세 개의 VPC 간에 VPN 연결을 설정합니다. 원격 데스크톱 프로토콜(RDP) 또는 VPN 연결을 통한 SSH를 사용하여 원격으로 EC2 인스턴스에 액세스합니다.",
+                    "B. AWS Systems Manager를 신뢰하는 인스턴스 프로파일을 사용하도록 EC2 인스턴스를 구성합니다. Systems Manager 세션 관리자를 사용하여 EC2 인스턴스에 대한 콘솔 액세스 권한을 얻습니다.",
+                    "C. 새 VPC 생성 AWS Marketplace에서 가상 라우터 구매 및 설치 기업 네트워크에서 이 라우터로 VPN 연결을 설정합니다. '외부에서 다른 세 VPC로 다른 VPN 연결을 설정합니다.",
+                    "D. 새 VPC 생성 새 VPC에 대한 VPN 연결을 설정합니다. 새 VPC와 기존 VPC 간의 피어링 연결 구성 새 VPC에서 EC2 배스천 호스트를 생성하여 점프 박스 역할을 다른 VPC의 EC2 인스턴스 배스천 호스트에 대한 VPN 연결을 통해 원격 데스크톱 프로토콜(RDP) 또는 SSH 사용"
+                ],
+                answer: "A",
+                concept: "VPN Connectivity",
+                note: `
+                    <div class='space-y-2'>
+                        <div>
+                            <strong class='text-green-600'>✅ 정답 분석 (A):</strong>
+                            <p class='text-gray-700 ml-2'>사내 네트워크를 AWS VPC로 확장하여, 관리자가 기존에 사용하던 RDP/SSH 도구를 그대로 사용하게 하려면 <strong>Site-to-Site VPN</strong> 연결이 적합합니다. 비용 효율성을 따졌을 때 VPN이 전용선(Direct Connect)보다 저렴합니다.
+                            <br>*(참고: 최신 모범 사례로는 포트를 열지 않는 Systems Manager Session Manager(B)가 더 권장되지만, PDF의 정답표는 A를 가리키고 있습니다. 네트워크 연결 관점에서 A가 답입니다.)*</p>
+                        </div>
+                    </div>`
+            }
+        ];
+        
+        // --- STATE & LOGIC ---
+        let activeQuizData = [];
+        let currentQuestionIndex = 0;
+        let submittedAnswers = {};
+        let currentSelections = {}; 
+        let totalScore = 0;
+        let isRandomMode = false;
+
+        const screenStart = document.getElementById('screen-start');
+        const screenQuiz = document.getElementById('screen-quiz');
+        const screenResult = document.getElementById('screen-result');
+        const screenReview = document.getElementById('screen-review');
+        const screenCore = document.getElementById('screen-core');
+        
+        const qSeqNum = document.getElementById('q-seq-num');
+        const qOriginalId = document.getElementById('q-original-id');
+        const qText = document.getElementById('q-text');
+        const qOptions = document.getElementById('q-options');
+        const qInstruction = document.getElementById('q-instruction');
+        const feedbackArea = document.getElementById('feedback-area');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const feedbackContent = document.getElementById('feedback-content');
+        const feedbackIcon = document.getElementById('feedback-icon');
+        const statusBadge = document.getElementById('status-badge');
+        
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const currentScoreSpan = document.getElementById('current-score');
+        const totalCountSpan = document.getElementById('total-count');
+
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+        const btnCheck = document.getElementById('btn-check');
+        const btnFinish = document.getElementById('btn-finish');
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        window.onload = function() {
+            totalCountSpan.innerText = sourceQuizData.length;
+            activeQuizData = [...sourceQuizData]; 
+            loadHistory();
+            updateScoreDisplay();
+        };
+
+        function loadHistory() {
+            const saved = localStorage.getItem('aws_saa_history_v3');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                submittedAnswers = parsed.submitted || {};
+                recalculateScore();
+            }
+        }
+
+        function saveHistory() {
+            if(isRandomMode) return; 
+            localStorage.setItem('aws_saa_history_v3', JSON.stringify({
+                submitted: submittedAnswers
+            }));
+            updateScoreDisplay();
+        }
+
+        function recalculateScore() {
+            let correctCount = 0;
+            sourceQuizData.forEach(q => {
+                if(submittedAnswers[q.id]) {
+                    if(checkIsCorrect(q.answer, submittedAnswers[q.id])) {
+                        correctCount++;
+                    }
+                }
+            });
+            totalScore = correctCount;
+        }
+
+        function checkIsCorrect(correct, user) {
+            if (Array.isArray(correct)) {
+                return Array.isArray(user) && 
+                       user.length === correct.length && 
+                       user.every(v => correct.includes(v));
+            }
+            return correct === user;
+        }
+
+        function resetHistory() {
+            if(confirm('모든 학습 기록이 초기화됩니다. 계속하시겠습니까?')) {
+                localStorage.removeItem('aws_saa_history_v3');
+                submittedAnswers = {};
+                currentSelections = {};
+                totalScore = 0;
+                location.reload();
+            }
+        }
+
+        function updateScoreDisplay() {
+            currentScoreSpan.innerText = totalScore;
+        }
+
+        function startQuiz() {
+            const mode = document.querySelector('input[name="quizMode"]:checked').value;
+            isRandomMode = (mode === 'random');
+
+            currentQuestionIndex = 0;
+            currentSelections = {};
+            
+            activeQuizData = JSON.parse(JSON.stringify(sourceQuizData)); 
+
+            if (isRandomMode) {
+                shuffleArray(activeQuizData);
+                activeQuizData.forEach(q => {
+                    let parsedOptions = q.options.map(opt => {
+                        const match = opt.match(/^([A-Z])\.\s*(.*)/);
+                        if (match) {
+                            return { originalLabel: match[1], text: match[2] };
+                        }
+                        return { originalLabel: '?', text: opt }; 
+                    });
+                    shuffleArray(parsedOptions);
+                    const labels = ['A', 'B', 'C', 'D', 'E', 'F'];
+                    let newAnswer = [];
+                    let originalAnswers = Array.isArray(q.answer) ? q.answer : [q.answer];
+
+                    q.options = parsedOptions.map((item, index) => {
+                        const newLabel = labels[index];
+                        if (originalAnswers.includes(item.originalLabel)) {
+                            newAnswer.push(newLabel);
+                        }
+                        return `${newLabel}. ${item.text}`;
+                    });
+                    newAnswer.sort();
+                    q.answer = (newAnswer.length > 1) ? newAnswer : newAnswer[0];
+                });
+                submittedAnswers = {};
+                totalScore = 0;
+                updateScoreDisplay();
+            } else {
+                loadHistory(); 
+            }
+
+            screenStart.classList.add('hidden');
+            screenQuiz.classList.remove('hidden');
+            renderQuestion();
+        }
+
+        function showSection(id) {
+            [screenStart, screenQuiz, screenResult, screenReview, screenCore].forEach(el => el.classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+            if(id === 'screen-review') generateReviewList();
+            if(id === 'screen-core') generateCoreList();
+        }
+
+        function renderQuestion() {
+            const q = activeQuizData[currentQuestionIndex];
+            const isSubmitted = submittedAnswers.hasOwnProperty(q.id);
+            const userFinalAns = submittedAnswers[q.id];
+            
+            qSeqNum.innerText = currentQuestionIndex + 1;
+            qOriginalId.innerText = String(q.id).padStart(2, '0');
+            qText.innerText = q.question;
+            qOptions.innerHTML = '';
+            feedbackArea.classList.add('hidden');
+            statusBadge.innerHTML = '';
+
+            btnPrev.disabled = currentQuestionIndex === 0;
+            
+            if (isSubmitted) {
+                btnCheck.classList.add('hidden');
+                if (currentQuestionIndex === activeQuizData.length - 1) {
+                    btnNext.classList.add('hidden');
+                    btnFinish.classList.remove('hidden');
+                } else {
+                    btnNext.classList.remove('hidden');
+                    btnFinish.classList.add('hidden');
+                }
+                showFeedback(q, userFinalAns);
+            } else {
+                currentSelections[q.id] = []; 
+                btnCheck.classList.remove('hidden');
+                btnNext.classList.add('hidden');
+                btnFinish.classList.add('hidden');
+            }
+
+            const isMulti = Array.isArray(q.answer);
+            if (isMulti) {
+                qInstruction.innerText = `* ${q.answer.length}개를 선택하십시오.`;
+                qInstruction.classList.remove('hidden');
+            } else {
+                qInstruction.classList.add('hidden');
+            }
+
+            q.options.forEach(optText => {
+                const optLetter = optText.charAt(0);
+                const inputType = isMulti ? 'checkbox' : 'radio';
+                let isChecked = false;
+                if (isSubmitted) {
+                    isChecked = Array.isArray(userFinalAns) ? userFinalAns.includes(optLetter) : userFinalAns === optLetter;
+                }
+
+                const label = document.createElement('label');
+                label.className = `option-label flex items-start p-4 rounded-lg border border-gray-200 mb-3 ${isChecked ? 'selected' : ''}`;
+                
+                if (isSubmitted) {
+                    label.style.cursor = 'default';
+                    const isCorrect = Array.isArray(q.answer) ? q.answer.includes(optLetter) : q.answer === optLetter;
+                    if (isChecked) {
+                        if (isCorrect) label.classList.add('correct-answer');
+                        else label.classList.add('wrong-answer');
+                    } else if (isCorrect) {
+                        label.classList.add('missed-answer');
+                    }
+                }
+
+                label.innerHTML = `
+                    <input type="${inputType}" name="q${q.id}" value="${optLetter}" 
+                        class="option-input hidden"
+                        ${isChecked ? 'checked' : ''}
+                        ${isSubmitted ? 'disabled' : ''}
+                        onchange="handleSelection(${q.id}, '${optLetter}', ${isMulti}, this)">
+                    <div class="option-content-wrapper flex-1">
+                        <span class="font-bold mr-2 ${isSubmitted ? '' : 'text-blue-600'}">${optLetter}.</span>
+                        <span class="text-gray-700 text-sm leading-relaxed">${optText.substring(2)}</span>
+                    </div>
+                `;
+                qOptions.appendChild(label);
+            });
+
+            const progressPercent = ((currentQuestionIndex + 1) / activeQuizData.length) * 100;
+            progressBar.style.width = `${progressPercent}%`;
+            progressText.innerText = `${currentQuestionIndex + 1} / ${activeQuizData.length}`;
+        }
+
+        function handleSelection(qid, letter, isMulti, inputEl) {
+            const labels = document.querySelectorAll(`input[name="q${qid}"]`);
+            labels.forEach(input => {
+                if(!isMulti) input.parentElement.classList.remove('selected');
+            });
+            if(inputEl.checked) inputEl.parentElement.classList.add('selected');
+            else inputEl.parentElement.classList.remove('selected');
+
+            if (isMulti) {
+                let current = currentSelections[qid] || [];
+                if (inputEl.checked) {
+                    if (!current.includes(letter)) current.push(letter);
+                } else {
+                    current = current.filter(l => l !== letter);
+                }
+                currentSelections[qid] = current;
+            } else {
+                currentSelections[qid] = letter;
+            }
+        }
+
+        function checkAnswer() {
+            const q = activeQuizData[currentQuestionIndex];
+            const userSel = currentSelections[q.id];
+            
+            if (!userSel || (Array.isArray(userSel) && userSel.length === 0)) {
+                alert("답을 선택해주세요.");
+                return;
+            }
+
+            submittedAnswers[q.id] = Array.isArray(userSel) ? [...userSel].sort() : userSel;
+            if(checkIsCorrect(q.answer, submittedAnswers[q.id])) totalScore++;
+            
+            saveHistory();
+            renderQuestion();
+        }
+
+        function showFeedback(q, userAns) {
+            feedbackArea.classList.remove('hidden');
+            const isCorrect = checkIsCorrect(q.answer, userAns);
+
+            if (isCorrect) {
+                feedbackArea.className = "bg-green-50 p-6 border-t border-green-200 mt-4 fade-in rounded-b-xl";
+                feedbackTitle.innerText = "정답입니다!";
+                feedbackTitle.className = "font-bold text-lg text-green-800";
+                feedbackIcon.className = "fas fa-check-circle text-green-600 mr-2 text-xl";
+                statusBadge.innerHTML = '<span class="bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded">정답</span>';
+            } else {
+                feedbackArea.className = "bg-red-50 p-6 border-t border-red-200 mt-4 fade-in rounded-b-xl";
+                feedbackTitle.innerText = "오답입니다.";
+                feedbackTitle.className = "font-bold text-lg text-red-800";
+                feedbackIcon.className = "fas fa-times-circle text-red-600 mr-2 text-xl";
+                statusBadge.innerHTML = '<span class="bg-red-100 text-red-800 text-xs font-bold px-2 py-1 rounded">오답</span>';
+            }
+            feedbackContent.innerHTML = q.note;
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < activeQuizData.length - 1) {
+                currentQuestionIndex++;
+                renderQuestion();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuestion();
+            }
+        }
+
+        function finishQuiz() {
+            calculateFinalResult();
+            showSection('screen-result');
+        }
+
+        function calculateFinalResult() {
+            document.getElementById('score-text').innerText = totalScore;
+            const iconDiv = document.getElementById('score-icon');
+            if (totalScore >= 21) { 
+                iconDiv.innerHTML = '<i class="fas fa-trophy text-yellow-400"></i>';
+                iconDiv.innerHTML += '<div class="text-xl font-bold text-green-600 mt-2">합격권 (70% 이상)</div>';
+            } else {
+                iconDiv.innerHTML = '<i class="fas fa-book-reader text-gray-400"></i>';
+                iconDiv.innerHTML += '<div class="text-xl font-bold text-gray-600 mt-2">더 분발하세요!</div>';
+            }
+        }
+
+        function generateReviewList() {
+            const list = document.getElementById('review-list');
+            list.innerHTML = '';
+            
+            const wrongQuestions = activeQuizData.filter(q => {
+                if (!submittedAnswers[q.id]) return false;
+                return !checkIsCorrect(q.answer, submittedAnswers[q.id]);
+            });
+
+            if (wrongQuestions.length === 0) {
+                list.innerHTML = '<div class="text-center text-gray-500 py-10">틀린 문제가 없습니다. 훌륭합니다!</div>';
+                return;
+            }
+
+            wrongQuestions.forEach(q => {
+                const userAns = submittedAnswers[q.id];
+                const userAnsDisplay = Array.isArray(userAns) ? userAns.join(', ') : userAns;
+                const correctAnsDisplay = Array.isArray(q.answer) ? q.answer.join(', ') : q.answer;
+
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-lg shadow p-6 border-l-4 border-red-500";
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <span class="font-bold text-red-600 mr-2">Q${q.id}</span>
+                            <span class="text-xs text-gray-400">(ID: ${q.id})</span>
+                        </div>
+                    </div>
+                    <p class="mb-4 text-gray-800 font-medium">${q.question}</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm bg-gray-50 p-4 rounded mb-3">
+                        <div>
+                            <span class="block text-gray-500 text-xs">선택한 답</span>
+                            <span class="font-bold text-red-600 text-lg">${userAnsDisplay}</span>
+                        </div>
+                        <div>
+                            <span class="block text-gray-500 text-xs">정답</span>
+                            <span class="font-bold text-green-600 text-lg">${correctAnsDisplay}</span>
+                        </div>
+                    </div>
+                    <div class="text-sm text-gray-700 bg-gray-50 p-4 rounded border border-gray-100">
+                        ${q.note}
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        function generateCoreList() {
+            const list = document.getElementById('core-list');
+            list.innerHTML = '';
+
+            // Use source data for core notes to keep order, or active to match quiz flow
+            // Here using active to match the quiz flow user just experienced
+            activeQuizData.forEach(q => {
+                const item = document.createElement('div');
+                item.className = "px-6 py-4 flex items-start hover:bg-gray-50 transition";
+                item.innerHTML = `
+                    <div class="flex-shrink-0 w-12 text-center mr-4">
+                        <span class="block text-xs text-gray-400">Q.${qSeqNum ? activeQuizData.indexOf(q)+1 : q.id}</span>
+                        <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-sm mx-auto mt-1">${q.id}</div>
+                    </div>
+                    <div class="flex-grow">
+                        <h4 class="text-sm font-bold text-gray-900 mb-1">${q.concept || '핵심 개념'}</h4>
+                        <p class="text-xs text-gray-500 mb-2">${q.question.substring(0, 50)}...</p>
+                        <div class="text-sm text-gray-700 bg-white p-2 rounded border border-gray-100">
+                            ${q.note}
+                        </div>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+    </script>
+</body>
+</html>
