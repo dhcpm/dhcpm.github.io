@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 대구보건대학교 노동조합 해외연수 안내 및 신청</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+        }
+        .hero-section {
+            background-image: linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.5)), url('https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .day-badge {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        }
+        .smooth-scroll {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="smooth-scroll">
+
+    <!-- 상단 Hero 섹션 & 신청 버튼 -->
+    <header class="hero-section text-white min-h-[70vh] flex flex-col items-center justify-center text-center px-4 relative">
+        <div class="inline-block bg-blue-600/20 backdrop-blur-md border border-blue-400/30 rounded-full px-4 py-1.5 mb-6 text-sm font-medium tracking-wider text-blue-100">
+            2026학년도 대구보건대학교 노동조합
+        </div>
+        <h1 class="text-4xl md:text-6xl font-black mb-4 leading-tight">
+            일본 시즈오카·하코네<br>해외연수
+        </h1>
+        <p class="text-xl md:text-2xl font-light mb-10 text-gray-200">
+            2026. 05. 22 (금) ~ 05. 25 (월) / 3박 4일
+        </p>
+        
+        <!-- 상단 신청 버튼 -->
+        <button onclick="openApplicationForm()" class="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-200 bg-blue-600 border border-transparent rounded-full shadow-xl hover:bg-blue-700 hover:shadow-2xl hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600">
+            <i class="fa-solid fa-pen-to-square mr-2 group-hover:animate-bounce"></i>
+            신청서 작성하기
+        </button>
+
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <i class="fa-solid fa-chevron-down text-3xl opacity-70"></i>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 py-16">
+        
+        <!-- 연수 개요 -->
+        <section class="mb-20">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-slate-800">연수 개요</h2>
+                <div class="h-1 w-20 bg-blue-600 mx-auto mt-4 rounded"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center hover:shadow-md transition">
+                    <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                        <i class="fa-solid fa-plane"></i>
+                    </div>
+                    <h3 class="font-semibold text-slate-500 text-sm mb-1">방문 지역</h3>
+                    <p class="font-bold text-lg text-slate-800">시즈오카, 하코네, 후지산</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center hover:shadow-md transition">
+                    <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                        <i class="fa-regular fa-calendar-check"></i>
+                    </div>
+                    <h3 class="font-semibold text-slate-500 text-sm mb-1">연수 기간</h3>
+                    <p class="font-bold text-lg text-slate-800">5/22(금) ~ 5/25(월)</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center hover:shadow-md transition">
+                    <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <h3 class="font-semibold text-slate-500 text-sm mb-1">참여 인원</h3>
+                    <p class="font-bold text-lg text-slate-800">30명 내외</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center hover:shadow-md transition">
+                    <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                        <i class="fa-solid fa-wallet"></i>
+                    </div>
+                    <h3 class="font-semibold text-slate-500 text-sm mb-1">자기부담금</h3>
+                    <p class="font-bold text-lg text-slate-800">35~40만원</p>
+                </div>
+            </div>
+
+            <!-- 가족동반 및 1인실 사용 안내 -->
+            <div class="mt-8 bg-blue-50 border border-blue-200 rounded-2xl p-6 flex items-start gap-4">
+                <div class="text-blue-500 text-2xl mt-1">
+                    <i class="fa-solid fa-circle-info"></i>
+                </div>
+                <div>
+                    <h4 class="font-bold text-blue-900 text-lg mb-2">가족동반 및 1인실 사용 안내</h4>
+                    <p class="text-blue-800 mb-3">
+                        가족동반 참여가 가능하오나, 동반 가족의 경우 1차 예상 경비인 <strong>1인당(성인 기준) 1,590,000원</strong>을 전액 자비로 지불하셔야 합니다.
+                    </p>
+                    <div class="bg-white/60 p-4 rounded-lg border border-red-200 mt-2 shadow-sm">
+                        <p class="text-red-600 font-bold flex items-center text-sm md:text-base mb-1">
+                            <i class="fa-solid fa-triangle-exclamation mr-2"></i> [필독] 비용 변동 관련 안내
+                        </p>
+                        <p class="text-slate-700 text-sm leading-relaxed">
+                            가족 동반에 따른 최종 확정 비용과 <strong>1인실 사용 시 발생하는 추가 비용</strong>은 
+                            <span class="bg-yellow-100 font-bold text-red-600 px-1">추후 호텔 예약이 완료되는 시점에 다시 공지될 예정</span>입니다. 
+                            호텔 예약 상황 및 현지 사정에 따라 안내된 예상 비용에서 <strong>변경될 수 있음을 반드시 양지해 주시기 바랍니다.</strong>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 상세 일정 -->
+        <section class="mb-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-slate-800">상세 일정안내</h2>
+                <div class="h-1 w-20 bg-blue-600 mx-auto mt-4 rounded"></div>
+            </div>
+
+            <div class="space-y-12">
+                
+                <!-- 1일차 -->
+                <article class="bg-white rounded-3xl shadow-md overflow-hidden flex flex-col lg:flex-row border border-slate-100">
+                    <div class="lg:w-1/3 relative h-64 lg:h-auto hidden lg:block">
+                        <img src="https://images.unsplash.com/photo-1578637387939-43c525550085?q=80&w=1000&auto=format&fit=crop" alt="미호노 마츠바라" class="w-full h-full object-cover">
+                        <div class="absolute top-4 left-4 day-badge text-white px-4 py-1.5 rounded-full font-bold text-sm shadow-lg">
+                            1일차 (5/22 금)
+                        </div>
+                    </div>
+                    <div class="lg:w-2/3 p-8">
+                        <div class="flex items-center text-blue-600 font-semibold mb-3">
+                            <i class="fa-solid fa-location-dot mr-2"></i> 부산 → 시즈오카 → 아타미
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4 text-slate-800">시즈오카현의 아름다움을 마주하다</h3>
+                        <ul class="space-y-3 text-slate-600 mb-6">
+                            <li class="flex items-start"><i class="fa-solid fa-check text-blue-500 mt-1 mr-3"></i> 07:00 김해국제공항 집결 후 09:05 출국 (BX1645)</li>
+                            <li class="flex items-start"><i class="fa-solid fa-check text-blue-500 mt-1 mr-3"></i> 후지산을 조망할 수 있는 <strong>시즈오카현청 전망대</strong></li>
+                            <li class="flex items-start"><i class="fa-solid fa-check text-blue-500 mt-1 mr-3"></i> 유네스코 세계유산, 바다와 소나무의 절경 <strong>미호노 마츠바라</strong></li>
+                            <li class="flex items-start"><i class="fa-solid fa-check text-blue-500 mt-1 mr-3"></i> 광활한 녹차밭과 후지산의 조화 <strong>오부치사사바</strong></li>
+                        </ul>
+                        
+                        <div class="bg-slate-50 p-4 rounded-xl flex flex-col sm:flex-row gap-4 text-sm text-slate-600">
+                            <span><i class="fa-solid fa-utensils text-orange-500 mr-1"></i> 중: 현지식 / 석: 호텔식</span>
+                            <span><i class="fa-solid fa-hotel text-indigo-500 mr-1"></i> 숙소: 아타미 일대 4성급 호텔 <br><span class="text-xs text-indigo-400 ml-5">(※ 세부 호텔은 현지 사정에 따라 변경될 수 있습니다)</span></span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- 2일차 -->
+                <article class="bg-white rounded-3xl shadow-md overflow-hidden flex flex-col lg:flex-row-reverse border border-slate-100">
+                    <div class="lg:w-1/3 relative h-64 lg:h-auto hidden lg:block">
+                        <img src="https://images.unsplash.com/photo-1512413316925-fd45620ce910?q=80&w=1000&auto=format&fit=crop" alt="하코네 신사" class="w-full h-full object-cover">
+                        <div class="absolute top-4 right-4 day-badge text-white px-4 py-1.5 rounded-full font-bold text-sm shadow-lg">
+                            2일차 (5/23 토)
+                        </div>
+                    </div>
+                    <div class="lg:w-2/3 p-8">
+                        <div class="flex items-center text-blue-600 font-semibold mb-3">
+                            <i class="fa-solid fa-location-dot mr-2"></i> 아타미 → 이즈 → 미시마 → 하코네
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4 text-slate-800">이즈반도와 하코네의 자연을 걷다</h3>
+                        <ul class="space-y-3 text-slate-600 mb-6">
+                            <li class="flex items-start"><i class="fa-solid fa-check text-blue-500 mt-1 mr-3"></i> 일본 최초 매화명소 <strong>아타미 매화원</strong> 및 친수공원 산책</li>
+                            <li class="flex items-start"><i class="fa-solid fa-check text-blue-500 mt-1 mr-3"></i> 1,200년 역사의 온천 발원지 <strong>슈젠지</strong> 탐방</li>
+                            <li class="flex items-start"><i class="fa-solid fa-check text-blue-500 mt-1 mr-3"></i> 일본 최장(400m) 보행자 현수교 <strong>미시마 스카이 워크</strong></li>
+                            <li class="flex items-start"><i class="fa-solid fa-check text-blue-500 mt-1 mr-3"></i> 아시노코 <strong>하코네 유람선</strong> 및 유서 깊은 <strong>하코네 신사</strong></li>
+                            <li class="flex items-start"><i class="fa-solid fa-check text-blue-500 mt-1 mr-3"></i> 3천년 화산 활동의 신비, <strong>오와쿠다니 유황계곡</strong></li>
+                        </ul>
+
+                        <div class="bg-slate-50 p-4 rounded-xl flex flex-col sm:flex-row gap-4 text-sm text-slate-600">
+                            <span><i class="fa-solid fa-utensils text-orange-500 mr-1"></i> 조: 호텔식 / 중: 현지식 / 석: 호텔식</span>
+                            <span><i class="fa-solid fa-hotel text-indigo-500 mr-1"></i> 숙소: 하코네 인근 온천 호텔 <br><span class="text-xs text-indigo-400 ml-5">(※ 세부 호텔은 현지 사정에 따라 변경될 수 있습니다)</span></span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- 3일차 -->
+                <article class="bg-white rounded-3xl shadow-md overflow-hidden flex flex-col lg:flex-row border border-slate-100">
+                    <div class="lg:w-1/3 relative h-64 lg:h-auto hidden lg:block">
+                        <img src="https://images.unsplash.com/photo-1526481280693-3bfa7568e0f3?q=80&w=1000&auto=format&fit=crop" alt="아라쿠라야마 센겐신사" class="w-full h-full object-cover">
+                        <div class="absolute top-4 left-4 day-badge text-white px-4 py-1.5 rounded-full font-bold text-sm shadow-lg">
+                            3일차 (5/24 일)
+                        </div>
+                    </div>
+                    <div class="lg:w-2/3 p-8">
+                        <div class="flex items-center text-blue-600 font-semibold mb-3">
+                            <i class="fa-solid fa-location-dot mr-2"></i> 하코네 → 카와구치
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4 text-slate-800">후지산이 선사하는 최고의 파노라마</h3>
+                        <ul class="space-y-3 text-slate-600 mb-6">
+                            <li class="flex items-start"><i class="fa-solid fa-check text-blue-500 mt-1 mr-3"></i> 붉은 오중탑과 후지산의 절경 <strong>아라쿠라야마 센겐신사</strong></li>
+                            <li class="flex items-start"><i class="fa-solid fa-check text-blue-500 mt-1 mr-3"></i> 후지산의 위용을 느끼는 <strong>파노라마 로프웨이</strong> 탑승</li>
+                            <li class="flex items-start"><i class="fa-solid fa-check text-blue-500 mt-1 mr-3"></i> 8개의 신비로운 용출연못 <strong>오시노핫카이</strong></li>
+                            <li class="flex items-start"><i class="fa-solid fa-check text-blue-500 mt-1 mr-3"></i> 호수와 산이 어우러진 사진 명소 <strong>오이시공원</strong></li>
+                        </ul>
+
+                        <div class="bg-slate-50 p-4 rounded-xl flex flex-col sm:flex-row gap-4 text-sm text-slate-600">
+                            <span><i class="fa-solid fa-utensils text-orange-500 mr-1"></i> 조: 호텔식 / 중: 현지식 / 석: 호텔식</span>
+                            <span><i class="fa-solid fa-hotel text-indigo-500 mr-1"></i> 숙소: 카와구치코 일대 호텔 <br><span class="text-xs text-indigo-400 ml-5">(※ 세부 호텔은 현지 사정에 따라 변경될 수 있습니다)</span></span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- 4일차 -->
+                <article class="bg-white rounded-3xl shadow-md overflow-hidden flex flex-col lg:flex-row-reverse border border-slate-100">
+                    <div class="lg:w-1/3 relative h-64 lg:h-auto hidden lg:block">
+                        <img src="https://images.unsplash.com/photo-1501633596707-cceb3ce96f61?q=80&w=1000&auto=format&fit=crop" alt="호라이바시" class="w-full h-full object-cover">
+                        <div class="absolute top-4 right-4 day-badge text-white px-4 py-1.5 rounded-full font-bold text-sm shadow-lg">
+                            4일차 (5/25 월)
+                        </div>
+                    </div>
+                    <div class="lg:w-2/3 p-8">
+                        <div class="flex items-center text-blue-600 font-semibold mb-3">
+                            <i class="fa-solid fa-location-dot mr-2"></i> 카와구치 → 시즈오카 → 부산
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4 text-slate-800">아쉬움을 뒤로하고 일상으로</h3>
+                        <ul class="space-y-3 text-slate-600 mb-6">
+                            <li class="flex items-start"><i class="fa-solid fa-check text-blue-500 mt-1 mr-3"></i> 일본관광공사 지정 면세점 방문</li>
+                            <li class="flex items-start"><i class="fa-solid fa-check text-blue-500 mt-1 mr-3"></i> 세계에서 가장 긴 약 900m 목조 다리 <strong>호라이바시</strong> 산책</li>
+                            <li class="flex items-start"><i class="fa-solid fa-check text-blue-500 mt-1 mr-3"></i> 시즈오카 공항으로 이동 및 수속</li>
+                            <li class="flex items-start"><i class="fa-solid fa-check text-blue-500 mt-1 mr-3"></i> 11:50 시즈오카 출발 (BX1635) → 14:00 부산 도착 및 해산</li>
+                        </ul>
+
+                        <div class="bg-slate-50 p-4 rounded-xl flex flex-wrap gap-4 text-sm text-slate-600">
+                            <span><i class="fa-solid fa-utensils text-orange-500 mr-1"></i> 조: 호텔식</span>
+                        </div>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 하단 Call to Action & 신청 버튼 -->
+    <section class="bg-blue-900 py-16 px-4 text-center mt-12 border-t-8 border-blue-500">
+        <div class="max-w-3xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">지금 바로 연수를 신청하세요!</h2>
+            <p class="text-blue-200 mb-10 text-lg">
+                참여를 희망하시는 조합원께서는<br class="hidden md:block">
+                아래 버튼을 눌러 신청서를 작성해 주시기 바랍니다.
+            </p>
+            
+            <!-- 하단 신청 버튼 -->
+            <button onclick="openApplicationForm()" class="group relative inline-flex items-center justify-center px-10 py-5 text-xl font-bold text-blue-900 transition-all duration-200 bg-yellow-400 border border-transparent rounded-full shadow-2xl hover:bg-yellow-300 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400 focus:ring-offset-blue-900">
+                <i class="fa-solid fa-paper-plane mr-3 group-hover:translate-x-1 transition-transform"></i>
+                연수 신청서 작성하기
+            </button>
+        </div>
+    </section>
+
+    <!-- 푸터 -->
+    <footer class="bg-slate-900 text-slate-400 py-8 text-center text-sm">
+        <p>대구보건대학교 노동조합</p>
+        <p class="mt-2 text-slate-500">&copy; 2026 Daegu Health College Labor Union. All rights reserved.</p>
+    </footer>
+
+    <!-- 스크립트: 신청서 버튼 클릭 이벤트 -->
+    <script>
+        function openApplicationForm() {
+            window.open('https://naver.me/56XpOvWU', '_blank');
+        }
+    </script>
+</body>
+</html>
