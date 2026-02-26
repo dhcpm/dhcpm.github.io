@@ -33,7 +33,7 @@
             <p class="text-slate-500 text-sm">
                 신원 확인을 위해 여권의 정보면을 업로드해 주세요.<br>
                 <span class="text-emerald-600 font-medium bg-emerald-50 px-2 py-1 rounded-md mt-2 inline-block">
-                    저장 위치: /passport/ 폴더
+                    저장 위치: 같은 폴더 (현재 위치)
                 </span>
             </p>
         </div>
@@ -89,7 +89,7 @@
         <!-- 최종 성공 메시지 영역 -->
         <div id="successMessage" class="hidden mt-6 p-4 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-700 text-sm text-center fade-in">
             <svg class="w-6 h-6 mx-auto mb-2 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-            성공적으로 업로드되었습니다!<br>파일이 <strong>passport/</strong> 폴더에 저장되었습니다.
+            성공적으로 업로드되었습니다!<br>파일이 <strong>현재 폴더에</strong> 저장되었습니다.
         </div>
 
         <!-- 업로드 실행 버튼 -->
@@ -216,7 +216,7 @@
             uploadBtn.disabled = true;
             removeBtn.classList.add('hidden'); // 업로드 중 삭제 방지
             uploadStatus.classList.remove('hidden');
-            statusText.textContent = 'passport/ 폴더로 전송 중...';
+            statusText.textContent = '현재 폴더로 전송 중...';
             
             let progress = 0;
             
