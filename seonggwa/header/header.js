@@ -1,0 +1,47 @@
+class MyHeader extends HTMLElement {
+    connectedCallback() {
+        this.innerHTML = `
+            <header id="header" class="bg-white/80 backdrop-blur-lg shadow-sm fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo and Team Name -->
+                <div class="flex-shrink-0 flex items-center">
+                    <img class="h-8 w-auto" src="../img/logo.png" alt="대구보건대학교 로고">
+                    <a href="../index.html" class="ml-3 text-xl font-bold text-gray-800 hover:text-blue-700">대학성과관리팀</a>
+                </div>
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex items-center space-x-5">
+                    <a href="../gongsi/gongsi_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">대학정보공시</a>
+                    <!--<a href="../buseo/buseo_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">부서자체평가</a>-->
+                    <a href="../seonggwa/seonggwa_pg.html" class="text-gray-600 hover:text-blue-700 font-bold transition-colors text-sm text-blue-600">성과분석</a>
+                    <a href="../survey/survey_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">교육수요자 만족도 조사</a>
+                    <!--<a href="../dept/dept_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">부서운영</a>-->
+                    <a href="../edu/edu_pg.html" class="text-gray-600 hover:text-blue-700 font-medium transition-colors text-sm">교육</a>
+                </nav>
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
+                        <span class="sr-only">메뉴 열기</span>
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="../gongsi/gongsi_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">대학정보공시</a>
+                <!--<a href="../buseo/buseo_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">부서자체평가</a>-->
+                <a href="../seonggwa/seonggwa_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-blue-600 bg-blue-50">성과분석</a>
+                <a href="../survey/survey_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">교육수요자 만족도 조사</a>
+                <!--<a href="../dept/dept_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">부서운영</a>-->
+                <a href="../edu/edu_pg.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">교육</a>
+            </div>
+        </div>
+    </header>
+        `;
+    }
+}
+customElements.define('my-header', MyHeader);
