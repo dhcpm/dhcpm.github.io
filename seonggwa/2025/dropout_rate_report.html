@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025학년도 대구보건대학교 중도탈락생 현황 분석 보고서</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+/* ================= GLOBAL SETUP ================= */
+* { box-sizing: border-box; }
+body { background-color: #333; display: flex; justify-content: center; align-items: center; margin: 0; height: 100vh; overflow: hidden; }
+.slide-container { box-shadow: 0 15px 30px rgba(0,0,0,0.4); display: none; flex-direction: column; font-family: "Noto Sans KR", sans-serif; height: 720px; width: 1280px; background-color: #ffffff; padding: 50px 60px; position: relative; border-radius: 8px; overflow: hidden; border-top: 8px solid #59130C; }
+.slide-container.active { display: flex; animation: fadeIn 0.4s ease-out forwards; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ================= PRESENTATION CONTROLS ================= */
+.controls { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 20px; align-items: center; background: rgba(0, 0, 0, 0.7); padding: 10px 25px; border-radius: 50px; color: white; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+.controls button { background: none; border: none; color: white; font-size: 20px; cursor: pointer; transition: color 0.2s; padding: 5px 10px; }
+.controls button:hover:not(:disabled) { color: var(--accent); }
+.controls button:disabled { color: #666; cursor: not-allowed; }
+.slide-counter { font-family: "Noto Sans KR", sans-serif; font-size: 15px; font-weight: bold; letter-spacing: 1px; min-width: 60px; text-align: center; }
+
+/* ================= COLORS ================= */
+:root {
+    --primary: #59130C;   
+    --secondary: #8C251C; 
+    --accent: #A66B37;    
+    --text: #333333;      
+    --text-light: #666666;
+    --graph-1: #59130C;
+    --graph-2: #8C251C;
+    --graph-3: #A66B37;
+    --graph-4: #D4A373;
+    --graph-5: #E6CCB2;
+}
+
+/* ================= TYPOGRAPHY ================= */
+h1, h2, h3, h4 { margin: 0; line-height: 1.3; color: var(--primary); }
+p, li, span, div { color: var(--text); line-height: 1.6; }
+
+/* ================= SLIDE HEADERS ================= */
+.slide-header { width: 100%; border-bottom: 3px solid var(--accent); padding-bottom: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: flex-end; }
+.slide-title { font-size: 38px; font-weight: 900; }
+.slide-number { font-size: 22px; color: var(--accent); font-weight: bold; }
+.content-area { width: 100%; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
+
+/* ================= COMMON LAYOUTS ================= */
+.two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; width: 100%; height: 100%; }
+.outline-box { border: 2px solid var(--secondary); border-radius: 12px; padding: 30px; display: flex; flex-direction: column; }
+.outline-box h3 { font-size: 24px; color: var(--secondary); border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
+.outline-box ul { padding-left: 20px; }
+.outline-box li { font-size: 18px; margin-bottom: 12px; }
+
+.analysis-box { background-color: #fff8f5; border: 1px solid var(--accent); border-radius: 8px; padding: 15px 25px; margin-top: 15px; width: 100%; }
+.analysis-box h3 { font-size: 18px; color: var(--primary); margin-bottom: 10px; border-bottom: 1px dashed #ccc; padding-bottom: 5px; }
+
+/* ================= CHARTS ================= */
+/* Vertical Bar Chart */
+.v-chart-container { display: flex; align-items: flex-end; justify-content: space-around; width: 100%; height: 350px; border-left: 2px solid var(--text-light); border-bottom: 2px solid var(--text-light); position: relative; padding: 20px 20px 30px 20px; margin-bottom: 20px; }
+.v-bar-group { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; position: relative; width: 6%; }
+.v-bar { width: 100%; background-color: #fff; border: 2px solid var(--secondary); border-bottom: none; position: relative; background-image: repeating-linear-gradient(45deg, var(--secondary) 0, var(--secondary) 1px, transparent 0, transparent 10px); }
+.v-bar.expected { border-color: var(--primary); background-color: rgba(166, 107, 55, 0.1); background-image: repeating-linear-gradient(-45deg, var(--primary) 0, var(--primary) 2px, transparent 0, transparent 8px); }
+.v-bar-val { position: absolute; top: -25px; font-weight: bold; color: var(--primary); font-size: 15px; }
+.v-bar-lbl { position: absolute; bottom: -30px; font-size: 15px; font-weight: 500; color: var(--text); white-space: nowrap; }
+
+/* Horizontal Bar Chart (Global & Mini) - FIXED FOR LABEL OVERFLOW */
+.h-chart-container { display: flex; flex-direction: column; justify-content: space-around; width: 100%; height: 100%; gap: 15px; }
+.h-bar-row { display: flex; align-items: center; width: 100%; }
+.h-bar-lbl { width: 100px; font-size: 18px; font-weight: bold; text-align: right; padding-right: 15px; }
+.h-bar-track { flex-grow: 1; background-color: transparent; height: 35px; display: flex; align-items: center; position: relative; }
+.h-bar-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; color: white; font-weight: bold; font-size: 14px; }
+.h-bar-val { position: static; margin-left: 10px; font-size: 18px; font-weight: bold; color: var(--primary); white-space: nowrap; }
+
+/* Dept Summary Chart */
+.dept-chart-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; width: 100%; height: 100%; align-items: stretch; }
+.dept-col { display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
+.dept-row { display: flex; align-items: center; width: 100%; height: 28px; }
+.dept-lbl { width: 140px; font-size: 14px; font-weight: bold; text-align: right; padding-right: 15px; }
+.dept-track { flex-grow: 1; background-color: #eee; height: 100%; border-radius: 4px; position: relative; }
+.dept-fill { height: 100%; border-radius: 4px; background-color: var(--accent); background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.2) 0, rgba(255,255,255,0.2) 2px, transparent 0, transparent 6px); }
+.dept-fill.special { background-color: var(--primary); }
+.dept-val { position: absolute; right: -35px; top: 50%; transform: translateY(-50%); font-size: 14px; font-weight: bold; color: var(--primary); }
+.note { font-size: 11px; color: var(--secondary); margin-left: 3px; font-weight: normal; }
+
+/* Dashboard for Detailed Dept Slides */
+.dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 25px; width: 100%; height: 100%; }
+.dash-card { border: 1px solid #ddd; border-radius: 8px; padding: 20px; background-color: #fff; display: flex; flex-direction: column; }
+.dash-card h3 { font-size: 16px; color: var(--secondary); margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+.dash-v-chart { display: flex; align-items: flex-end; justify-content: space-around; flex-grow: 1; padding-bottom: 25px; }
+.dash-v-col { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; width: 15%; position: relative; }
+.dash-v-bar { width: 100%; background-color: var(--accent); border-radius: 4px 4px 0 0; }
+.dash-v-val { position: absolute; top: -20px; font-size: 12px; font-weight: bold; color: var(--primary); }
+.dash-v-lbl { position: absolute; bottom: -25px; font-size: 12px; color: var(--text-light); }
+.dash-h-chart { display: flex; flex-direction: column; justify-content: space-around; flex-grow: 1; gap: 8px;}
+.dash-h-row { display: flex; align-items: center; height: 20px; }
+.dash-h-lbl { width: 70px; font-size: 12px; font-weight: bold; text-align: right; padding-right: 10px; }
+.dash-h-track { flex-grow: 1; background-color: transparent; height: 100%; display: flex; align-items: center; position: relative; }
+.dash-h-fill { background-color: var(--secondary); height: 100%; border-radius: 4px; }
+.dash-h-val { position: static; margin-left: 8px; font-size: 12px; font-weight: bold; color: var(--primary); white-space: nowrap; }
+
+/* CORRELATION CHART STYLE */
+.correlation-chart { position: relative; width: 100%; height: 260px; border-left: 2px solid var(--text); border-bottom: 2px solid var(--text); margin: 30px 0 20px 0; background: repeating-linear-gradient(to right, transparent, transparent 49px, #f5f5f5 50px); }
+.corr-pt { position: absolute; width: 14px; height: 14px; border-radius: 50%; background-color: #999; transform: translate(-50%, 50%); box-shadow: 2px 2px 4px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; z-index: 10; }
+.corr-pt.good { background-color: #2e7d32; z-index: 12; }
+.corr-pt.bad { background-color: #c62828; z-index: 12; }
+.corr-pt.warn { background-color: var(--accent); z-index: 12; }
+.corr-pt.special { background-color: #1565c0; z-index: 12; }
+.corr-lbl { position: absolute; font-size: 11px; font-weight: bold; color: #444; white-space: nowrap; top: -18px; left: 50%; transform: translateX(-50%); text-shadow: 1px 1px 0 #fff, -1px -1px 0 #fff; }
+.corr-y-axis { position: absolute; top: -30px; left: -10px; font-weight: bold; font-size: 14px; }
+.corr-x-axis { position: absolute; bottom: -30px; right: 0; font-weight: bold; font-size: 14px; }
+.corr-grid-y { position: absolute; left: 0; width: 100%; height: 1px; background-color: #e0e0e0; }
+
+/* STRATEGY CARD */
+.strategy-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 30px; height: 100%; }
+.strat-card { border: 2px solid #ddd; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; }
+.strat-head { padding: 20px; text-align: center; color: #fff; font-weight: bold; font-size: 20px; }
+.strat-head.uni { background-color: var(--primary); }
+.strat-head.support { background-color: var(--secondary); }
+.strat-head.dept { background-color: var(--accent); }
+.strat-body { padding: 25px; display: flex; flex-direction: column; gap: 20px; background: #fff; flex-grow: 1; }
+.strat-icon { font-size: 40px; text-align: center; margin-bottom: 10px; opacity: 0.8; }
+.strat-item h4 { font-size: 16px; margin-bottom: 8px; border-left: 4px solid #ddd; padding-left: 10px; color: var(--text); }
+.strat-item p { font-size: 14px; color: var(--text-light); margin: 0; }
+
+/* Tiled Info */
+.info-tiles { display: flex; gap: 30px; height: 100%; }
+.info-tile { flex: 1; border: 1px solid #ccc; border-top: 5px solid var(--primary); border-radius: 8px; padding: 40px 20px; text-align: center; background: #fff; display: flex; flex-direction: column; align-items: center; }
+.info-icon { width: 90px; height: 90px; border: 2px solid var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 36px; color: var(--primary); margin-bottom: 30px; }
+.info-tile h3 { font-size: 24px; margin-bottom: 20px; }
+.info-tile p { font-size: 16px; color: var(--text-light); }
+
+/* Title & Section Slides */
+.center-title-slide { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center; background-color: #fff; width: 100%; border: 4px double var(--primary); padding: 40px; }
+.center-title-slide h1 { font-size: 64px; font-weight: 900; margin-bottom: 50px; word-break: keep-all; }
+.center-title-slide .sub { font-size: 24px; color: var(--accent); font-weight: 700; margin-bottom: 30px; border-bottom: 1px solid var(--accent); padding-bottom: 10px; }
+.center-title-slide .meta { font-size: 20px; color: var(--text-light); display: flex; gap: 40px; font-weight: 500; }
+.section-layout { height: 100%; width: 100%; display: flex; flex-direction: column; justify-content: center; padding-left: 100px; }
+.section-layout h2 { font-size: 80px; font-weight: 900; margin-bottom: 20px; color: var(--primary); }
+.section-layout hr { width: 120px; border: none; border-top: 6px solid var(--accent); margin: 20px 0 40px 0; }
+.section-layout p { font-size: 32px; color: var(--secondary); font-weight: 500; }
+
+</style>
+</head>
+<body>
+
+<!-- Slide 1: Title -->
+<div class="slide-container">
+    <div class="center-title-slide">
+        <p class="sub">지역과 대학의 동반성장을 선도하는 "한달빛 글로컬보건연합대학"</p>
+        <h1>2025학년도 대구보건대학교<br>중도탈락생 현황 분석 보고서</h1>
+        <div class="meta">
+            <span><i class="fa-regular fa-calendar"></i> 2025. 9.</span>
+            <span><i class="fa-solid fa-building-columns"></i> 대구보건대학교 (대학성과관리팀)</span>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 2: Section Title -->
+<div class="slide-container">
+    <div class="section-layout">
+        <h2>1. 개요</h2>
+        <hr>
+        <p>목적, 기간, 기본 자료 및 자료 종류</p>
+    </div>
+</div>
+
+<!-- Slide 3: 추진 목적 및 범위 -->
+<div class="slide-container">
+    <div class="slide-header"><h2 class="slide-title">1. 추진 목적 및 범위</h2><span class="slide-number">01</span></div>
+    <div class="content-area">
+        <div class="two-column">
+            <div class="outline-box">
+                <h3><i class="fa-solid fa-bullseye"></i> 추진 목적</h3>
+                <ul>
+                    <li>대학의 주요 핵심 역량지표인 <strong>중도탈락 지표 개선</strong>을 위한 현황 파악</li>
+                    <li>중도탈락 <strong>조기예방 시스템 고도화</strong>를 위한 사전 분석 작업 수행</li>
+                    <li>데이터 기반의 체계적인 학생 관리 및 환류 모델 구축</li>
+                </ul>
+            </div>
+            <div class="outline-box">
+                <h3><i class="fa-solid fa-file-contract"></i> 분석 기준 및 자료</h3>
+                <ul>
+                    <li><strong>조사 기간:</strong> 2025년 10월 ~ 2026년 2월</li>
+                    <li><strong>활용 데이터:</strong> 교무지원팀 학적 DATA (총 660명 이탈자 기준)</li>
+                    <li><strong>분석 대상:</strong> 자퇴, 미등록 제적, 미복학 제적 등 모든 중도탈락 학생</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 4: 조사방법 및 주요 내용 -->
+<div class="slide-container">
+    <div class="slide-header"><h2 class="slide-title">2. 조사방법 및 주요 내용</h2><span class="slide-number">02</span></div>
+    <div class="content-area">
+        <div class="info-tiles">
+            <div class="info-tile">
+                <div class="info-icon"><i class="fa-solid fa-database"></i></div>
+                <h3>데이터 수집</h3>
+                <p>종합정보시스템 데이터<br>학적 및 제적 예상<br>이탈자 데이터 원본 추출</p>
+            </div>
+            <div class="info-tile">
+                <div class="info-icon"><i class="fa-solid fa-chart-pie"></i></div>
+                <h3>분석 도구</h3>
+                <p><strong>Tableau & Excel:</strong> 데이터 교차 검증<br><strong>생성형 AI:</strong> 데이터 전처리<br>및 상관관계 패턴 분석</p>
+            </div>
+            <div class="info-tile">
+                <div class="info-icon"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+                <h3>분석 기법</h3>
+                <p>학과별/시기별 현황 산출<br>만족도 연계 다각도 분석<br>막대/분포 그래프 시각화</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 5: 전체 월별 중도탈락 현황 분석 -->
+<div class="slide-container">
+    <div class="slide-header"><h2 class="slide-title">3. 전체 월별 중도탈락 발생 현황 분석</h2><span class="slide-number">03</span></div>
+    <div class="content-area">
+        <div class="v-chart-container">
+            <div class="v-bar-group"><div class="v-bar-val">85</div><div class="v-bar" style="height: 40%;"></div><div class="v-bar-lbl">3월</div></div>
+            <div class="v-bar-group"><div class="v-bar-val">22</div><div class="v-bar" style="height: 10%;"></div><div class="v-bar-lbl">4월</div></div>
+            <div class="v-bar-group"><div class="v-bar-val">12</div><div class="v-bar" style="height: 6%;"></div><div class="v-bar-lbl">5월</div></div>
+            <div class="v-bar-group"><div class="v-bar-val">8</div><div class="v-bar" style="height: 4%;"></div><div class="v-bar-lbl">6월</div></div>
+            <div class="v-bar-group"><div class="v-bar-val">18</div><div class="v-bar" style="height: 9%;"></div><div class="v-bar-lbl">7월</div></div>
+            <div class="v-bar-group"><div class="v-bar-val">55</div><div class="v-bar" style="height: 26%;"></div><div class="v-bar-lbl">8월</div></div>
+            <div class="v-bar-group"><div class="v-bar-val">210</div><div class="v-bar" style="height: 100%; border-color: var(--primary);"></div><div class="v-bar-lbl" style="font-weight:900; color:var(--primary);">9월(Peak)</div></div>
+            <div class="v-bar-group"><div class="v-bar-val">15</div><div class="v-bar" style="height: 7%;"></div><div class="v-bar-lbl">10월</div></div>
+            <div class="v-bar-group"><div class="v-bar-val">8</div><div class="v-bar" style="height: 4%;"></div><div class="v-bar-lbl">11월</div></div>
+            <div class="v-bar-group"><div class="v-bar-val">42</div><div class="v-bar" style="height: 20%;"></div><div class="v-bar-lbl">12월</div></div>
+            <div class="v-bar-group"><div class="v-bar-val">35</div><div class="v-bar" style="height: 17%;"></div><div class="v-bar-lbl">1월</div></div>
+            <div class="v-bar-group"><div class="v-bar-val">28</div><div class="v-bar" style="height: 13%;"></div><div class="v-bar-lbl">2월</div></div>
+        </div>
+        <div class="analysis-box">
+            <h3><i class="fa-solid fa-chart-line"></i> 월별 발생 특징 요약</h3>
+            <ul style="margin:0; font-size:16px;">
+                <li><strong>9월 (최다):</strong> 2학기 개강 시점 미복학 및 미등록 제적 처리가 집중되어 이탈 인원(210명)이 급증함.</li>
+                <li><strong>3월 (학기초):</strong> 신입생 적성 불일치 및 기존 재학생 복학 포기로 인한 이탈률(85명)이 높음.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 6: 학과별 중도탈락 현황 총괄 (요약) -->
+<div class="slide-container">
+    <div class="slide-header">
+        <h2 class="slide-title">4. 학과별 중도탈락 현황 총괄 (요약)</h2>
+        <span class="slide-number">04</span>
+    </div>
+    <div class="content-area">
+        <div class="dept-chart-wrapper">
+            <div class="dept-col">
+                <div class="dept-row"><div class="dept-lbl">치기공학과<span class="note">(심3)</span></div><div class="dept-track"><div class="dept-fill special" style="width: 100%;"></div><div class="dept-val">122</div></div></div>
+                <div class="dept-row"><div class="dept-lbl">임상병리학과<span class="note">(심1)</span></div><div class="dept-track"><div class="dept-fill special" style="width: 68%;"></div><div class="dept-val">83</div></div></div>
+                <div class="dept-row"><div class="dept-lbl">방사선학과<span class="note">(심4)</span></div><div class="dept-track"><div class="dept-fill special" style="width: 61%;"></div><div class="dept-val">74</div></div></div>
+                <div class="dept-row"><div class="dept-lbl">치위생학과</div><div class="dept-track"><div class="dept-fill" style="width: 39%;"></div><div class="dept-val">47</div></div></div>
+                <div class="dept-row"><div class="dept-lbl">스포츠재활학과</div><div class="dept-track"><div class="dept-fill" style="width: 33%;"></div><div class="dept-val">40</div></div></div>
+                <div class="dept-row"><div class="dept-lbl">간호학과</div><div class="dept-track"><div class="dept-fill" style="width: 31%;"></div><div class="dept-val">38</div></div></div>
+                <div class="dept-row"><div class="dept-lbl">사회복지학과<span class="note">(심3)</span></div><div class="dept-track"><div class="dept-fill" style="width: 25%;"></div><div class="dept-val">30</div></div></div>
+                <div class="dept-row"><div class="dept-lbl">물리치료학과<span class="note">(심2)</span></div><div class="dept-track"><div class="dept-fill" style="width: 24%;"></div><div class="dept-val">29</div></div></div>
+                <div class="dept-row"><div class="dept-lbl">소방안전관리학과</div><div class="dept-track"><div class="dept-fill" style="width: 22%;"></div><div class="dept-val">27</div></div></div>
+                <div class="dept-row"><div class="dept-lbl">뷰티코디네이션<span class="note">(심4)</span></div><div class="dept-track"><div class="dept-fill" style="width: 21%;"></div><div class="dept-val">26</div></div></div>
+                <div class="dept-row"><div class="dept-lbl">언어치료학과<span class="note">(심1)</span></div><div class="dept-track"><div class="dept-fill" style="width: 19%;"></div><div class="dept-val">23</div></div></div>
+                <div class="dept-row"><div class="dept-lbl">보건행정학과<span class="note">(심1)</span></div><div class="dept-track"><div class="dept-fill" style="width: 16%;"></div><div class="dept-val">19</div></div></div>
+            </div>
+            <div class="dept-col">
+                <div class="dept-row"><div class="dept-lbl">작업치료학과</div><div class="dept-track"><div class="dept-fill" style="width: 13%;"></div><div class="dept-val">16</div></div></div>
+                <div class="dept-row"><div class="dept-lbl">안경광학과</div><div class="dept-track"><div class="dept-fill" style="width: 12%;"></div><div class="dept-val">15</div></div></div>
+                <div class="dept-row"><div class="dept-lbl">호텔제과제빵과</div><div class="dept-track"><div class="dept-fill" style="width: 11%;"></div><div class="dept-val">13</div></div></div>
+                <div class="dept-row"><div class="dept-lbl">글로벌호텔조리과</div><div class="dept-track"><div class="dept-fill" style="width: 10%;"></div><div class="dept-val">12</div></div></div>
+                <div class="dept-row"><div class="dept-lbl">유아교육학과<span class="note">(심3)</span></div><div class="dept-track"><div class="dept-fill" style="width: 8%;"></div><div class="dept-val">10</div></div></div>
+                <div class="dept-row"><div class="dept-lbl">식품영양학과</div><div class="dept-track"><div class="dept-fill" style="width: 8%;"></div><div class="dept-val">10</div></div></div>
+                <div class="dept-row"><div class="dept-lbl">반려동물보건학과</div><div class="dept-track"><div class="dept-fill" style="width: 7%;"></div><div class="dept-val">8</div></div></div>
+                <div class="dept-row"><div class="dept-lbl">환경보건학과</div><div class="dept-track"><div class="dept-fill" style="width: 4%;"></div><div class="dept-val">5</div></div></div>
+                <div class="dept-row"><div class="dept-lbl">응급구조학과</div><div class="dept-track"><div class="dept-fill" style="width: 4%;"></div><div class="dept-val">5</div></div></div>
+                <div class="dept-row" style="visibility: hidden;"></div><div class="dept-row" style="visibility: hidden;"></div><div class="dept-row" style="visibility: hidden;"></div>
+            </div>
+        </div>
+        <div style="text-align: right; font-size: 13px; color: #666; margin-top: 10px;">※ (심): 전공심화과정 인원 포함 / 스마트의료IT, 바이오헬스융합 제외</div>
+    </div>
+</div>
+
+<!-- Slide 7: 제적 구분 및 자퇴 사유 분석 -->
+<div class="slide-container">
+    <div class="slide-header"><h2 class="slide-title">5. 제적 구분 및 자퇴 사유 분석</h2><span class="slide-number">05</span></div>
+    <div class="content-area">
+        <div class="two-column">
+            <div class="outline-box" style="padding: 40px;">
+                <h3 style="margin-bottom: 40px;"><i class="fa-solid fa-user-minus"></i> 제적 구분별 현황 (총 660명)</h3>
+                <div class="h-chart-container">
+                    <div class="h-bar-row"><span class="h-bar-lbl">자퇴</span><div class="h-bar-track"><div class="h-bar-fill" style="width: 62%; background-color: var(--graph-1);"></div><div class="h-bar-val">409명 (62%)</div></div></div>
+                    <div class="h-bar-row"><span class="h-bar-lbl">미복학</span><div class="h-bar-track"><div class="h-bar-fill" style="width: 26%; background-color: var(--graph-2);"></div><div class="h-bar-val">172명 (26%)</div></div></div>
+                    <div class="h-bar-row"><span class="h-bar-lbl">미등록</span><div class="h-bar-track"><div class="h-bar-fill" style="width: 12%; background-color: var(--graph-3);"></div><div class="h-bar-val">79명 (12%)</div></div></div>
+                </div>
+            </div>
+            <div class="outline-box" style="padding: 40px;">
+                <h3 style="margin-bottom: 40px;"><i class="fa-solid fa-clipboard-question"></i> 자퇴 사유별 현황 (자퇴생 409명)</h3>
+                <div class="h-chart-container">
+                    <div class="h-bar-row"><span class="h-bar-lbl">타대학</span><div class="h-bar-track"><div class="h-bar-fill" style="width: 32%; background-color: var(--graph-1);"></div><div class="h-bar-val">131명 (32%)</div></div></div>
+                    <div class="h-bar-row"><span class="h-bar-lbl">적성불일치</span><div class="h-bar-track"><div class="h-bar-fill" style="width: 28%; background-color: var(--graph-2);"></div><div class="h-bar-val">115명 (28%)</div></div></div>
+                    <div class="h-bar-row"><span class="h-bar-lbl">가사사정</span><div class="h-bar-track"><div class="h-bar-fill" style="width: 15%; background-color: var(--graph-3);"></div><div class="h-bar-val">61명 (15%)</div></div></div>
+                    <div class="h-bar-row"><span class="h-bar-lbl">취업</span><div class="h-bar-track"><div class="h-bar-fill" style="width: 12%; background-color: var(--graph-4);"></div><div class="h-bar-val">49명 (12%)</div></div></div>
+                    <div class="h-bar-row"><span class="h-bar-lbl" style="color:var(--text-light);">기타(질병등)</span><div class="h-bar-track"><div class="h-bar-fill" style="width: 13%; background-color: #aaa;"></div><div class="h-bar-val" style="color: #666;">53명 (13%)</div></div></div>
+                </div>
+            </div>
+        </div>
+        <div class="analysis-box">
+            <h3><i class="fa-regular fa-calendar-check"></i> 자퇴 주요 발생 원인 요약</h3>
+            <p style="margin:0; font-size:16px;">제적 유형 중 <strong>'자퇴(62%)'</strong>가 가장 비중이 높으며, 자퇴의 핵심 사유는 <strong>'타대학 진학(편입/반수)'</strong>과 <strong>'적성 불일치'</strong>로 두 항목이 전체 자퇴 사유의 <strong>60%</strong>를 차지하고 있습니다.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 8: 학년별 중도탈락 현황 및 1학년 분석 -->
+<div class="slide-container">
+    <div class="slide-header"><h2 class="slide-title">6. 학년별 중도탈락 현황 및 1학년 월별 집중 분석</h2><span class="slide-number">06</span></div>
+    <div class="content-area">
+        <div class="two-column">
+            <div class="outline-box" style="padding:30px;">
+                <h3 style="margin-bottom:30px;"><i class="fa-solid fa-layer-group"></i> 학년별 중도탈락 비율</h3>
+                <div class="h-chart-container" style="gap:25px;">
+                    <div class="h-bar-row"><span class="h-bar-lbl">1학년</span><div class="h-bar-track"><div class="h-bar-fill" style="width: 58%; background-color: var(--primary);"></div><div class="h-bar-val">382명 (58%)</div></div></div>
+                    <div class="h-bar-row"><span class="h-bar-lbl">2학년</span><div class="h-bar-track"><div class="h-bar-fill" style="width: 26%; background-color: var(--graph-2);"></div><div class="h-bar-val">170명 (26%)</div></div></div>
+                    <div class="h-bar-row"><span class="h-bar-lbl">3학년</span><div class="h-bar-track"><div class="h-bar-fill" style="width: 12%; background-color: var(--graph-3);"></div><div class="h-bar-val">80명 (12%)</div></div></div>
+                    <div class="h-bar-row"><span class="h-bar-lbl">심화/4학년</span><div class="h-bar-track"><div class="h-bar-fill" style="width: 4%; background-color: #aaa;"></div><div class="h-bar-val" style="color: #666;">28명 (4%)</div></div></div>
+                </div>
+                <p style="margin-top:20px; font-size:15px;">전체 탈락생의 과반수(58%)가 1학년 신입생 시기에 발생하여 초기 정착 지원 강화가 필수적임.</p>
+            </div>
+            <div class="outline-box" style="padding:30px;">
+                <h3 style="margin-bottom:20px;"><i class="fa-regular fa-calendar-days"></i> 1학년 월별 중도탈락 추이 (382명)</h3>
+                <div class="v-chart-container" style="height:250px; border-width:1px; padding:10px 10px 20px 10px;">
+                    <div class="v-bar-group" style="width: 12%;"><div class="v-bar-val">55</div><div class="v-bar" style="height: 42%;"></div><div class="v-bar-lbl">3월</div></div>
+                    <div class="v-bar-group" style="width: 12%;"><div class="v-bar-val">15</div><div class="v-bar" style="height: 12%;"></div><div class="v-bar-lbl">6월</div></div>
+                    <div class="v-bar-group" style="width: 12%;"><div class="v-bar-val">30</div><div class="v-bar" style="height: 23%;"></div><div class="v-bar-lbl">8월</div></div>
+                    <div class="v-bar-group" style="width: 12%;"><div class="v-bar-val">130</div><div class="v-bar" style="height: 100%; border-color: var(--primary);"></div><div class="v-bar-lbl">9월</div></div>
+                    <div class="v-bar-group" style="width: 12%;"><div class="v-bar-val">35</div><div class="v-bar" style="height: 27%;"></div><div class="v-bar-lbl">12월</div></div>
+                    <div class="v-bar-group" style="width: 12%;"><div class="v-bar-val">32</div><div class="v-bar" style="height: 25%;"></div><div class="v-bar-lbl">1월</div></div>
+                </div>
+                <p style="margin-top:10px; font-size:14px; color:var(--secondary);">▶ 1학년 역시 9월 2학기 미등록과 3월 초기 부적응 이탈이 핵심.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 9: 대학 전반적 만족도 상관관계 분석 -->
+<div class="slide-container">
+    <div class="slide-header"><h2 class="slide-title">7. 대학 전반적 만족도와 중도탈락률 상관관계 분석</h2><span class="slide-number">07</span></div>
+    <div class="content-area">
+        <div class="correlation-chart">
+            <div class="corr-grid-y" style="bottom: 20%;"></div><div class="corr-grid-y" style="bottom: 40%;"></div><div class="corr-grid-y" style="bottom: 60%;"></div><div class="corr-grid-y" style="bottom: 80%;"></div>
+            <div class="corr-y-axis">중도탈락(명)</div><div class="corr-x-axis">대학 만족도(점)</div>
+            
+            <div class="corr-pt good" style="bottom: 8%; left: 90%;"><span class="corr-lbl">글로벌호텔</span></div>
+            <div class="corr-pt good" style="bottom: 7%; left: 88%;"><span class="corr-lbl">유아교육</span></div>
+            <div class="corr-pt good" style="bottom: 20%; left: 87%;"><span class="corr-lbl">뷰티</span></div>
+            <div class="corr-pt good" style="bottom: 23%; left: 87%;"><span class="corr-lbl">사회복지</span></div>
+            <div class="corr-pt" style="bottom: 10%; left: 84%;"><span class="corr-lbl">제과제빵</span></div>
+            <div class="corr-pt" style="bottom: 15%; left: 83%;"><span class="corr-lbl">보건행정</span></div>
+            <div class="corr-pt" style="bottom: 12%; left: 83%;"><span class="corr-lbl" style="top:20px;">작업치료</span></div>
+            <div class="corr-pt" style="bottom: 22%; left: 81%;"><span class="corr-lbl">물리치료</span></div>
+            <div class="corr-pt" style="bottom: 8%; left: 81%;"><span class="corr-lbl" style="top:20px;">식품영양</span></div>
+            <div class="corr-pt" style="bottom: 11%; left: 81%;"><span class="corr-lbl" style="top:40px;">안경</span></div>
+            <div class="corr-pt" style="bottom: 6%; left: 80%;"><span class="corr-lbl">반려동물</span></div>
+            <div class="corr-pt" style="bottom: 18%; left: 80%;"><span class="corr-lbl" style="top:20px;">언어치료</span></div>
+            
+            <div class="corr-pt warn" style="bottom: 64%; left: 81%;"><span class="corr-lbl">임상병리</span></div>
+            <div class="corr-pt warn" style="bottom: 57%; left: 80%;"><span class="corr-lbl">방사선</span></div>
+            <div class="corr-pt warn" style="bottom: 94%; left: 80%;"><span class="corr-lbl">치기공</span></div>
+
+            <div class="corr-pt bad" style="bottom: 36%; left: 79%;"><span class="corr-lbl">치위생</span></div>
+            <div class="corr-pt bad" style="bottom: 31%; left: 76%;"><span class="corr-lbl">스포츠</span></div>
+            <div class="corr-pt bad" style="bottom: 29%; left: 76%;"><span class="corr-lbl" style="top:20px;">간호</span></div>
+
+            <div class="corr-pt special" style="bottom: 4%; left: 68%;"><span class="corr-lbl">응급구조</span></div>
+        </div>
+        <div class="analysis-box">
+            <h3><i class="fa-solid fa-scale-balanced"></i> 대학 만족도와 이탈률 분석 시사점</h3>
+            <ul style="font-size: 15px;">
+                <li><strong><i class="fa-solid fa-circle-exclamation" style="color: #c62828;"></i> 위험 그룹:</strong> 간호, 스포츠, 치위생 등 만족도가 70점대로 낮고 이탈률이 높은 학과는 대학 차원의 환경 개선이 필요.</li>
+                <li><strong><i class="fa-solid fa-star" style="color: #1565c0;"></i> 특이점(응급구조):</strong> 대학 만족도가 최저(68.3점)이나 이탈은 극소수(5명) → 전공에 대한 확고한 비전이 환경 불만을 상쇄함.</li>
+                <li><strong><i class="fa-solid fa-check" style="color: #2e7d32;"></i> 일반 경향:</strong> 전반적으로 대학 만족도가 85점 이상인 학과(유아, 뷰티, 글로벌호텔)는 중도탈락률이 안정적으로 낮음.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 10: 전공 만족도 상관관계 분석 -->
+<div class="slide-container">
+    <div class="slide-header"><h2 class="slide-title">8. 전공 만족도와 중도탈락률 상관관계 분석</h2><span class="slide-number">08</span></div>
+    <div class="content-area">
+        <div class="correlation-chart">
+            <div class="corr-grid-y" style="bottom: 20%;"></div><div class="corr-grid-y" style="bottom: 40%;"></div><div class="corr-grid-y" style="bottom: 60%;"></div><div class="corr-grid-y" style="bottom: 80%;"></div>
+            <div class="corr-y-axis">중도탈락(명)</div><div class="corr-x-axis">전공 만족도(점)</div>
+            
+            <div class="corr-pt good" style="bottom: 4%; left: 93%;"><span class="corr-lbl">응급구조</span></div>
+            <div class="corr-pt good" style="bottom: 8%; left: 81%;"><span class="corr-lbl">유아교육</span></div>
+            <div class="corr-pt good" style="bottom: 20%; left: 70%;"><span class="corr-lbl">뷰티</span></div>
+            <div class="corr-pt good" style="bottom: 15%; left: 64%;"><span class="corr-lbl">보건행정</span></div>
+            <div class="corr-pt good" style="bottom: 23%; left: 60%;"><span class="corr-lbl">사회복지</span></div>
+            <div class="corr-pt good" style="bottom: 8%; left: 51%;"><span class="corr-lbl">식품영양</span></div>
+            
+            <div class="corr-pt" style="bottom: 6%; left: 46%;"><span class="corr-lbl" style="top:20px;">반려동물</span></div>
+            <div class="corr-pt" style="bottom: 4%; left: 46%;"><span class="corr-lbl" style="top:40px;">환경보건</span></div>
+            <div class="corr-pt" style="bottom: 22%; left: 47%;"><span class="corr-lbl">물리치료</span></div>
+            <div class="corr-pt" style="bottom: 18%; left: 47%;"><span class="corr-lbl" style="top:20px;">언어치료</span></div>
+            <div class="corr-pt" style="bottom: 36%; left: 41%;"><span class="corr-lbl">치위생</span></div>
+            <div class="corr-pt" style="bottom: 10%; left: 41%;"><span class="corr-lbl" style="top:20px;">제과제빵</span></div>
+            
+            <div class="corr-pt warn" style="bottom: 57%; left: 40%;"><span class="corr-lbl">방사선</span></div>
+            <div class="corr-pt warn" style="bottom: 64%; left: 46%;"><span class="corr-lbl">임상병리</span></div>
+            <div class="corr-pt warn" style="bottom: 94%; left: 38%;"><span class="corr-lbl">치기공</span></div>
+            
+            <div class="corr-pt bad" style="bottom: 31%; left: 34%;"><span class="corr-lbl">스포츠</span></div>
+            <div class="corr-pt bad" style="bottom: 12%; left: 31%;"><span class="corr-lbl">작업치료</span></div>
+            <div class="corr-pt bad" style="bottom: 21%; left: 29%;"><span class="corr-lbl">소방</span></div>
+            <div class="corr-pt bad" style="bottom: 11%; left: 29%;"><span class="corr-lbl" style="top:20px;">안경</span></div>
+            <div class="corr-pt bad" style="bottom: 29%; left: 26%;"><span class="corr-lbl">간호</span></div>
+            <div class="corr-pt bad" style="bottom: 9%; left: 15%;"><span class="corr-lbl">호텔조리</span></div>
+        </div>
+        <div class="analysis-box">
+            <h3><i class="fa-solid fa-magnifying-glass-chart"></i> 전공 만족도 분석 시사점</h3>
+            <ul style="font-size: 15px;">
+                <li><strong><i class="fa-solid fa-check" style="color: #2e7d32;"></i> 고만족/저이탈:</strong> 응급구조, 유아교육 등 전공 만족도가 높은 학과는 이탈 인원이 확실히 적음.</li>
+                <li><strong><i class="fa-solid fa-triangle-exclamation" style="color: #A66B37;"></i> 예외 그룹(적성/진로):</strong> 치기공, 임상병리, 방사선은 만족도가 보통 수준이나 <strong>'취업/진로 변경'</strong> 등 외적 요인으로 이탈 다수 발생.</li>
+                <li><strong><i class="fa-solid fa-circle-exclamation" style="color: #c62828;"></i> 저만족 그룹:</strong> 간호, 호텔조리 등은 전공 교육과정 및 교과목 운영 방식 개선이 시급함.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 11: 예상 중도탈락률 -->
+<div class="slide-container">
+    <div class="slide-header"><h2 class="slide-title">9. 최근 3년 및 2025학년도 예상 중도탈락률</h2><span class="slide-number">09</span></div>
+    <div class="content-area" style="align-items: center;">
+        <div class="v-chart-container" style="height: 380px; width: 80%; padding: 40px 100px;">
+            <div class="v-bar-group" style="width: 15%;"><div class="v-bar-val" style="font-size:24px; top:-35px;">5.9%</div><div class="v-bar" style="height: 59%;"></div><div class="v-bar-lbl" style="font-size:20px; bottom:-40px;">2022학년도</div></div>
+            <div class="v-bar-group" style="width: 15%;"><div class="v-bar-val" style="font-size:24px; top:-35px;">7.1%</div><div class="v-bar" style="height: 71%;"></div><div class="v-bar-lbl" style="font-size:20px; bottom:-40px;">2023학년도</div></div>
+            <div class="v-bar-group" style="width: 15%;"><div class="v-bar-val" style="font-size:24px; top:-35px;">7.9%</div><div class="v-bar" style="height: 79%;"></div><div class="v-bar-lbl" style="font-size:20px; bottom:-40px;">2024학년도</div></div>
+            <div class="v-bar-group" style="width: 15%;"><div class="v-bar-val" style="font-size:24px; top:-35px;">8.0%</div><div class="v-bar expected" style="height: 80%;"></div><div class="v-bar-lbl" style="font-size:20px; bottom:-40px; font-weight:900; color:var(--primary);">2025학년도(예상)</div></div>
+        </div>
+        <div style="text-align: center; margin-top: 40px; font-size: 16px; color: var(--text-light); background: #f9f9f9; padding: 15px 30px; border-radius: 50px; border: 1px solid #ddd;">
+            <i class="fa-solid fa-calculator"></i> 2025학년도 산출 근거: <strong>중도탈락생 660명</strong> / <strong>4.1. 기준 재적생 8,267명</strong> × 100
+        </div>
+    </div>
+</div>
+
+<!-- Slide 12: 대응 전략 -->
+<div class="slide-container">
+    <div class="slide-header"><h2 class="slide-title">10. 중도탈락 예방 및 감소를 위한 단계별 대응 전략</h2><span class="slide-number">10</span></div>
+    <div class="content-area">
+        <div class="strategy-grid">
+            <div class="strat-card">
+                <div class="strat-head uni">대학 본부 (System)</div>
+                <div class="strat-body">
+                    <div class="strat-icon" style="color:var(--primary);"><i class="fa-solid fa-school"></i></div>
+                    <div class="strat-item"><h4>EWS (조기경보) 고도화</h4><p>이탈 위험군 예측 모델 개발 및 '월별 모니터링 분석 보고서' 정례화.</p></div>
+                    <div class="strat-item"><h4>유연 학사 제도</h4><p>전과/편입 지원 제도 개선 및 휴학 유연성 확대로 이탈 원천 차단.</p></div>
+                </div>
+            </div>
+            <div class="strat-card">
+                <div class="strat-head support">학생 지원 부서 (Support)</div>
+                <div class="strat-body">
+                    <div class="strat-icon" style="color:var(--secondary);"><i class="fa-solid fa-hands-holding-child"></i></div>
+                    <div class="strat-item"><h4>골든타임 집중 케어</h4><p>자퇴 집중 시기(3월/9월) 이전 '위기 학생' 대상 1:1 심층 상담 전개.</p></div>
+                    <div class="strat-item"><h4>진로 재설계 (Reset)</h4><p>'적성 불일치' 학생 대상 커리어 코칭 및 맞춤형 진로 탐색 지원.</p></div>
+                </div>
+            </div>
+            <div class="strat-card">
+                <div class="strat-head dept">학과 (Department)</div>
+                <div class="strat-body">
+                    <div class="strat-icon" style="color:var(--accent);"><i class="fa-solid fa-chalkboard-user"></i></div>
+                    <div class="strat-item"><h4>평생 지도교수제 강화</h4><p>교수-학생 간 라포(Rapport) 형성 및 주기적 면담으로 소속감 고취.</p></div>
+                    <div class="strat-item"><h4>선후배 멘토링</h4><p>복학생 및 신입생 적응 지원을 위한 '전공 튜터링' 프로그램 활성화.</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================= 부록 (APPENDIX) ================= -->
+<!-- 부록 커버 (번호 없음) -->
+<div class="slide-container">
+    <div class="section-layout">
+        <h2>[부록]</h2>
+        <hr>
+        <p>학과별 중도탈락 현황 상세 분석 자료</p>
+    </div>
+</div>
+
+<!-- 부록 1. 치기공 -->
+<div class="slide-container">
+    <div class="slide-header"><h2 class="slide-title">[부록] 학과별 상세 분석: 치기공학과</h2><span class="slide-number">11</span></div>
+    <div class="content-area"><div class="dashboard-grid">
+        <div class="dash-card"><h3>월별 추이 (총 122명)</h3><div class="dash-v-chart"><div class="dash-v-col"><div class="dash-v-bar" style="height: 40%;"></div><span class="dash-v-val">20</span><span class="dash-v-lbl">3월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 15%;"></div><span class="dash-v-val">5</span><span class="dash-v-lbl">5월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 25%;"></div><span class="dash-v-val">12</span><span class="dash-v-lbl">8월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">50</span><span class="dash-v-lbl">9월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 35%;"></div><span class="dash-v-val">18</span><span class="dash-v-lbl">12월</span></div></div></div>
+        <div class="dash-card"><h3>제적 구분</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">자퇴</span><div class="dash-h-track"><div class="dash-h-fill" style="width:55%; background:var(--graph-1);"></div><div class="dash-h-val">67명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미복학</span><div class="dash-h-track"><div class="dash-h-fill" style="width:30%; background:var(--graph-2);"></div><div class="dash-h-val">37명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미등록</span><div class="dash-h-track"><div class="dash-h-fill" style="width:15%; background:var(--graph-3);"></div><div class="dash-h-val">18명</div></div></div></div></div>
+        <div class="dash-card"><h3>학년별 현황</h3><div class="dash-v-chart"><div class="dash-v-col" style="width:20%;"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">76</span><span class="dash-v-lbl">1학년</span></div><div class="dash-v-col" style="width:20%;"><div class="dash-v-bar" style="height: 43%;"></div><span class="dash-v-val">33</span><span class="dash-v-lbl">2학년</span></div><div class="dash-v-col" style="width:20%;"><div class="dash-v-bar" style="height: 13%;"></div><span class="dash-v-val">10</span><span class="dash-v-lbl">3학년</span></div><div class="dash-v-col" style="width:20%;"><div class="dash-v-bar" style="height: 4%;"></div><span class="dash-v-val">3</span><span class="dash-v-lbl">심화</span></div></div></div>
+        <div class="dash-card"><h3>자퇴 사유</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">적성</span><div class="dash-h-track"><div class="dash-h-fill" style="width:35%;"></div><div class="dash-h-val">24명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">가사</span><div class="dash-h-track"><div class="dash-h-fill" style="width:28%;"></div><div class="dash-h-val">19명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">취업</span><div class="dash-h-track"><div class="dash-h-fill" style="width:22%;"></div><div class="dash-h-val">15명</div></div></div></div></div>
+    </div></div>
+</div>
+
+<!-- 부록 2. 임상병리 -->
+<div class="slide-container">
+    <div class="slide-header"><h2 class="slide-title">[부록] 학과별 상세 분석: 임상병리학과</h2><span class="slide-number">12</span></div>
+    <div class="content-area"><div class="dashboard-grid">
+        <div class="dash-card"><h3>월별 추이 (총 83명)</h3><div class="dash-v-chart"><div class="dash-v-col"><div class="dash-v-bar" style="height: 30%;"></div><span class="dash-v-val">10</span><span class="dash-v-lbl">3월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 45%;"></div><span class="dash-v-val">15</span><span class="dash-v-lbl">8월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">35</span><span class="dash-v-lbl">9월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 35%;"></div><span class="dash-v-val">12</span><span class="dash-v-lbl">12월</span></div></div></div>
+        <div class="dash-card"><h3>제적 구분</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">자퇴</span><div class="dash-h-track"><div class="dash-h-fill" style="width:63%; background:var(--graph-1);"></div><div class="dash-h-val">53명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미복학</span><div class="dash-h-track"><div class="dash-h-fill" style="width:29%; background:var(--graph-2);"></div><div class="dash-h-val">24명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미등록</span><div class="dash-h-track"><div class="dash-h-fill" style="width:8%; background:var(--graph-3);"></div><div class="dash-h-val">6명</div></div></div></div></div>
+        <div class="dash-card"><h3>학년별 현황</h3><div class="dash-v-chart"><div class="dash-v-col" style="width:25%;"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">45</span><span class="dash-v-lbl">1학년</span></div><div class="dash-v-col" style="width:25%;"><div class="dash-v-bar" style="height: 66%;"></div><span class="dash-v-val">30</span><span class="dash-v-lbl">2학년</span></div><div class="dash-v-col" style="width:25%;"><div class="dash-v-bar" style="height: 15%;"></div><span class="dash-v-val">7</span><span class="dash-v-lbl">3학년</span></div></div></div>
+        <div class="dash-card"><h3>자퇴 사유</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">적성</span><div class="dash-h-track"><div class="dash-h-fill" style="width:40%;"></div><div class="dash-h-val">21명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">가사</span><div class="dash-h-track"><div class="dash-h-fill" style="width:25%;"></div><div class="dash-h-val">13명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">타대학</span><div class="dash-h-track"><div class="dash-h-fill" style="width:20%;"></div><div class="dash-h-val">11명</div></div></div></div></div>
+    </div></div>
+</div>
+
+<!-- 부록 3. 방사선 -->
+<div class="slide-container">
+    <div class="slide-header"><h2 class="slide-title">[부록] 학과별 상세 분석: 방사선학과</h2><span class="slide-number">13</span></div>
+    <div class="content-area"><div class="dashboard-grid">
+        <div class="dash-card"><h3>월별 추이 (총 74명)</h3><div class="dash-v-chart"><div class="dash-v-col"><div class="dash-v-bar" style="height: 35%;"></div><span class="dash-v-val">10</span><span class="dash-v-lbl">3월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">28</span><span class="dash-v-lbl">9월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 28%;"></div><span class="dash-v-val">8</span><span class="dash-v-lbl">12월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 28%;"></div><span class="dash-v-val">8</span><span class="dash-v-lbl">1월</span></div></div></div>
+        <div class="dash-card"><h3>제적 구분</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">자퇴</span><div class="dash-h-track"><div class="dash-h-fill" style="width:55%; background:var(--graph-1);"></div><div class="dash-h-val">41명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미복학</span><div class="dash-h-track"><div class="dash-h-fill" style="width:35%; background:var(--graph-2);"></div><div class="dash-h-val">26명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미등록</span><div class="dash-h-track"><div class="dash-h-fill" style="width:10%; background:var(--graph-3);"></div><div class="dash-h-val">7명</div></div></div></div></div>
+        <div class="dash-card"><h3>학년별 현황</h3><div class="dash-v-chart"><div class="dash-v-col" style="width:25%;"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">36</span><span class="dash-v-lbl">1학년</span></div><div class="dash-v-col" style="width:25%;"><div class="dash-v-bar" style="height: 83%;"></div><span class="dash-v-val">30</span><span class="dash-v-lbl">2학년</span></div><div class="dash-v-col" style="width:25%;"><div class="dash-v-bar" style="height: 11%;"></div><span class="dash-v-val">4</span><span class="dash-v-lbl">3학년</span></div></div></div>
+        <div class="dash-card"><h3>자퇴 사유</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">타대학</span><div class="dash-h-track"><div class="dash-h-fill" style="width:35%;"></div><div class="dash-h-val">14명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">적성</span><div class="dash-h-track"><div class="dash-h-fill" style="width:30%;"></div><div class="dash-h-val">12명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">가사</span><div class="dash-h-track"><div class="dash-h-fill" style="width:20%;"></div><div class="dash-h-val">8명</div></div></div></div></div>
+    </div></div>
+</div>
+
+<!-- 부록 4. 치위생 -->
+<div class="slide-container">
+    <div class="slide-header"><h2 class="slide-title">[부록] 학과별 상세 분석: 치위생학과</h2><span class="slide-number">14</span></div>
+    <div class="content-area"><div class="dashboard-grid">
+        <div class="dash-card"><h3>월별 추이 (총 47명)</h3><div class="dash-v-chart"><div class="dash-v-col"><div class="dash-v-bar" style="height: 66%;"></div><span class="dash-v-val">12</span><span class="dash-v-lbl">3월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">18</span><span class="dash-v-lbl">9월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 44%;"></div><span class="dash-v-val">8</span><span class="dash-v-lbl">12월</span></div></div></div>
+        <div class="dash-card"><h3>제적 구분</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">자퇴</span><div class="dash-h-track"><div class="dash-h-fill" style="width:60%; background:var(--graph-1);"></div><div class="dash-h-val">28명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미복학</span><div class="dash-h-track"><div class="dash-h-fill" style="width:25%; background:var(--graph-2);"></div><div class="dash-h-val">12명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미등록</span><div class="dash-h-track"><div class="dash-h-fill" style="width:15%; background:var(--graph-3);"></div><div class="dash-h-val">7명</div></div></div></div></div>
+        <div class="dash-card"><h3>학년별 현황</h3><div class="dash-v-chart"><div class="dash-v-col" style="width:30%;"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">25</span><span class="dash-v-lbl">1학년</span></div><div class="dash-v-col" style="width:30%;"><div class="dash-v-bar" style="height: 48%;"></div><span class="dash-v-val">12</span><span class="dash-v-lbl">2학년</span></div><div class="dash-v-col" style="width:30%;"><div class="dash-v-bar" style="height: 40%;"></div><span class="dash-v-val">10</span><span class="dash-v-lbl">3학년</span></div></div></div>
+        <div class="dash-card"><h3>자퇴 사유</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">타대학</span><div class="dash-h-track"><div class="dash-h-fill" style="width:45%;"></div><div class="dash-h-val">13명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">적성</span><div class="dash-h-track"><div class="dash-h-fill" style="width:25%;"></div><div class="dash-h-val">7명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">가사</span><div class="dash-h-track"><div class="dash-h-fill" style="width:20%;"></div><div class="dash-h-val">5명</div></div></div></div></div>
+    </div></div>
+</div>
+
+<!-- 부록 5. 스포츠재활 -->
+<div class="slide-container">
+    <div class="slide-header"><h2 class="slide-title">[부록] 학과별 상세 분석: 스포츠재활학과</h2><span class="slide-number">15</span></div>
+    <div class="content-area"><div class="dashboard-grid">
+        <div class="dash-card"><h3>월별 추이 (총 40명)</h3><div class="dash-v-chart"><div class="dash-v-col"><div class="dash-v-bar" style="height: 50%;"></div><span class="dash-v-val">10</span><span class="dash-v-lbl">3월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">20</span><span class="dash-v-lbl">9월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 30%;"></div><span class="dash-v-val">6</span><span class="dash-v-lbl">1월</span></div></div></div>
+        <div class="dash-card"><h3>제적 구분</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">자퇴</span><div class="dash-h-track"><div class="dash-h-fill" style="width:70%; background:var(--graph-1);"></div><div class="dash-h-val">28명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미복학</span><div class="dash-h-track"><div class="dash-h-fill" style="width:20%; background:var(--graph-2);"></div><div class="dash-h-val">8명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미등록</span><div class="dash-h-track"><div class="dash-h-fill" style="width:10%; background:var(--graph-3);"></div><div class="dash-h-val">4명</div></div></div></div></div>
+        <div class="dash-card"><h3>학년별 현황</h3><div class="dash-v-chart"><div class="dash-v-col" style="width:40%;"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">30</span><span class="dash-v-lbl">1학년</span></div><div class="dash-v-col" style="width:40%;"><div class="dash-v-bar" style="height: 33%;"></div><span class="dash-v-val">10</span><span class="dash-v-lbl">2학년</span></div></div></div>
+        <div class="dash-card"><h3>자퇴 사유</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">적성</span><div class="dash-h-track"><div class="dash-h-fill" style="width:50%;"></div><div class="dash-h-val">14명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">취업</span><div class="dash-h-track"><div class="dash-h-fill" style="width:25%;"></div><div class="dash-h-val">7명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">가사</span><div class="dash-h-track"><div class="dash-h-fill" style="width:15%;"></div><div class="dash-h-val">4명</div></div></div></div></div>
+    </div></div>
+</div>
+
+<!-- 부록 6. 간호 -->
+<div class="slide-container">
+    <div class="slide-header"><h2 class="slide-title">[부록] 학과별 상세 분석: 간호학과</h2><span class="slide-number">16</span></div>
+    <div class="content-area"><div class="dashboard-grid">
+        <div class="dash-card"><h3>월별 추이 (총 38명)</h3><div class="dash-v-chart"><div class="dash-v-col"><div class="dash-v-bar" style="height: 66%;"></div><span class="dash-v-val">10</span><span class="dash-v-lbl">3월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">15</span><span class="dash-v-lbl">9월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 86%;"></div><span class="dash-v-val">13</span><span class="dash-v-lbl">12월</span></div></div></div>
+        <div class="dash-card"><h3>제적 구분</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">자퇴</span><div class="dash-h-track"><div class="dash-h-fill" style="width:80%; background:var(--graph-1);"></div><div class="dash-h-val">30명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미복학</span><div class="dash-h-track"><div class="dash-h-fill" style="width:15%; background:var(--graph-2);"></div><div class="dash-h-val">6명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미등록</span><div class="dash-h-track"><div class="dash-h-fill" style="width:5%; background:var(--graph-3);"></div><div class="dash-h-val">2명</div></div></div></div></div>
+        <div class="dash-card"><h3>학년별 현황</h3><div class="dash-v-chart"><div class="dash-v-col" style="width:30%;"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">18</span><span class="dash-v-lbl">1학년</span></div><div class="dash-v-col" style="width:30%;"><div class="dash-v-bar" style="height: 66%;"></div><span class="dash-v-val">12</span><span class="dash-v-lbl">2학년</span></div><div class="dash-v-col" style="width:30%;"><div class="dash-v-bar" style="height: 44%;"></div><span class="dash-v-val">8</span><span class="dash-v-lbl">3학년</span></div></div></div>
+        <div class="dash-card"><h3>자퇴 사유</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">타대학</span><div class="dash-h-track"><div class="dash-h-fill" style="width:50%;"></div><div class="dash-h-val">15명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">적성</span><div class="dash-h-track"><div class="dash-h-fill" style="width:30%;"></div><div class="dash-h-val">9명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">가사</span><div class="dash-h-track"><div class="dash-h-fill" style="width:20%;"></div><div class="dash-h-val">6명</div></div></div></div></div>
+    </div></div>
+</div>
+
+<!-- 부록 7. 사회복지 -->
+<div class="slide-container">
+    <div class="slide-header"><h2 class="slide-title">[부록] 학과별 상세 분석: 사회복지학과</h2><span class="slide-number">17</span></div>
+    <div class="content-area"><div class="dashboard-grid">
+        <div class="dash-card"><h3>월별 추이 (총 30명)</h3><div class="dash-v-chart"><div class="dash-v-col"><div class="dash-v-bar" style="height: 66%;"></div><span class="dash-v-val">8</span><span class="dash-v-lbl">3월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">12</span><span class="dash-v-lbl">9월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 41%;"></div><span class="dash-v-val">5</span><span class="dash-v-lbl">12월</span></div></div></div>
+        <div class="dash-card"><h3>제적 구분</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">자퇴</span><div class="dash-h-track"><div class="dash-h-fill" style="width:50%; background:var(--graph-1);"></div><div class="dash-h-val">15명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미복학</span><div class="dash-h-track"><div class="dash-h-fill" style="width:33%; background:var(--graph-2);"></div><div class="dash-h-val">10명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미등록</span><div class="dash-h-track"><div class="dash-h-fill" style="width:17%; background:var(--graph-3);"></div><div class="dash-h-val">5명</div></div></div></div></div>
+        <div class="dash-card"><h3>학년별 현황</h3><div class="dash-v-chart"><div class="dash-v-col" style="width:30%;"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">15</span><span class="dash-v-lbl">1학년</span></div><div class="dash-v-col" style="width:30%;"><div class="dash-v-bar" style="height: 70%;"></div><span class="dash-v-val">10</span><span class="dash-v-lbl">2학년</span></div><div class="dash-v-col" style="width:30%;"><div class="dash-v-bar" style="height: 35%;"></div><span class="dash-v-val">5</span><span class="dash-v-lbl">심화</span></div></div></div>
+        <div class="dash-card"><h3>자퇴 사유</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">가사</span><div class="dash-h-track"><div class="dash-h-fill" style="width:40%;"></div><div class="dash-h-val">6명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">취업</span><div class="dash-h-track"><div class="dash-h-fill" style="width:35%;"></div><div class="dash-h-val">5명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">적성</span><div class="dash-h-track"><div class="dash-h-fill" style="width:27%;"></div><div class="dash-h-val">4명</div></div></div></div></div>
+    </div></div>
+</div>
+
+<!-- 부록 8. 물리치료 -->
+<div class="slide-container">
+    <div class="slide-header"><h2 class="slide-title">[부록] 학과별 상세 분석: 물리치료학과</h2><span class="slide-number">18</span></div>
+    <div class="content-area"><div class="dashboard-grid">
+        <div class="dash-card"><h3>월별 추이 (총 29명)</h3><div class="dash-v-chart"><div class="dash-v-col"><div class="dash-v-bar" style="height: 46%;"></div><span class="dash-v-val">7</span><span class="dash-v-lbl">3월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">15</span><span class="dash-v-lbl">9월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 46%;"></div><span class="dash-v-val">7</span><span class="dash-v-lbl">12월</span></div></div></div>
+        <div class="dash-card"><h3>제적 구분</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">자퇴</span><div class="dash-h-track"><div class="dash-h-fill" style="width:68%; background:var(--graph-1);"></div><div class="dash-h-val">20명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미복학</span><div class="dash-h-track"><div class="dash-h-fill" style="width:21%; background:var(--graph-2);"></div><div class="dash-h-val">6명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미등록</span><div class="dash-h-track"><div class="dash-h-fill" style="width:11%; background:var(--graph-3);"></div><div class="dash-h-val">3명</div></div></div></div></div>
+        <div class="dash-card"><h3>학년별 현황</h3><div class="dash-v-chart"><div class="dash-v-col" style="width:20%;"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">12</span><span class="dash-v-lbl">1학년</span></div><div class="dash-v-col" style="width:20%;"><div class="dash-v-bar" style="height: 83%;"></div><span class="dash-v-val">10</span><span class="dash-v-lbl">2학년</span></div><div class="dash-v-col" style="width:20%;"><div class="dash-v-bar" style="height: 41%;"></div><span class="dash-v-val">5</span><span class="dash-v-lbl">3학년</span></div><div class="dash-v-col" style="width:20%;"><div class="dash-v-bar" style="height: 16%;"></div><span class="dash-v-val">2</span><span class="dash-v-lbl">심화</span></div></div></div>
+        <div class="dash-card"><h3>자퇴 사유</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">타대학</span><div class="dash-h-track"><div class="dash-h-fill" style="width:50%;"></div><div class="dash-h-val">10명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">적성</span><div class="dash-h-track"><div class="dash-h-fill" style="width:30%;"></div><div class="dash-h-val">6명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">가사</span><div class="dash-h-track"><div class="dash-h-fill" style="width:20%;"></div><div class="dash-h-val">4명</div></div></div></div></div>
+    </div></div>
+</div>
+
+<!-- 부록 9. 소방안전 -->
+<div class="slide-container">
+    <div class="slide-header"><h2 class="slide-title">[부록] 학과별 상세 분석: 소방안전관리학과</h2><span class="slide-number">19</span></div>
+    <div class="content-area"><div class="dashboard-grid">
+        <div class="dash-card"><h3>월별 추이 (총 27명)</h3><div class="dash-v-chart"><div class="dash-v-col"><div class="dash-v-bar" style="height: 40%;"></div><span class="dash-v-val">6</span><span class="dash-v-lbl">3월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">15</span><span class="dash-v-lbl">9월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 40%;"></div><span class="dash-v-val">6</span><span class="dash-v-lbl">12월</span></div></div></div>
+        <div class="dash-card"><h3>제적 구분</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">자퇴</span><div class="dash-h-track"><div class="dash-h-fill" style="width:59%; background:var(--graph-1);"></div><div class="dash-h-val">16명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미복학</span><div class="dash-h-track"><div class="dash-h-fill" style="width:26%; background:var(--graph-2);"></div><div class="dash-h-val">7명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미등록</span><div class="dash-h-track"><div class="dash-h-fill" style="width:15%; background:var(--graph-3);"></div><div class="dash-h-val">4명</div></div></div></div></div>
+        <div class="dash-card"><h3>학년별 현황</h3><div class="dash-v-chart"><div class="dash-v-col" style="width:40%;"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">18</span><span class="dash-v-lbl">1학년</span></div><div class="dash-v-col" style="width:40%;"><div class="dash-v-bar" style="height: 50%;"></div><span class="dash-v-val">9</span><span class="dash-v-lbl">2학년</span></div></div></div>
+        <div class="dash-card"><h3>자퇴 사유</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">취업</span><div class="dash-h-track"><div class="dash-h-fill" style="width:40%;"></div><div class="dash-h-val">6명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">적성</span><div class="dash-h-track"><div class="dash-h-fill" style="width:35%;"></div><div class="dash-h-val">5명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">가사</span><div class="dash-h-track"><div class="dash-h-fill" style="width:25%;"></div><div class="dash-h-val">5명</div></div></div></div></div>
+    </div></div>
+</div>
+
+<!-- 부록 10. 뷰티코디네이션과 -->
+<div class="slide-container">
+    <div class="slide-header"><h2 class="slide-title">[부록] 학과별 상세 분석: 뷰티코디네이션과</h2><span class="slide-number">20</span></div>
+    <div class="content-area"><div class="dashboard-grid">
+        <div class="dash-card"><h3>월별 추이 (총 26명)</h3><div class="dash-v-chart"><div class="dash-v-col"><div class="dash-v-bar" style="height: 53%;"></div><span class="dash-v-val">7</span><span class="dash-v-lbl">3월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">13</span><span class="dash-v-lbl">9월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 46%;"></div><span class="dash-v-val">6</span><span class="dash-v-lbl">12월</span></div></div></div>
+        <div class="dash-card"><h3>제적 구분</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">자퇴</span><div class="dash-h-track"><div class="dash-h-fill" style="width:65%; background:var(--graph-1);"></div><div class="dash-h-val">17명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미복학</span><div class="dash-h-track"><div class="dash-h-fill" style="width:23%; background:var(--graph-2);"></div><div class="dash-h-val">6명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미등록</span><div class="dash-h-track"><div class="dash-h-fill" style="width:12%; background:var(--graph-3);"></div><div class="dash-h-val">3명</div></div></div></div></div>
+        <div class="dash-card"><h3>학년별 현황</h3><div class="dash-v-chart"><div class="dash-v-col" style="width:40%;"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">16</span><span class="dash-v-lbl">1학년</span></div><div class="dash-v-col" style="width:40%;"><div class="dash-v-bar" style="height: 62%;"></div><span class="dash-v-val">10</span><span class="dash-v-lbl">2학년</span></div></div></div>
+        <div class="dash-card"><h3>자퇴 사유</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">적성</span><div class="dash-h-track"><div class="dash-h-fill" style="width:47%;"></div><div class="dash-h-val">8명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">취업</span><div class="dash-h-track"><div class="dash-h-fill" style="width:29%;"></div><div class="dash-h-val">5명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">가사</span><div class="dash-h-track"><div class="dash-h-fill" style="width:24%;"></div><div class="dash-h-val">4명</div></div></div></div></div>
+    </div></div>
+</div>
+
+<!-- 부록 11. 언어치료학과 -->
+<div class="slide-container">
+    <div class="slide-header"><h2 class="slide-title">[부록] 학과별 상세 분석: 언어치료학과</h2><span class="slide-number">21</span></div>
+    <div class="content-area"><div class="dashboard-grid">
+        <div class="dash-card"><h3>월별 추이 (총 23명)</h3><div class="dash-v-chart"><div class="dash-v-col"><div class="dash-v-bar" style="height: 58%;"></div><span class="dash-v-val">7</span><span class="dash-v-lbl">3월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">12</span><span class="dash-v-lbl">9월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 33%;"></div><span class="dash-v-val">4</span><span class="dash-v-lbl">12월</span></div></div></div>
+        <div class="dash-card"><h3>제적 구분</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">자퇴</span><div class="dash-h-track"><div class="dash-h-fill" style="width:69%; background:var(--graph-1);"></div><div class="dash-h-val">16명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미복학</span><div class="dash-h-track"><div class="dash-h-fill" style="width:22%; background:var(--graph-2);"></div><div class="dash-h-val">5명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미등록</span><div class="dash-h-track"><div class="dash-h-fill" style="width:9%; background:var(--graph-3);"></div><div class="dash-h-val">2명</div></div></div></div></div>
+        <div class="dash-card"><h3>학년별 현황</h3><div class="dash-v-chart"><div class="dash-v-col" style="width:30%;"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">10</span><span class="dash-v-lbl">1학년</span></div><div class="dash-v-col" style="width:30%;"><div class="dash-v-bar" style="height: 80%;"></div><span class="dash-v-val">8</span><span class="dash-v-lbl">2학년</span></div><div class="dash-v-col" style="width:30%;"><div class="dash-v-bar" style="height: 50%;"></div><span class="dash-v-val">5</span><span class="dash-v-lbl">3학년</span></div></div></div>
+        <div class="dash-card"><h3>자퇴 사유</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">적성</span><div class="dash-h-track"><div class="dash-h-fill" style="width:50%;"></div><div class="dash-h-val">8명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">타대학</span><div class="dash-h-track"><div class="dash-h-fill" style="width:31%;"></div><div class="dash-h-val">5명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">가사</span><div class="dash-h-track"><div class="dash-h-fill" style="width:19%;"></div><div class="dash-h-val">3명</div></div></div></div></div>
+    </div></div>
+</div>
+
+<!-- 부록 12. 보건행정학과 -->
+<div class="slide-container">
+    <div class="slide-header"><h2 class="slide-title">[부록] 학과별 상세 분석: 보건행정학과</h2><span class="slide-number">22</span></div>
+    <div class="content-area"><div class="dashboard-grid">
+        <div class="dash-card"><h3>월별 추이 (총 19명)</h3><div class="dash-v-chart"><div class="dash-v-col"><div class="dash-v-bar" style="height: 50%;"></div><span class="dash-v-val">5</span><span class="dash-v-lbl">3월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">10</span><span class="dash-v-lbl">9월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 40%;"></div><span class="dash-v-val">4</span><span class="dash-v-lbl">12월</span></div></div></div>
+        <div class="dash-card"><h3>제적 구분</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">자퇴</span><div class="dash-h-track"><div class="dash-h-fill" style="width:58%; background:var(--graph-1);"></div><div class="dash-h-val">11명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미복학</span><div class="dash-h-track"><div class="dash-h-fill" style="width:26%; background:var(--graph-2);"></div><div class="dash-h-val">5명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미등록</span><div class="dash-h-track"><div class="dash-h-fill" style="width:16%; background:var(--graph-3);"></div><div class="dash-h-val">3명</div></div></div></div></div>
+        <div class="dash-card"><h3>학년별 현황</h3><div class="dash-v-chart"><div class="dash-v-col" style="width:30%;"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">10</span><span class="dash-v-lbl">1학년</span></div><div class="dash-v-col" style="width:30%;"><div class="dash-v-bar" style="height: 60%;"></div><span class="dash-v-val">6</span><span class="dash-v-lbl">2학년</span></div><div class="dash-v-col" style="width:30%;"><div class="dash-v-bar" style="height: 30%;"></div><span class="dash-v-val">3</span><span class="dash-v-lbl">3학년</span></div></div></div>
+        <div class="dash-card"><h3>자퇴 사유</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">취업</span><div class="dash-h-track"><div class="dash-h-fill" style="width:40%;"></div><div class="dash-h-val">4명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">적성</span><div class="dash-h-track"><div class="dash-h-fill" style="width:30%;"></div><div class="dash-h-val">3명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">가사</span><div class="dash-h-track"><div class="dash-h-fill" style="width:30%;"></div><div class="dash-h-val">3명</div></div></div></div></div>
+    </div></div>
+</div>
+
+<!-- 부록 13. 작업치료학과 -->
+<div class="slide-container">
+    <div class="slide-header"><h2 class="slide-title">[부록] 학과별 상세 분석: 작업치료학과</h2><span class="slide-number">23</span></div>
+    <div class="content-area"><div class="dashboard-grid">
+        <div class="dash-card"><h3>월별 추이 (총 16명)</h3><div class="dash-v-chart"><div class="dash-v-col"><div class="dash-v-bar" style="height: 40%;"></div><span class="dash-v-val">4</span><span class="dash-v-lbl">3월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">10</span><span class="dash-v-lbl">9월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 20%;"></div><span class="dash-v-val">2</span><span class="dash-v-lbl">12월</span></div></div></div>
+        <div class="dash-card"><h3>제적 구분</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">자퇴</span><div class="dash-h-track"><div class="dash-h-fill" style="width:62%; background:var(--graph-1);"></div><div class="dash-h-val">10명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미복학</span><div class="dash-h-track"><div class="dash-h-fill" style="width:25%; background:var(--graph-2);"></div><div class="dash-h-val">4명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미등록</span><div class="dash-h-track"><div class="dash-h-fill" style="width:13%; background:var(--graph-3);"></div><div class="dash-h-val">2명</div></div></div></div></div>
+        <div class="dash-card"><h3>학년별 현황</h3><div class="dash-v-chart"><div class="dash-v-col" style="width:30%;"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">8</span><span class="dash-v-lbl">1학년</span></div><div class="dash-v-col" style="width:30%;"><div class="dash-v-bar" style="height: 62%;"></div><span class="dash-v-val">5</span><span class="dash-v-lbl">2학년</span></div><div class="dash-v-col" style="width:30%;"><div class="dash-v-bar" style="height: 38%;"></div><span class="dash-v-val">3</span><span class="dash-v-lbl">3학년</span></div></div></div>
+        <div class="dash-card"><h3>자퇴 사유</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">적성</span><div class="dash-h-track"><div class="dash-h-fill" style="width:50%;"></div><div class="dash-h-val">5명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">타대학</span><div class="dash-h-track"><div class="dash-h-fill" style="width:30%;"></div><div class="dash-h-val">3명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">가사</span><div class="dash-h-track"><div class="dash-h-fill" style="width:20%;"></div><div class="dash-h-val">2명</div></div></div></div></div>
+    </div></div>
+</div>
+
+<!-- 부록 14. 안경광학과 -->
+<div class="slide-container">
+    <div class="slide-header"><h2 class="slide-title">[부록] 학과별 상세 분석: 안경광학과</h2><span class="slide-number">24</span></div>
+    <div class="content-area"><div class="dashboard-grid">
+        <div class="dash-card"><h3>월별 추이 (총 15명)</h3><div class="dash-v-chart"><div class="dash-v-col"><div class="dash-v-bar" style="height: 62%;"></div><span class="dash-v-val">5</span><span class="dash-v-lbl">3월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">8</span><span class="dash-v-lbl">9월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 25%;"></div><span class="dash-v-val">2</span><span class="dash-v-lbl">12월</span></div></div></div>
+        <div class="dash-card"><h3>제적 구분</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">자퇴</span><div class="dash-h-track"><div class="dash-h-fill" style="width:60%; background:var(--graph-1);"></div><div class="dash-h-val">9명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미복학</span><div class="dash-h-track"><div class="dash-h-fill" style="width:27%; background:var(--graph-2);"></div><div class="dash-h-val">4명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미등록</span><div class="dash-h-track"><div class="dash-h-fill" style="width:13%; background:var(--graph-3);"></div><div class="dash-h-val">2명</div></div></div></div></div>
+        <div class="dash-card"><h3>학년별 현황</h3><div class="dash-v-chart"><div class="dash-v-col" style="width:30%;"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">8</span><span class="dash-v-lbl">1학년</span></div><div class="dash-v-col" style="width:30%;"><div class="dash-v-bar" style="height: 62%;"></div><span class="dash-v-val">5</span><span class="dash-v-lbl">2학년</span></div><div class="dash-v-col" style="width:30%;"><div class="dash-v-bar" style="height: 25%;"></div><span class="dash-v-val">2</span><span class="dash-v-lbl">3학년</span></div></div></div>
+        <div class="dash-card"><h3>자퇴 사유</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">취업</span><div class="dash-h-track"><div class="dash-h-fill" style="width:44%;"></div><div class="dash-h-val">4명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">적성</span><div class="dash-h-track"><div class="dash-h-fill" style="width:33%;"></div><div class="dash-h-val">3명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">가사</span><div class="dash-h-track"><div class="dash-h-fill" style="width:22%;"></div><div class="dash-h-val">2명</div></div></div></div></div>
+    </div></div>
+</div>
+
+<!-- 부록 15. 호텔제과제빵학과 -->
+<div class="slide-container">
+    <div class="slide-header"><h2 class="slide-title">[부록] 학과별 상세 분석: 호텔제과제빵과</h2><span class="slide-number">25</span></div>
+    <div class="content-area"><div class="dashboard-grid">
+        <div class="dash-card"><h3>월별 추이 (총 13명)</h3><div class="dash-v-chart"><div class="dash-v-col"><div class="dash-v-bar" style="height: 37%;"></div><span class="dash-v-val">3</span><span class="dash-v-lbl">3월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">8</span><span class="dash-v-lbl">9월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 25%;"></div><span class="dash-v-val">2</span><span class="dash-v-lbl">12월</span></div></div></div>
+        <div class="dash-card"><h3>제적 구분</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">자퇴</span><div class="dash-h-track"><div class="dash-h-fill" style="width:69%; background:var(--graph-1);"></div><div class="dash-h-val">9명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미복학</span><div class="dash-h-track"><div class="dash-h-fill" style="width:23%; background:var(--graph-2);"></div><div class="dash-h-val">3명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미등록</span><div class="dash-h-track"><div class="dash-h-fill" style="width:8%; background:var(--graph-3);"></div><div class="dash-h-val">1명</div></div></div></div></div>
+        <div class="dash-card"><h3>학년별 현황</h3><div class="dash-v-chart"><div class="dash-v-col" style="width:40%;"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">9</span><span class="dash-v-lbl">1학년</span></div><div class="dash-v-col" style="width:40%;"><div class="dash-v-bar" style="height: 44%;"></div><span class="dash-v-val">4</span><span class="dash-v-lbl">2학년</span></div></div></div>
+        <div class="dash-card"><h3>자퇴 사유</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">적성</span><div class="dash-h-track"><div class="dash-h-fill" style="width:55%;"></div><div class="dash-h-val">5명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">타대학</span><div class="dash-h-track"><div class="dash-h-fill" style="width:33%;"></div><div class="dash-h-val">3명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">가사</span><div class="dash-h-track"><div class="dash-h-fill" style="width:12%;"></div><div class="dash-h-val">1명</div></div></div></div></div>
+    </div></div>
+</div>
+
+<!-- 부록 16. 글로벌호텔조리학과 -->
+<div class="slide-container">
+    <div class="slide-header"><h2 class="slide-title">[부록] 학과별 상세 분석: 글로벌호텔조리과</h2><span class="slide-number">26</span></div>
+    <div class="content-area"><div class="dashboard-grid">
+        <div class="dash-card"><h3>월별 추이 (총 12명)</h3><div class="dash-v-chart"><div class="dash-v-col"><div class="dash-v-bar" style="height: 57%;"></div><span class="dash-v-val">4</span><span class="dash-v-lbl">3월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">7</span><span class="dash-v-lbl">9월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 14%;"></div><span class="dash-v-val">1</span><span class="dash-v-lbl">12월</span></div></div></div>
+        <div class="dash-card"><h3>제적 구분</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">자퇴</span><div class="dash-h-track"><div class="dash-h-fill" style="width:66%; background:var(--graph-1);"></div><div class="dash-h-val">8명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미복학</span><div class="dash-h-track"><div class="dash-h-fill" style="width:25%; background:var(--graph-2);"></div><div class="dash-h-val">3명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미등록</span><div class="dash-h-track"><div class="dash-h-fill" style="width:8%; background:var(--graph-3);"></div><div class="dash-h-val">1명</div></div></div></div></div>
+        <div class="dash-card"><h3>학년별 현황</h3><div class="dash-v-chart"><div class="dash-v-col" style="width:40%;"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">8</span><span class="dash-v-lbl">1학년</span></div><div class="dash-v-col" style="width:40%;"><div class="dash-v-bar" style="height: 50%;"></div><span class="dash-v-val">4</span><span class="dash-v-lbl">2학년</span></div></div></div>
+        <div class="dash-card"><h3>자퇴 사유</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">적성</span><div class="dash-h-track"><div class="dash-h-fill" style="width:50%;"></div><div class="dash-h-val">4명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">취업</span><div class="dash-h-track"><div class="dash-h-fill" style="width:37%;"></div><div class="dash-h-val">3명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">가사</span><div class="dash-h-track"><div class="dash-h-fill" style="width:13%;"></div><div class="dash-h-val">1명</div></div></div></div></div>
+    </div></div>
+</div>
+
+<!-- 부록 17. 유아교육학과 -->
+<div class="slide-container">
+    <div class="slide-header"><h2 class="slide-title">[부록] 학과별 상세 분석: 유아교육학과</h2><span class="slide-number">27</span></div>
+    <div class="content-area"><div class="dashboard-grid">
+        <div class="dash-card"><h3>월별 추이 (총 10명)</h3><div class="dash-v-chart"><div class="dash-v-col"><div class="dash-v-bar" style="height: 33%;"></div><span class="dash-v-val">2</span><span class="dash-v-lbl">3월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">6</span><span class="dash-v-lbl">9월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 33%;"></div><span class="dash-v-val">2</span><span class="dash-v-lbl">12월</span></div></div></div>
+        <div class="dash-card"><h3>제적 구분</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">자퇴</span><div class="dash-h-track"><div class="dash-h-fill" style="width:70%; background:var(--graph-1);"></div><div class="dash-h-val">7명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미복학</span><div class="dash-h-track"><div class="dash-h-fill" style="width:20%; background:var(--graph-2);"></div><div class="dash-h-val">2명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미등록</span><div class="dash-h-track"><div class="dash-h-fill" style="width:10%; background:var(--graph-3);"></div><div class="dash-h-val">1명</div></div></div></div></div>
+        <div class="dash-card"><h3>학년별 현황</h3><div class="dash-v-chart"><div class="dash-v-col" style="width:30%;"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">5</span><span class="dash-v-lbl">1학년</span></div><div class="dash-v-col" style="width:30%;"><div class="dash-v-bar" style="height: 60%;"></div><span class="dash-v-val">3</span><span class="dash-v-lbl">2학년</span></div><div class="dash-v-col" style="width:30%;"><div class="dash-v-bar" style="height: 40%;"></div><span class="dash-v-val">2</span><span class="dash-v-lbl">3학년</span></div></div></div>
+        <div class="dash-card"><h3>자퇴 사유</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">적성</span><div class="dash-h-track"><div class="dash-h-fill" style="width:57%;"></div><div class="dash-h-val">4명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">가사</span><div class="dash-h-track"><div class="dash-h-fill" style="width:29%;"></div><div class="dash-h-val">2명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">기타</span><div class="dash-h-track"><div class="dash-h-fill" style="width:14%;"></div><div class="dash-h-val">1명</div></div></div></div></div>
+    </div></div>
+</div>
+
+<!-- 부록 18. 식품영양학과 -->
+<div class="slide-container">
+    <div class="slide-header"><h2 class="slide-title">[부록] 학과별 상세 분석: 식품영양학과</h2><span class="slide-number">28</span></div>
+    <div class="content-area"><div class="dashboard-grid">
+        <div class="dash-card"><h3>월별 추이 (총 10명)</h3><div class="dash-v-chart"><div class="dash-v-col"><div class="dash-v-bar" style="height: 60%;"></div><span class="dash-v-val">3</span><span class="dash-v-lbl">3월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">5</span><span class="dash-v-lbl">9월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 40%;"></div><span class="dash-v-val">2</span><span class="dash-v-lbl">12월</span></div></div></div>
+        <div class="dash-card"><h3>제적 구분</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">자퇴</span><div class="dash-h-track"><div class="dash-h-fill" style="width:60%; background:var(--graph-1);"></div><div class="dash-h-val">6명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미복학</span><div class="dash-h-track"><div class="dash-h-fill" style="width:20%; background:var(--graph-2);"></div><div class="dash-h-val">2명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미등록</span><div class="dash-h-track"><div class="dash-h-fill" style="width:20%; background:var(--graph-3);"></div><div class="dash-h-val">2명</div></div></div></div></div>
+        <div class="dash-card"><h3>학년별 현황</h3><div class="dash-v-chart"><div class="dash-v-col" style="width:40%;"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">6</span><span class="dash-v-lbl">1학년</span></div><div class="dash-v-col" style="width:40%;"><div class="dash-v-bar" style="height: 66%;"></div><span class="dash-v-val">4</span><span class="dash-v-lbl">2학년</span></div></div></div>
+        <div class="dash-card"><h3>자퇴 사유</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">적성</span><div class="dash-h-track"><div class="dash-h-fill" style="width:50%;"></div><div class="dash-h-val">3명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">타대학</span><div class="dash-h-track"><div class="dash-h-fill" style="width:33%;"></div><div class="dash-h-val">2명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">가사</span><div class="dash-h-track"><div class="dash-h-fill" style="width:17%;"></div><div class="dash-h-val">1명</div></div></div></div></div>
+    </div></div>
+</div>
+
+<!-- 부록 19. 반려동물보건 -->
+<div class="slide-container">
+    <div class="slide-header"><h2 class="slide-title">[부록] 학과별 상세 분석: 반려동물보건학과</h2><span class="slide-number">29</span></div>
+    <div class="content-area"><div class="dashboard-grid">
+        <div class="dash-card"><h3>월별 추이 (총 8명)</h3><div class="dash-v-chart"><div class="dash-v-col"><div class="dash-v-bar" style="height: 40%;"></div><span class="dash-v-val">2</span><span class="dash-v-lbl">3월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">5</span><span class="dash-v-lbl">9월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 20%;"></div><span class="dash-v-val">1</span><span class="dash-v-lbl">12월</span></div></div></div>
+        <div class="dash-card"><h3>제적 구분</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">자퇴</span><div class="dash-h-track"><div class="dash-h-fill" style="width:75%; background:var(--graph-1);"></div><div class="dash-h-val">6명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미복학</span><div class="dash-h-track"><div class="dash-h-fill" style="width:25%; background:var(--graph-2);"></div><div class="dash-h-val">2명</div></div></div></div></div>
+        <div class="dash-card"><h3>학년별 현황</h3><div class="dash-v-chart"><div class="dash-v-col" style="width:40%;"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">5</span><span class="dash-v-lbl">1학년</span></div><div class="dash-v-col" style="width:40%;"><div class="dash-v-bar" style="height: 60%;"></div><span class="dash-v-val">3</span><span class="dash-v-lbl">2학년</span></div></div></div>
+        <div class="dash-card"><h3>자퇴 사유</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">적성</span><div class="dash-h-track"><div class="dash-h-fill" style="width:50%;"></div><div class="dash-h-val">3명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">타대학</span><div class="dash-h-track"><div class="dash-h-fill" style="width:33%;"></div><div class="dash-h-val">2명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">가사</span><div class="dash-h-track"><div class="dash-h-fill" style="width:17%;"></div><div class="dash-h-val">1명</div></div></div></div></div>
+    </div></div>
+</div>
+
+<!-- 부록 20. 환경보건학과 -->
+<div class="slide-container">
+    <div class="slide-header"><h2 class="slide-title">[부록] 학과별 상세 분석: 환경보건학과</h2><span class="slide-number">30</span></div>
+    <div class="content-area"><div class="dashboard-grid">
+        <div class="dash-card"><h3>월별 추이 (총 5명)</h3><div class="dash-v-chart"><div class="dash-v-col"><div class="dash-v-bar" style="height: 33%;"></div><span class="dash-v-val">1</span><span class="dash-v-lbl">3월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">3</span><span class="dash-v-lbl">9월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 33%;"></div><span class="dash-v-val">1</span><span class="dash-v-lbl">12월</span></div></div></div>
+        <div class="dash-card"><h3>제적 구분</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">자퇴</span><div class="dash-h-track"><div class="dash-h-fill" style="width:60%; background:var(--graph-1);"></div><div class="dash-h-val">3명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미복학</span><div class="dash-h-track"><div class="dash-h-fill" style="width:20%; background:var(--graph-2);"></div><div class="dash-h-val">1명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미등록</span><div class="dash-h-track"><div class="dash-h-fill" style="width:20%; background:var(--graph-3);"></div><div class="dash-h-val">1명</div></div></div></div></div>
+        <div class="dash-card"><h3>학년별 현황</h3><div class="dash-v-chart"><div class="dash-v-col" style="width:40%;"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">3</span><span class="dash-v-lbl">1학년</span></div><div class="dash-v-col" style="width:40%;"><div class="dash-v-bar" style="height: 66%;"></div><span class="dash-v-val">2</span><span class="dash-v-lbl">2학년</span></div></div></div>
+        <div class="dash-card"><h3>자퇴 사유</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">취업</span><div class="dash-h-track"><div class="dash-h-fill" style="width:66%;"></div><div class="dash-h-val">2명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">적성</span><div class="dash-h-track"><div class="dash-h-fill" style="width:34%;"></div><div class="dash-h-val">1명</div></div></div></div></div>
+    </div></div>
+</div>
+
+<!-- 부록 21. 응급구조학과 -->
+<div class="slide-container">
+    <div class="slide-header"><h2 class="slide-title">[부록] 학과별 상세 분석: 응급구조학과</h2><span class="slide-number">31</span></div>
+    <div class="content-area"><div class="dashboard-grid">
+        <div class="dash-card"><h3>월별 추이 (총 5명)</h3><div class="dash-v-chart"><div class="dash-v-col"><div class="dash-v-bar" style="height: 33%;"></div><span class="dash-v-val">1</span><span class="dash-v-lbl">3월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">3</span><span class="dash-v-lbl">9월</span></div><div class="dash-v-col"><div class="dash-v-bar" style="height: 33%;"></div><span class="dash-v-val">1</span><span class="dash-v-lbl">12월</span></div></div></div>
+        <div class="dash-card"><h3>제적 구분</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">자퇴</span><div class="dash-h-track"><div class="dash-h-fill" style="width:60%; background:var(--graph-1);"></div><div class="dash-h-val">3명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">미복학</span><div class="dash-h-track"><div class="dash-h-fill" style="width:40%; background:var(--graph-2);"></div><div class="dash-h-val">2명</div></div></div></div></div>
+        <div class="dash-card"><h3>학년별 현황</h3><div class="dash-v-chart"><div class="dash-v-col" style="width:30%;"><div class="dash-v-bar" style="height: 100%; background:var(--primary);"></div><span class="dash-v-val">3</span><span class="dash-v-lbl">1학년</span></div><div class="dash-v-col" style="width:30%;"><div class="dash-v-bar" style="height: 66%;"></div><span class="dash-v-val">2</span><span class="dash-v-lbl">2학년</span></div><div class="dash-v-col" style="width:30%;"><div class="dash-v-bar" style="height: 0%;"></div><span class="dash-v-val">0</span><span class="dash-v-lbl">3학년</span></div></div></div>
+        <div class="dash-card"><h3>자퇴 사유</h3><div class="dash-h-chart"><div class="dash-h-row"><span class="dash-h-lbl">적성</span><div class="dash-h-track"><div class="dash-h-fill" style="width:66%;"></div><div class="dash-h-val">2명</div></div></div><div class="dash-h-row"><span class="dash-h-lbl">타대학</span><div class="dash-h-track"><div class="dash-h-fill" style="width:34%;"></div><div class="dash-h-val">1명</div></div></div></div></div>
+    </div></div>
+</div>
+
+<!-- 마무리 Slide -->
+<div class="slide-container">
+    <div class="center-title-slide" style="border: 4px double var(--primary); border-radius: 20px;">
+        <h2 style="font-size: 70px; margin-bottom: 40px; color: var(--primary); font-weight: 900;">경청해 주셔서 감사합니다.</h2>
+        <div style="margin-top: 20px; font-weight: bold; font-size:28px; color: var(--accent);">대구보건대학교 대학성과관리팀</div>
+    </div>
+</div>
+
+<!-- Presentation Controls -->
+<div class="controls">
+    <button id="prevBtn" title="이전 (왼쪽 화살표)"><i class="fa-solid fa-chevron-left"></i></button>
+    <span class="slide-counter" id="slideCounter">1 / 32</span>
+    <button id="nextBtn" title="다음 (오른쪽 화살표/스페이스바)"><i class="fa-solid fa-chevron-right"></i></button>
+</div>
+
+<script>
+    const slides = document.querySelectorAll('.slide-container');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const slideCounter = document.getElementById('slideCounter');
+    let currentSlide = 0;
+
+    function updateSlides() {
+        slides.forEach((slide, index) => {
+            if (index === currentSlide) {
+                slide.classList.add('active');
+            } else {
+                slide.classList.remove('active');
+            }
+        });
+        
+        slideCounter.textContent = `${currentSlide + 1} / ${slides.length}`;
+        
+        prevBtn.disabled = currentSlide === 0;
+        nextBtn.disabled = currentSlide === slides.length - 1;
+    }
+
+    prevBtn.addEventListener('click', () => {
+        if (currentSlide > 0) {
+            currentSlide--;
+            updateSlides();
+        }
+    });
+
+    nextBtn.addEventListener('click', () => {
+        if (currentSlide < slides.length - 1) {
+            currentSlide++;
+            updateSlides();
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlides();
+            }
+        } else if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                updateSlides();
+                e.preventDefault(); // 스페이스바 화면 스크롤 방지
+            }
+        }
+    });
+
+    // Initialize presentation
+    updateSlides();
+</script>
+</body>
+</html>
