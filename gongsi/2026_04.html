@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>대구보건대학교 - 2026년 4월 대학정보공시 안내</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans KR"', 'sans-serif'],
+                    },
+                    colors: {
+                        spring: {
+                            50: '#fdf2f8',
+                            100: '#fce7f3',
+                            200: '#fbcfe8',
+                            300: '#f9a8d4',
+                            400: '#f472b6',
+                            500: '#ec4899',
+                            600: '#db2777',
+                            700: '#be185d',
+                            green: '#ecfdf5',
+                            greenText: '#047857'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Noto Sans KR', sans-serif; background-color: #fcfcfc; }
+        .tab-active { border-bottom: 4px solid #db2777; color: #db2777; font-weight: 700; }
+        .tab-inactive { border-bottom: 4px solid transparent; color: #6b7280; }
+        .tab-inactive:hover { color: #db2777; border-bottom: 4px solid #fbcfe8; }
+        /* Table Header Custom Color for Image Match */
+        .table-header-dark { background-color: #4a4a4a; }
+        .table-header-light { background-color: #5a5a5a; }
+    </style>
+</head>
+<body class="text-gray-800 antialiased">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-spring-100 to-spring-200 shadow-sm border-b border-spring-300 relative overflow-hidden">
+        <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-white rounded-full opacity-20 blur-xl"></div>
+        <div class="absolute bottom-0 left-10 w-32 h-32 bg-spring-400 rounded-full opacity-10 blur-2xl"></div>
+        
+        <div class="max-w-6xl mx-auto px-4 py-8 relative z-10 flex flex-col items-center text-center">
+            <h1 class="text-3xl md:text-4xl font-bold text-spring-700 tracking-tight">대구보건대학교</h1>
+            <h2 class="text-xl md:text-2xl font-medium text-gray-700 mt-2">2026년 4월 대학정보공시 일정 안내</h2>
+            <p class="text-sm text-gray-600 mt-4 bg-white/60 px-4 py-2 rounded-lg inline-block backdrop-blur-sm">총괄담당자 안내창구입니다. 담당자 및 확인자께서는 일정을 엄수해 주시기 바랍니다.</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 py-8 mb-16">
+        
+        <!-- Tabs -->
+        <div class="flex border-b border-gray-200 overflow-x-auto whitespace-nowrap mb-8" role="tablist">
+            <button class="tab-btn tab-active px-6 py-3 text-lg transition-colors duration-200 focus:outline-none flex-1 text-center" onclick="openTab('guide')" id="guide-tab">
+                🌸 공시 안내
+            </button>
+            <button class="tab-btn tab-inactive px-6 py-3 text-lg transition-colors duration-200 focus:outline-none flex-1 text-center" onclick="openTab('documents')" id="documents-tab">
+                📁 안내자료
+            </button>
+            <button class="tab-btn tab-inactive px-6 py-3 text-lg transition-colors duration-200 focus:outline-none flex-1 text-center" onclick="openTab('managers')" id="managers-tab">
+                👥 담당자 및 확인자
+            </button>
+        </div>
+
+        <!-- Tab Content: 공시 안내 -->
+        <div id="guide" class="tab-content block animate-[fadeIn_0.3s_ease-in-out]">
+            
+            <!-- 4월 공시항목 및 담당부서 -->
+            <div class="bg-white rounded-2xl shadow-sm border border-spring-100 p-6 md:p-8 mb-8">
+                <h3 class="text-2xl font-bold border-l-4 border-spring-500 pl-3 mb-6 flex items-center">
+                    <span class="bg-gray-800 text-white text-sm px-2 py-0.5 rounded-full mr-2">2</span>
+                    4월 공시항목 및 담당부서
+                </h3>
+                <div class="overflow-x-auto pb-2">
+                    <table class="w-full text-center border-collapse border border-gray-400 min-w-[900px]">
+                        <thead class="table-header-dark text-white">
+                            <tr>
+                                <th rowspan="2" class="border border-gray-400 py-2 px-4 font-semibold text-sm">공시항목명</th>
+                                <th colspan="4" class="border border-gray-400 py-1 text-xs font-semibold">관련지표</th>
+                                <th rowspan="2" class="border border-gray-400 py-2 px-3 font-semibold text-sm">담당부서</th>
+                                <th rowspan="2" class="border border-gray-400 py-2 px-3 font-semibold text-sm">항목관리기관</th>
+                                <th rowspan="2" class="border border-gray-400 py-2 px-3 font-semibold text-sm">오픈시기</th>
+                                <th rowspan="2" class="border border-gray-400 py-2 px-3 font-semibold text-sm">지침서 변경</th>
+                            </tr>
+                            <tr class="text-xs table-header-light">
+                                <th class="border border-gray-400 py-1 px-1 w-12 font-medium">기관<br>평가</th>
+                                <th class="border border-gray-400 py-1 px-1 w-12 font-medium">재정<br>지원</th>
+                                <th class="border border-gray-400 py-1 px-1 w-12 font-medium">재정<br>진단</th>
+                                <th class="border border-gray-400 py-1 px-1 w-12 font-medium">혁신<br>지원</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-gray-800 text-sm md:text-base">
+                            <tr class="hover:bg-gray-50">
+                                <td class="border border-gray-400 py-2 px-4 text-left font-medium">8-차-1. 등록금 현황</td>
+                                <td class="border border-gray-400 py-2 text-red-600 font-bold">✔</td>
+                                <td class="border border-gray-400 py-2"></td>
+                                <td class="border border-gray-400 py-2 text-red-600 font-bold">✔</td>
+                                <td class="border border-gray-400 py-2"></td>
+                                <td class="border border-gray-400 py-2">통합예산팀</td>
+                                <td rowspan="3" class="border border-gray-400 py-2">한국장학재단</td>
+                                <td rowspan="4" class="border border-gray-400 py-2">3.26.(목)<br>09:00~</td>
+                                <td class="border border-gray-400 py-2 text-red-600 font-bold underline decoration-red-600 underline-offset-2">지침변경</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="border border-gray-400 py-2 px-4 text-left font-medium">8-차-2. 등록금 납부제도 현황</td>
+                                <td class="border border-gray-400 py-2"></td>
+                                <td class="border border-gray-400 py-2"></td>
+                                <td class="border border-gray-400 py-2"></td>
+                                <td class="border border-gray-400 py-2"></td>
+                                <td class="border border-gray-400 py-2">재무팀</td>
+                                <td class="border border-gray-400 py-2"></td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="border border-gray-400 py-2 px-4 text-left font-medium">9-가. 등록금 산정근거</td>
+                                <td class="border border-gray-400 py-2"></td>
+                                <td class="border border-gray-400 py-2"></td>
+                                <td class="border border-gray-400 py-2"></td>
+                                <td class="border border-gray-400 py-2"></td>
+                                <td class="border border-gray-400 py-2">통합예산팀</td>
+                                <td class="border border-gray-400 py-2"></td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="border border-gray-400 py-2 px-4 text-left font-medium">12-마. 대학의 사회봉사 역량</td>
+                                <td class="border border-gray-400 py-2"></td>
+                                <td class="border border-gray-400 py-2"></td>
+                                <td class="border border-gray-400 py-2"></td>
+                                <td class="border border-gray-400 py-2"></td>
+                                <td class="border border-gray-400 py-2 leading-tight">한달빛봉사단<br>(DHC)</td>
+                                <td class="border border-gray-400 py-2">직접입력</td>
+                                <td class="border border-gray-400 py-2"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 서류제출 및 제출기한 -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-300 p-6 md:p-8 mb-8 relative overflow-hidden">
+                <div class="absolute top-0 right-0 border-t-[60px] border-t-spring-500 border-l-[60px] border-l-transparent"></div>
+                <h3 class="text-2xl font-bold border-l-4 border-gray-800 pl-3 mb-6">📁 서류제출 및 제출기한</h3>
+                
+                <div class="space-y-5 text-gray-800 text-lg">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 w-6 h-6 rounded-full border-2 border-gray-800 flex items-center justify-center mt-0.5 mr-3"></div>
+                        <div>
+                            <p class="font-bold">
+                                제출서류 항목 : 공시자료 제출 
+                                <span class="text-red-600 border-b-2 border-red-600 pb-0.5">기안문스캔본 및 관련자료파일</span> 
+                                <span class="font-normal text-base">(원본은 부서 보관)</span>
+                            </p>
+                            <p class="text-blue-700 font-bold text-base mt-1">※ 제출 양식 참조 (붙임 1번)</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 w-6 h-6 rounded-full border-2 border-gray-800 flex items-center justify-center mt-0.5 mr-3"></div>
+                        <div>
+                            <p class="font-bold flex flex-wrap items-center gap-1">
+                                제출기한 : <span class="text-xl underline decoration-2 underline-offset-4 decoration-gray-800">4.6.(월) 12:00까지</span>
+                                <span class="font-normal text-base ml-1">(※ 연계항목 수정은 4.2.(목) 오후4시까지 임.)</span>
+                                <span class="text-red-600">※기한 엄수</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 w-6 h-6 rounded-full border-2 border-gray-800 flex items-center justify-center mt-0.5 mr-3"></div>
+                        <div>
+                            <p>최종확인일 : 4.6.(월) 17시 * 대국민공시(예정) : 2026.4.30.(목)</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 w-6 h-6 rounded-full border-2 border-gray-800 flex items-center justify-center mt-0.5 mr-3"></div>
+                        <div>
+                            <p class="font-bold">
+                                제출방법 : <span class="text-red-600">종합정보시스템 - 업무협조전 (온라인 제출)</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 공시업무절차 -->
+            <div class="bg-white rounded-2xl shadow-sm border border-spring-100 p-6 md:p-8 mb-8">
+                <h3 class="text-2xl font-bold border-l-4 border-spring-500 pl-3 mb-6">⚙️ 공시업무절차</h3>
+                <div class="flex flex-col gap-3">
+                    <div class="flex items-center bg-gray-50 p-4 rounded-lg border border-gray-200 hover:border-spring-300 transition-colors">
+                        <div class="flex-shrink-0 w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center font-bold mr-4">1</div>
+                        <h4 class="text-lg font-medium text-gray-800">대학알리미 입력시스템 로그인 및 항목 확인</h4>
+                    </div>
+                    <div class="flex items-center bg-gray-50 p-4 rounded-lg border border-gray-200 hover:border-spring-300 transition-colors">
+                        <div class="flex-shrink-0 w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center font-bold mr-4">2</div>
+                        <h4 class="text-lg font-medium text-gray-800">직접 입력 혹은 연계자료 확인</h4>
+                    </div>
+                    <div class="flex items-center bg-gray-50 p-4 rounded-lg border border-gray-200 hover:border-spring-300 transition-colors">
+                        <div class="flex-shrink-0 w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center font-bold mr-4">3</div>
+                        <h4 class="text-lg font-medium text-gray-800">연계자료 오류시 수정 작업 진행</h4>
+                    </div>
+                    <div class="flex items-start bg-spring-50/50 p-4 rounded-lg border border-spring-300 shadow-sm relative overflow-hidden">
+                        <div class="absolute left-0 top-0 bottom-0 w-1 bg-spring-500"></div>
+                        <div class="flex-shrink-0 w-8 h-8 bg-spring-600 text-white rounded-full flex items-center justify-center font-bold mr-4 mt-1">4</div>
+                        <div class="w-full">
+                            <h4 class="text-lg font-bold text-spring-800 mb-2 flex items-center">
+                                공시항목별 메모작성 
+                                <span class="ml-2 px-2 py-0.5 bg-red-100 text-red-600 text-xs rounded border border-red-200 shadow-sm">필수</span>
+                            </h4>
+                            <div class="bg-white p-4 rounded border border-spring-200 text-sm">
+                                <ul class="space-y-3 text-gray-700">
+                                    <li class="flex flex-col sm:flex-row sm:items-start">
+                                        <span class="font-bold text-blue-700 mr-2 min-w-[80px] mb-1 sm:mb-0">1) 연계자료:</span> 
+                                        <span>원자료 추출경로, 원자료 보관 상황 필수 입력</span>
+                                    </li>
+                                    <li class="flex flex-col sm:flex-row sm:items-start">
+                                        <span class="font-bold text-spring-600 mr-2 min-w-[80px] mb-1 sm:mb-0">2) 직접입력:</span> 
+                                        <span>내부결재 문서 및 제목, 날짜, 문서번호 등 입력</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center bg-gray-50 p-4 rounded-lg border border-gray-200 hover:border-spring-300 transition-colors">
+                        <div class="flex-shrink-0 w-8 h-8 bg-gray-600 text-white rounded-full flex items-center justify-center font-bold mr-4">5</div>
+                        <h4 class="text-lg font-medium text-gray-800">시스템 내 체크리스트 확인</h4>
+                    </div>
+                    <div class="flex flex-col sm:flex-row sm:items-center bg-spring-50 p-4 rounded-lg border border-spring-300 border-l-4 border-l-spring-600">
+                        <div class="flex items-center mb-2 sm:mb-0">
+                            <div class="flex-shrink-0 w-8 h-8 bg-spring-700 text-white rounded-full flex items-center justify-center font-bold mr-4">6</div>
+                        </div>
+                        <h4 class="text-lg font-bold text-gray-800">
+                            담당자 (입력완료), 확인자 (확인완료) 후 자료 제출
+                            <span class="text-spring-600 font-bold ml-1 text-base bg-white px-2 py-1 rounded border border-spring-200 inline-block mt-2 sm:mt-0">(대학성과관리팀)</span>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4월 공시 주요 일정 표 -->
+            <div class="bg-white rounded-2xl shadow-sm border border-spring-100 p-6 md:p-8 mb-8">
+                <h3 class="text-2xl font-bold border-l-4 border-spring-500 pl-3 mb-6">🗓️ 4월 공시 주요 일정</h3>
+                <p class="text-gray-600 mb-4 font-medium">전체 공시 기간: <span class="text-spring-600 font-bold">2026.3.26.(목) ~ 4.30.(목)</span></p>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse min-w-[700px]">
+                        <thead>
+                            <tr class="bg-spring-50 border-y border-spring-200">
+                                <th class="py-3 px-4 font-semibold text-gray-700 w-1/4">단계</th>
+                                <th class="py-3 px-4 font-semibold text-gray-700 w-1/4">일정</th>
+                                <th class="py-3 px-4 font-semibold text-gray-700 w-1/2">주요 내용</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <tr class="hover:bg-gray-50">
+                                <td class="py-3 px-4 font-medium text-gray-600">시스템 환경설정</td>
+                                <td class="py-3 px-4 text-gray-800">~ 3.25.(수)</td>
+                                <td class="py-3 px-4 text-gray-600">담당자 가입 및 권한 부여, 장표 작성자·확인자 세팅 (대학 자체)</td>
+                            </tr>
+                            <tr class="bg-spring-50/50 hover:bg-spring-50">
+                                <td class="py-3 px-4 font-bold text-spring-700">직접입력 오픈 및 연계자료 확인</td>
+                                <td class="py-3 px-4 text-spring-700 font-bold">3.26.(목) 09:00</td>
+                                <td class="py-3 px-4 text-gray-700">직접 입력 및 한국장학재단 연계 항목 시스템 오픈</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="py-3 px-4 font-medium text-gray-600">연계자료 수정</td>
+                                <td class="py-3 px-4 text-gray-800">3.26.(목) ~ 4.2.(목) 16:00</td>
+                                <td class="py-3 px-4 text-gray-600">한국장학재단 등록금 시스템 원자료 수정 및 재연계</td>
+                            </tr>
+                            <tr class="bg-spring-100/50 hover:bg-spring-100">
+                                <td class="py-3 px-4 font-bold text-red-600">최종확인완료 (마감)</td>
+                                <td class="py-3 px-4 text-red-600 font-bold">4.6.(월) 17:00까지</td>
+                                <td class="py-3 px-4 font-medium text-gray-800">4월 대학정보공시 전 항목 최종확인완료 (기한 엄수)</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="py-3 px-4 font-medium text-gray-600">예비공시 및 공문제출</td>
+                                <td class="py-3 px-4 text-gray-800">4.8.(수) ~ 29.(수)</td>
+                                <td class="py-3 px-4 text-gray-600">항목 예비공시 및 공문 제출</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 주의사항 Alert -->
+                <div class="mt-6 bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-bold text-yellow-800">입력 및 수정 시 필수 주의사항</h3>
+                            <div class="mt-2 text-sm text-yellow-700 space-y-1">
+                                <p>• <strong>재연계 필수:</strong> 한국장학재단 시스템에서 연계자료 수정 시, 공시 입력시스템에서 <span class="text-red-600 font-bold">'재연계 요청' 게시판을 통해 반드시 요청</span>해야 합니다. (실시간 반영 아님, 2~3일 소요)</p>
+                                <p>• <strong>수정 불가 안내:</strong> 간접입력(연계) 항목은 연계자료 수정 기간 이후 수정 불가하며, 직접입력 항목은 최종확인완료(4.6) 이후 수정이 절대 불가합니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 타임테이블 (간트차트 디자인 고도화) -->
+                <div class="mt-10">
+                    <h4 class="text-lg font-bold text-gray-800 mb-4 flex items-center border-b pb-2">
+                        <svg class="w-5 h-5 mr-2 text-spring-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        한눈에 보는 공시 타임테이블
+                    </h4>
+                    <div class="overflow-x-auto pb-4">
+                        <table class="w-full text-center border-collapse border border-gray-300 min-w-[800px] text-sm">
+                            <thead class="bg-blue-50 text-blue-900 border-b border-blue-200">
+                                <tr>
+                                    <th rowspan="2" class="border border-gray-300 py-2 px-3 w-1/5 bg-gray-100 text-gray-700">업무내용</th>
+                                    <th colspan="3" class="border border-gray-300 py-1 font-bold">3월</th>
+                                    <th colspan="6" class="border border-gray-300 py-1 font-bold">4월</th>
+                                </tr>
+                                <tr class="text-xs">
+                                    <th class="border border-gray-300 py-1 w-1/12">~25일</th>
+                                    <th class="border border-gray-300 py-1 w-1/12">26일</th>
+                                    <th class="border border-gray-300 py-1 w-[10%]">27~31일</th>
+                                    <th class="border border-gray-300 py-1 w-[10%]">1~2일</th>
+                                    <th class="border border-gray-300 py-1 w-[10%]">3~5일</th>
+                                    <th class="border border-gray-300 py-1 w-1/12 text-red-600 font-bold bg-white">6일</th>
+                                    <th class="border border-gray-300 py-1 w-1/12">7일</th>
+                                    <th class="border border-gray-300 py-1 w-[12%]">8~29일</th>
+                                    <th class="border border-gray-300 py-1 w-1/12 text-blue-600 font-bold bg-white">30일</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="border border-gray-300 py-2 font-medium text-gray-700">시스템 환경설정</td>
+                                    <td class="border border-gray-300 bg-gray-200 text-gray-600">➔</td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-300 py-2 font-medium text-gray-700">직접입력 및<br>연계 오픈</td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300 bg-gray-200 text-gray-600">➔</td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-300 py-2 font-medium text-gray-700">연계자료 수정<br><span class="text-xs text-gray-500">(한국장학재단)</span></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300 bg-gray-200 text-gray-600">➔</td>
+                                    <td class="border border-gray-300 bg-gray-200 text-gray-600">➔</td>
+                                    <td class="border border-gray-300 bg-gray-200 text-gray-600">➔</td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                </tr>
+                                <tr class="bg-orange-50/30">
+                                    <td class="border border-gray-300 py-2 font-bold text-orange-900 bg-orange-100">최종확인완료</td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300 bg-orange-200 text-orange-900 font-bold">➔</td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-300 py-2 font-medium text-gray-700">공시센터<br>내부검증</td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300 bg-gray-200 text-gray-600">➔</td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-300 py-2 font-medium text-gray-700">예비공시 및<br>공문제출</td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300 bg-gray-200 text-gray-600">➔</td>
+                                    <td class="border border-gray-300"></td>
+                                </tr>
+                                <tr class="bg-orange-50/30">
+                                    <td class="border border-gray-300 py-2 font-bold text-orange-900 bg-orange-100">대국민 공시</td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300"></td>
+                                    <td class="border border-gray-300 bg-orange-200 text-orange-900 font-bold">➔</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 전문대학 공통 문의처 (중복된 공시항목 나열 UI 삭제, 깔끔하게 정리) -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">📞 전문대학 항목 문의처</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                        <h4 class="font-bold text-gray-700 mb-2 pb-2 border-b">한국장학재단 (원자료/지침 문의)</h4>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">등록금 현황/납부제도 (8-차-1,2)</span>
+                                <span class="font-medium">1599-2260</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">등록금 산정근거 (9-가-1)</span>
+                                <span class="font-medium">053-238-2942~3</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                        <h4 class="font-bold text-gray-700 mb-2 pb-2 border-b">대학정보공시센터 (연계오류/재연계)</h4>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">8-차-1, 9-가-1 (전문대학)</span>
+                                <span class="font-medium">전현정 (02-6919-3889)</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">8-차-2 (전문대학 등 공통)</span>
+                                <span class="font-medium">김수진 (02-6919-3895)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="md:col-span-2 border border-spring-200 bg-spring-50 rounded-lg p-4 flex flex-col sm:flex-row justify-between items-center text-sm mt-2">
+                        <div class="mb-2 sm:mb-0">
+                            <span class="block font-bold text-spring-800">공통 문의</span>
+                            <span class="text-gray-600">공시 지침, 직접입력 일정 문의 등</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="font-bold text-lg text-spring-700">02-6919-3881</span>
+                            <span class="block text-gray-500">open@kcue.or.kr</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Tab Content: 안내자료 -->
+        <div id="documents" class="tab-content hidden animate-[fadeIn_0.3s_ease-in-out]">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-300 p-6 md:p-10 mb-8 relative overflow-hidden">
+                <div class="absolute top-0 right-0 border-t-[80px] border-t-spring-500 border-l-[80px] border-l-transparent"></div>
+                <h3 class="text-3xl font-bold border-l-4 border-gray-800 pl-4 mb-8">📁 관련 지침 및 메뉴얼</h3>
+                
+                <p class="text-gray-600 mb-8 font-medium">2026학년도 대학정보공시 업무와 관련된 세부 지침 및 메뉴얼 자료입니다. <br class="hidden sm:block">항목을 클릭하시면 PDF 파일을 확인하실 수 있습니다.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- 메뉴얼 1 -->
+                    <a href="./2026학년도 대학정보공시 업무 메뉴얼.pdf" target="_blank" class="block group h-full">
+                        <div class="border border-gray-200 rounded-xl p-6 hover:border-spring-400 hover:shadow-lg transition-all duration-300 bg-gray-50 hover:bg-white text-center h-full flex flex-col justify-center items-center">
+                            <svg class="w-14 h-14 text-red-500 mb-4 group-hover:-translate-y-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 9h1.5m1.5 0H15m-6 4h6m-6 4h4"></path>
+                            </svg>
+                            <h4 class="font-bold text-gray-800 text-lg mb-4">2026학년도 대학정보공시<br><span class="text-spring-700">업무 메뉴얼</span></h4>
+                            <span class="text-sm text-spring-600 font-bold bg-spring-50 px-4 py-1.5 rounded-full border border-spring-200 group-hover:bg-spring-100 transition-colors">PDF 열기</span>
+                        </div>
+                    </a>
+
+                    <!-- 메뉴얼 2 -->
+                    <a href="./2026학년도 대학정보공시 지침.pdf" target="_blank" class="block group h-full">
+                        <div class="border border-gray-200 rounded-xl p-6 hover:border-spring-400 hover:shadow-lg transition-all duration-300 bg-gray-50 hover:bg-white text-center h-full flex flex-col justify-center items-center">
+                            <svg class="w-14 h-14 text-red-500 mb-4 group-hover:-translate-y-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 9h1.5m1.5 0H15m-6 4h6m-6 4h4"></path>
+                            </svg>
+                            <h4 class="font-bold text-gray-800 text-lg mb-4">2026학년도 대학정보공시<br><span class="text-spring-700">지침</span></h4>
+                            <span class="text-sm text-spring-600 font-bold bg-spring-50 px-4 py-1.5 rounded-full border border-spring-200 group-hover:bg-spring-100 transition-colors">PDF 열기</span>
+                        </div>
+                    </a>
+
+                    <!-- 메뉴얼 3 -->
+                    <a href="./2026학년도 대학정보공시 지침 변경내역.pdf" target="_blank" class="block group h-full">
+                        <div class="border border-gray-200 rounded-xl p-6 hover:border-spring-400 hover:shadow-lg transition-all duration-300 bg-gray-50 hover:bg-white text-center h-full flex flex-col justify-center items-center">
+                            <svg class="w-14 h-14 text-red-500 mb-4 group-hover:-translate-y-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 9h1.5m1.5 0H15m-6 4h6m-6 4h4"></path>
+                            </svg>
+                            <h4 class="font-bold text-gray-800 text-lg mb-4">2026학년도 대학정보공시<br><span class="text-spring-700">지침 변경내역</span></h4>
+                            <span class="text-sm text-spring-600 font-bold bg-spring-50 px-4 py-1.5 rounded-full border border-spring-200 group-hover:bg-spring-100 transition-colors">PDF 열기</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: 담당자 및 확인자 -->
+        <div id="managers" class="tab-content hidden animate-[fadeIn_0.3s_ease-in-out]">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-300 p-6 md:p-10 mb-8">
+                <h3 class="text-3xl font-bold border-l-4 border-gray-800 pl-4 mb-8">👥 항목별 담당자 및 확인자 명단</h3>
+                
+                <!-- 필터 및 검색 컨트롤 -->
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                    <div class="flex items-center w-full md:w-auto">
+                        <label for="periodFilter" class="font-bold mr-3 text-gray-700 whitespace-nowrap">공시 시기</label>
+                        <select id="periodFilter" class="w-full md:w-auto border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-spring-400 bg-white font-medium text-gray-700">
+                            <option value="전체">전체</option>
+                            <option value="4월" selected>4월</option>
+                            <option value="6월">6월</option>
+                            <option value="8월">8월</option>
+                            <option value="10월">10월</option>
+                            <option value="수시">수시</option>
+                            <option value="별도">별도</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center w-full md:w-auto relative">
+                        <svg class="w-5 h-5 absolute left-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        <input type="text" id="searchFilter" placeholder="성명 또는 부서명 검색" class="w-full md:w-72 border border-gray-300 rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-spring-400 bg-white">
+                    </div>
+                </div>
+
+                <!-- 데이터 테이블 -->
+                <div class="overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
+                    <table class="w-full text-center border-collapse min-w-[900px]">
+                        <thead class="bg-gray-800 text-white">
+                            <tr>
+                                <th class="py-3 px-4 font-semibold cursor-pointer hover:bg-gray-700 transition-colors text-left" onclick="sortTable(3)">
+                                    프로그램명 <span id="sort-icon-3" class="text-gray-400 text-xs ml-1 inline-block w-3 opacity-50">↕</span>
+                                </th>
+                                <th class="py-3 px-4 font-semibold cursor-pointer hover:bg-gray-700 transition-colors text-center w-28" onclick="sortTable(4)">
+                                    공시 시기 <span id="sort-icon-4" class="text-gray-400 text-xs ml-1 inline-block w-3 opacity-50">↕</span>
+                                </th>
+                                <th class="py-3 px-4 font-semibold cursor-pointer hover:bg-gray-700 transition-colors text-center w-32" onclick="sortTable(5)">
+                                    담당자 <span id="sort-icon-5" class="text-gray-400 text-xs ml-1 inline-block w-3 opacity-50">↕</span>
+                                </th>
+                                <th class="py-3 px-4 font-semibold cursor-pointer hover:bg-gray-700 transition-colors text-center w-32" onclick="sortTable(6)">
+                                    확인자 <span id="sort-icon-6" class="text-gray-400 text-xs ml-1 inline-block w-3 opacity-50">↕</span>
+                                </th>
+                                <th class="py-3 px-4 font-semibold cursor-pointer hover:bg-gray-700 transition-colors text-center w-48" onclick="sortTable(7)">
+                                    부서명 <span id="sort-icon-7" class="text-gray-400 text-xs ml-1 inline-block w-3 opacity-50">↕</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="managerTableBody" class="text-gray-700 divide-y divide-gray-200 bg-white">
+                            <!-- JS 랜더링 영역 -->
+                            <tr>
+                                <td colspan="5" class="py-12 text-center text-gray-500 font-medium">데이터를 불러오는 중입니다...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-gray-800 text-gray-400 py-8 text-center text-sm">
+        <p>© 2026 대구보건대학교 대학정보공시 총괄담당. All rights reserved.</p>
+        <p class="mt-1">시스템 에러 및 원격지원 문의: 02-6919-3892, 3891</p>
+    </footer>
+
+    <script>
+        function openTab(tabId) {
+            // Hide all contents
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('block');
+            });
+            
+            // Reset all tab button styles
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('tab-active');
+                el.classList.add('tab-inactive');
+            });
+
+            // Show selected content
+            document.getElementById(tabId).classList.remove('hidden');
+            document.getElementById(tabId).classList.add('block');
+            
+            // Style active tab button
+            document.getElementById(tabId + '-tab').classList.remove('tab-inactive');
+            document.getElementById(tabId + '-tab').classList.add('tab-active');
+        }
+
+        // --- 담당자 및 확인자 CSV 테이블 로직 ---
+        let csvData = [];
+        let currentSortCol = null;
+        let sortAsc = true;
+
+        // 동적 로드(Fetch) 실패 시를 대비한 Fallback 기본 데이터 (제공해주신 데이터 발췌분)
+        const fallbackCSV = `SNO1,SNO2,SNO3,프로그램,공시 시기,담당자,확인자,부서
+1,1-가,13,1-가. 학교규칙 및 그 밖에 학교운영에 관한 각종 규정[PDF],수시,양영은,김길수,교무지원팀
+2,2-가-1,8,2-가-1. 전공과목 성적 분포,8월,양영은,김길수,교무지원팀
+2,2-가-2,8,2-가-2. 교양과목 성적 분포,8월,양영은,김길수,교무지원팀
+2,2-가-3,8,2-가-3. 교직과목 성적 분포,8월,양영은,김길수,교무지원팀
+2,2-가-4,8,2-가-4. 졸업생의 졸업성적 분포,8월,양영은,김길수,교무지원팀
+3,3-가-1,8,3-가-1. 신입생 모집요강[PDF](2024년 이전: 신입생 모집요강(편입학 포함)),"수시,8월",유장식,이창훈,입학팀
+3,3-가-2,13,3-가-2. 편입생 모집요강[PDF],수시,유장식,이창훈,입학팀
+4,4-가,6,4-가. 입학전형 유형별 선발 결과,6월,유장식,이창훈,입학팀
+4,4-나,6,4-나. 기회 균형 선발 결과,6월,유장식,이창훈,입학팀
+4,4-다,8,4-다. 신입생 충원 현황,8월,유장식,이창훈,입학팀
+4,4-라-1,8,4-라-1. 재학생 충원율,8월,임선희,김길수,교무지원팀
+4,4-라-2,8,4-라-2. 편입학 선발 결과,8월,유장식,이창훈,입학팀
+4,4-마,8,4-마. 재적 학생 현황,8월,임선희,김길수,교무지원팀
+4,4-바-1,8,4-바-1. 외국학생 현황,8월,백윤미,김경돈,국제교류팀
+4,4-바-2,8,4-바-2. 외국학생 중도탈락 현황,8월,백윤미,김경돈,국제교류팀
+4,4-사,8,4-사. 중도탈락 학생 현황,8월,임선희,김길수,교무지원팀
+4,4-아,8,4-아. 학사학위 전공심화과정 학생 현황,8월,임선희,김길수,교무지원팀
+4,4-자,6,4-자. 신입생의 출신 고등학교 유형별 현황,6월,유장식,이창훈,입학팀
+5,5-가,8,5-가. 졸업생 현황,8월,임선희,김길수,교무지원팀
+5,5-나,12,5-나. 졸업생의 진학 현황,별도,이종성,김기형,학생취업지원팀
+5,5-다,12,5-다. 졸업생의 취업 현황,별도,이종성,김기형,학생취업지원팀
+6,6-가-1,8,6-가-1. 전체 교원 대비 전임교원 현황,8월,홍지연,김제호,기획인사팀
+6,6-가-2,8,6-가-2. 전체 신규 전임교원 현황,8월,홍지연,김제호,기획인사팀
+6,6-나-(1),8,"6-나-(1). 전임교원 1인당 학생 수 및 전임교원 확보율(전문대학, 기능대학)",8월,홍지연,김제호,기획인사팀
+6,6-다-1,8,6-다-1. 국가별 외국인 전임교원 현황,8월,홍지연,김제호,기획인사팀
+6,6-다-2,8,6-다-2. 전공계열별 외국인 전임교원 현황,8월,홍지연,김제호,기획인사팀
+7,7-가,8,7-가. 전임교원의 연구 실적,8월,이송희,강재민,산학기획연구팀
+8,8-라,6,8-라. 예·결산(합산재무제표) 현황,"6월, 8월",이영미,조태영,법인사무국
+8,8-마-1,6,8-마-1. 자금예산서(예산),6월,이영미,조태영,법인사무국
+8,8-마-2,8,8-마-2. 자금계산서(결산),8월,이영미,조태영,법인사무국
+8,8-마-2-(1),8,8-마-2-(1). 감사증명서[PDF],8월,이영미,조태영,법인사무국
+8,8-마-3,8,8-마-3. 운영(손익) 계산서,8월,이영미,조태영,법인사무국
+8,8-마-4,8,8-마-4. 재무상태표,8월,이영미,조태영,법인사무국
+8,8-마-5,6,8-마-5. 법인회계 적립금 운용계획서[PDF],6월,이영미,조태영,법인사무국
+8,8-바-1-(1),6,8-바-1-(1). 교비회계(통합),6월,전희진,어정주,통합예산팀
+8,8-바-1-(2),6,8-바-1-(2). 등록금회계,6월,전희진,어정주,통합예산팀
+8,8-바-1-(2)-1,6,8-바-1-(2)-1. 잉여금처리 원칙[PDF],6월,전희진,어정주,통합예산팀
+8,8-바-1-(3),6,8-바-1-(3). 비등록금회계,6월,전희진,어정주,통합예산팀
+8,8-바-2-(1),8,8-바-2-(1). 교비회계(통합),8월,한희정,권순혜,재무팀
+8,8-바-2-(2),8,8-바-2-(2). 등록금회계,8월,한희정,권순혜,재무팀
+8,8-바-2-(3),8,8-바-2-(3). 비등록금회계,8월,한희정,권순혜,재무팀
+8,8-바-3-(1),8,8-바-3-(1). 교비회계(통합),8월,한희정,권순혜,재무팀
+8,8-바-3-(2),8,8-바-3-(2). 등록금회계,8월,한희정,권순혜,재무팀
+8,8-바-3-(3),8,8-바-3-(3). 비등록금회계,8월,한희정,권순혜,재무팀
+8,8-바-4-(1),8,8-바-4-(1). 교비회계(통합),8월,한희정,권순혜,재무팀
+8,8-바-4-(2),8,8-바-4-(2). 등록금회계,8월,한희정,권순혜,재무팀
+8,8-바-4-(3),8,8-바-4-(3). 비등록금회계,8월,한희정,권순혜,재무팀
+8,8-바-5,6,8-바-5. 교비회계 적립금 운용계획서[PDF],6월,박다온,박상수,최고위과정운영팀
+8,8-사,8,8-사. 적립금 현황,8월,한희정,권순혜,재무팀
+8,8-아,8,8-아. 기부금 현황,8월,한희정,권순혜,재무팀
+8,8-자-1,6,8-자-1. 현금예산서(예산),6월,안연정,홍순표,산학경영지원팀
+8,8-자-2,8,8-자-2. 현금흐름표(결산),8월,안연정,홍순표,산학경영지원팀
+8,8-자-3,8,8-자-3. 운영(손익) 계산서,8월,안연정,홍순표,산학경영지원팀
+8,8-자-4,8,8-자-4. 재무상태표,8월,안연정,홍순표,산학경영지원팀
+8,8-차-1,4,8-차-1. 등록금 현황,"4월, 8월",전희진,어정주,통합예산팀
+8,8-차-2,4,8-차-2. 등록금 납부제도 현황,"4월, 8월",장우혁,권순혜,재무팀
+8,8-카-1-(1),8,8-카-1-(1). 입학전형료 수입 현황,8월,최준열,이창훈,입학팀
+8,8-카-1-(2),8,8-카-1-(2). 입학전형 관련 지출 현황,8월,최준열,이창훈,입학팀
+8,8-카-2,8,8-카-2. 입학전형료 산정 근거[PDF],8월,최준열,이창훈,입학팀
+8,8-타,8,"8-타. 대학의 장, 이사장 및 상근 이사의 업무추진비 사용 현황",8월,안유빈,이미희,비서팀
+9,9-가-1,4,9-가-1. 등록금 산정근거[PDF],"4월, 8월",전희진,어정주,통합예산팀
+9,9-가-2,13,9-가-2. 등록금심의위원회 회의록,수시,전희진,어정주,통합예산팀
+9,9-나-2,8,9-나-2. 학생 1인당 교육비(사립),8월,전희진,어정주,통합예산팀
+10,10-가,13,10-가. 위반 내용 및 조치 결과,수시,이영미,조태영,법인사무국
+11,11-가-1,13,11-가-1. 학교 발전계획 및 특성화 계획[PDF],수시,권진환,최우순,대학성과관리팀
+12,12-가,8,12-가. 연구비 수혜 실적,8월,이송희,강재민,산학기획연구팀
+12,12-거,6,12-거. 기술지주회사 운영 현황,6월,이송희,강재민,산학기획연구팀
+12,12-나-1,8,12-나-1. 학생 규모별 강좌수,8월,양영은,김길수,교무지원팀
+12,12-나-2,8,12-나-2. 교원 강의 담당 비율,8월,양영은,김길수,교무지원팀
+12,12-나-3,10,12-나-3. 대학 강의 공개 현황,10월,양영은,김길수,교무지원팀
+12,12-다-1,8,12-다-1. 장학금 수혜 현황,8월,신영근,박현일,학생복지지원팀
+12,12-다-2,8,12-다-2. 학자금 대출 현황,8월,신영근,박현일,학생복지지원팀
+12,12-라-2,8,12-라-2. 외국대학과 학점 교류 현황,8월,최홍준,김경돈,국제교류팀
+12,12-마,4,12-마. 대학의 사회봉사 역량,4월,이정훈,이정훈,한달빛봉사단
+12,12-바,6,12-바. 대학의 원격강좌 현황,6월,장우영,전권일,직업교육콘텐츠연구센터
+12,12-사,6,12-사. 산학협력 친화형 교원 인사 운영 현황[PDF],6월,홍지연,김제호,기획인사팀
+12,12-아,6,12-아. 산업체 경력 전임교원 현황,6월,홍지연,김제호,기획인사팀
+12,12-차,6,12-차. 공동활용 연구장비 운영 현황,6월,이송희,강재민,산학기획연구팀
+12,12-카-1,6,12-카-1. 현장실습 운영 현황,6월,이창문,박도현,현장실습지원센터
+12,12-카-2,6,12-카-2. 캡스톤 디자인(창의적 설계) 운영 현황,6월,양영은,김길수,교무지원팀
+12,12-카-3,6,12-카-3. 학교기업 운영현황,6월,안연정,홍순표,산학경영지원팀
+12,12-카-4-(1),6,12-카-4-(1). 계약학과 및 계약정원제 설치 운영 현황,6월,양영은,김길수,교무지원팀
+12,12-카-4-(2),6,12-카-4-(2). 주문식 교육과정 설치 운영 현황,6월,양영은,김길수,교무지원팀
+12,12-타,6,12-타. 기술이전 수입료 및 계약 실적,6월,이송희,강재민,산학기획연구팀
+12,12-파,6,12-파. 특허 출원 및 등록 실적,6월,이송희,강재민,산학기획연구팀
+12,12-하-1-(1),6,12-하-1-(1). 교원의 창업 및 창업지원 현황,6월,이은정,김기철,창업보육센터
+12,12-하-1-(2),6,12-하-1-(2). 학생의 창업 및 창업지원 현황,6월,홍유정,유채형,창업교육팀
+12,12-하-2,6,12-하-2. 창업교육 지원 현황,6월,홍유정,유채형,창업교육팀
+13,13-가 ,10,13-가 . 장서 보유 및 도서관 자료 구입비 결산 현황,10월,송규호,김종호,도서운영팀
+13,13-나,8,13-나. 대학 부설 연구소 현황,8월,이송희,강재민,산학기획연구팀
+14,14-가,13,14-가. 정관[PDF],수시,이영미,조태영,법인사무국
+14,14-나,13,14-나. 법인의 임원 현황,수시,이영미,조태영,법인사무국
+14,14-다,10,14-다. 교지(校地) 확보 현황,10월,최요하,권영석,총무팀
+14,14-라,10,14-라. 교사(校舍)시설 확보 현황,10월,최요하,권영석,총무팀
+14,14-마-1,10,14-마-1. 기숙사 수용 현황,10월,임구순,임구순,생활관운영팀
+14,14-마-2-(2),10,14-마-2-(2). 기숙사 운영 결과(사립_행복_민자),10월,임구순,임구순,생활관운영팀
+14,14-마-2-(4),10,14-마-2-(4). 기숙사 운영 결과(사립_직영),10월,임구순,임구순,생활관운영팀
+14,14-마-3,10,14-마-3. 기숙사비 납부제도 현황,10월,임구순,임구순,생활관운영팀
+14,14-바-1,10,14-바-1. 수익용 기본재산 확보 현황,10월,이영미,조태영,법인사무국
+14,14-바-2,10,14-바-2. 법정부담금 부담 현황,10월,이영미,조태영,법인사무국
+14,14-사,8,14-사. 직원 현황,8월,홍지연,김제호,기획인사팀
+14,14-자-1,13,14-자-1. 대학 자체 평가 결과[PDF],수시,권진환,최우순,대학성과관리팀
+14,14-자-2,13,14-자-2. 대학별 평가 인증 현황,수시,권진환,최우순,대학성과관리팀
+14,14-차,8,14-차. 강사 강의료,8월,김서연,김길수,교무지원팀
+14,14-카,8,14-카. 장애학생지원체제 구축 및 운영 현황,8월,이정훈,이진환,장애학생지원센터터
+14,14-타,10,14-타. 성희롱·성폭력·가정폭력·성매매 예방교육 이수 현황,10월,박정애,이진환,인권센터
+14,14-파,10,14-파. 인권 보호 및 성희롱·성폭력 대응 전담 조직의 운영 현황,10월,박정애,이진환,인권센터
+14,14-하-1,10,14-하-1. 실험·실습실 안전관리 현황,10월,최요하,권영석,총무팀
+14,14-하-2,10,14-하-2. 시설 안전관리 현황,10월,최요하,권영석,총무팀
+14,14-하-3,10,14-하-3. 정보보안 및 개인정보보호 수준 진단,10월,임경규,이윤구,전산지원센터
+14,14-하-4,10,14-하-4. 안전관리 계획 및 안전사고 보험(공제) 현황,10월,박현일,박현일,학생복지지원팀
+`;
+
+        function parseCSV(csvText) {
+            const rows = [];
+            let row = [];
+            let current = '';
+            let inQuotes = false;
+            for (let i = 0; i < csvText.length; i++) {
+                const char = csvText[i];
+                if (char === '"' && csvText[i+1] === '"') {
+                    current += '"'; i++;
+                } else if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    row.push(current.trim()); current = '';
+                } else if ((char === '\n' || char === '\r') && !inQuotes) {
+                    if (char === '\r' && csvText[i+1] === '\n') i++;
+                    row.push(current.trim());
+                    if (row.length > 1 || current.length > 0) rows.push(row);
+                    row = []; current = '';
+                } else {
+                    current += char;
+                }
+            }
+            if (current || row.length > 0) {
+                row.push(current.trim());
+                if (row.length > 1 || current.length > 0) rows.push(row);
+            }
+            return rows.filter(r => r.length > 1); // 빈 행 제거
+        }
+
+        async function loadCSV() {
+            try {
+                // 동일 경로의 CSV 파일 불러오기
+                const response = await fetch('./2026학년도 대학정보공시 담당자 및 확인자 안내.csv');
+                if(!response.ok) throw new Error("네트워크 응답이 정상이 아닙니다.");
+                const text = await response.text();
+                processData(text);
+            } catch(e) {
+                console.warn("로컬 CSV 파일을 불러올 수 없어 임시 데이터를 출력합니다.", e);
+                processData(fallbackCSV);
+            }
+        }
+
+        function processData(text) {
+            const rows = parseCSV(text);
+            if(rows.length > 0) rows.shift(); // 첫 번째 행(헤더 SNO1, SNO2...) 제거
+            csvData = rows;
+            filterAndRender();
+        }
+
+        function filterAndRender() {
+            const period = document.getElementById('periodFilter').value;
+            const search = document.getElementById('searchFilter').value.toLowerCase().trim();
+
+            let filtered = csvData.filter(row => {
+                if (row.length < 8) return false; // 데이터가 부족한 비정상 행 제외
+                
+                // 공시 시기 매칭 (row[4])
+                const matchPeriod = period === '전체' || row[4].includes(period);
+                
+                // 담당자, 확인자, 부서명 매칭 (row[5], row[6], row[7])
+                const matchSearch = search === '' || 
+                                    (row[5] && row[5].toLowerCase().includes(search)) || 
+                                    (row[6] && row[6].toLowerCase().includes(search)) || 
+                                    (row[7] && row[7].toLowerCase().includes(search));
+                
+                return matchPeriod && matchSearch;
+            });
+
+            // 정렬 처리
+            if (currentSortCol !== null) {
+                filtered.sort((a, b) => {
+                    const valA = a[currentSortCol] || '';
+                    const valB = b[currentSortCol] || '';
+                    return sortAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
+                });
+            }
+
+            renderTable(filtered);
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('managerTableBody');
+            tbody.innerHTML = '';
+            
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="py-12 text-center text-gray-500 font-medium bg-gray-50">검색 조건에 맞는 데이터가 없습니다.</td></tr>';
+                return;
+            }
+
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-blue-50 transition-colors duration-150';
+                
+                // 3: 프로그램명, 4: 공시 시기, 5: 담당자, 6: 확인자, 7: 부서명
+                for(let i = 3; i <= 7; i++) {
+                    const td = document.createElement('td');
+                    td.className = i === 3 ? 'py-3 px-4 text-left font-medium text-gray-800' : 'py-3 px-4 text-center text-gray-600';
+                    
+                    // 공시 시기 스타일 강조
+                    if (i === 4) {
+                        if (row[i].includes('4월')) {
+                            td.innerHTML = `<span class="bg-spring-100 text-spring-700 px-3 py-1 rounded-full font-bold text-sm inline-block min-w-[50px]">${row[i]}</span>`;
+                        } else {
+                            td.innerHTML = `<span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full font-medium text-sm inline-block min-w-[50px]">${row[i]}</span>`;
+                        }
+                    } else {
+                        td.textContent = row[i] || '-';
+                    }
+                    tr.appendChild(td);
+                }
+                tbody.appendChild(tr);
+            });
+            updateSortIcons();
+        }
+
+        function sortTable(colIndex) {
+            if (currentSortCol === colIndex) {
+                sortAsc = !sortAsc;
+            } else {
+                currentSortCol = colIndex;
+                sortAsc = true;
+            }
+            filterAndRender();
+        }
+
+        function updateSortIcons() {
+            [3, 4, 5, 6, 7].forEach(col => {
+                const iconSpan = document.getElementById(`sort-icon-${col}`);
+                if(iconSpan) {
+                    if(currentSortCol === col) {
+                        iconSpan.innerHTML = sortAsc ? '▲' : '▼';
+                        iconSpan.className = 'text-spring-400 font-bold text-xs ml-1 inline-block w-3';
+                    } else {
+                        iconSpan.innerHTML = '↕';
+                        iconSpan.className = 'text-gray-400 text-xs ml-1 inline-block w-3 opacity-50';
+                    }
+                }
+            });
+        }
+
+        // 페이지 로드 시 이벤트 바인딩 및 초기 데이터 설정
+        window.addEventListener('DOMContentLoaded', () => {
+            const periodFilter = document.getElementById('periodFilter');
+            const searchFilter = document.getElementById('searchFilter');
+            
+            if(periodFilter) periodFilter.addEventListener('change', filterAndRender);
+            if(searchFilter) searchFilter.addEventListener('input', filterAndRender);
+            
+            loadCSV();
+        });
+    </script>
+</body>
+</html>
