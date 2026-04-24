@@ -1,661 +1,455 @@
-import React, { useState } from 'react';
-import { 
-  Server, Database, HardDrive, Globe, Zap, Shield, 
-  Cloud, Network, Lock, Activity,
-  ChevronRight, ChevronLeft, Menu, X, ArrowRight, CheckCircle2, AlertTriangle, Lightbulb
-} from 'lucide-react';
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS SAA-C03 합격 패키지 - 벼락치기</title>
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons (CDN) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* 커스텀 스크롤바 등 필요시 추가 */
+        body { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; }
+    </style>
+</head>
+<body class="flex flex-col h-screen bg-gray-50 text-gray-800 font-sans overflow-hidden">
 
-// --- 다이어그램 컴포넌트들 ---
-
-const ElbDiagram = () => (
-  <div className="flex flex-col md:flex-row items-center justify-center gap-4 bg-white p-6 rounded-xl border border-gray-200 my-4 shadow-sm">
-    <div className="flex flex-col items-center">
-      <div className="bg-blue-100 p-3 rounded-full mb-2"><Globe className="text-blue-600" size={32} /></div>
-      <span className="text-sm font-semibold">Users</span>
-    </div>
-    <ArrowRight className="text-gray-400 hidden md:block" />
-    <div className="flex flex-col items-center">
-      <div className="bg-purple-100 p-4 rounded-xl mb-2 border-2 border-purple-300"><Network className="text-purple-600" size={40} /></div>
-      <span className="text-sm font-bold text-purple-700">ELB</span>
-    </div>
-    <ArrowRight className="text-gray-400 hidden md:block" />
-    <div className="flex flex-col gap-3">
-      {[1, 2, 3].map(i => (
-        <div key={i} className="flex items-center gap-2 bg-orange-50 border border-orange-200 px-4 py-2 rounded-lg">
-          <Server size={20} className="text-orange-500" />
-          <span className="text-sm font-medium text-orange-700">EC2 Instance {i}</span>
-        </div>
-      ))}
-    </div>
-  </div>
-);
-
-const S3LifecycleDiagram = () => (
-  <div className="flex flex-col md:flex-row items-center justify-center gap-2 bg-white p-6 rounded-xl border border-gray-200 my-4 shadow-sm">
-    <div className="flex flex-col items-center bg-green-50 p-4 rounded-lg border border-green-200 w-32">
-      <HardDrive className="text-green-600 mb-2" size={32} />
-      <span className="text-xs font-bold text-center">S3 Standard</span>
-    </div>
-    <div className="flex flex-col items-center">
-      <span className="text-xs text-gray-500 font-bold mb-1">30일 후</span>
-      <ArrowRight className="text-gray-400" />
-    </div>
-    <div className="flex flex-col items-center bg-green-50 p-4 rounded-lg border border-green-200 w-32">
-      <HardDrive className="text-green-600 mb-2" size={32} />
-      <span className="text-xs font-bold text-center">S3 Standard-IA</span>
-    </div>
-    <div className="flex flex-col items-center">
-      <span className="text-xs text-gray-500 font-bold mb-1">1년 후</span>
-      <ArrowRight className="text-gray-400" />
-    </div>
-    <div className="flex flex-col items-center bg-blue-50 p-4 rounded-lg border border-blue-200 w-32">
-      <Cloud className="text-blue-600 mb-2" size={32} />
-      <span className="text-xs font-bold text-center text-blue-800">S3 Glacier</span>
-    </div>
-  </div>
-);
-
-const VpcDiagram = () => (
-  <div className="bg-gray-50 p-4 md:p-6 rounded-xl border border-gray-300 my-4 shadow-sm font-sans">
-    <div className="border-2 border-green-500 rounded-xl p-4 relative">
-      <div className="absolute -top-3 left-4 bg-gray-50 px-2 text-sm font-bold text-green-700 flex items-center gap-1">
-        <Cloud size={16} /> VPC (10.0.0.0/16)
-      </div>
-      
-      <div className="flex flex-col md:flex-row gap-4 mt-4">
-        {/* Public Subnet */}
-        <div className="flex-1 border-2 border-blue-300 bg-blue-50 rounded-lg p-4 relative">
-          <div className="absolute -top-3 left-2 bg-blue-50 px-2 text-xs font-bold text-blue-700">Public Subnet</div>
-          <div className="flex justify-between items-center mb-4">
-            <div className="flex items-center gap-1 bg-white border border-gray-300 px-2 py-1 rounded text-xs">
-              <Globe size={14} className="text-gray-600"/> Internet Gateway
+    <!-- HTML5: 상단 글로벌 헤더 및 네비게이션 -->
+    <header class="w-full bg-slate-950 text-white z-50 shadow-md flex-shrink-0">
+        <div class="flex justify-between items-center p-4 max-w-7xl mx-auto w-full">
+            <div class="font-bold text-xl flex items-center gap-2">
+                <i data-lucide="cloud" class="text-yellow-400"></i> SAA-C03 합격 패키지
             </div>
-          </div>
-          <div className="bg-white border border-orange-300 rounded p-3 text-center mb-2">
-            <Server size={24} className="mx-auto text-orange-500 mb-1" />
-            <div className="text-xs font-bold">EC2 (Web)</div>
-          </div>
-          <div className="bg-white border border-purple-300 rounded p-3 text-center">
-            <Network size={24} className="mx-auto text-purple-500 mb-1" />
-            <div className="text-xs font-bold">NAT Gateway</div>
-          </div>
-        </div>
-
-        {/* Private Subnet */}
-        <div className="flex-1 border-2 border-gray-300 bg-gray-100 rounded-lg p-4 relative">
-          <div className="absolute -top-3 left-2 bg-gray-100 px-2 text-xs font-bold text-gray-700">Private Subnet</div>
-          <div className="mt-8 bg-white border border-orange-300 rounded p-3 text-center mb-2">
-            <Server size={24} className="mx-auto text-orange-500 mb-1" />
-            <div className="text-xs font-bold">EC2 (App)</div>
-          </div>
-          <div className="bg-white border border-blue-500 rounded p-3 text-center">
-            <Database size={24} className="mx-auto text-blue-600 mb-1" />
-            <div className="text-xs font-bold">RDS (DB)</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-);
-
-// --- 학습 데이터 (PDF 내용 완벽 반영) ---
-const STUDY_DATA = [
-  {
-    id: "basic",
-    title: "1. 핵심 기초 서비스",
-    icon: <Cloud size={20} />,
-    sections: [
-      {
-        title: "EC2 (Elastic Compute Cloud)",
-        summary: "컴퓨터를 빌려서 원격으로 접속해 사용하는 서비스이다.",
-        content: "EC2를 쉽게 얘기하면 '하나의 컴퓨터'를 의미한다."
-      },
-      {
-        title: "RDS (Relational Database Service)",
-        summary: "관계형 데이터베이스 서비스이다.",
-        content: "MySQL, MariaDB 등 여러 관계형 데이터베이스 서비스를 AWS로부터 빌려서 사용하는 형태이다."
-      },
-      {
-        title: "S3 (Simple Storage Service)",
-        summary: "파일 저장 서비스이다.",
-        content: "사진이나 동영상과 같은 파일들을 구글 드라이브나 iCloud에 저장하듯 쓰는 서비스이다. 부가적으로 '정적 웹 사이트 호스팅' 기능을 통해 웹 서비스를 인터넷에 배포할 수도 있다."
-      },
-      {
-        title: "Route 53",
-        summary: "도메인을 발급하고 관리해주는 서비스이다. (DNS)",
-        content: "문자를 IP 주소로 변환해주는 시스템(서버)이다. 사람들이 특정 컴퓨터와 통신하기 위해 복잡한 IP 주소를 일일이 외울 필요가 없게 해준다."
-      },
-      {
-        title: "ELB (Elastic Load Balancer)",
-        summary: "트래픽(부하)을 적절하게 분배해주는 장치이다.",
-        content: "서버를 2대 이상 가용할 때 필수적으로 도입하게 되는 로드밸런서이다.",
-        diagram: <ElbDiagram />
-      },
-      {
-        title: "CloudFront",
-        summary: "컨텐츠(파일, 동영상 등)를 빠르게 전송하게 해주는 CDN 서비스이다.",
-        content: "전세계 곳곳에 컨텐츠의 복사본을 저장해놓는 임시 저장소(CDN Node)를 구축하여, 사용자가 가장 가까운 저장소에서 컨텐츠를 가져오게 해 속도를 높인다."
-      },
-      {
-        title: "Lambda",
-        summary: "서버는 AWS가 관리하고, 개발자는 코드만 작성하면 알아서 실행되는 서비스이다.",
-        content: "EC2처럼 서버를 직접 생성/관리할 필요 없이, 필요한 코드만 작성해 실행시키면 알아서 작동하는 서버리스(Serverless)의 대표주자이다."
-      }
-    ]
-  },
-  {
-    id: "infra",
-    title: "2. 글로벌 인프라 & 환경",
-    icon: <Globe size={20} />,
-    sections: [
-      {
-        title: "리전 (Region) & 가용 영역 (AZ)",
-        content: `**리전(Region)**: 인프라를 지리적으로 나누어 배포한 각각의 데이터 센터 위치 (예: 서울 리전).\n**가용 영역(Availability Zone, AZ)**: 하나의 리전 안에서 자연재해 등을 대비해 '물리적으로 분리된' 데이터 센터.`
-      },
-      {
-        title: "고가용성 (High Availability) & 다중 AZ",
-        content: `**가용성**: 시스템이 정상적으로 제공될 수 있는 가능성 (예: 99.99%).\n**다중 AZ (Multi-AZ)**: 서로 다른 가용 영역에 시스템을 분산 배치하여 한 곳에 장애가 나도 서비스가 중단되지 않게 하는 고가용성 핵심 전략.\n**단일 AZ (Single-AZ)**: 하나의 AZ에만 배치. 저렴하지만 장애 시 서비스 중단 위험이 있음.`
-      },
-      {
-        title: "온프레미스 & 마이그레이션",
-        content: `**온프레미스 (On-premise)**: 회사가 전산실에 직접 서버 장비를 두고 운영하는 방식. (AWS 클라우드의 반대 개념)\n**마이그레이션 (Migration)**: 온프레미스 환경 등에서 다른 환경(AWS)으로 시스템을 이동하는 것.`
-      }
-    ]
-  },
-  {
-    id: "s3-deep",
-    title: "3. S3 심화 (클래스/보안)",
-    icon: <HardDrive size={20} />,
-    sections: [
-      {
-        title: "S3 스토리지 클래스 유형 (★★★)",
-        content: `접근 빈도와 즉시 조회 여부에 따라 비용이 달라집니다.
-• **S3 Standard**: 자주 접근하는 기본 스토리지 (즉시 조회)
-• **S3 Standard-IA**: 거의 접근하지 않지만, 필요 시 즉시 조회 (Infrequent Access)
-• **S3 One Zone-IA**: Standard-IA와 같으나 단일 AZ 저장 (고가용성 X)
-• **S3 Intelligent-Tiering**: 접근 패턴이 불규칙할 때 AWS가 알아서 저렴한 계층으로 이동
-• **S3 Glacier Instant Retrieval**: 거의 접근 안함 + 즉시 조회 필요
-• **S3 Glacier Flexible Retrieval**: 거의 접근 안함 + 조회 시 몇 분~시간 소요
-• **S3 Glacier Deep Archive**: 장기 보관용, 조회 시 최대 12시간 소요`,
-        tip: "Glacier는 '빙하'처럼 차갑게 오래 보관(법/감사 목적)할 때 씁니다. IA는 빈번하지 않은(Infrequent) 접근을 의미합니다."
-      },
-      {
-        title: "S3 수명 주기 정책 (Lifecycle)",
-        content: "파일을 N일 후에 자동으로 다른 스토리지 클래스로 이동시키거나 삭제시키는 기능입니다.",
-        diagram: <S3LifecycleDiagram />
-      },
-      {
-        title: "S3 버전 관리 & 객체 잠금",
-        content: `• **버전 관리**: 같은 이름의 파일을 덮어쓰더라도 이전 버전을 보존하는 기능.\n• **객체 잠금**: 일정 기간 파일 수정/삭제를 차단. (거버넌스 모드: 관리자만 수정 가능 / 규정 준수 모드: 루트 계정 포함 아무도 수정 불가).\n• **법적 보존 (Legal Hold)**: 기간 상관없이 수동 해제 전까지 삭제 금지 (소송 등 이슈 시 사용).`
-      },
-      {
-        title: "S3 암호화 (SSE) & Batch Operations",
-        content: `서버 측 암호화(SSE) 종류:
-1. **SSE-S3**: S3가 키를 알아서 생성/관리 (가장 기본)
-2. **SSE-KMS**: AWS KMS가 키를 생성/관리. (보안 요구 높을 때, 자동 키 교체 지원. Bucket Key 사용 시 비용 절감)
-3. **SSE-C**: 고객이 키를 직접 제공/관리 (권장 안함)
-
-**S3 Batch Operations**: 수백만~수십억 개 파일에 동일 작업(복사, 암호화 등)을 한 번에 실행.`
-      }
-    ]
-  },
-  {
-    id: "storage",
-    title: "4. 다양한 스토리지 서비스",
-    icon: <Database size={20} />,
-    sections: [
-      {
-        title: "EBS (Elastic Block Store)",
-        summary: "외장 SSD/HDD처럼 EC2에 연결해서 쓰는 블록 스토리지",
-        content: "• EC2, RDS에만 연결 가능\n• **단일 AZ**에서만 작동\n• 운영체제 설치 및 고성능 스토리지로 사용"
-      },
-      {
-        title: "EFS (Elastic File System)",
-        summary: "여러 EC2가 동시에 공유해서 쓸 수 있는 NFS 스토리지",
-        content: "• 구글 드라이브처럼 여러 대가 동시 공유 가능\n• **다중 AZ**에서 작동\n• 리눅스의 NFS 프로토콜만 지원\n• EFS IA (자주 접근 안하는 파일 이동) 기능 존재"
-      },
-      {
-        title: "인스턴스 스토어 (Instance Store)",
-        summary: "EC2 컴퓨터에 내장된 '임시용' 디스크",
-        content: "• EC2 인스턴스를 중지/종료하면 **데이터가 전부 사라짐** (휘발성)\n• 매우 빠르지만 임시 데이터 보관용으로만 사용"
-      },
-      {
-        title: "FSx (고성능 파일 스토리지)",
-        content: `• **FSx for Lustre**: 머신러닝, 빅데이터. S3와 연동 가능.
-• **FSx for Windows File Server**: Windows 환경 (SMB 프로토콜)
-• **FSx for NetApp ONTAP**: 윈도우, 리눅스, 맥 모두 호환 (NFS, SMB 다 지원)
-• **FSx for OpenZFS**: 리눅스 (NFS 프로토콜)`
-      }
-    ]
-  },
-  {
-    id: "migration",
-    title: "5. 데이터 마이그레이션",
-    icon: <ArrowRight size={20} />,
-    sections: [
-      {
-        title: "DataSync",
-        content: "온프레미스 ↔ AWS, 또는 AWS 스토리지(EFS, S3, FSx) 간에 **대용량 데이터를 네트워크로 전송**할 때 사용하는 서비스."
-      },
-      {
-        title: "Snowball Edge",
-        content: "**물리적 장비 배송**으로 대용량 데이터를 전송하는 서비스. 인터넷 속도 제약이 있을 때 AWS에서 트렁크만한 하드웨어를 택배로 받아 직접 데이터를 담아 다시 보내는 방식."
-      },
-      {
-        title: "Transfer Family",
-        content: "파일을 송수신할 때 필요한 **FTP (SFTP, FTPS) 서버** 역할을 하는 서비스. S3나 EFS와 연동하여 사용."
-      },
-      {
-        title: "Storage Gateway",
-        summary: "온프레미스에서 S3를 로컬 스토리지처럼 쓸 수 있게 연결(Gateway)해주는 서비스",
-        content: `데이터를 완전히 옮기는 것이 아니라 '연결'해서 쓰는 것이 목적입니다.
-• **파일 게이트웨이**: 온프레미스 데이터를 공유 폴더 형태로 S3에 업로드 (실시간 사용 가능)
-• **볼륨 게이트웨이**: 블록 스토리지(EBS) 스냅샷을 S3에 백업 (실시간 사용 불가)
-• **테이프 게이트웨이**: 물리 테이프 백업을 S3/Glacier로 대체 (아카이빙 용도)`
-      }
-    ]
-  },
-  {
-    id: "database",
-    title: "6. 데이터베이스 (DB)",
-    icon: <Database size={20} />,
-    sections: [
-      {
-        title: "RDS 핵심 기능 (★★★)",
-        content: `• **Multi-AZ 배포**: 장애 대비용 '대기 DB(Standby)' 생성. (가용성 향상 목적, 성능 향상 아님)
-• **Read Replica (읽기 전용 복제본)**: 읽기 작업 부하 분산을 위해 DB 추가. (읽기 성능 향상)
-• **Cross Region Read Replica**: 재해 복구(DR)를 위해 다른 리전에 읽기 복제본 생성.
-• **RDS Proxy**: 앱과 DB 사이에서 DB 연결(Connection)이 너무 많이 생겨 터지는 것을 방지(Connection Pool 관리).
-• **Blue/Green 배포**: 다운타임 없이 안전하게 DB 버전을 업데이트 하거나 구조를 변경할 때 사용 (Blue: 현재, Green: 테스트/신규).`
-      },
-      {
-        title: "Aurora",
-        content: `AWS가 만든 **고성능** 관계형 데이터베이스.
-• **Global Database**: 전 세계(여러 리전)에 읽기 성능 최적화 및 재해 복구(DR).
-• **Auto Scaling**: CPU 사용량에 따라 자동으로 읽기 전용 복제본을 늘렸다 줄임.`
-      },
-      {
-        title: "DynamoDB (NoSQL)",
-        content: `관계형이 아닌 빠르고 유연한 NoSQL DB.
-• **DynamoDB Streams**: 데이터 변경 사항을 실시간으로 추적/전달.
-• **DAX (DynamoDB Accelerator)**: DynamoDB 전용 인메모리 캐시. 마이크로초 단위의 읽기 성능 향상.`
-      },
-      {
-        title: "ElastiCache",
-        content: "자주 조회되는 데이터를 빠르게 조회해주는 **캐시(Cache) 서비스** (Redis, Memcached). DB의 읽기 부하를 대폭 줄여주지만, 자주 변경되는 데이터에는 부적합."
-      }
-    ]
-  },
-  {
-    id: "compute",
-    title: "7. 컴퓨팅 & 통합 서비스",
-    icon: <Zap size={20} />,
-    sections: [
-      {
-        title: "EC2 요금 유형",
-        content: `• **온디맨드 (On-Demand)**: 쓴 만큼만 후불 결제 (기본)
-• **스팟 인스턴스 (Spot)**: 남는 컴퓨터를 아주 싸게 씀. 단, AWS가 언제든 뺏어갈 수 있음 (중단돼도 괜찮은 배치 작업에 적합).
-• **예약 인스턴스 (Reserved)**: 1년/3년 장기 약정으로 할인 받음.`
-      },
-      {
-        title: "ELB 종류",
-        content: `• **ALB (Application Load Balancer)**: HTTP/HTTPS(L7) 특화. 경로 기반 라우팅.
-• **NLB (Network Load Balancer)**: TCP/UDP(L4) 특화. 초당 수백만 건 처리 등 극강의 빠른 성능 요구 시.
-• **GWLB (Gateway Load Balancer)**: 네트워크 방화벽 등 보안 장비로 트래픽을 분산할 때 사용.`
-      },
-      {
-        title: "ECS (Elastic Container Service)",
-        content: "Docker 컨테이너를 쉽게 운영하는 서비스. **Fargate 기반**으로 쓰면 서버 인프라 관리 없이 컨테이너만 띄울 수 있어 편리함."
-      },
-      {
-        title: "Lambda 심화",
-        content: "서버리스(Serverless). 코드가 실행될 때만 요금 부과. \n• **콜드 스타트**: 처음 실행 시 지연 발생. 이를 막기 위해 **프로비저닝된 동시성(Provisioned Concurrency)**을 설정해 미리 띄워둘 수 있음.\n• 최대 15분까지만 실행 가능."
-      },
-      {
-        title: "API Gateway",
-        content: "외부 요청을 받아 백엔드(Lambda, EC2 등)로 안전하게 전달하는 대문 역할.\n• **REST API**: 기능 많음 (JWT 기본 미제공)\n• **HTTP API**: 싸고 빠름 (JWT 기본 제공)\n• **Edge-optimized**: CloudFront와 연동해 전 세계 응답 속도 최적화."
-      }
-    ]
-  },
-  {
-    id: "messaging",
-    title: "8. 메시징 & 이벤트",
-    icon: <Network size={20} />,
-    sections: [
-      {
-        title: "SQS (Simple Queue Service)",
-        summary: "메시지(요청)를 큐에 쌓아 순서대로 처리하는 서비스",
-        content: `시스템 간 **결합도를 낮추고(느슨한 결합)**, 갑작스런 트래픽 폭주 시 데이터 손실 없이 안전하게 처리할 때 씁니다.
-• **표준 대기열(Standard)**: 순서 보장 완벽치 않으나 처리량 무제한
-• **FIFO 대기열**: 정확히 순서대로, 딱 한 번만(Exactly-Once) 처리`
-      },
-      {
-        title: "SNS (Simple Notification Service)",
-        content: "하나의 메시지를 이메일, 람다, SQS 등 여러 대상(구독자)에게 **동시에 뿌릴 때(Publish/Subscribe)** 사용."
-      },
-      {
-        title: "EventBridge (CloudWatch Events)",
-        content: "AWS 서비스끼리 이벤트를 기반으로 동작을 연결. (예: 'S3에 파일 업로드' -> EventBridge -> 'Lambda 실행')"
-      },
-      {
-        title: "Step Functions",
-        content: "여러 AWS 서비스(Lambda 등)를 순서대로 시각적 워크플로우로 연결해주는 서비스. Lambda의 15분 제한을 극복하고 복잡한 상태/에러 관리가 가능함."
-      }
-    ]
-  },
-  {
-    id: "vpc",
-    title: "9. VPC 네트워크 핵심",
-    icon: <Network size={20} />,
-    sections: [
-      {
-        title: "VPC, 서브넷 & 게이트웨이",
-        content: `• **VPC**: 가상의 논리적 독립 네트워크 공간.
-• **서브넷 (Subnet)**: VPC를 더 잘게 나눈 네트워크 단위.
-• **인터넷 게이트웨이 (IGW)**: 서브넷이 외부 인터넷과 통신하게 해주는 출입구. (이게 연결된 서브넷이 Public Subnet).
-• **NAT 게이트웨이**: Private Subnet 안의 자원(예: DB)이 인터넷으로 '나갈 수만' 있게 해주는 장치. (업데이트 다운로드 등 필요 시 사용. Public Subnet에 설치해야 함).`,
-        diagram: <VpcDiagram />
-      },
-      {
-        title: "비공개 연결 서비스 비교 (★★★)",
-        content: `인터넷을 거치지 않고(보안 향상) 연결하는 방법들:
-• **VPC Endpoint**: VPC에서 'AWS 서비스(S3, DynamoDB 등)'로 연결
-• **PrivateLink**: VPC에서 '다른 VPC의 특정 애플리케이션'으로 연결
-• **VPC Peering**: 두 개의 VPC 자체를 통째로 묶어 하나의 네트워크처럼 연결
-• **NAT Gateway**: (비교용) Private 서브넷에서 '외부 인터넷'으로 나갈 때 사용`,
-        tip: "무엇과 연결하느냐가 핵심입니다. AWS 서비스면 Endpoint, 앱이면 PrivateLink, VPC끼리면 Peering!"
-      }
-    ]
-  },
-  {
-    id: "network",
-    title: "10. 하이브리드 연결 & 라우팅",
-    icon: <Globe size={20} />,
-    sections: [
-      {
-        title: "Site-to-Site VPN vs Direct Connect (★★★)",
-        content: `온프레미스(회사 전산실)와 AWS를 연결하는 두 가지 방법:
-• **Site-to-Site VPN**: '인터넷'을 통해 암호화된 터널 구축. 저렴하고 빠르지만 인터넷 상태에 따라 속도 들쭉날쭉.
-• **Direct Connect (DX)**: 전용 물리적 '전용선'을 설치. 비싸고 설치가 오래 걸리지만 보안이 완벽하고 속도가 일정(빠름).`
-      },
-      {
-        title: "Transit Gateway",
-        content: "수많은 VPC와 온프레미스 네트워크를 중앙에서 별모양(Hub & Spoke)으로 한 번에 연결해주는 네트워크 라우터. 연결이 너무 많아 복잡할 때 사용."
-      },
-      {
-        title: "Route 53 라우팅 정책 (DNS)",
-        content: `• **단순(Simple)**: 하나의 자원으로 보냄
-• **지리적 위치(Geolocation)**: 사용자의 국가/위치 기반
-• **지연시간(Latency)**: 핑(응답) 속도가 가장 빠른 리전으로 보냄
-• **가중치(Weighted)**: 지정한 비율(예: 80% vs 20%)로 트래픽 분산
-• **다중값(Multi-value)**: 여러 IP를 응답해 분산`
-      },
-      {
-        title: "Route 53 Resolver",
-        content: "온프레미스와 AWS VPC 간 서로의 프라이빗 도메인 이름을 해석(DNS)할 수 있게 해줌.\n• **아웃바운드**: AWS -> 온프레미스 도메인 질의\n• **인바운드**: 온프레미스 -> AWS 내부 도메인 질의"
-      }
-    ]
-  },
-  {
-    id: "analytics",
-    title: "11. 데이터 분석 및 관리",
-    icon: <Activity size={20} />,
-    sections: [
-      {
-        title: "분석 서비스 (Analytics)",
-        content: `• **EMR & Spark**: 대규모 빅데이터 처리 고속 엔진 (실시간 아님)
-• **RedShift**: 대규모 데이터를 빠르게 분석하는 데이터 웨어하우스(DB)
-• **Athena**: S3에 저장된 데이터에 직접 SQL 쿼리를 날려 분석
-• **Glue**: 서버리스 ETL(데이터 추출, 변환, 로드) 서비스 (분석 기능 자체는 없음)`
-      },
-      {
-        title: "스트리밍 데이터 (Kinesis vs Firehose)",
-        content: `실시간 스트림 데이터 처리:
-• **Kinesis Data Streams**: 실시간 데이터 '수집/저장소'
-• **Data Firehose**: 실시간 데이터를 S3나 Redshift 등으로 '배달/전송'
-• **Managed Service for Apache Flink**: 실시간 데이터 '처리/분석'`
-      },
-      {
-        title: "모니터링 및 추적",
-        content: `• **CloudWatch**: AWS 자원 성능 모니터링 및 로그 수집 (CPU, 메모리 등)
-• **X-Ray**: 마이크로서비스 간에 요청이 어떻게 흘러가는지 추적하고 시각화(디버깅, 병목 찾기)
-• **Performance Insight**: DB 성능 특화 모니터링`
-      }
-    ]
-  },
-  {
-    id: "security",
-    title: "12. 보안 및 암호화",
-    icon: <Shield size={20} />,
-    sections: [
-      {
-        title: "보안 그룹(Security Group) vs NACL (★★★)",
-        content: `방화벽 역할을 하는 두 가지:
-• **보안 그룹(SG)**: EC2 인스턴스(자원) 앞단 방화벽. Stateful. '허용(Allow)' 규칙만 설정 가능. 기본적으로 인바운드 전부 차단. IP뿐 아니라 다른 보안그룹 참조 가능.
-• **NACL**: 서브넷 앞단 방화벽. Stateless. '허용'과 '차단(Deny)' 둘 다 설정 가능. 기본적으로 모두 허용. 오직 IP 범위로만 설정 가능.`
-      },
-      {
-        title: "웹 및 네트워크 보안",
-        content: `• **WAF**: L7(웹) 레벨 방화벽. SQL 인젝션, XSS 방어. IP 차단/국가 차단.
-• **Shield**: DDoS 방어.
-• **GuardDuty**: AWS 계정에 대한 해킹/비정상 활동 탐지 (직접 차단은 안하고 모니터링만).
-• **Macie**: S3에 있는 개인정보 등 '민감한 데이터'를 머신러닝으로 자동 탐지.`
-      },
-      {
-        title: "설정값/비밀키 저장 서비스",
-        content: `• **Secrets Manager**: DB 비밀번호 등 민감한 정보 저장. '자동 키 교체(Rotation)' 기능 지원.
-• **Parameter Store**: 보안에 덜 치명적인 설정값 위주. 자동 교체 미지원.
-• **KMS**: 암호화에 쓰이는 '마스터 키' 생성 및 관리 (자동 교체 지원).
-• **ACM**: HTTPS용 SSL/TLS 인증서 발급/관리.`
-      }
-    ]
-  },
-  {
-    id: "account",
-    title: "13. 계정, 권한 및 비용 최적화",
-    icon: <Lock size={20} />,
-    sections: [
-      {
-        title: "자격 증명 및 권한 (IAM)",
-        content: `• **IAM 사용자(User)**: 장기 자격 증명(Access Key) 사용. 유출 시 위험.
-• **IAM 역할(Role)**: 자격 증명을 부여받지 않고 일시적 권한 획득. 유출 위험 적어 권장됨.
-• **Identity Center (SSO)**: 여러 AWS 계정 로그인/권한 중앙 관리. MFA 강제 가능.
-• **STS**: 임시 권한 토큰 발급.
-• **Cognito**: 웹/모바일 앱 유저의 회원가입/로그인 (JWT 기반).`
-      },
-      {
-        title: "추적 및 감사",
-        content: `• **CloudTrail**: 누가(Who) 언제 어떤 API(이벤트)를 호출했는지 감시/기록. (해킹 추적용)
-• **AWS Config**: AWS 리소스의 설정(Configuration)이 어떻게 변했는지 기록/감시.`
-      },
-      {
-        title: "비용 최적화 (Billing)",
-        content: `• **절약 플랜 (Savings Plan)**: 1~3년 사용량 약정 시 할인 (컴퓨팅용, EC2 인스턴스용).
-• **Budgets**: 예산을 설정하고 초과 시 알림(이메일 등).
-• **Cost Explorer**: 과거~현재 발생 비용 분석 (태그별 비용 등 그래프 확인).
-• **Trusted Advisor**: 보안, 성능, '비용 절감' 등 AWS 모범 사례에 맞게 계정을 자동 점검해주고 조언.`
-      }
-    ]
-  }
-];
-
-// --- 메인 컴포넌트 ---
-const App = () => {
-  const [activeTopicId, setActiveTopicId] = useState(STUDY_DATA[0].id);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  const activeTopicIndex = STUDY_DATA.findIndex(topic => topic.id === activeTopicId);
-  const activeTopic = STUDY_DATA[activeTopicIndex];
-
-  const goToNext = () => {
-    if (activeTopicIndex < STUDY_DATA.length - 1) {
-      setActiveTopicId(STUDY_DATA[activeTopicIndex + 1].id);
-      window.scrollTo(0, 0);
-    }
-  };
-
-  const goToPrev = () => {
-    if (activeTopicIndex > 0) {
-      setActiveTopicId(STUDY_DATA[activeTopicIndex - 1].id);
-      window.scrollTo(0, 0);
-    }
-  };
-
-  return (
-    <div className="flex flex-col h-screen bg-gray-50 text-gray-800 font-sans">
-      
-      {/* HTML5 웹표준: 상단 글로벌 헤더 및 네비게이션 (header, nav 태그 사용) */}
-      <header className="w-full bg-slate-950 text-white z-50 shadow-md flex-shrink-0">
-        <div className="flex justify-between items-center p-4 max-w-7xl mx-auto w-full">
-          <div className="font-bold text-xl flex items-center gap-2">
-            <Cloud className="text-yellow-400" /> SAA-C03 합격 패키지
-          </div>
-          <nav className="flex gap-2 sm:gap-4">
-            <a href="saa001.html" className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow hover:bg-blue-700 transition">
-              벼락치기
-            </a>
-            <a href="saa002.html" className="text-slate-300 hover:bg-slate-800 hover:text-white px-4 py-2 rounded-lg text-sm font-bold transition">
-              문제풀이
-            </a>
-          </nav>
-        </div>
-      </header>
-
-      <div className="flex flex-1 overflow-hidden relative">
-        {/* 모바일 햄버거 메뉴 버튼 */}
-        <div className="lg:hidden absolute top-4 right-4 z-50">
-          <button 
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="bg-slate-800 text-white p-2 rounded-md shadow-md"
-          >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
-
-        {/* HTML5 웹표준: 왼쪽 사이드바 (aside 태그 사용) */}
-        <aside className={`
-          absolute lg:static w-64 h-full bg-slate-900 text-slate-300 transition-transform duration-300 z-40 flex-shrink-0
-          ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-        `}>
-          <div className="p-4 overflow-y-auto h-full pb-20">
-            <p className="text-xs font-bold text-slate-500 mb-4 px-2 tracking-wider">학습 목차 (총 169문제 요약)</p>
-            <nav>
-              <ul className="space-y-1">
-                {STUDY_DATA.map((topic) => (
-                  <li key={topic.id}>
-                    <button
-                      onClick={() => {
-                        setActiveTopicId(topic.id);
-                        setIsMobileMenuOpen(false);
-                        window.scrollTo(0, 0);
-                      }}
-                      className={`w-full flex items-center gap-3 px-3 py-3 rounded-lg text-left transition-colors text-sm
-                        ${activeTopicId === topic.id 
-                          ? 'bg-blue-600 text-white font-semibold shadow-md' 
-                          : 'hover:bg-slate-800 hover:text-white'}`}
-                    >
-                      <span className={`${activeTopicId === topic.id ? 'text-blue-200' : 'text-slate-500'}`}>
-                        {topic.icon}
-                      </span>
-                      {topic.title}
-                    </button>
-                  </li>
-                ))}
-              </ul>
+            <nav class="flex gap-2 sm:gap-4">
+                <a href="saa001.html" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow hover:bg-blue-700 transition">
+                    벼락치기
+                </a>
+                <a href="saa002.html" class="text-slate-300 hover:bg-slate-800 hover:text-white px-4 py-2 rounded-lg text-sm font-bold transition">
+                    문제풀이
+                </a>
             </nav>
-          </div>
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden relative">
+        <!-- 모바일 햄버거 메뉴 버튼 -->
+        <div class="lg:hidden absolute top-4 right-4 z-50">
+            <button id="mobile-menu-btn" class="bg-slate-800 text-white p-2 rounded-md shadow-md">
+                <i data-lucide="menu" id="menu-icon"></i>
+            </button>
+        </div>
+
+        <!-- HTML5: 왼쪽 사이드바 -->
+        <aside id="sidebar" class="absolute lg:static w-64 h-full bg-slate-900 text-slate-300 transition-transform duration-300 z-40 flex-shrink-0 -translate-x-full lg:translate-x-0">
+            <div class="p-4 overflow-y-auto h-full pb-20">
+                <p class="text-xs font-bold text-slate-500 mb-4 px-2 tracking-wider">학습 목차 (총 169문제 요약)</p>
+                <nav>
+                    <ul id="sidebar-list" class="space-y-1">
+                        <!-- JS로 동적 렌더링 -->
+                    </ul>
+                </nav>
+            </div>
         </aside>
 
-        {/* HTML5 웹표준: 메인 콘텐츠 영역 (main, article 태그 사용) */}
-        <main className="flex-1 overflow-y-auto w-full bg-gray-50">
-          <article className="max-w-4xl mx-auto p-4 md:p-8 pt-16 lg:pt-8">
-            
-            {/* 섹션 헤더 */}
-            <header className="mb-8">
-              <h2 className="text-3xl font-extrabold text-gray-900 mb-2 flex items-center gap-3">
-                {activeTopic.title}
-              </h2>
-              <div className="h-1 w-20 bg-blue-600 rounded"></div>
-            </header>
+        <!-- HTML5: 메인 콘텐츠 영역 -->
+        <main id="main-scroll" class="flex-1 overflow-y-auto w-full bg-gray-50 relative z-0">
+            <article class="max-w-4xl mx-auto p-4 md:p-8 pt-16 lg:pt-8">
+                
+                <!-- 섹션 헤더 -->
+                <header class="mb-8">
+                    <h2 id="topic-title" class="text-3xl font-extrabold text-gray-900 mb-2 flex items-center gap-3">
+                        <!-- 제목 동적 렌더링 -->
+                    </h2>
+                    <div class="h-1 w-20 bg-blue-600 rounded"></div>
+                </header>
 
-            {/* 본문 카드들 (section 태그 사용) */}
-            <div className="space-y-6">
-              {activeTopic.sections.map((section, idx) => (
-                <section key={idx} className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                  <header className="bg-slate-50 border-b border-gray-200 px-6 py-4 flex items-center gap-2">
-                    <CheckCircle2 size={20} className="text-blue-500" />
-                    <h3 className="font-bold text-lg text-slate-800">{section.title}</h3>
-                  </header>
-                  
-                  <div className="p-6">
-                    {section.summary && (
-                      <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4 rounded-r-lg">
-                        <p className="font-bold text-blue-900 flex items-center gap-2">
-                          <Lightbulb size={18} className="text-blue-600"/> 한 줄 요약
-                        </p>
-                        <p className="text-blue-800 mt-1 text-sm">{section.summary}</p>
-                      </div>
-                    )}
-                    
-                    <div className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-                      {/* 볼드체 처리 파싱 (**) */}
-                      {section.content.split('**').map((part, i) => 
-                        i % 2 === 1 ? <strong key={i} className="text-gray-900">{part}</strong> : part
-                      )}
-                    </div>
+                <!-- 본문 카드들 -->
+                <div id="topic-content" class="space-y-6">
+                    <!-- 내용 동적 렌더링 -->
+                </div>
 
-                    {section.diagram && (
-                      <div className="mt-6">
-                        {section.diagram}
-                      </div>
-                    )}
+                <!-- HTML5: 하단 페이지 네비게이션 -->
+                <nav class="mt-12 flex justify-between items-center border-t border-gray-200 pt-6 pb-20 lg:pb-8">
+                    <button id="btn-prev" class="flex items-center gap-2 px-5 py-3 rounded-lg font-medium transition-all text-slate-700 bg-white border border-gray-300 hover:bg-gray-50 shadow-sm">
+                        <i data-lucide="chevron-left"></i> 이전 주제
+                    </button>
+                    <span id="page-indicator" class="text-sm text-gray-500 font-medium hidden sm:block">
+                        1 / 13
+                    </span>
+                    <button id="btn-next" class="flex items-center gap-2 px-5 py-3 rounded-lg font-medium transition-all text-white bg-blue-600 hover:bg-blue-700 shadow-sm">
+                        다음 주제 <i data-lucide="chevron-right"></i>
+                    </button>
+                </nav>
 
-                    {section.tip && (
-                      <div className="mt-6 bg-yellow-50 border border-yellow-200 p-4 rounded-lg flex gap-3 items-start">
-                        <AlertTriangle className="text-yellow-600 shrink-0 mt-0.5" size={20} />
-                        <div>
-                          <p className="font-bold text-yellow-800 text-sm mb-1">암기 Tip</p>
-                          <p className="text-yellow-900 text-sm">{section.tip}</p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </section>
-              ))}
-            </div>
-
-            {/* HTML5 웹표준: 하단 페이지 네비게이션 (nav 태그 사용) */}
-            <nav className="mt-12 flex justify-between items-center border-t border-gray-200 pt-6 pb-20 lg:pb-8">
-              <button
-                onClick={goToPrev}
-                disabled={activeTopicIndex === 0}
-                className={`flex items-center gap-2 px-5 py-3 rounded-lg font-medium transition-all
-                  ${activeTopicIndex === 0 
-                    ? 'text-gray-400 bg-gray-100 cursor-not-allowed' 
-                    : 'text-slate-700 bg-white border border-gray-300 hover:bg-gray-50 shadow-sm hover:shadow'}`}
-              >
-                <ChevronLeft size={20} /> 이전 주제
-              </button>
-              <span className="text-sm text-gray-500 font-medium hidden sm:block">
-                {activeTopicIndex + 1} / {STUDY_DATA.length}
-              </span>
-              <button
-                onClick={goToNext}
-                disabled={activeTopicIndex === STUDY_DATA.length - 1}
-                className={`flex items-center gap-2 px-5 py-3 rounded-lg font-medium transition-all
-                  ${activeTopicIndex === STUDY_DATA.length - 1 
-                    ? 'text-gray-400 bg-gray-100 cursor-not-allowed' 
-                    : 'text-white bg-blue-600 hover:bg-blue-700 shadow-sm hover:shadow'}`}
-              >
-                다음 주제 <ChevronRight size={20} />
-              </button>
-            </nav>
-
-          </article>
+            </article>
         </main>
-      </div>
     </div>
-  );
-};
 
-export default App;
+    <!-- JavaScript 로직 -->
+    <script>
+        // 다이어그램 HTML 템플릿
+        const diagrams = {
+            elb: `
+            <div class="flex flex-col md:flex-row items-center justify-center gap-4 bg-white p-6 rounded-xl border border-gray-200 my-4 shadow-sm">
+                <div class="flex flex-col items-center">
+                    <div class="bg-blue-100 p-3 rounded-full mb-2"><i data-lucide="globe" class="text-blue-600 w-8 h-8"></i></div>
+                    <span class="text-sm font-semibold">Users</span>
+                </div>
+                <i data-lucide="arrow-right" class="text-gray-400 hidden md:block"></i>
+                <div class="flex flex-col items-center">
+                    <div class="bg-purple-100 p-4 rounded-xl mb-2 border-2 border-purple-300"><i data-lucide="network" class="text-purple-600 w-10 h-10"></i></div>
+                    <span class="text-sm font-bold text-purple-700">ELB</span>
+                </div>
+                <i data-lucide="arrow-right" class="text-gray-400 hidden md:block"></i>
+                <div class="flex flex-col gap-3">
+                    <div class="flex items-center gap-2 bg-orange-50 border border-orange-200 px-4 py-2 rounded-lg">
+                        <i data-lucide="server" class="text-orange-500 w-5 h-5"></i><span class="text-sm font-medium text-orange-700">EC2 Instance 1</span>
+                    </div>
+                    <div class="flex items-center gap-2 bg-orange-50 border border-orange-200 px-4 py-2 rounded-lg">
+                        <i data-lucide="server" class="text-orange-500 w-5 h-5"></i><span class="text-sm font-medium text-orange-700">EC2 Instance 2</span>
+                    </div>
+                    <div class="flex items-center gap-2 bg-orange-50 border border-orange-200 px-4 py-2 rounded-lg">
+                        <i data-lucide="server" class="text-orange-500 w-5 h-5"></i><span class="text-sm font-medium text-orange-700">EC2 Instance 3</span>
+                    </div>
+                </div>
+            </div>`,
+            s3: `
+            <div class="flex flex-col md:flex-row items-center justify-center gap-2 bg-white p-6 rounded-xl border border-gray-200 my-4 shadow-sm">
+                <div class="flex flex-col items-center bg-green-50 p-4 rounded-lg border border-green-200 w-32">
+                    <i data-lucide="hard-drive" class="text-green-600 mb-2 w-8 h-8"></i><span class="text-xs font-bold text-center">S3 Standard</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <span class="text-xs text-gray-500 font-bold mb-1">30일 후</span><i data-lucide="arrow-right" class="text-gray-400"></i>
+                </div>
+                <div class="flex flex-col items-center bg-green-50 p-4 rounded-lg border border-green-200 w-32">
+                    <i data-lucide="hard-drive" class="text-green-600 mb-2 w-8 h-8"></i><span class="text-xs font-bold text-center">S3 Standard-IA</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <span class="text-xs text-gray-500 font-bold mb-1">1년 후</span><i data-lucide="arrow-right" class="text-gray-400"></i>
+                </div>
+                <div class="flex flex-col items-center bg-blue-50 p-4 rounded-lg border border-blue-200 w-32">
+                    <i data-lucide="cloud" class="text-blue-600 mb-2 w-8 h-8"></i><span class="text-xs font-bold text-center text-blue-800">S3 Glacier</span>
+                </div>
+            </div>`,
+            vpc: `
+            <div class="bg-gray-50 p-4 md:p-6 rounded-xl border border-gray-300 my-4 shadow-sm font-sans">
+                <div class="border-2 border-green-500 rounded-xl p-4 relative">
+                    <div class="absolute -top-3 left-4 bg-gray-50 px-2 text-sm font-bold text-green-700 flex items-center gap-1">
+                        <i data-lucide="cloud" class="w-4 h-4"></i> VPC (10.0.0.0/16)
+                    </div>
+                    <div class="flex flex-col md:flex-row gap-4 mt-4">
+                        <div class="flex-1 border-2 border-blue-300 bg-blue-50 rounded-lg p-4 relative">
+                            <div class="absolute -top-3 left-2 bg-blue-50 px-2 text-xs font-bold text-blue-700">Public Subnet</div>
+                            <div class="flex justify-between items-center mb-4">
+                                <div class="flex items-center gap-1 bg-white border border-gray-300 px-2 py-1 rounded text-xs">
+                                    <i data-lucide="globe" class="text-gray-600 w-3 h-3"></i> Internet Gateway
+                                </div>
+                            </div>
+                            <div class="bg-white border border-orange-300 rounded p-3 text-center mb-2">
+                                <i data-lucide="server" class="mx-auto text-orange-500 mb-1 w-6 h-6"></i><div class="text-xs font-bold">EC2 (Web)</div>
+                            </div>
+                            <div class="bg-white border border-purple-300 rounded p-3 text-center">
+                                <i data-lucide="network" class="mx-auto text-purple-500 mb-1 w-6 h-6"></i><div class="text-xs font-bold">NAT Gateway</div>
+                            </div>
+                        </div>
+                        <div class="flex-1 border-2 border-gray-300 bg-gray-100 rounded-lg p-4 relative">
+                            <div class="absolute -top-3 left-2 bg-gray-100 px-2 text-xs font-bold text-gray-700">Private Subnet</div>
+                            <div class="mt-8 bg-white border border-orange-300 rounded p-3 text-center mb-2">
+                                <i data-lucide="server" class="mx-auto text-orange-500 mb-1 w-6 h-6"></i><div class="text-xs font-bold">EC2 (App)</div>
+                            </div>
+                            <div class="bg-white border border-blue-500 rounded p-3 text-center">
+                                <i data-lucide="database" class="mx-auto text-blue-600 mb-1 w-6 h-6"></i><div class="text-xs font-bold">RDS (DB)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`
+        };
+
+        // 학습 데이터
+        const STUDY_DATA = [
+            {
+                id: "basic", title: "1. 핵심 기초 서비스", icon: "cloud",
+                sections: [
+                    { title: "EC2 (Elastic Compute Cloud)", summary: "컴퓨터를 빌려서 원격으로 접속해 사용하는 서비스이다.", content: "EC2를 쉽게 얘기하면 '하나의 컴퓨터'를 의미한다." },
+                    { title: "RDS (Relational Database Service)", summary: "관계형 데이터베이스 서비스이다.", content: "MySQL, MariaDB 등 여러 관계형 데이터베이스 서비스를 AWS로부터 빌려서 사용하는 형태이다." },
+                    { title: "S3 (Simple Storage Service)", summary: "파일 저장 서비스이다.", content: "사진이나 동영상과 같은 파일들을 구글 드라이브나 iCloud에 저장하듯 쓰는 서비스이다. 부가적으로 '정적 웹 사이트 호스팅' 기능을 통해 웹 서비스를 인터넷에 배포할 수도 있다." },
+                    { title: "Route 53", summary: "도메인을 발급하고 관리해주는 서비스이다. (DNS)", content: "문자를 IP 주소로 변환해주는 시스템(서버)이다. 사람들이 특정 컴퓨터와 통신하기 위해 복잡한 IP 주소를 일일이 외울 필요가 없게 해준다." },
+                    { title: "ELB (Elastic Load Balancer)", summary: "트래픽(부하)을 적절하게 분배해주는 장치이다.", content: "서버를 2대 이상 가용할 때 필수적으로 도입하게 되는 로드밸런서이다.", diagram: "elb" },
+                    { title: "CloudFront", summary: "컨텐츠(파일, 동영상 등)를 빠르게 전송하게 해주는 CDN 서비스이다.", content: "전세계 곳곳에 컨텐츠의 복사본을 저장해놓는 임시 저장소(CDN Node)를 구축하여, 사용자가 가장 가까운 저장소에서 컨텐츠를 가져오게 해 속도를 높인다." },
+                    { title: "Lambda", summary: "서버는 AWS가 관리하고, 개발자는 코드만 작성하면 알아서 실행되는 서비스이다.", content: "EC2처럼 서버를 직접 생성/관리할 필요 없이, 필요한 코드만 작성해 실행시키면 알아서 작동하는 서버리스(Serverless)의 대표주자이다." }
+                ]
+            },
+            {
+                id: "infra", title: "2. 글로벌 인프라 & 환경", icon: "globe",
+                sections: [
+                    { title: "리전 (Region) & 가용 영역 (AZ)", content: "**리전(Region)**: 인프라를 지리적으로 나누어 배포한 각각의 데이터 센터 위치 (예: 서울 리전).\n**가용 영역(Availability Zone, AZ)**: 하나의 리전 안에서 자연재해 등을 대비해 '물리적으로 분리된' 데이터 센터." },
+                    { title: "고가용성 (High Availability) & 다중 AZ", content: "**가용성**: 시스템이 정상적으로 제공될 수 있는 가능성 (예: 99.99%).\n**다중 AZ (Multi-AZ)**: 서로 다른 가용 영역에 시스템을 분산 배치하여 한 곳에 장애가 나도 서비스가 중단되지 않게 하는 고가용성 핵심 전략.\n**단일 AZ (Single-AZ)**: 하나의 AZ에만 배치. 저렴하지만 장애 시 서비스 중단 위험이 있음." },
+                    { title: "온프레미스 & 마이그레이션", content: "**온프레미스 (On-premise)**: 회사가 전산실에 직접 서버 장비를 두고 운영하는 방식. (AWS 클라우드의 반대 개념)\n**마이그레이션 (Migration)**: 온프레미스 환경 등에서 다른 환경(AWS)으로 시스템을 이동하는 것." }
+                ]
+            },
+            {
+                id: "s3-deep", title: "3. S3 심화 (클래스/보안)", icon: "hard-drive",
+                sections: [
+                    { title: "S3 스토리지 클래스 유형 (★★★)", content: "접근 빈도와 즉시 조회 여부에 따라 비용이 달라집니다.\n• **S3 Standard**: 자주 접근하는 기본 스토리지 (즉시 조회)\n• **S3 Standard-IA**: 거의 접근하지 않지만, 필요 시 즉시 조회 (Infrequent Access)\n• **S3 One Zone-IA**: Standard-IA와 같으나 단일 AZ 저장 (고가용성 X)\n• **S3 Intelligent-Tiering**: 접근 패턴이 불규칙할 때 AWS가 알아서 저렴한 계층으로 이동\n• **S3 Glacier Instant Retrieval**: 거의 접근 안함 + 즉시 조회 필요\n• **S3 Glacier Flexible Retrieval**: 거의 접근 안함 + 조회 시 몇 분~시간 소요\n• **S3 Glacier Deep Archive**: 장기 보관용, 조회 시 최대 12시간 소요", tip: "Glacier는 '빙하'처럼 차갑게 오래 보관(법/감사 목적)할 때 씁니다. IA는 빈번하지 않은(Infrequent) 접근을 의미합니다." },
+                    { title: "S3 수명 주기 정책 (Lifecycle)", content: "파일을 N일 후에 자동으로 다른 스토리지 클래스로 이동시키거나 삭제시키는 기능입니다.", diagram: "s3" },
+                    { title: "S3 버전 관리 & 객체 잠금", content: "• **버전 관리**: 같은 이름의 파일을 덮어쓰더라도 이전 버전을 보존하는 기능.\n• **객체 잠금**: 일정 기간 파일 수정/삭제를 차단. (거버넌스 모드: 관리자만 수정 가능 / 규정 준수 모드: 루트 계정 포함 아무도 수정 불가).\n• **법적 보존 (Legal Hold)**: 기간 상관없이 수동 해제 전까지 삭제 금지 (소송 등 이슈 시 사용)." },
+                    { title: "S3 암호화 (SSE) & Batch Operations", content: "서버 측 암호화(SSE) 종류:\n1. **SSE-S3**: S3가 키를 알아서 생성/관리 (가장 기본)\n2. **SSE-KMS**: AWS KMS가 키를 생성/관리. (보안 요구 높을 때, 자동 키 교체 지원. Bucket Key 사용 시 비용 절감)\n3. **SSE-C**: 고객이 키를 직접 제공/관리 (권장 안함)\n\n**S3 Batch Operations**: 수백만~수십억 개 파일에 동일 작업(복사, 암호화 등)을 한 번에 실행." }
+                ]
+            },
+            {
+                id: "storage", title: "4. 다양한 스토리지 서비스", icon: "database",
+                sections: [
+                    { title: "EBS (Elastic Block Store)", summary: "외장 SSD/HDD처럼 EC2에 연결해서 쓰는 블록 스토리지", content: "• EC2, RDS에만 연결 가능\n• **단일 AZ**에서만 작동\n• 운영체제 설치 및 고성능 스토리지로 사용" },
+                    { title: "EFS (Elastic File System)", summary: "여러 EC2가 동시에 공유해서 쓸 수 있는 NFS 스토리지", content: "• 구글 드라이브처럼 여러 대가 동시 공유 가능\n• **다중 AZ**에서 작동\n• 리눅스의 NFS 프로토콜만 지원\n• EFS IA (자주 접근 안하는 파일 이동) 기능 존재" },
+                    { title: "인스턴스 스토어 (Instance Store)", summary: "EC2 컴퓨터에 내장된 '임시용' 디스크", content: "• EC2 인스턴스를 중지/종료하면 **데이터가 전부 사라짐** (휘발성)\n• 매우 빠르지만 임시 데이터 보관용으로만 사용" },
+                    { title: "FSx (고성능 파일 스토리지)", content: "• **FSx for Lustre**: 머신러닝, 빅데이터. S3와 연동 가능.\n• **FSx for Windows File Server**: Windows 환경 (SMB 프로토콜)\n• **FSx for NetApp ONTAP**: 윈도우, 리눅스, 맥 모두 호환 (NFS, SMB 다 지원)\n• **FSx for OpenZFS**: 리눅스 (NFS 프로토콜)" }
+                ]
+            },
+            {
+                id: "migration", title: "5. 데이터 마이그레이션", icon: "arrow-right",
+                sections: [
+                    { title: "DataSync", content: "온프레미스 ↔ AWS, 또는 AWS 스토리지(EFS, S3, FSx) 간에 **대용량 데이터를 네트워크로 전송**할 때 사용하는 서비스." },
+                    { title: "Snowball Edge", content: "**물리적 장비 배송**으로 대용량 데이터를 전송하는 서비스. 인터넷 속도 제약이 있을 때 AWS에서 트렁크만한 하드웨어를 택배로 받아 직접 데이터를 담아 다시 보내는 방식." },
+                    { title: "Transfer Family", content: "파일을 송수신할 때 필요한 **FTP (SFTP, FTPS) 서버** 역할을 하는 서비스. S3나 EFS와 연동하여 사용." },
+                    { title: "Storage Gateway", summary: "온프레미스에서 S3를 로컬 스토리지처럼 쓸 수 있게 연결(Gateway)해주는 서비스", content: "데이터를 완전히 옮기는 것이 아니라 '연결'해서 쓰는 것이 목적입니다.\n• **파일 게이트웨이**: 온프레미스 데이터를 공유 폴더 형태로 S3에 업로드 (실시간 사용 가능)\n• **볼륨 게이트웨이**: 블록 스토리지(EBS) 스냅샷을 S3에 백업 (실시간 사용 불가)\n• **테이프 게이트웨이**: 물리 테이프 백업을 S3/Glacier로 대체 (아카이빙 용도)" }
+                ]
+            },
+            {
+                id: "database", title: "6. 데이터베이스 (DB)", icon: "database",
+                sections: [
+                    { title: "RDS 핵심 기능 (★★★)", content: "• **Multi-AZ 배포**: 장애 대비용 '대기 DB(Standby)' 생성. (가용성 향상 목적, 성능 향상 아님)\n• **Read Replica (읽기 전용 복제본)**: 읽기 작업 부하 분산을 위해 DB 추가. (읽기 성능 향상)\n• **Cross Region Read Replica**: 재해 복구(DR)를 위해 다른 리전에 읽기 복제본 생성.\n• **RDS Proxy**: 앱과 DB 사이에서 DB 연결(Connection)이 너무 많이 생겨 터지는 것을 방지(Connection Pool 관리).\n• **Blue/Green 배포**: 다운타임 없이 안전하게 DB 버전을 업데이트 하거나 구조를 변경할 때 사용 (Blue: 현재, Green: 테스트/신규)." },
+                    { title: "Aurora", content: "AWS가 만든 **고성능** 관계형 데이터베이스.\n• **Global Database**: 전 세계(여러 리전)에 읽기 성능 최적화 및 재해 복구(DR).\n• **Auto Scaling**: CPU 사용량에 따라 자동으로 읽기 전용 복제본을 늘렸다 줄임." },
+                    { title: "DynamoDB (NoSQL)", content: "관계형이 아닌 빠르고 유연한 NoSQL DB.\n• **DynamoDB Streams**: 데이터 변경 사항을 실시간으로 추적/전달.\n• **DAX (DynamoDB Accelerator)**: DynamoDB 전용 인메모리 캐시. 마이크로초 단위의 읽기 성능 향상." },
+                    { title: "ElastiCache", content: "자주 조회되는 데이터를 빠르게 조회해주는 **캐시(Cache) 서비스** (Redis, Memcached). DB의 읽기 부하를 대폭 줄여주지만, 자주 변경되는 데이터에는 부적합." }
+                ]
+            },
+            {
+                id: "compute", title: "7. 컴퓨팅 & 통합 서비스", icon: "zap",
+                sections: [
+                    { title: "EC2 요금 유형", content: "• **온디맨드 (On-Demand)**: 쓴 만큼만 후불 결제 (기본)\n• **스팟 인스턴스 (Spot)**: 남는 컴퓨터를 아주 싸게 씀. 단, AWS가 언제든 뺏어갈 수 있음 (중단돼도 괜찮은 배치 작업에 적합).\n• **예약 인스턴스 (Reserved)**: 1년/3년 장기 약정으로 할인 받음." },
+                    { title: "ELB 종류", content: "• **ALB (Application Load Balancer)**: HTTP/HTTPS(L7) 특화. 경로 기반 라우팅.\n• **NLB (Network Load Balancer)**: TCP/UDP(L4) 특화. 초당 수백만 건 처리 등 극강의 빠른 성능 요구 시.\n• **GWLB (Gateway Load Balancer)**: 네트워크 방화벽 등 보안 장비로 트래픽을 분산할 때 사용." },
+                    { title: "ECS (Elastic Container Service)", content: "Docker 컨테이너를 쉽게 운영하는 서비스. **Fargate 기반**으로 쓰면 서버 인프라 관리 없이 컨테이너만 띄울 수 있어 편리함." },
+                    { title: "Lambda 심화", content: "서버리스(Serverless). 코드가 실행될 때만 요금 부과. \n• **콜드 스타트**: 처음 실행 시 지연 발생. 이를 막기 위해 **프로비저닝된 동시성(Provisioned Concurrency)**을 설정해 미리 띄워둘 수 있음.\n• 최대 15분까지만 실행 가능." },
+                    { title: "API Gateway", content: "외부 요청을 받아 백엔드(Lambda, EC2 등)로 안전하게 전달하는 대문 역할.\n• **REST API**: 기능 많음 (JWT 기본 미제공)\n• **HTTP API**: 싸고 빠름 (JWT 기본 제공)\n• **Edge-optimized**: CloudFront와 연동해 전 세계 응답 속도 최적화." }
+                ]
+            },
+            {
+                id: "messaging", title: "8. 메시징 & 이벤트", icon: "network",
+                sections: [
+                    { title: "SQS (Simple Queue Service)", summary: "메시지(요청)를 큐에 쌓아 순서대로 처리하는 서비스", content: "시스템 간 **결합도를 낮추고(느슨한 결합)**, 갑작스런 트래픽 폭주 시 데이터 손실 없이 안전하게 처리할 때 씁니다.\n• **표준 대기열(Standard)**: 순서 보장 완벽치 않으나 처리량 무제한\n• **FIFO 대기열**: 정확히 순서대로, 딱 한 번만(Exactly-Once) 처리" },
+                    { title: "SNS (Simple Notification Service)", content: "하나의 메시지를 이메일, 람다, SQS 등 여러 대상(구독자)에게 **동시에 뿌릴 때(Publish/Subscribe)** 사용." },
+                    { title: "EventBridge (CloudWatch Events)", content: "AWS 서비스끼리 이벤트를 기반으로 동작을 연결. (예: 'S3에 파일 업로드' -> EventBridge -> 'Lambda 실행')" },
+                    { title: "Step Functions", content: "여러 AWS 서비스(Lambda 등)를 순서대로 시각적 워크플로우로 연결해주는 서비스. Lambda의 15분 제한을 극복하고 복잡한 상태/에러 관리가 가능함." }
+                ]
+            },
+            {
+                id: "vpc", title: "9. VPC 네트워크 핵심", icon: "network",
+                sections: [
+                    { title: "VPC, 서브넷 & 게이트웨이", content: "• **VPC**: 가상의 논리적 독립 네트워크 공간.\n• **서브넷 (Subnet)**: VPC를 더 잘게 나눈 네트워크 단위.\n• **인터넷 게이트웨이 (IGW)**: 서브넷이 외부 인터넷과 통신하게 해주는 출입구. (이게 연결된 서브넷이 Public Subnet).\n• **NAT 게이트웨이**: Private Subnet 안의 자원(예: DB)이 인터넷으로 '나갈 수만' 있게 해주는 장치. (업데이트 다운로드 등 필요 시 사용. Public Subnet에 설치해야 함).", diagram: "vpc" },
+                    { title: "비공개 연결 서비스 비교 (★★★)", content: "인터넷을 거치지 않고(보안 향상) 연결하는 방법들:\n• **VPC Endpoint**: VPC에서 'AWS 서비스(S3, DynamoDB 등)'로 연결\n• **PrivateLink**: VPC에서 '다른 VPC의 특정 애플리케이션'로 연결\n• **VPC Peering**: 두 개의 VPC 자체를 통째로 묶어 하나의 네트워크처럼 연결\n• **NAT Gateway**: (비교용) Private 서브넷에서 '외부 인터넷'으로 나갈 때 사용", tip: "무엇과 연결하느냐가 핵심입니다. AWS 서비스면 Endpoint, 앱이면 PrivateLink, VPC끼리면 Peering!" }
+                ]
+            },
+            {
+                id: "network", title: "10. 하이브리드 연결 & 라우팅", icon: "globe",
+                sections: [
+                    { title: "Site-to-Site VPN vs Direct Connect (★★★)", content: "온프레미스(회사 전산실)와 AWS를 연결하는 두 가지 방법:\n• **Site-to-Site VPN**: '인터넷'을 통해 암호화된 터널 구축. 저렴하고 빠르지만 인터넷 상태에 따라 속도 들쭉날쭉.\n• **Direct Connect (DX)**: 전용 물리적 '전용선'을 설치. 비싸고 설치가 오래 걸리지만 보안이 완벽하고 속도가 일정(빠름)." },
+                    { title: "Transit Gateway", content: "수많은 VPC와 온프레미스 네트워크를 중앙에서 별모양(Hub & Spoke)으로 한 번에 연결해주는 네트워크 라우터. 연결이 너무 많아 복잡할 때 사용." },
+                    { title: "Route 53 라우팅 정책 (DNS)", content: "• **단순(Simple)**: 하나의 자원으로 보냄\n• **지리적 위치(Geolocation)**: 사용자의 국가/위치 기반\n• **지연시간(Latency)**: 핑(응답) 속도가 가장 빠른 리전으로 보냄\n• **가중치(Weighted)**: 지정한 비율(예: 80% vs 20%)로 트래픽 분산\n• **다중값(Multi-value)**: 여러 IP를 응답해 분산" },
+                    { title: "Route 53 Resolver", content: "온프레미스와 AWS VPC 간 서로의 프라이빗 도메인 이름을 해석(DNS)할 수 있게 해줌.\n• **아웃바운드**: AWS -> 온프레미스 도메인 질의\n• **인바운드**: 온프레미스 -> AWS 내부 도메인 질의" }
+                ]
+            },
+            {
+                id: "analytics", title: "11. 데이터 분석 및 관리", icon: "activity",
+                sections: [
+                    { title: "분석 서비스 (Analytics)", content: "• **EMR & Spark**: 대규모 빅데이터 처리 고속 엔진 (실시간 아님)\n• **RedShift**: 대규모 데이터를 빠르게 분석하는 데이터 웨어하우스(DB)\n• **Athena**: S3에 저장된 데이터에 직접 SQL 쿼리를 날려 분석\n• **Glue**: 서버리스 ETL(데이터 추출, 변환, 로드) 서비스 (분석 기능 자체는 없음)" },
+                    { title: "스트리밍 데이터 (Kinesis vs Firehose)", content: "실시간 스트림 데이터 처리:\n• **Kinesis Data Streams**: 실시간 데이터 '수집/저장소'\n• **Data Firehose**: 실시간 데이터를 S3나 Redshift 등으로 '배달/전송'\n• **Managed Service for Apache Flink**: 실시간 데이터 '처리/분석'" },
+                    { title: "모니터링 및 추적", content: "• **CloudWatch**: AWS 자원 성능 모니터링 및 로그 수집 (CPU, 메모리 등)\n• **X-Ray**: 마이크로서비스 간에 요청이 어떻게 흘러가는지 추적하고 시각화(디버깅, 병목 찾기)\n• **Performance Insight**: DB 성능 특화 모니터링" }
+                ]
+            },
+            {
+                id: "security", title: "12. 보안 및 암호화", icon: "shield",
+                sections: [
+                    { title: "보안 그룹(Security Group) vs NACL (★★★)", content: "방화벽 역할을 하는 두 가지:\n• **보안 그룹(SG)**: EC2 인스턴스(자원) 앞단 방화벽. Stateful. '허용(Allow)' 규칙만 설정 가능. 기본적으로 인바운드 전부 차단. IP뿐 아니라 다른 보안그룹 참조 가능.\n• **NACL**: 서브넷 앞단 방화벽. Stateless. '허용'과 '차단(Deny)' 둘 다 설정 가능. 기본적으로 모두 허용. 오직 IP 범위로만 설정 가능." },
+                    { title: "웹 및 네트워크 보안", content: "• **WAF**: L7(웹) 레벨 방화벽. SQL 인젝션, XSS 방어. IP 차단/국가 차단.\n• **Shield**: DDoS 방어.\n• **GuardDuty**: AWS 계정에 대한 해킹/비정상 활동 탐지 (직접 차단은 안하고 모니터링만).\n• **Macie**: S3에 있는 개인정보 등 '민감한 데이터'를 머신러닝으로 자동 탐지." },
+                    { title: "설정값/비밀키 저장 서비스", content: "• **Secrets Manager**: DB 비밀번호 등 민감한 정보 저장. '자동 키 교체(Rotation)' 기능 지원.\n• **Parameter Store**: 보안에 덜 치명적인 설정값 위주. 자동 교체 미지원.\n• **KMS**: 암호화에 쓰이는 '마스터 키' 생성 및 관리 (자동 교체 지원).\n• **ACM**: HTTPS용 SSL/TLS 인증서 발급/관리." }
+                ]
+            },
+            {
+                id: "account", title: "13. 계정, 권한 및 비용 최적화", icon: "lock",
+                sections: [
+                    { title: "자격 증명 및 권한 (IAM)", content: "• **IAM 사용자(User)**: 장기 자격 증명(Access Key) 사용. 유출 시 위험.\n• **IAM 역할(Role)**: 자격 증명을 부여받지 않고 일시적 권한 획득. 유출 위험 적어 권장됨.\n• **Identity Center (SSO)**: 여러 AWS 계정 로그인/권한 중앙 관리. MFA 강제 가능.\n• **STS**: 임시 권한 토큰 발급.\n• **Cognito**: 웹/모바일 앱 유저의 회원가입/로그인 (JWT 기반)." },
+                    { title: "추적 및 감사", content: "• **CloudTrail**: 누가(Who) 언제 어떤 API(이벤트)를 호출했는지 감시/기록. (해킹 추적용)\n• **AWS Config**: AWS 리소스의 설정(Configuration)이 어떻게 변했는지 기록/감시." },
+                    { title: "비용 최적화 (Billing)", content: "• **절약 플랜 (Savings Plan)**: 1~3년 사용량 약정 시 할인 (컴퓨팅용, EC2 인스턴스용).\n• **Budgets**: 예산을 설정하고 초과 시 알림(이메일 등).\n• **Cost Explorer**: 과거~현재 발생 비용 분석 (태그별 비용 등 그래프 확인).\n• **Trusted Advisor**: 보안, 성능, '비용 절감' 등 AWS 모범 사례에 맞게 계정을 자동 점검해주고 조언." }
+                ]
+            }
+        ];
+
+        let activeTopicIndex = 0;
+        let isMobileMenuOpen = false;
+
+        const sidebarList = document.getElementById('sidebar-list');
+        const topicTitle = document.getElementById('topic-title');
+        const topicContent = document.getElementById('topic-content');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+        const pageIndicator = document.getElementById('page-indicator');
+        const mainScroll = document.getElementById('main-scroll');
+        
+        // 모바일 메뉴 요소
+        const sidebar = document.getElementById('sidebar');
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const menuIcon = document.getElementById('menu-icon');
+
+        // 볼드체(**)를 <strong> 태그로 변환
+        function parseText(text) {
+            return text.replace(/\*\*(.*?)\*\*/g, '<strong class="text-gray-900">$1</strong>');
+        }
+
+        // 사이드바 렌더링
+        function renderSidebar() {
+            sidebarList.innerHTML = '';
+            STUDY_DATA.forEach((topic, index) => {
+                const li = document.createElement('li');
+                const btn = document.createElement('button');
+                
+                const isActive = index === activeTopicIndex;
+                btn.className = `w-full flex items-center gap-3 px-3 py-3 rounded-lg text-left transition-colors text-sm ${isActive ? 'bg-blue-600 text-white font-semibold shadow-md' : 'hover:bg-slate-800 hover:text-white'}`;
+                
+                const iconColor = isActive ? 'text-blue-200' : 'text-slate-500';
+                btn.innerHTML = `<i data-lucide="${topic.icon}" class="${iconColor} w-5 h-5"></i> ${topic.title}`;
+                
+                btn.onclick = () => {
+                    activeTopicIndex = index;
+                    closeMobileMenu();
+                    renderAll();
+                    mainScroll.scrollTop = 0;
+                };
+                
+                li.appendChild(btn);
+                sidebarList.appendChild(li);
+            });
+        }
+
+        // 본문 렌더링
+        function renderContent() {
+            const topic = STUDY_DATA[activeTopicIndex];
+            topicTitle.innerHTML = `${topic.title}`;
+            
+            let contentHtml = '';
+            topic.sections.forEach(section => {
+                contentHtml += `
+                <section class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                    <header class="bg-slate-50 border-b border-gray-200 px-6 py-4 flex items-center gap-2">
+                        <i data-lucide="check-circle-2" class="text-blue-500 w-5 h-5"></i>
+                        <h3 class="font-bold text-lg text-slate-800">${section.title}</h3>
+                    </header>
+                    <div class="p-6">
+                        ${section.summary ? `
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4 rounded-r-lg">
+                            <p class="font-bold text-blue-900 flex items-center gap-2">
+                                <i data-lucide="lightbulb" class="text-blue-600 w-4 h-4"></i> 한 줄 요약
+                            </p>
+                            <p class="text-blue-800 mt-1 text-sm">${section.summary}</p>
+                        </div>` : ''}
+                        
+                        <div class="text-gray-700 leading-relaxed whitespace-pre-wrap">${parseText(section.content)}</div>
+                        
+                        ${section.diagram ? `<div class="mt-6">${diagrams[section.diagram]}</div>` : ''}
+                        
+                        ${section.tip ? `
+                        <div class="mt-6 bg-yellow-50 border border-yellow-200 p-4 rounded-lg flex gap-3 items-start">
+                            <i data-lucide="alert-triangle" class="text-yellow-600 shrink-0 mt-0.5 w-5 h-5"></i>
+                            <div>
+                                <p class="font-bold text-yellow-800 text-sm mb-1">암기 Tip</p>
+                                <p class="text-yellow-900 text-sm">${section.tip}</p>
+                            </div>
+                        </div>` : ''}
+                    </div>
+                </section>`;
+            });
+            
+            topicContent.innerHTML = contentHtml;
+        }
+
+        // 네비게이션 버튼 렌더링
+        function renderNav() {
+            pageIndicator.innerText = `${activeTopicIndex + 1} / ${STUDY_DATA.length}`;
+            
+            if (activeTopicIndex === 0) {
+                btnPrev.disabled = true;
+                btnPrev.className = 'flex items-center gap-2 px-5 py-3 rounded-lg font-medium transition-all text-gray-400 bg-gray-100 cursor-not-allowed';
+            } else {
+                btnPrev.disabled = false;
+                btnPrev.className = 'flex items-center gap-2 px-5 py-3 rounded-lg font-medium transition-all text-slate-700 bg-white border border-gray-300 hover:bg-gray-50 shadow-sm hover:shadow';
+            }
+
+            if (activeTopicIndex === STUDY_DATA.length - 1) {
+                btnNext.disabled = true;
+                btnNext.className = 'flex items-center gap-2 px-5 py-3 rounded-lg font-medium transition-all text-gray-400 bg-gray-100 cursor-not-allowed';
+            } else {
+                btnNext.disabled = false;
+                btnNext.className = 'flex items-center gap-2 px-5 py-3 rounded-lg font-medium transition-all text-white bg-blue-600 hover:bg-blue-700 shadow-sm hover:shadow';
+            }
+        }
+
+        // 모바일 메뉴 제어
+        function toggleMobileMenu() {
+            isMobileMenuOpen = !isMobileMenuOpen;
+            if (isMobileMenuOpen) {
+                sidebar.classList.remove('-translate-x-full');
+                sidebar.classList.add('translate-x-0');
+                menuIcon.setAttribute('data-lucide', 'x');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                sidebar.classList.remove('translate-x-0');
+                menuIcon.setAttribute('data-lucide', 'menu');
+            }
+            lucide.createIcons();
+        }
+
+        function closeMobileMenu() {
+            if (isMobileMenuOpen) {
+                isMobileMenuOpen = false;
+                sidebar.classList.add('-translate-x-full');
+                sidebar.classList.remove('translate-x-0');
+                menuIcon.setAttribute('data-lucide', 'menu');
+                lucide.createIcons();
+            }
+        }
+
+        // 버튼 이벤트 리스너
+        btnPrev.addEventListener('click', () => {
+            if (activeTopicIndex > 0) {
+                activeTopicIndex--;
+                renderAll();
+                mainScroll.scrollTop = 0;
+            }
+        });
+
+        btnNext.addEventListener('click', () => {
+            if (activeTopicIndex < STUDY_DATA.length - 1) {
+                activeTopicIndex++;
+                renderAll();
+                mainScroll.scrollTop = 0;
+            }
+        });
+
+        mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+
+        // 전체 화면 업데이트 함수
+        function renderAll() {
+            renderSidebar();
+            renderContent();
+            renderNav();
+            // Lucide 아이콘 다시 렌더링 (동적 생성된 HTML을 위해 필요)
+            lucide.createIcons();
+        }
+
+        // 초기화 실행
+        renderAll();
+
+    </script>
+</body>
+</html>
