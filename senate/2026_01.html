@@ -131,9 +131,9 @@
         body.exporting-pdf .pdf-only-flex { display: flex !important; }
         body.exporting-pdf .pdf-only-block { display: block !important; }
 
-        /* 표지 전용 디자인 */
+        /* 표지 전용 디자인 - 1장에 딱 맞게 여백 조절 */
         #pdf-cover {
-            min-height: 260mm; /* A4 한 장 높이 */
+            height: 250mm; /* A4 용지 1장 높이에 안전하게 맞춤 */
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -141,8 +141,9 @@
             page-break-after: always;
             break-after: page;
             background-color: #ffffff;
-            margin: -20px; /* 여백 초기화 */
-            padding: 40px;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         .cover-inner {
@@ -153,6 +154,7 @@
             margin: 0 auto;
             background: #ffffff;
             box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            box-sizing: border-box;
         }
 
         .section-title {
@@ -310,70 +312,15 @@
             font-weight: 500;
         }
 
-        /* 회의 시나리오 전용 스타일 */
+        /* 회의 순서 전용 스타일 */
         .script-box {
             background: #ffffff;
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            padding: 25px;
+            padding: 40px 50px;
             margin-bottom: 25px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            page-break-inside: auto; /* 내용이 길면 자연스럽게 넘어가도록 설정 */
-        }
-        
-        .script-item {
-            page-break-inside: avoid;
-            break-inside: avoid;
-            margin-bottom: 25px;
-        }
-        
-        .script-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #e2e8f0;
-        }
-        
-        .agenda-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #334155;
-            margin: 25px 0 15px 0;
-            padding-left: 10px;
-            border-left: 4px solid var(--secondary);
-        }
-        
-        .dialogue {
-            display: flex;
-            margin-bottom: 15px;
-            gap: 15px;
-        }
-        .speaker {
-            font-weight: 700;
-            min-width: 90px;
-            padding: 6px 10px;
-            border-radius: 6px;
-            text-align: center;
-            height: fit-content;
-            font-size: 0.95rem;
-        }
-        .speaker.chair { background: #e0e7ff; color: #1e40af; }
-        .speaker.vice-chair { background: #e0f2fe; color: #0369a1; }
-        .speaker.explainer { background: #f1f5f9; color: #475569; }
-        .speaker.members { background: #ffedd5; color: #c2410c; }
-        
-        .dialogue-text {
-            flex: 1;
-            padding-top: 5px;
-            color: #334155;
-            line-height: 1.6;
-        }
-        .action-text {
-            color: #64748b;
-            font-style: italic;
-            font-size: 0.95rem;
+            page-break-inside: auto;
         }
 
         .pdf-btn {
@@ -405,8 +352,6 @@
             .data-row { flex-direction: column; gap: 5px; }
             .q-box { padding-left: 20px; padding-top: 50px; }
             .q-mark { top: 15px; }
-            .dialogue { flex-direction: column; gap: 5px; }
-            .speaker { max-width: 120px; }
         }
     </style>
 </head>
@@ -419,12 +364,20 @@
         <h1>
             대구보건대학교 평의원회 (2026학년도 1차)<br>회의 안건 요약
         </h1>
+        <div style="margin: 20px auto 25px; padding: 15px; background: #ffffff; border: 1px solid var(--border-color); border-radius: 8px; display: inline-block; text-align: left; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+            <p style="font-size: 1.05rem; color: var(--text-dark); line-height: 1.6; margin-bottom: 5px;">
+                <strong style="color: var(--primary); display: inline-block; width: 50px;">일시 :</strong> 2026. 5. 12(화) 16:30 ~
+            </p>
+            <p style="font-size: 1.05rem; color: var(--text-dark); line-height: 1.6;">
+                <strong style="color: var(--primary); display: inline-block; width: 50px;">장소 :</strong> 대구보건대학교 본관 9층 글로컬회의실 (소회의실)
+            </p>
+        </div>
         <p class="subtitle">총 안건 수 6건 (통합예산팀 3건, 재무팀 2건, 교무지원팀 1건)</p>
         <button id="downloadPdfBtn" class="pdf-btn">
             <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
             </svg>
-            PDF로 저장 (표지+안건+순서)
+            PDF로 저장 (전체 포함)
         </button>
     </header>
 
@@ -435,7 +388,17 @@
             <h1 style="font-size: 3.8rem; color: var(--text-dark); margin-bottom: 15px; line-height: 1.2;">대구보건대학교</h1>
             <h1 style="font-size: 3.8rem; color: var(--text-dark); margin-bottom: 40px; line-height: 1.2;">평의원회</h1>
             <div style="height: 5px; background: var(--primary); width: 100px; margin: 40px auto;"></div>
-            <p style="font-size: 2.8rem; font-weight: 700; color: var(--text-main); margin-bottom: 20px;">회의 안건 및 진행 순서</p>
+            <p style="font-size: 2.8rem; font-weight: 700; color: var(--text-main); margin-bottom: 60px;">회의 안건 및 진행 순서</p>
+            
+            <!-- 표지용 회의 일시/장소 -->
+            <div style="display: inline-block; text-align: left; margin-top: 10px;">
+                <p style="font-size: 1.4rem; color: var(--text-dark); margin-bottom: 12px;">
+                    <strong style="color: var(--primary); display: inline-block; width: 60px;">일시 :</strong> 2026. 5. 12(화) 16:30 ~
+                </p>
+                <p style="font-size: 1.4rem; color: var(--text-dark);">
+                    <strong style="color: var(--primary); display: inline-block; width: 60px;">장소 :</strong> 대구보건대학교 본관 9층 글로컬회의실 (소회의실)
+                </p>
+            </div>
         </div>
     </div>
 
@@ -615,8 +578,11 @@
         </div>
     </div>
 
-    <!-- 탭 2: 질의 리스트 (PDF 출력 시 제외됨) -->
+    <!-- 탭 2: 질의 리스트 -->
     <div id="tab-qa" class="tab-content">
+        <!-- PDF 출력 시에만 나타나는 페이지 나눔 -->
+        <div class="pdf-only-block" style="page-break-before: always; break-before: page; height: 1px;"></div>
+        
         <h2 class="section-title">
             <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
             대학평의원회 집행부 질의 리스트
@@ -733,21 +699,22 @@
         // PDF 출력용 클래스 부여 (표지 보이기, 웹헤더 숨기기, 페이지 나눔 적용 등)
         body.classList.add('exporting-pdf');
         
-        // 출력할 탭만 노출, 불필요한 탭(질의 리스트)은 숨김
+        // 모든 탭 내용을 노출하여 PDF에 담음
         tabSummary.style.display = "block";
         tabSummary.classList.add("no-animation");
         
+        tabQa.style.display = "block";
+        tabQa.classList.add("no-animation");
+        
         tabScenario.style.display = "block";
         tabScenario.classList.add("no-animation");
-
-        tabQa.style.display = "none";
 
         const element = document.getElementById('pdf-content');
         
         // PDF 변환 옵션
         const opt = {
             margin:       [10, 10, 10, 10], 
-            filename:     '대구보건대학교_평의원회_1차회의_안건및순서.pdf',
+            filename:     '대구보건대학교_평의원회_1차회의_전체자료.pdf',
             image:        { type: 'jpeg', quality: 0.98 },
             html2canvas:  { scale: 2, useCORS: true },
             jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
@@ -763,12 +730,13 @@
             
             // 애니메이션 방지 클래스 제거
             tabSummary.classList.remove("no-animation");
+            tabQa.classList.remove("no-animation");
             tabScenario.classList.remove("no-animation");
             
             // 탭 초기화
             tabSummary.style.display = "none";
-            tabScenario.style.display = "none";
             tabQa.style.display = "none";
+            tabScenario.style.display = "none";
             
             // 현재 활성화되어 있던 탭만 다시 표시
             const activeBtn = document.querySelector('.tab-btn.active');
