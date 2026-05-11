@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>대구보건대학교 평의원회 (2026학년도 1차) 회의 안건 요약</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --text-main: #334155;
+            --text-dark: #0f172a;
+            --text-light: #64748b;
+            --primary: #1e3a8a; 
+            --secondary: #ea580c; 
+            --tertiary: #059669; 
+            --danger: #ef4444;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            color: var(--text-dark);
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            line-height: 1.35;
+        }
+
+        .icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        /* Tabs Styles */
+        .tab-container {
+            display: flex;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-light);
+            cursor: pointer;
+            border-bottom: 4px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary);
+            background-color: #f1f5f9;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* PDF 전용 클래스들 */
+        .no-animation {
+            animation: none !important;
+            transition: none !important;
+            opacity: 1 !important;
+            transform: none !important;
+        }
+
+        .pdf-only-flex, .pdf-only-block { display: none; }
+        
+        body.exporting-pdf #web-header,
+        body.exporting-pdf #tab-nav {
+            display: none !important;
+        }
+        
+        body.exporting-pdf .pdf-only-flex { display: flex !important; }
+        body.exporting-pdf .pdf-only-block { display: block !important; }
+
+        /* 표지 전용 디자인 */
+        #pdf-cover {
+            min-height: 260mm; /* A4 한 장 높이 */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            page-break-after: always;
+            break-after: page;
+            background-color: #ffffff;
+            margin: -20px; /* 여백 초기화 */
+            padding: 40px;
+        }
+
+        .cover-inner {
+            border: 5px solid var(--primary);
+            padding: 60px 40px;
+            border-radius: 15px;
+            width: 90%;
+            margin: 0 auto;
+            background: #ffffff;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 10px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Department Group Styles */
+        .dept-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 30px 0 15px 0;
+            padding: 8px 15px;
+            background: #eef2ff;
+            border-left: 5px solid var(--primary);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            page-break-after: avoid;
+            break-after: avoid;
+        }
+
+        /* Card Styles */
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border-left: 6px solid var(--primary);
+            transition: transform 0.2s ease;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        .card.orange { border-left-color: var(--secondary); }
+        .card.green { border-left-color: var(--tertiary); }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .badge {
+            background: var(--bg-color);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-right: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .data-row:last-of-type {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .data-label {
+            font-weight: 500;
+            color: var(--text-light);
+        }
+
+        .data-value {
+            font-weight: 500;
+        }
+
+        .highlight {
+            font-weight: 700;
+            color: var(--danger);
+            font-size: 1.1rem;
+        }
+
+        .desc-box {
+            margin-top: 15px;
+            background: var(--bg-color);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        /* Questions Styles */
+        .q-group {
+            margin-bottom: 30px;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        .q-group-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+            display: inline-block;
+            background: #e0e7ff;
+            padding: 5px 15px;
+            border-radius: 6px;
+        }
+
+        .q-box {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            position: relative;
+            padding-left: 50px;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        .q-mark {
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        .q-text {
+            font-size: 1rem;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        /* 회의 시나리오 전용 스타일 */
+        .script-box {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            page-break-inside: auto; /* 내용이 길면 자연스럽게 넘어가도록 설정 */
+        }
+        
+        .script-item {
+            page-break-inside: avoid;
+            break-inside: avoid;
+            margin-bottom: 25px;
+        }
+        
+        .script-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .agenda-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #334155;
+            margin: 25px 0 15px 0;
+            padding-left: 10px;
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .dialogue {
+            display: flex;
+            margin-bottom: 15px;
+            gap: 15px;
+        }
+        .speaker {
+            font-weight: 700;
+            min-width: 90px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            text-align: center;
+            height: fit-content;
+            font-size: 0.95rem;
+        }
+        .speaker.chair { background: #e0e7ff; color: #1e40af; }
+        .speaker.vice-chair { background: #e0f2fe; color: #0369a1; }
+        .speaker.explainer { background: #f1f5f9; color: #475569; }
+        .speaker.members { background: #ffedd5; color: #c2410c; }
+        
+        .dialogue-text {
+            flex: 1;
+            padding-top: 5px;
+            color: #334155;
+            line-height: 1.6;
+        }
+        .action-text {
+            color: #64748b;
+            font-style: italic;
+            font-size: 0.95rem;
+        }
+
+        .pdf-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 25px;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .pdf-btn:hover {
+            background-color: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(37, 99, 235, 0.3);
+        }
+
+        @media (max-width: 600px) {
+            .tab-btn { padding: 10px 15px; font-size: 1rem; }
+            .data-row { flex-direction: column; gap: 5px; }
+            .q-box { padding-left: 20px; padding-top: 50px; }
+            .q-mark { top: 15px; }
+            .dialogue { flex-direction: column; gap: 5px; }
+            .speaker { max-width: 120px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="pdf-content">
+    
+    <!-- 웹 헤더 (PDF 변환 시 숨김 처리됨) -->
+    <header id="web-header">
+        <h1>
+            대구보건대학교 평의원회 (2026학년도 1차)<br>회의 안건 요약
+        </h1>
+        <p class="subtitle">총 안건 수 6건 (통합예산팀 3건, 재무팀 2건, 교무지원팀 1건)</p>
+        <button id="downloadPdfBtn" class="pdf-btn">
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+            </svg>
+            PDF로 저장 (표지+안건+순서)
+        </button>
+    </header>
+
+    <!-- PDF 전용 표지 (웹에서는 숨김, PDF 변환 시 나타남) -->
+    <div id="pdf-cover" class="pdf-only-flex">
+        <div class="cover-inner">
+            <p style="font-size: 1.8rem; color: var(--primary); font-weight: 700; margin-bottom: 30px;">2026학년도 1차</p>
+            <h1 style="font-size: 3.8rem; color: var(--text-dark); margin-bottom: 15px; line-height: 1.2;">대구보건대학교</h1>
+            <h1 style="font-size: 3.8rem; color: var(--text-dark); margin-bottom: 40px; line-height: 1.2;">평의원회</h1>
+            <div style="height: 5px; background: var(--primary); width: 100px; margin: 40px auto;"></div>
+            <p style="font-size: 2.8rem; font-weight: 700; color: var(--text-main); margin-bottom: 20px;">회의 안건 및 진행 순서</p>
+        </div>
+    </div>
+
+    <!-- 탭 내비게이션 (PDF 변환 시 숨김 처리됨) -->
+    <div class="tab-container" id="tab-nav">
+        <button class="tab-btn active" onclick="openTab(event, 'tab-summary')">
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            안건
+        </button>
+        <button class="tab-btn" onclick="openTab(event, 'tab-qa')">
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+            평의원회 질의 리스트
+        </button>
+        <button class="tab-btn" onclick="openTab(event, 'tab-scenario')">
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+            회의 진행 순서
+        </button>
+    </div>
+
+    <!-- 탭 1: 안건 요약 -->
+    <div id="tab-summary" class="tab-content active">
+        
+        <!-- 전차 회의 결과 보고 -->
+        <div class="dept-title" style="background: #f1f5f9; border-left-color: #64748b; color: #475569;">
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            전차 회의 결과 보고
+        </div>
+
+        <div class="card" style="border-left-color: #94a3b8;">
+            <div class="card-header">
+                <span class="badge" style="border-color:#cbd5e1; color:#475569; background:#f8fafc;">보고사항</span>
+                <div class="card-title">전차 회의 (2025학년도 제5차, 2월 26일) 의결 사항 요약</div>
+            </div>
+            <div class="desc-box" style="background: #f8fafc;">
+                <strong>[상정 안건]</strong><br>
+                1안. 대구보건대학교 학칙 개정(안) 건<br>
+                <ul style="margin-top: 5px; margin-bottom: 10px; padding-left: 20px; font-size: 0.9em; color: #475569; line-height: 1.5;">
+                    <li>정원 외 특별전형(파크골프, 미식베이커리) 전공 신설 및 학위명 추가</li>
+                    <li>복학생 필수 교과 적용 삭제 및 연계전공 추가</li>
+                    <li>시간제·학점은행제 학위수여 기준 안내 및 간호학과 운영 제외 표기</li>
+                    <li>5주기 간호교육 인증평가 기준 반영 (전공/기초 학점 변경)</li>
+                    <li>학사학위 전공심화과정 입학정원 조정 (치기공, 치위생, 안경광학, 유아교육)</li>
+                    <li>부속기관 명칭 변경 (학생인권상담소 → 인권센터)</li>
+                </ul>
+                2안. 기타안건<br><br>
+                <strong style="color:var(--primary);">[의결 결과]</strong> 참석 의원 전원(8명) 찬성으로 <strong>원안 가결</strong>
+            </div>
+        </div>
+
+        <!-- 전차회의록을 1장에 따로 표시하기 위한 강제 페이지 나눔 (PDF 출력 시에만 작동) -->
+        <div class="pdf-only-block" style="page-break-after: always; break-after: page; height: 1px;"></div>
+        
+        <!-- 부서별 회의 안건 큰 제목 (PDF 출력 시에만 나타남) -->
+        <h2 class="section-title pdf-only-flex" style="margin-top: 20px; border-bottom: 3px solid var(--primary); color: var(--primary);">
+            <svg class="icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            부서별 회의 안건
+        </h2>
+
+        <!-- 통합예산팀 소관 (3건) -->
+        <div class="dept-title">
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            팀명 : 통합예산팀
+        </div>
+
+        <!-- 안건 1 -->
+        <div class="card">
+            <div class="card-header">
+                <span class="badge">안건 1</span>
+                <div class="card-title">2025회계연도 사학연금 법인부담금 학교부담 승인(안)</div>
+            </div>
+            <div class="data-row">
+                <span class="data-label">사학연금 기준 총액</span>
+                <span class="data-value">1,221,901 천원</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">학교 부담액</span>
+                <span class="data-value highlight">1,220,901 천원</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">학교법인 부담액</span>
+                <span class="data-value">1,000 천원</span>
+            </div>
+            <div class="desc-box">
+                <strong>[핵심 내용]</strong> 법인의 재정 여건상 사학연금 전액 부담이 불가하여, 부족액(약 12.2억 원)을 학교가 부담하도록 교육부의 승인을 득함. <br>
+                <strong style="color:var(--primary); display: inline-block; margin-top: 5px;">[추가 사항]</strong> 법인 법정부담금 명목으로 전입금 2,500만 원 지급 완료 (2026.02.27. 기준).<br>
+                <span style="color:var(--danger); font-size: 0.9em; display: inline-block; margin-top: 5px;">* 유의사항: 교육부 지침에 따라 해당 금액은 '비등록금회계'에서 우선 편성 및 지출되어야 함.</span>
+            </div>
+        </div>
+
+        <!-- 안건 2 -->
+        <div class="card orange">
+            <div class="card-header">
+                <span class="badge" style="border-color:var(--secondary); color:var(--secondary);">안건 2</span>
+                <div class="card-title">2025회계연도 교비회계 예산 전용(안)</div>
+            </div>
+            <div class="data-row">
+                <span class="data-label">전용 금액</span>
+                <span class="data-value highlight">48,750,000 원</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">전용 내역</span>
+                <span class="data-value">목간 전용 (각종세금공과금 부족액 충당)</span>
+            </div>
+            <div class="desc-box">
+                <strong>[전용 사유]</strong> 2025회계연도 협의회비 납부 요청에 따른 조정. 사학기관 재무·회계 특례규칙 제13조에 의거하여 동일 관내에서 예산을 상호 전용함.
+            </div>
+        </div>
+
+        <!-- 안건 3 -->
+        <div class="card green">
+            <div class="card-header">
+                <span class="badge" style="border-color:var(--tertiary); color:var(--tertiary);">안건 3</span>
+                <div class="card-title">2026회계연도 제1차 교비회계 추가경정자금예산(안)</div>
+            </div>
+            <div class="data-row">
+                <span class="data-label">수입/지출 추경예산 총액</span>
+                <span class="data-value highlight">71,967,325,000 원</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">본예산 대비 증감액</span>
+                <span class="data-value" style="color:var(--tertiary); font-weight: bold;">+ 2,477,230,000 원 (증액)</span>
+            </div>
+            <div class="desc-box">
+                <strong>[편성 방침]</strong> 글로컬대학30·RISE 사업 연계, 현장·수요 맞춤형 교육과정 운영, 노후 교육시설 개선 및 학생 복지 환경 구축.<br><br>
+                <strong>[주요 특징]</strong> 본예산 대비 약 24.7억 원이 증액 편성되었으며, 수입 부문에서 '미사용 전기이월자금'의 증가가 주된 증액 요인임. (고정자산매입 등 투자 지출로 연결)
+            </div>
+        </div>
+
+        <!-- 재무팀 소관 (2건) -->
+        <div class="dept-title">
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            팀명 : 재무팀
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <span class="badge">안건 4</span>
+                <div class="card-title">2025 회계연도 학교비 세입·세출 결산 자문의 건</div>
+            </div>
+            <div class="desc-box">
+                <strong>[핵심 내용]</strong> 2025 회계연도 학교비의 전체적인 세입 및 세출 내역에 대한 결산 보고 및 자문.
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <span class="badge">안건 5</span>
+                <div class="card-title">2025 회계연도 기부금 수입 및 적립의 건</div>
+            </div>
+            <div class="desc-box">
+                <strong>[핵심 내용]</strong> 2025 회계연도 내 모금된 기부금의 수입 내역 및 기금 적립 현황 보고.
+            </div>
+        </div>
+
+        <!-- 교무지원팀 소관 (1건) -->
+        <div class="dept-title">
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            팀명 : 교무지원팀
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <span class="badge">안건 6</span>
+                <div class="card-title">대구보건대학교 학칙 개정(안)</div>
+            </div>
+            <div class="desc-box">
+                <strong>[핵심 내용]</strong> 2027학년도 학과 정원 조정 및 개편 사항을 반영하기 위한 학칙 개정 (발의일: 2026. 4. 29.)<br>
+                <strong style="color:var(--danger); display: inline-block; margin-top: 5px;">* 주요 개정 사유:</strong>
+                <ul style="margin-top: 5px; margin-bottom: 0; padding-left: 20px; font-size: 0.95em; color: #475569; line-height: 1.5;">
+                    <li>물리치료학과 4년제 지정 결과 반영</li>
+                    <li>스포츠재활학과 → 스포츠의학과 명칭 변경 및 3년제 전환</li>
+                    <li>글로벌호텔조리학과 폐과</li>
+                    <li>정원외 전담학과 파크골프전문지도학과 신설</li>
+                    <li>2027학년도 전문기술석사과정 학과정원조정 (간호학과 재활간호기술전공 신설)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 탭 2: 질의 리스트 (PDF 출력 시 제외됨) -->
+    <div id="tab-qa" class="tab-content">
+        <h2 class="section-title">
+            <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            대학평의원회 집행부 질의 리스트
+        </h2>
+
+        <!-- 통합예산팀 소관 (1건) -->
+        <div class="dept-title">
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            팀명 : 통합예산팀
+        </div>
+
+        <div class="q-group">
+            <div class="q-group-title">안건 3. 제1차 추경예산 관련</div>
+            <div class="q-box">
+                <div class="q-mark">Q1</div>
+                <div class="q-text"><strong style="color: var(--primary);">[붙임3 자료 참조]</strong> 고정자산매입지출이 본예산 대비 23억 9천 4백만 원 정도 증가되었는데, 이렇게 크게 증가된 이유에 대해 자세한 설명을 부탁드립니다.</div>
+            </div>
+        </div>
+
+        <!-- 재무팀 소관 (1건) -->
+        <div class="dept-title">
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            팀명 : 재무팀
+        </div>
+
+        <div class="q-group">
+            <div class="q-group-title">안건 4. 결산(안) 관련</div>
+            <div class="q-box">
+                <div class="q-mark">Q2</div>
+                <div class="q-text"><strong style="color: var(--primary);">[재무팀 회의자료 참조]</strong> 교비회계 자금계산서 상 국고보조금 수입이 230억 5천만 원이 입금되었는데 상세내역에 대해 설명해 주시기 바랍니다.</div>
+            </div>
+        </div>
+        
+        <!-- 교무지원팀 소관 (1건) -->
+        <div class="dept-title">
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            팀명 : 교무지원팀
+        </div>
+
+        <div class="q-group">
+            <div class="q-group-title">안건 6. 학칙 개정(안) 관련</div>
+            <div class="q-box">
+                <div class="q-mark">Q3</div>
+                <div class="q-text"><strong style="color: var(--primary);">[학칙 개정(안) 발의자료 참조]</strong> 물리치료학과가 4년제로 수업연한이 전환되면 기존에 전공심화과정 운영은 어떻게 되는지 궁금합니다.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 탭 3: 회의 진행 순서 -->
+    <div id="tab-scenario" class="tab-content">
+        <!-- PDF 출력 시에만 나타나는 큰 섹션 제목 -->
+        <div class="pdf-only-block" style="page-break-before: always; break-before: page; height: 1px;"></div>
+        <h2 class="section-title pdf-only-flex" style="margin-top: 20px; border-bottom: 3px solid var(--primary); color: var(--primary);">
+            <svg class="icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+            회의 진행 순서
+        </h2>
+
+        <div class="script-box" style="padding: 40px 50px;">
+            <ol style="list-style-type: decimal; font-size: 1.3rem; font-weight: 700; color: var(--text-dark); padding-left: 20px; line-height: 2.5;">
+                <li style="margin-bottom: 10px;">성원보고 <span style="font-weight: 500; color: var(--text-light); font-size: 1.1rem;">(부의장)</span></li>
+                <li style="margin-bottom: 10px;">개회선언 <span style="font-weight: 500; color: var(--text-light); font-size: 1.1rem;">(의장)</span></li>
+                <li style="margin-bottom: 10px;">인사말씀 <span style="font-weight: 500; color: var(--text-light); font-size: 1.1rem;">(의장)</span></li>
+                <li style="margin-bottom: 10px;">전차회의록 보고 및 안건 안내 <span style="font-weight: 500; color: var(--text-light); font-size: 1.1rem;">(부의장)</span></li>
+                <li style="margin-bottom: 10px;">심의 자문 진행 <span style="font-weight: 500; color: var(--text-light); font-size: 1.1rem;">(의장)</span>
+                    <div style="font-size: 1.15rem; font-weight: 500; color: var(--text-main); padding-left: 15px; margin-top: 5px; line-height: 2;">
+                        (안건에 대한 질의 응답) <span style="color: var(--text-light); font-size: 1.05rem;">(의원)</span><br>
+                        (동의 및 제청) <span style="color: var(--text-light); font-size: 1.05rem;">(의원)</span>
+                    </div>
+                </li>
+                <li>폐회선언 <span style="font-weight: 500; color: var(--text-light); font-size: 1.1rem;">(의장)</span></li>
+            </ol>
+        </div>
+
+    </div>
+</div>
+
+<!-- 스크립트 영역 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+    // 탭 전환 함수
+    function openTab(evt, tabName) {
+        let i, tabcontent, tablinks;
+        
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+            tabcontent[i].classList.remove("active");
+        }
+        
+        tablinks = document.getElementsByClassName("tab-btn");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        
+        document.getElementById(tabName).style.display = "block";
+        document.getElementById(tabName).classList.add("active");
+        evt.currentTarget.className += " active";
+    }
+
+    // PDF 다운로드 이벤트 (조건에 맞게 출력물 제어)
+    document.getElementById('downloadPdfBtn').addEventListener('click', function() {
+        const btn = this;
+        const body = document.body;
+        const tabNav = document.getElementById('tab-nav');
+        
+        const tabSummary = document.getElementById('tab-summary');
+        const tabQa = document.getElementById('tab-qa');
+        const tabScenario = document.getElementById('tab-scenario');
+        
+        // 버튼 및 탭 내비게이션 숨기기
+        btn.style.display = 'none';
+        tabNav.style.display = 'none';
+        
+        // PDF 출력용 클래스 부여 (표지 보이기, 웹헤더 숨기기, 페이지 나눔 적용 등)
+        body.classList.add('exporting-pdf');
+        
+        // 출력할 탭만 노출, 불필요한 탭(질의 리스트)은 숨김
+        tabSummary.style.display = "block";
+        tabSummary.classList.add("no-animation");
+        
+        tabScenario.style.display = "block";
+        tabScenario.classList.add("no-animation");
+
+        tabQa.style.display = "none";
+
+        const element = document.getElementById('pdf-content');
+        
+        // PDF 변환 옵션
+        const opt = {
+            margin:       [10, 10, 10, 10], 
+            filename:     '대구보건대학교_평의원회_1차회의_안건및순서.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+            pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+        };
+
+        // PDF 생성 완료 후 화면 원상복구
+        html2pdf().set(opt).from(element).save().then(() => {
+            btn.style.display = 'inline-flex';
+            tabNav.style.display = 'flex';
+            
+            body.classList.remove('exporting-pdf');
+            
+            // 애니메이션 방지 클래스 제거
+            tabSummary.classList.remove("no-animation");
+            tabScenario.classList.remove("no-animation");
+            
+            // 탭 초기화
+            tabSummary.style.display = "none";
+            tabScenario.style.display = "none";
+            tabQa.style.display = "none";
+            
+            // 현재 활성화되어 있던 탭만 다시 표시
+            const activeBtn = document.querySelector('.tab-btn.active');
+            activeBtn.click();
+        });
+    });
+</script>
+
+</body>
+</html>
