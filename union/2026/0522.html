@@ -290,24 +290,26 @@
                     <i class="far fa-file-pdf text-red-500 text-2xl mr-3"></i>
                     <h3 class="text-2xl font-bold text-gray-800">일정표 원본 (PDF)</h3>
                 </div>
-                <a href="http://dhcpm.github.io/union/pdf/plan-0522.pdf" download="대구보건대학교_해외연수_일정.pdf" 
+                <!-- target="_blank"를 추가하여 새 창에서 열리도록 수정 -->
+                <a href="http://dhcpm.github.io/union/pdf/plan-0522.pdf" target="_blank" rel="noopener noreferrer" 
                    class="inline-flex items-center bg-fuji-blue hover:bg-blue-800 text-white font-bold py-2 px-5 rounded-lg transition duration-200 shadow-md">
-                    <i class="fas fa-download mr-2"></i> PDF 다운로드
+                    <i class="fas fa-external-link-alt mr-2"></i> 새 창에서 열기 / 다운로드
                 </a>
             </div>
             
             <div class="w-full rounded-xl overflow-hidden border border-gray-300 bg-gray-100 h-[600px] sm:h-[800px] flex items-center justify-center relative">
+                <!-- PC 및 모바일(스마트폰) 환경에서 모두 바로 볼 수 있도록 구글 문서 뷰어 적용 -->
                 <iframe 
-                    src="http://dhcpm.github.io/union/pdf/plan-0522.pdf" 
+                    src="https://docs.google.com/viewer?url=http://dhcpm.github.io/union/pdf/plan-0522.pdf&embedded=true" 
                     class="w-full h-full absolute inset-0 z-10" 
                     title="해외연수 일정안내 PDF 뷰어"
-                    onerror="this.style.display='none'; document.getElementById('pdf-error').style.display='block';">
+                    frameborder="0">
                 </iframe>
                 
-                <!-- Fallback content if PDF doesn't load inline -->
-                <div id="pdf-error" class="text-center p-6 z-0">
+                <!-- Fallback content (뷰어 로딩 전이나 오류 시 표시) -->
+                <div id="pdf-error" class="text-center p-6 z-0 absolute">
                     <i class="far fa-file-pdf text-5xl text-gray-400 mb-4"></i>
-                    <p class="text-gray-600 mb-4">현재 브라우저에서 PDF를 바로 표시할 수 없거나 모바일 환경입니다.</p>
+                    <p class="text-gray-600 mb-4">문서를 불러오는 중이거나 바로 표시할 수 없는 환경입니다.</p>
                     <a href="http://dhcpm.github.io/union/pdf/plan-0522.pdf" target="_blank" rel="noopener noreferrer" class="text-fuji-blue underline font-semibold hover:text-blue-800">
                         여기를 클릭하여 PDF 새 창으로 열기
                     </a>
