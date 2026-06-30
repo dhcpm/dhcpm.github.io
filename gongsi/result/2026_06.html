@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026년 6월 공시항목 공시 현황(교내)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js & DataLabels Plugin -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+    <!-- Google Fonts: Pretendard -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Pretendard', 'sans-serif'],
+                    },
+                    colors: {
+                        summer: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            teal: '#14b8a6',
+                            text: '#0f172a',
+                            muted: '#64748b'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: #f8fafc;
+        }
+        .summer-bg {
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(186, 230, 253, 0.4) 0%, transparent 40%),
+                radial-gradient(circle at 85% 30%, rgba(56, 189, 248, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 50% 100%, rgba(20, 184, 166, 0.1) 0%, transparent 50%);
+            background-color: #f0f9ff;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .sr-only { position: absolute;width: 1px;height: 1px;padding: 0;margin: -1px;overflow: hidden;clip: rect(0, 0, 0, 0);white-space: nowrap;border-width: 0; }
+        .table-header { background-color: #e0f2fe; color: #0369a1; font-weight: 600; text-align: center; white-space: nowrap; }
+        .table-cell { padding: 0.75rem; border-bottom: 1px solid #e2e8f0; text-align: center; color: #334155; }
+    </style>
+</head>
+<body class="text-summer-text antialiased selection:bg-summer-300 selection:text-white relative">
+
+    <!-- 상단 네비게이션 -->
+    <header class="fixed top-0 w-full bg-white/95 backdrop-blur-md shadow-sm z-50 border-b border-summer-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <nav class="flex items-center h-16 overflow-x-auto no-scrollbar" aria-label="메인 네비게이션">
+                <ul class="flex space-x-6 text-sm sm:text-base font-semibold whitespace-nowrap px-2">
+                    <li><a href="#cover" class="hover:text-summer-600 transition-colors py-2 text-summer-600">홈/전체현황</a></li>
+                    <li><a href="#sec1" class="hover:text-summer-600 transition-colors py-2 text-gray-600">1.입학전형</a></li>
+                    <li><a href="#sec2" class="hover:text-summer-600 transition-colors py-2 text-gray-600">2.기회균형</a></li>
+                    <li><a href="#sec3" class="hover:text-summer-600 transition-colors py-2 text-gray-600">3.출신고교</a></li>
+                    <li><a href="#sec4" class="hover:text-summer-600 transition-colors py-2 text-gray-600">4.원격강좌</a></li>
+                    <li><a href="#sec5" class="hover:text-summer-600 transition-colors py-2 text-gray-600">5.산업체교원</a></li>
+                    <li><a href="#sec6" class="hover:text-summer-600 transition-colors py-2 text-gray-600">6.연구장비</a></li>
+                    <li><a href="#sec7" class="hover:text-summer-600 transition-colors py-2 text-gray-600">7.현장실습</a></li>
+                    <li><a href="#sec8" class="hover:text-summer-600 transition-colors py-2 text-gray-600">8.캡스톤</a></li>
+                    <li><a href="#sec9" class="hover:text-summer-600 transition-colors py-2 text-gray-600">9.학교기업</a></li>
+                    <li><a href="#sec10" class="hover:text-summer-600 transition-colors py-2 text-gray-600">10.주문식교육</a></li>
+                    <li><a href="#sec11" class="hover:text-summer-600 transition-colors py-2 text-gray-600">11.특허실적</a></li>
+                    <li><a href="#sec12" class="hover:text-summer-600 transition-colors py-2 text-gray-600">12.창업현황</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="pt-16">
+        <!-- 0. 표지 -->
+        <section id="cover" class="summer-bg min-h-[40vh] flex flex-col justify-center items-center text-center px-4 py-12 border-b border-summer-200">
+            <div class="z-10 max-w-4xl w-full">
+                <p class="text-summer-700 font-bold mb-3 tracking-widest text-sm uppercase">June 2026 Report</p>
+                <h1 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight text-gray-900">
+                    2026년 6월 공시항목 공시 현황 <span class="text-summer-500">(교내)</span>
+                </h1>
+                <p class="text-gray-600 text-lg font-medium">작성기준일 : 2025. 6. 9.(화) 입력 마감일 기준</p>
+            </div>
+        </section>
+
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 space-y-12">
+
+            <!-- 전체 현황 섹션 -->
+            <section class="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2 border-b pb-3 border-summer-100">
+                    <span class="bg-summer-600 text-white px-3 py-1 rounded text-lg">종합</span> 2026년 6월 대학정보공시 전체 현황
+                </h2>
+                
+                <div class="overflow-x-auto mb-8 rounded-xl border border-gray-200">
+                    <table class="w-full text-sm text-left">
+                        <thead class="table-header">
+                            <tr>
+                                <th class="p-3 border-b border-r border-summer-200">공시 연도</th>
+                                <th class="p-3 border-b border-r border-summer-200 whitespace-normal w-20">정원내외<br>통합등록률</th>
+                                <th class="p-3 border-b border-r border-summer-200 whitespace-normal w-20">기회균형<br>선발비율</th>
+                                <th class="p-3 border-b border-r border-summer-200 whitespace-normal w-20">일반고<br>비율</th>
+                                <th class="p-3 border-b border-r border-summer-200 whitespace-normal w-20">원격 강좌수<br>(십단위)</th>
+                                <th class="p-3 border-b border-r border-summer-200 whitespace-normal w-20">산업체 경력<br>전임교원</th>
+                                <th class="p-3 border-b border-r border-summer-200 whitespace-normal w-24">설비자산<br>사용료 수익<br>(백만원)</th>
+                                <th class="p-3 border-b border-r border-summer-200 whitespace-normal w-20">현장실습 이수<br>학생수</th>
+                                <th class="p-3 border-b border-r border-summer-200 whitespace-normal w-24">캡스톤 디자인<br>이수학생수<br>(백명)</th>
+                                <th class="p-3 border-b border-r border-summer-200 whitespace-normal w-24">DHC 웰니스<br>매출액<br>(백만원)</th>
+                                <th class="p-3 border-b border-r border-summer-200 whitespace-normal w-24">주문식 교육참여<br>학생취업률</th>
+                                <th class="p-3 border-b border-r border-summer-200 whitespace-normal w-20">기술 이전<br>수입료<br>(백만원)</th>
+                                <th class="p-3 border-b border-r border-summer-200 whitespace-normal w-16">특허<br>출원</th>
+                                <th class="p-3 border-b border-r border-summer-200 whitespace-normal w-16">교원<br>창업</th>
+                                <th class="p-3 border-b border-r border-summer-200 whitespace-normal w-16">학생<br>창업</th>
+                                <th class="p-3 border-b border-summer-200 whitespace-normal w-16">창업<br>강좌</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="table-cell font-bold bg-gray-50 border-r">2025</td>
+                                <td class="table-cell border-r">94.4</td><td class="table-cell border-r">3.2</td><td class="table-cell border-r">58.96</td><td class="table-cell border-r">16.4</td><td class="table-cell border-r">39</td>
+                                <td class="table-cell border-r">57</td><td class="table-cell border-r">25</td><td class="table-cell border-r">14.57</td><td class="table-cell border-r">25</td><td class="table-cell border-r">51.7</td>
+                                <td class="table-cell border-r">2.7</td><td class="table-cell border-r">29</td><td class="table-cell border-r">2</td><td class="table-cell border-r">4</td><td class="table-cell">30</td>
+                            </tr>
+                            <tr>
+                                <td class="table-cell font-bold bg-gray-50 border-r">2026</td>
+                                <td class="table-cell border-r">97.2</td><td class="table-cell border-r">3.4</td><td class="table-cell border-r">59.23</td><td class="table-cell border-r">23.9</td><td class="table-cell border-r">36</td>
+                                <td class="table-cell border-r">27</td><td class="table-cell border-r">23</td><td class="table-cell border-r">13.5</td><td class="table-cell border-r">0.90</td><td class="table-cell border-r">64.2</td>
+                                <td class="table-cell border-r">1</td><td class="table-cell border-r">12</td><td class="table-cell border-r">0</td><td class="table-cell border-r">1</td><td class="table-cell">24</td>
+                            </tr>
+                            <tr class="bg-summer-50 font-bold">
+                                <td class="table-cell border-r text-summer-700">증감</td>
+                                <td class="table-cell border-r text-blue-600">2.8</td><td class="table-cell border-r text-blue-600">0.2</td><td class="table-cell border-r text-blue-600">0.3</td><td class="table-cell border-r text-blue-600">7.5</td><td class="table-cell border-r text-red-500">-3.0</td>
+                                <td class="table-cell border-r text-red-500">-30.0</td><td class="table-cell border-r text-red-500">-2.0</td><td class="table-cell border-r text-red-500">-1.1</td><td class="table-cell border-r text-red-500">-24.1</td><td class="table-cell border-r text-blue-600">12.5</td>
+                                <td class="table-cell border-r text-red-500">-1.7</td><td class="table-cell border-r text-red-500">-17.0</td><td class="table-cell border-r text-red-500">-2.0</td><td class="table-cell border-r text-red-500">-3.0</td><td class="table-cell text-red-500">-6.0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="h-64 w-full"><canvas id="chartOverall"></canvas></div>
+
+                <div class="mt-6 bg-red-50 p-5 rounded-xl border border-red-100 text-gray-800 text-sm space-y-2">
+                    <p>■ <strong class="text-red-700">설비자산 사용료 :</strong> 외부 이용자 감소 및 공동활용 수요 감소</p>
+                    <p>■ <strong class="text-red-700">DHC웰니스 매출액 :</strong> 판매부진으로 인한 매출액 감소</p>
+                    <p>■ <strong class="text-red-700">특허 출원 :</strong> 재정지원사업 전환으로 인한 지원금 감소</p>
+                </div>
+            </section>
+
+            <!-- 1. 입학전형 -->
+            <section id="sec1" class="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
+                <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2 border-b pb-3"><span class="bg-summer-200 text-summer-800 px-2 py-1 rounded text-sm">1</span> 입학전형 유형별 선발 결과</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-1 overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="table-header">
+                                <tr><th class="p-2 border-b border-r">연도</th><th class="p-2 border-b border-r">일반전형</th><th class="p-2 border-b border-r">특별전형</th><th class="p-2 border-b">정원외전형</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="table-cell border-r font-bold">2021</td><td class="table-cell border-r">376</td><td class="table-cell border-r">1,576</td><td class="table-cell">254</td></tr>
+                                <tr><td class="table-cell border-r font-bold">2022</td><td class="table-cell border-r">283</td><td class="table-cell border-r">1,733</td><td class="table-cell">276</td></tr>
+                                <tr><td class="table-cell border-r font-bold">2023</td><td class="table-cell border-r">292</td><td class="table-cell border-r">1,754</td><td class="table-cell">235</td></tr>
+                                <tr><td class="table-cell border-r font-bold">2024</td><td class="table-cell border-r">293</td><td class="table-cell border-r">1,673</td><td class="table-cell">268</td></tr>
+                                <tr><td class="table-cell border-r font-bold">2025</td><td class="table-cell border-r">439</td><td class="table-cell border-r">1,578</td><td class="table-cell">371</td></tr>
+                                <tr class="bg-summer-50"><td class="table-cell border-r font-bold text-summer-700">2026</td><td class="table-cell border-r font-bold">223</td><td class="table-cell border-r font-bold">1,832</td><td class="table-cell font-bold">486</td></tr>
+                            </tbody>
+                        </table>
+                        <div class="mt-4 bg-blue-50 p-3 rounded text-sm font-semibold text-blue-800 text-center">정원내 등록률 100% 달성<br>(전문기술석사과정 제외)</div>
+                    </div>
+                    <div class="lg:col-span-2 h-72"><canvas id="chart1"></canvas></div>
+                </div>
+            </section>
+
+            <!-- 2. 기회균형 -->
+            <section id="sec2" class="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
+                <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2 border-b pb-3"><span class="bg-summer-200 text-summer-800 px-2 py-1 rounded text-sm">2</span> 기회 균형 선발 결과</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+                    <div class="lg:col-span-1 overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="table-header"><tr><th class="p-2 border-b border-r">기준연도</th><th class="p-2 border-b">기회균형 선발 비율 (%)</th></tr></thead>
+                            <tbody>
+                                <tr><td class="table-cell border-r font-bold">2022</td><td class="table-cell">4.0</td></tr>
+                                <tr><td class="table-cell border-r font-bold">2023</td><td class="table-cell">3.5</td></tr>
+                                <tr><td class="table-cell border-r font-bold">2024</td><td class="table-cell">3.8</td></tr>
+                                <tr><td class="table-cell border-r font-bold">2025</td><td class="table-cell">3.2</td></tr>
+                                <tr class="bg-summer-50"><td class="table-cell border-r font-bold text-summer-700">2026</td><td class="table-cell font-bold">3.4</td></tr>
+                            </tbody>
+                        </table>
+                        <p class="mt-4 text-sm text-gray-600 bg-gray-50 p-3 rounded border">주요 기회균형 선발 전형은 저소득층전형, 농어촌 전형이며, 2026학년도에는 선발비율이 소폭 상승함.</p>
+                    </div>
+                    <div class="lg:col-span-2 h-64"><canvas id="chart2"></canvas></div>
+                </div>
+            </section>
+
+            <!-- 3. 출신고교 -->
+            <section id="sec3" class="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
+                <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2 border-b pb-3"><span class="bg-summer-200 text-summer-800 px-2 py-1 rounded text-sm">3</span> 신입생의 출신고등학교 유형별 현황 (단위: 명)</h2>
+                
+                <div class="overflow-x-auto mb-6">
+                    <table class="w-full text-sm">
+                        <thead class="table-header">
+                            <tr>
+                                <th class="p-2 border-b border-r" rowspan="2">기준연도</th>
+                                <th class="p-2 border-b border-r border-summer-300" colspan="3">고교 유형별</th>
+                                <th class="p-2 border-b" colspan="3">시도 구분별</th>
+                            </tr>
+                            <tr>
+                                <th class="p-2 border-b border-r bg-summer-50">일반고</th><th class="p-2 border-b border-r bg-summer-50">특성화고</th><th class="p-2 border-b border-r border-summer-300 bg-summer-50">검정고시</th>
+                                <th class="p-2 border-b border-r bg-summer-50">광역시</th><th class="p-2 border-b border-r bg-summer-50">중소도시</th><th class="p-2 border-b bg-summer-50">읍면</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="table-cell border-r font-bold">2022</td><td class="table-cell border-r">1,323</td><td class="table-cell border-r">454</td><td class="table-cell border-r border-summer-300">78</td><td class="table-cell border-r">1,116</td><td class="table-cell border-r">566</td><td class="table-cell">362</td></tr>
+                            <tr><td class="table-cell border-r font-bold">2023</td><td class="table-cell border-r">1,255</td><td class="table-cell border-r">536</td><td class="table-cell border-r border-summer-300">72</td><td class="table-cell border-r">1,184</td><td class="table-cell border-r">521</td><td class="table-cell">343</td></tr>
+                            <tr><td class="table-cell border-r font-bold">2024</td><td class="table-cell border-r">1,278</td><td class="table-cell border-r">474</td><td class="table-cell border-r border-summer-300">103</td><td class="table-cell border-r">1,104</td><td class="table-cell border-r">526</td><td class="table-cell">329</td></tr>
+                            <tr><td class="table-cell border-r font-bold">2025</td><td class="table-cell border-r">1,408</td><td class="table-cell border-r">523</td><td class="table-cell border-r border-summer-300">117</td><td class="table-cell border-r">1,198</td><td class="table-cell border-r">533</td><td class="table-cell">368</td></tr>
+                            <tr class="bg-summer-50"><td class="table-cell border-r font-bold text-summer-700">2026</td><td class="table-cell border-r font-bold">1,505</td><td class="table-cell border-r font-bold">500</td><td class="table-cell border-r border-summer-300 font-bold">125</td><td class="table-cell border-r font-bold">1,148</td><td class="table-cell border-r font-bold">585</td><td class="table-cell font-bold">431</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <div class="h-64"><canvas id="chart3a"></canvas></div>
+                        <p class="text-center text-sm font-medium mt-2 text-summer-700 bg-summer-50 py-1 rounded">고교 유형별 : 일반고, 검정고시 신입생 증가</p>
+                    </div>
+                    <div>
+                        <div class="h-64"><canvas id="chart3b"></canvas></div>
+                        <p class="text-center text-sm font-medium mt-2 text-gray-600 bg-gray-50 py-1 rounded">시도구분별 : 년도별 비슷한 분포도 유지</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. 원격강좌 -->
+            <section id="sec4" class="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
+                <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2 border-b pb-3"><span class="bg-summer-200 text-summer-800 px-2 py-1 rounded text-sm">4</span> 대학의 원격강좌 현황 (단위: 수)</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+                    <div class="lg:col-span-1 overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="table-header"><tr><th class="p-2 border-b border-r">기준연도</th><th class="p-2 border-b">원격강좌 (우리대학)</th></tr></thead>
+                            <tbody>
+                                <tr><td class="table-cell border-r font-bold">2021</td><td class="table-cell">1,554</td></tr>
+                                <tr><td class="table-cell border-r font-bold">2022</td><td class="table-cell">165</td></tr>
+                                <tr><td class="table-cell border-r font-bold">2023</td><td class="table-cell">88</td></tr>
+                                <tr><td class="table-cell border-r font-bold">2024</td><td class="table-cell">164</td></tr>
+                                <tr class="bg-summer-50"><td class="table-cell border-r font-bold text-summer-700">2025</td><td class="table-cell font-bold">239</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="lg:col-span-2 h-64"><canvas id="chart4"></canvas></div>
+                </div>
+            </section>
+
+            <!-- 5. 산업체 교원 -->
+            <section id="sec5" class="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
+                <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2 border-b pb-3"><span class="bg-summer-200 text-summer-800 px-2 py-1 rounded text-sm">5</span> 산업체 경력 전임교원 (단위: 명)</h2>
+                <div class="overflow-x-auto mb-6">
+                    <table class="w-full text-sm">
+                        <thead class="table-header">
+                            <tr><th class="p-2 border-b border-r">기준연도</th><th class="p-2 border-b border-r">경력없음</th><th class="p-2 border-b border-r">경력있음</th><th class="p-2 border-b border-r">채용형</th><th class="p-2 border-b border-r">지정형</th><th class="p-2 border-b border-r">비전임</th><th class="p-2 border-b bg-summer-200 text-summer-900">합계</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="table-cell border-r font-bold">2022</td><td class="table-cell border-r">3</td><td class="table-cell border-r">39</td><td class="table-cell border-r">11</td><td class="table-cell border-r">19</td><td class="table-cell border-r">1</td><td class="table-cell font-bold bg-gray-50">73</td></tr>
+                            <tr><td class="table-cell border-r font-bold">2023</td><td class="table-cell border-r">3</td><td class="table-cell border-r">32</td><td class="table-cell border-r">10</td><td class="table-cell border-r">18</td><td class="table-cell border-r">4</td><td class="table-cell font-bold bg-gray-50">67</td></tr>
+                            <tr><td class="table-cell border-r font-bold">2024</td><td class="table-cell border-r">2</td><td class="table-cell border-r">40</td><td class="table-cell border-r">9</td><td class="table-cell border-r">19</td><td class="table-cell border-r">3</td><td class="table-cell font-bold bg-gray-50">73</td></tr>
+                            <tr><td class="table-cell border-r font-bold">2025</td><td class="table-cell border-r">1</td><td class="table-cell border-r">39</td><td class="table-cell border-r">9</td><td class="table-cell border-r">18</td><td class="table-cell border-r">1</td><td class="table-cell font-bold bg-gray-50">68</td></tr>
+                            <tr class="bg-summer-50"><td class="table-cell border-r font-bold text-summer-700">2026</td><td class="table-cell border-r">0</td><td class="table-cell border-r">36</td><td class="table-cell border-r">10</td><td class="table-cell border-r">16</td><td class="table-cell border-r">2</td><td class="table-cell font-bold text-summer-800 bg-summer-100">64</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="h-80"><canvas id="chart5"></canvas></div>
+            </section>
+
+            <!-- 6. 연구장비 -->
+            <section id="sec6" class="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
+                <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2 border-b pb-3"><span class="bg-summer-200 text-summer-800 px-2 py-1 rounded text-sm">6</span> 공동활용 연구장비 운영현황 (단위: 원)</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+                    <div class="lg:col-span-1 overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="table-header"><tr><th class="p-2 border-b border-r">기준연도</th><th class="p-2 border-b">설비자산 사용료 수익</th></tr></thead>
+                            <tbody>
+                                <tr><td class="table-cell border-r font-bold">2022</td><td class="table-cell text-right pr-4">26,919,260</td></tr>
+                                <tr><td class="table-cell border-r font-bold">2023</td><td class="table-cell text-right pr-4">17,401,442</td></tr>
+                                <tr><td class="table-cell border-r font-bold">2024</td><td class="table-cell text-right pr-4">57,889,585</td></tr>
+                                <tr class="bg-summer-50"><td class="table-cell border-r font-bold text-summer-700">2025</td><td class="table-cell text-right pr-4 font-bold">27,481,540</td></tr>
+                            </tbody>
+                        </table>
+                        <p class="mt-4 text-sm font-semibold text-red-600 bg-red-50 p-3 rounded border border-red-100 text-center">외부이용자 감소 및 공동활용 수요 감소</p>
+                    </div>
+                    <div class="lg:col-span-2 h-64"><canvas id="chart6"></canvas></div>
+                </div>
+            </section>
+
+            <!-- 7. 현장실습 -->
+            <section id="sec7" class="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
+                <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2 border-b pb-3"><span class="bg-summer-200 text-summer-800 px-2 py-1 rounded text-sm">7</span> 현장실습 운영 현황 (단위: 명)</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="table-header"><tr><th class="p-2 border-b border-r w-24">기준연도</th><th class="p-2 border-b border-r w-24">이수학생수</th><th class="p-2 border-b">비고 (학과별)</th></tr></thead>
+                            <tbody class="text-left">
+                                <tr><td class="table-cell border-r font-bold align-middle">2022</td><td class="table-cell border-r align-middle">11</td><td class="p-3 border-b text-gray-600">호텔외식조리학부</td></tr>
+                                <tr><td class="table-cell border-r font-bold align-middle">2023</td><td class="table-cell border-r align-middle">16</td><td class="p-3 border-b text-gray-600">글로벌호텔조리학과 (12명)<br>호텔제과제빵학과 (4명)</td></tr>
+                                <tr><td class="table-cell border-r font-bold align-middle">2024</td><td class="table-cell border-r align-middle">25</td><td class="p-3 border-b text-gray-600">글로벌호텔조리학과 (11명)<br>호텔제과제빵학과 (7명)<br>뷰티코디네이션학과 (7명)</td></tr>
+                                <tr class="bg-summer-50"><td class="table-cell border-r font-bold text-summer-700 align-middle">2025</td><td class="table-cell border-r font-bold align-middle">23</td><td class="p-3 border-b text-gray-600 font-medium">글로벌호텔조리학과 (8명)<br>호텔제과제빵학과 (7명)<br>뷰티코디네이션학과 (8명)</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="h-72"><canvas id="chart7"></canvas></div>
+                </div>
+            </section>
+
+            <!-- 8. 캡스톤 -->
+            <section id="sec8" class="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
+                <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2 border-b pb-3"><span class="bg-summer-200 text-summer-800 px-2 py-1 rounded text-sm">8</span> 캡스톤 디자인 운영 현황 (단위: 명)</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+                    <div class="lg:col-span-1 overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="table-header"><tr><th class="p-2 border-b border-r">기준연도</th><th class="p-2 border-b">이수학생수</th></tr></thead>
+                            <tbody>
+                                <tr><td class="table-cell border-r font-bold">2022</td><td class="table-cell">1,655</td></tr>
+                                <tr><td class="table-cell border-r font-bold">2023</td><td class="table-cell">1,509</td></tr>
+                                <tr><td class="table-cell border-r font-bold">2024</td><td class="table-cell">1,457</td></tr>
+                                <tr class="bg-summer-50"><td class="table-cell border-r font-bold text-summer-700">2025</td><td class="table-cell font-bold">1,350</td></tr>
+                            </tbody>
+                        </table>
+                        <p class="mt-4 text-sm font-semibold text-red-600 bg-red-50 p-3 rounded border border-red-100 text-center">캡스톤 디자인 운영 현황: 감소추세</p>
+                    </div>
+                    <div class="lg:col-span-2 h-64"><canvas id="chart8"></canvas></div>
+                </div>
+            </section>
+
+            <!-- 9. 학교기업 -->
+            <section id="sec9" class="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
+                <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2 border-b pb-3"><span class="bg-summer-200 text-summer-800 px-2 py-1 rounded text-sm">9</span> 학교기업 운영 현황 (단위: 원)</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+                    <div class="lg:col-span-1 overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="table-header"><tr><th class="p-2 border-b border-r">연도</th><th class="p-2 border-b border-r">매출액</th><th class="p-2 border-b">학교기업명</th></tr></thead>
+                            <tbody>
+                                <tr><td class="table-cell border-r font-bold">2021</td><td class="table-cell border-r text-right pr-4">37,530,909</td><td class="table-cell">DHC웰니스</td></tr>
+                                <tr><td class="table-cell border-r font-bold">2022</td><td class="table-cell border-r text-right pr-4">85,027,273</td><td class="table-cell">DHC웰니스</td></tr>
+                                <tr><td class="table-cell border-r font-bold">2023</td><td class="table-cell border-r text-right pr-4">28,190,909</td><td class="table-cell">DHC웰니스</td></tr>
+                                <tr><td class="table-cell border-r font-bold">2024</td><td class="table-cell border-r text-right pr-4">25,200,000</td><td class="table-cell">DHC웰니스</td></tr>
+                                <tr class="bg-summer-50"><td class="table-cell border-r font-bold text-summer-700">2025</td><td class="table-cell border-r font-bold text-right pr-4">866,363</td><td class="table-cell font-bold">DHC웰니스</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="lg:col-span-2 h-64"><canvas id="chart9"></canvas></div>
+                </div>
+            </section>
+
+            <!-- 10. 주문식 교육 -->
+            <section id="sec10" class="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
+                <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2 border-b pb-3"><span class="bg-summer-200 text-summer-800 px-2 py-1 rounded text-sm">10</span> 주문식 교육과정 설치 운영 현황 (단위: 명, %)</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="table-header">
+                                <tr><th class="p-2 border-b border-r">기준연도</th><th class="p-2 border-b border-r">참여</th><th class="p-2 border-b border-r">졸업</th><th class="p-2 border-b border-r">취업</th><th class="p-2 border-b bg-summer-200 text-summer-900">취업률(%)</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="table-cell border-r font-bold">2021</td><td class="table-cell border-r">64</td><td class="table-cell border-r">27</td><td class="table-cell border-r">13</td><td class="table-cell font-bold bg-gray-50">48.1</td></tr>
+                                <tr><td class="table-cell border-r font-bold">2022</td><td class="table-cell border-r">128</td><td class="table-cell border-r">65</td><td class="table-cell border-r">47</td><td class="table-cell font-bold bg-gray-50 text-summer-600">72.3</td></tr>
+                                <tr><td class="table-cell border-r font-bold">2023</td><td class="table-cell border-r">317</td><td class="table-cell border-r">69</td><td class="table-cell border-r">42</td><td class="table-cell font-bold bg-gray-50">60.9</td></tr>
+                                <tr><td class="table-cell border-r font-bold">2024</td><td class="table-cell border-r">457</td><td class="table-cell border-r">211</td><td class="table-cell border-r">109</td><td class="table-cell font-bold bg-gray-50">51.7</td></tr>
+                                <tr class="bg-summer-50"><td class="table-cell border-r font-bold text-summer-700">2025</td><td class="table-cell border-r font-bold">195</td><td class="table-cell border-r font-bold">134</td><td class="table-cell border-r font-bold">86</td><td class="table-cell font-bold bg-summer-100 text-summer-800">64.2</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="h-80"><canvas id="chart10"></canvas></div>
+                </div>
+            </section>
+
+            <!-- 11. 특허 실적 -->
+            <section id="sec11" class="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
+                <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2 border-b pb-3"><span class="bg-summer-200 text-summer-800 px-2 py-1 rounded text-sm">11</span> 특허 출원 및 등록 실적 (단위: 건)</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+                    <div class="lg:col-span-1 overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="table-header"><tr><th class="p-2 border-b border-r">기준연도</th><th class="p-2 border-b border-r">국내특허 출원</th><th class="p-2 border-b">국내특허 등록</th></tr></thead>
+                            <tbody>
+                                <tr><td class="table-cell border-r font-bold">2021</td><td class="table-cell border-r">12</td><td class="table-cell">11</td></tr>
+                                <tr><td class="table-cell border-r font-bold">2022</td><td class="table-cell border-r">19</td><td class="table-cell">13</td></tr>
+                                <tr><td class="table-cell border-r font-bold">2023</td><td class="table-cell border-r">18</td><td class="table-cell">14</td></tr>
+                                <tr><td class="table-cell border-r font-bold">2024</td><td class="table-cell border-r font-bold text-summer-600">29</td><td class="table-cell">1</td></tr>
+                                <tr class="bg-summer-50"><td class="table-cell border-r font-bold text-summer-700">2025</td><td class="table-cell border-r font-bold">12</td><td class="table-cell font-bold">5</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="lg:col-span-2 h-64"><canvas id="chart11"></canvas></div>
+                </div>
+            </section>
+
+            <!-- 12. 창업 현황 -->
+            <section id="sec12" class="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
+                <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2 border-b pb-3"><span class="bg-summer-200 text-summer-800 px-2 py-1 rounded text-sm">12</span> 창업관련 현황</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- 창업자수 -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-700 mb-3 text-center">창업자수 현황 (단위: 명)</h3>
+                        <table class="w-full text-sm mb-4">
+                            <thead class="table-header"><tr><th class="p-2 border-b border-r">기준연도</th><th class="p-2 border-b border-r">창업자수(교원)</th><th class="p-2 border-b">창업자수(학생)</th></tr></thead>
+                            <tbody>
+                                <tr><td class="table-cell border-r font-bold">2021</td><td class="table-cell border-r">0</td><td class="table-cell">0</td></tr>
+                                <tr><td class="table-cell border-r font-bold">2022</td><td class="table-cell border-r">1</td><td class="table-cell">0</td></tr>
+                                <tr><td class="table-cell border-r font-bold">2023</td><td class="table-cell border-r">1</td><td class="table-cell">1</td></tr>
+                                <tr><td class="table-cell border-r font-bold">2024</td><td class="table-cell border-r">2</td><td class="table-cell font-bold text-summer-600">5</td></tr>
+                                <tr class="bg-summer-50"><td class="table-cell border-r font-bold text-summer-700">2025</td><td class="table-cell border-r">0</td><td class="table-cell font-bold">1</td></tr>
+                            </tbody>
+                        </table>
+                        <div class="h-56"><canvas id="chart12a"></canvas></div>
+                    </div>
+                    
+                    <!-- 창업 강좌수 -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-700 mb-3 text-center">창업관련 강좌수 현황 (단위: 수)</h3>
+                        <table class="w-full text-sm mb-4">
+                            <thead class="table-header"><tr><th class="p-2 border-b border-r">기준연도</th><th class="p-2 border-b border-r">교양</th><th class="p-2 border-b">전공</th></tr></thead>
+                            <tbody>
+                                <tr><td class="table-cell border-r font-bold">2021</td><td class="table-cell border-r">8</td><td class="table-cell font-bold text-summer-600">70</td></tr>
+                                <tr><td class="table-cell border-r font-bold">2022</td><td class="table-cell border-r">8</td><td class="table-cell">18</td></tr>
+                                <tr><td class="table-cell border-r font-bold">2023</td><td class="table-cell border-r">14</td><td class="table-cell">19</td></tr>
+                                <tr><td class="table-cell border-r font-bold">2024</td><td class="table-cell border-r">14</td><td class="table-cell">16</td></tr>
+                                <tr class="bg-summer-50"><td class="table-cell border-r font-bold text-summer-700">2025</td><td class="table-cell border-r font-bold">11</td><td class="table-cell font-bold">13</td></tr>
+                            </tbody>
+                        </table>
+                        <div class="h-56"><canvas id="chart12b"></canvas></div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Chart.defaults.font.family = "'Pretendard', sans-serif";
+            Chart.defaults.color = '#64748b';
+            Chart.register(ChartDataLabels);
+
+            const getBarLabelConfig = (color = '#334155', size = 11, align='top', anchor='end') => ({
+                color: color, font: { weight: 'bold', size: size }, align: align, anchor: anchor,
+                formatter: (value) => value === 0 ? '' : value.toLocaleString()
+            });
+
+            const getStackedLabelConfig = () => ({
+                color: '#ffffff', font: { weight: 'bold', size: 10 }, align: 'center', anchor: 'center',
+                formatter: (value) => value === 0 ? '' : value.toLocaleString()
+            });
+
+            const colors = {
+                primary: '#0ea5e9', secondary: '#38bdf8', tertiary: '#bae6fd', 
+                teal: '#14b8a6', gray: '#cbd5e1', dark: '#0369a1', orange: '#f97316', red: '#ef4444'
+            };
+
+            // 0. 전체 현황 증감 그래프 (Waterfall 유사 표현)
+            new Chart(document.getElementById('chartOverall'), {
+                type: 'bar',
+                data: {
+                    labels: ['정원내외', '기회균형', '일반고', '원격강좌', '산업체교원', '설비자산', '현장실습', '캡스톤', 'DHC웰니스', '주문식취업', '기술이전', '특허출원', '교원창업', '학생창업', '창업강좌'],
+                    datasets: [{
+                        label: '증감치',
+                        data: [2.8, 0.2, 0.3, 7.5, -3.0, -30.0, -2.0, -1.1, -24.1, 12.5, -1.7, -17.0, -2.0, -3.0, -6.0],
+                        backgroundColor: (ctx) => ctx.raw > 0 ? colors.primary : colors.red,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false, layout: { padding: { top: 20, bottom: 20 } },
+                    plugins: { 
+                        legend: { display: false },
+                        datalabels: {
+                            color: (ctx) => ctx.raw > 0 ? colors.primary : colors.red,
+                            font: { weight: 'bold', size: 10 },
+                            align: (ctx) => ctx.raw > 0 ? 'top' : 'bottom',
+                            anchor: (ctx) => ctx.raw > 0 ? 'end' : 'start'
+                        }
+                    },
+                    scales: { x: { ticks: { font: { size: 10 } } } }
+                }
+            });
+
+            // 1. 입학전형
+            new Chart(document.getElementById('chart1'), {
+                type: 'bar',
+                data: {
+                    labels: ['2021', '2022', '2023', '2024', '2025', '2026'],
+                    datasets: [
+                        { label: '일반전형', data: [376, 283, 292, 293, 439, 223], backgroundColor: colors.secondary },
+                        { label: '특별전형', data: [1576, 1733, 1754, 1673, 1578, 1832], backgroundColor: colors.primary },
+                        { label: '정원외전형', data: [254, 276, 235, 268, 371, 486], backgroundColor: colors.dark }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true }, y: { stacked: true } }, plugins: { datalabels: getStackedLabelConfig() } }
+            });
+
+            // 2. 기회균형
+            new Chart(document.getElementById('chart2'), {
+                type: 'line',
+                data: {
+                    labels: ['2022', '2023', '2024', '2025', '2026'],
+                    datasets: [{ label: '비율(%)', data: [4.0, 3.5, 3.8, 3.2, 3.4], borderColor: colors.primary, backgroundColor: colors.primary, tension: 0.3, borderWidth: 3, pointRadius: 5 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, layout: { padding: { top: 20 } }, scales: { y: { min: 2, max: 5 } }, plugins: { legend: {display:false}, datalabels: getBarLabelConfig(colors.dark, 12, 'bottom', 'bottom') } }
+            });
+
+            // 3a. 고교유형별
+            new Chart(document.getElementById('chart3a'), {
+                type: 'bar',
+                data: {
+                    labels: ['2022', '2023', '2024', '2025', '2026'],
+                    datasets: [
+                        { label: '일반고', data: [1323, 1255, 1278, 1408, 1505], backgroundColor: colors.primary },
+                        { label: '특성화고', data: [454, 536, 474, 523, 500], backgroundColor: colors.tertiary },
+                        { label: '검정고시', data: [78, 72, 103, 117, 125], backgroundColor: colors.teal }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, layout: { padding: { top: 20 } }, plugins: { datalabels: { color: '#475569', font:{size:9}, anchor:'end', align:'top' } } }
+            });
+
+            // 3b. 시도구분별
+            new Chart(document.getElementById('chart3b'), {
+                type: 'bar',
+                data: {
+                    labels: ['2022', '2023', '2024', '2025', '2026'],
+                    datasets: [
+                        { label: '광역시', data: [1116, 1184, 1104, 1198, 1148], backgroundColor: colors.primary },
+                        { label: '중소도시', data: [566, 521, 526, 533, 585], backgroundColor: colors.tertiary },
+                        { label: '읍면', data: [362, 343, 329, 368, 431], backgroundColor: colors.teal }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, layout: { padding: { top: 20 } }, plugins: { datalabels: { color: '#475569', font:{size:9}, anchor:'end', align:'top' } } }
+            });
+
+            // 4. 원격강좌
+            new Chart(document.getElementById('chart4'), {
+                type: 'bar',
+                data: {
+                    labels: ['2021', '2022', '2023', '2024', '2025'],
+                    datasets: [{ label: '강좌 수', data: [1554, 165, 88, 164, 239], backgroundColor: [colors.gray, colors.primary, colors.primary, colors.primary, colors.primary], borderRadius: 4 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, layout: { padding: { top: 20 } }, plugins: { legend:{display:false}, datalabels: getBarLabelConfig() } }
+            });
+
+            // 5. 산업체 전임교원
+            new Chart(document.getElementById('chart5'), {
+                type: 'bar',
+                data: {
+                    labels: ['2022', '2023', '2024', '2025', '2026'],
+                    datasets: [
+                        { label: '경력없음', data: [3, 3, 2, 1, 0], backgroundColor: '#cbd5e1' },
+                        { label: '산업체경력', data: [39, 32, 40, 39, 36], backgroundColor: colors.primary },
+                        { label: '채용형', data: [11, 10, 9, 9, 10], backgroundColor: colors.teal },
+                        { label: '지정형', data: [19, 18, 19, 18, 16], backgroundColor: colors.secondary },
+                        { label: '비전임', data: [1, 4, 3, 1, 2], backgroundColor: colors.dark }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true }, y: { stacked: true } }, plugins: { legend: { position: 'bottom', labels: {boxWidth:10, font:{size:10}} }, datalabels: getStackedLabelConfig() } }
+            });
+
+            // 6. 연구장비
+            new Chart(document.getElementById('chart6'), {
+                type: 'line',
+                data: {
+                    labels: ['2022', '2023', '2024', '2025'],
+                    datasets: [{ label: '수익(원)', data: [26919260, 17401442, 57889585, 27481540], borderColor: colors.teal, backgroundColor: colors.teal, tension: 0.2, borderWidth: 3, pointRadius: 5 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, layout: { padding: { top: 25 } }, scales: { y: { display: false, min: 0 } }, plugins: { legend: {display:false}, datalabels: { color: colors.dark, font: { weight: 'bold', size: 11 }, align: 'top', anchor: 'end', formatter: (v) => (v / 10000).toLocaleString() + '만' } } }
+            });
+
+            // 7. 현장실습
+            new Chart(document.getElementById('chart7'), {
+                type: 'bar',
+                data: { labels: ['2022', '2023', '2024', '2025'], datasets: [{ label: '이수학생수', data: [11, 16, 25, 23], backgroundColor: colors.secondary, borderRadius:4 }] },
+                options: { responsive: true, maintainAspectRatio: false, layout: { padding: { top: 20 } }, plugins: { legend:{display:false}, datalabels: getBarLabelConfig() } }
+            });
+
+            // 8. 캡스톤
+            new Chart(document.getElementById('chart8'), {
+                type: 'line',
+                data: { labels: ['2022', '2023', '2024', '2025'], datasets: [{ label: '이수학생수', data: [1655, 1509, 1457, 1350], borderColor: colors.orange, backgroundColor: colors.orange, tension: 0.1, borderWidth: 3, pointRadius: 5 }] },
+                options: { responsive: true, maintainAspectRatio: false, layout: { padding: { top: 25 } }, scales: { y: { min: 1000 } }, plugins: { legend:{display:false}, datalabels: getBarLabelConfig(colors.orange, 12, 'top', 'bottom') } }
+            });
+
+            // 9. 학교기업
+            new Chart(document.getElementById('chart9'), {
+                type: 'line',
+                data: { labels: ['2021', '2022', '2023', '2024', '2025'], datasets: [{ label: '매출액(원)', data: [37530909, 85027273, 28190909, 25200000, 866363], borderColor: colors.primary, backgroundColor: 'rgba(14, 165, 233, 0.2)', fill: true, tension: 0.3, borderWidth: 2, pointRadius: 4 }] },
+                options: { responsive: true, maintainAspectRatio: false, layout: { padding: { top: 25 } }, scales: { y: { display: false } }, plugins: { legend:{display:false}, datalabels: { color: colors.dark, font: { weight: 'bold', size: 10 }, align: 'top', anchor: 'end', formatter: (v) => (v / 1000000).toFixed(1) + '백만' } } }
+            });
+
+            // 10. 주문식 교육
+            new Chart(document.getElementById('chart10'), {
+                type: 'bar',
+                data: {
+                    labels: ['2021', '2022', '2023', '2024', '2025'],
+                    datasets: [
+                        { type: 'line', label: '취업률(%)', data: [48.1, 72.3, 60.9, 51.7, 64.2], borderColor: colors.orange, backgroundColor: colors.orange, yAxisID: 'y1', tension: 0.3, borderWidth:2, datalabels: { align: 'top', anchor: 'end', color: colors.orange, formatter: (v)=> v+'%' } },
+                        { type: 'bar', label: '참여학생수', data: [64, 128, 317, 457, 195], backgroundColor: colors.primary, yAxisID: 'y', borderRadius: 4, datalabels: { align: 'center', anchor: 'center', color: '#fff' } }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, layout: { padding: { top: 30 } }, scales: { y: { type: 'linear', position: 'left' }, y1: { type: 'linear', position: 'right', min: 0, max: 100, grid: { drawOnChartArea: false } } } }
+            });
+
+            // 11. 특허 실적
+            new Chart(document.getElementById('chart11'), {
+                type: 'bar',
+                data: {
+                    labels: ['2021', '2022', '2023', '2024', '2025'],
+                    datasets: [ { label: '국내특허 출원', data: [12, 19, 18, 29, 12], backgroundColor: colors.secondary }, { label: '국내특허 등록', data: [11, 13, 14, 1, 5], backgroundColor: colors.teal } ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true }, y: { stacked: true } }, plugins: { datalabels: getStackedLabelConfig() } }
+            });
+
+            // 12a. 창업자수
+            new Chart(document.getElementById('chart12a'), {
+                type: 'bar',
+                data: {
+                    labels: ['2021', '2022', '2023', '2024', '2025'],
+                    datasets: [ { label: '교원 창업', data: [0, 1, 1, 2, 0], backgroundColor: colors.primary }, { label: '학생 창업', data: [0, 0, 1, 5, 1], backgroundColor: colors.tertiary } ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, layout: { padding: { top: 20 } }, scales: { y: { ticks: { stepSize: 1 } } }, plugins: { datalabels: getBarLabelConfig() } }
+            });
+
+            // 12b. 강좌수
+            new Chart(document.getElementById('chart12b'), {
+                type: 'bar',
+                data: {
+                    labels: ['2021', '2022', '2023', '2024', '2025'],
+                    datasets: [ { label: '교양', data: [8, 8, 14, 14, 11], backgroundColor: colors.primary }, { label: '전공', data: [70, 18, 19, 16, 13], backgroundColor: colors.secondary } ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, layout: { padding: { top: 20 } }, plugins: { datalabels: getBarLabelConfig() } }
+            });
+        });
+    </script>
+</body>
+</html>
