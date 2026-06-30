@@ -1,0 +1,2176 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>대학정보공시 대학등록금 현황 분석</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 커스텀 테마 색상 설정 (#5343e4 적용) -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            DEFAULT: '#5343e4',
+                            light: '#eef2ff', 
+                            dark: '#3e32ab',  
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- PapaParse (CSV 파싱) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <!-- SheetJS (Excel 내보내기) -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+    <!-- Chart.js (시각화 차트) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        *:focus-visible {
+            outline: 2px solid #5343e4 !important;
+            outline-offset: 2px !important;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        /* 커스텀 스크롤바 */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9; 
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
+    
+    <!-- 1. 제목 -->
+    <header class="bg-brand text-white shadow-lg relative overflow-hidden">
+        <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white opacity-10 blur-3xl"></div>
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 relative z-10">
+            <h1 class="text-3xl font-extrabold tracking-tight flex items-center gap-3">
+                <svg class="w-8 h-8 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                대학정보공시 등록금 현황 분석
+            </h1>
+            <p class="mt-2 text-sm text-white/80">CSV 데이터를 업로드하여 조건별, 대학별 등록금 통계 및 격차를 정밀하게 분석합니다.</p>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        
+        <!-- 2. 파일 업로드 -->
+        <section class="bg-brand/5 p-6 rounded-2xl shadow-sm border border-brand/20 mb-8">
+            <div class="flex items-start space-x-4">
+                <div class="p-3 bg-brand/10 rounded-xl text-brand hidden sm:block">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                </div>
+                <div class="flex-1">
+                    <h2 class="text-lg font-bold text-brand mb-1">분석 데이터 업로드 (.csv)</h2>
+                    <p class="text-xs text-brand/70 mb-3 font-medium">
+                        업로드된 원본 데이터는 모든 탭에 공유되지만, 조회(필터) 조건은 각 탭마다 완전히 독립적으로 동작합니다.
+                    </p>
+                    <input type="file" id="csvFileInput" accept=".csv" 
+                        class="block w-full md:w-1/2 text-sm text-slate-500
+                        file:mr-4 file:py-2.5 file:px-4
+                        file:rounded-lg file:border-0
+                        file:text-sm file:font-bold
+                        file:bg-brand file:text-white
+                        hover:file:bg-brand-dark transition-colors ease-in-out cursor-pointer shadow-sm">
+                    <a href="../2026/등록금현황(2024-2026).csv" download="등록금현황데이터.csv">    <button type="button">CSV 다운로드</button>
+</a>    
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. 탭 네비게이션 -->
+        <div class="bg-white rounded-t-2xl border-b border-gray-200 px-4 pt-4 shadow-sm relative z-10 overflow-x-auto">
+            <nav class="-mb-px flex space-x-6 min-w-max" aria-label="Tabs">
+                <button onclick="switchTab('tab-university')" id="btn-tab-university" class="border-brand text-brand whitespace-nowrap py-4 px-2 border-b-2 font-bold text-base transition-colors flex items-center gap-2" aria-current="page">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                    대학별 등록금 현황
+                </button>
+                <button onclick="switchTab('tab-national')" id="btn-tab-national" class="border-transparent text-slate-500 hover:text-brand hover:border-brand/50 whitespace-nowrap py-4 px-2 border-b-2 font-medium text-base transition-colors flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    전국 종합 현황
+                </button>
+                <button onclick="switchTab('tab-extra')" id="btn-tab-extra" class="border-transparent text-slate-500 hover:text-brand hover:border-brand/50 whitespace-nowrap py-4 px-2 border-b-2 font-medium text-base transition-colors flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                    지역별 지도 분석
+                </button>
+                <button onclick="switchTab('tab-sim')" id="btn-tab-sim" class="border-transparent text-slate-500 hover:text-brand hover:border-brand/50 whitespace-nowrap py-4 px-2 border-b-2 font-medium text-base transition-colors flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                    등록금 인상 시뮬레이션
+                </button>
+                <button onclick="switchTab('tab-dept')" id="btn-tab-dept" class="border-transparent text-slate-500 hover:text-brand hover:border-brand/50 whitespace-nowrap py-4 px-2 border-b-2 font-medium text-base transition-colors flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    관련학과 조회
+                </button>
+            </nav>
+        </div>
+
+        <main class="-mt-px">
+            <!-- ============================================== -->
+            <!-- 탭 1: 대학별 등록금 현황 -->
+            <!-- ============================================== -->
+            <div id="tab-university" class="tab-content block">
+                
+                <section class="bg-white p-6 rounded-b-2xl shadow-sm border border-gray-200 mb-8">
+                    <div class="bg-slate-50 rounded-xl p-5 border border-slate-200 mb-6">
+                        <div class="flex items-center mb-4">
+                            <svg class="w-5 h-5 text-brand mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                            <h3 class="text-sm font-bold text-slate-800">1. 다중 선택 필터 (조건 클릭)</h3>
+                        </div>
+                        <div id="filter-container-univ"></div>
+                    </div>
+
+                    <div class="bg-brand/5 rounded-xl p-5 border border-brand/20">
+                        <div class="flex items-center mb-4">
+                            <svg class="w-5 h-5 text-brand mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path></svg>
+                            <h3 class="text-sm font-bold text-brand">2. 분석 대상 대학 선택 (다중 선택)</h3>
+                        </div>
+                        <div class="relative filter-dropdown-container w-full md:w-1/2">
+                            <button type="button" class="dropdown-btn w-full bg-white border border-brand/30 rounded-lg shadow-sm px-3.5 py-2.5 text-left text-sm text-slate-700 hover:bg-slate-50 hover:border-brand/50 focus:outline-none focus:ring-2 focus:ring-brand flex justify-between items-center transition-all">
+                                <span class="truncate dropdown-label font-bold" id="univSelectLabel">데이터 업로드 후 선택 가능합니다</span>
+                                <svg class="h-4 w-4 text-slate-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" /></svg>
+                            </button>
+                            <div class="dropdown-menu absolute z-20 top-full left-0 mt-1 w-full bg-white shadow-xl rounded-lg border border-slate-200 py-1 text-sm hidden overflow-hidden">
+                                <div class="p-2 border-b border-slate-100 bg-slate-50">
+                                    <label class="flex items-center space-x-2 p-2 hover:bg-white rounded-md cursor-pointer transition-colors shadow-sm border border-transparent hover:border-slate-200">
+                                        <input type="checkbox" id="univSelectAll" class="select-all-checkbox h-4 w-4 text-brand rounded border-slate-300 focus:ring-brand" disabled>
+                                        <span class="font-bold text-slate-800">전체 선택</span>
+                                    </label>
+                                </div>
+                                <div id="filter-univList" class="p-2 space-y-1 max-h-56 overflow-y-auto custom-scrollbar">
+                                    <p class="text-slate-400 text-xs text-center py-3">데이터 없음</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p id="filterResultText" class="mt-3 text-xs font-semibold text-brand"></p>
+                    </div>
+                </section>
+
+                <section id="resultsSection" class="space-y-6" aria-live="polite">
+                    <div class="bg-white p-6 rounded-2xl shadow-md border border-slate-200 overflow-hidden relative">
+                        <div class="border-b border-slate-100 pb-4 mb-5 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                            <div>
+                                <h2 class="text-xl font-extrabold text-slate-800 flex items-center gap-3">
+                                    <span class="w-1.5 h-6 bg-brand rounded-full inline-block"></span>
+                                    조회된 대학별 연도별 평균 등록금
+                                </h2>
+                                <p id="univSummarySubtitle" class="text-[13px] font-semibold text-brand mt-2.5 mb-1 ml-4"></p>
+                                <p class="text-[11px] text-slate-500 ml-4">※ 대학 행을 클릭하면 하단에서 해당 학교의 학과별 상세 정보를 볼 수 있습니다.</p>
+                            </div>
+                            <button onclick="exportToExcel('schoolSummaryTable', '조회대학_등록금현황')" class="mt-4 sm:mt-0 flex items-center px-4 py-2 bg-brand text-white text-sm font-semibold rounded-lg hover:bg-brand-dark transition-colors shadow-sm focus:ring-2 focus:ring-brand focus:ring-offset-2">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                                엑셀 반출
+                            </button>
+                        </div>
+                        
+                        <div class="table-container border rounded-xl border-slate-200 shadow-sm">
+                            <table id="schoolSummaryTable" class="min-w-full divide-y divide-slate-200">
+                                <thead class="bg-slate-50">
+                                    <tr id="schoolSummaryHeadRow">
+                                        <th scope="col" class="py-3.5 px-4 text-left text-sm font-bold text-slate-700 border-r border-slate-200 border-b-2">대학명</th>
+                                        <th scope="col" class="py-3.5 px-4 text-center text-sm font-bold text-slate-700 border-b-2 border-slate-200">-</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="schoolSummaryBody" class="divide-y divide-slate-100 bg-white">
+                                    <tr><td colspan="2" class="py-8 text-center text-slate-400 text-sm">데이터를 업로드해 주세요.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl shadow-md border border-slate-200 overflow-hidden relative" id="deptSectionContainer">
+                        <div class="border-b border-slate-100 pb-4 mb-5 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
+                            <div>
+                                <h2 class="text-xl font-extrabold text-slate-800 flex items-center gap-3">
+                                    <span class="w-1.5 h-6 bg-brand rounded-full inline-block"></span>
+                                    선택 대학 학과별 평균 등록금
+                                </h2>
+                                <p id="univDeptSubtitle" class="text-[13px] font-semibold text-brand mt-2.5 mb-1 ml-4"></p>
+                                <p class="text-[11px] text-slate-500 ml-4">※ 학과명칭이 동일하게 유지된 경우에만 해당 구간의 인상률이 계산됩니다.</p>
+                            </div>
+                            
+                            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                                <select id="deptSchoolSelect" class="block w-48 rounded-lg border-brand/30 shadow-sm focus:border-brand focus:ring-brand sm:text-sm p-2 border bg-brand/5 disabled:opacity-50 text-slate-800 font-bold cursor-pointer">
+                                    <option value="">대학 선택</option>
+                                </select>
+
+                                <fieldset class="bg-slate-50 p-1.5 rounded-lg border border-slate-200 shadow-sm">
+                                    <legend class="sr-only">학과 분류 기준 선택</legend>
+                                    <div class="flex space-x-2">
+                                        <label class="flex items-center cursor-pointer hover:bg-white p-1.5 rounded transition-colors">
+                                            <input type="radio" name="deptGrouping" value="관련학과" class="h-4 w-4 text-brand focus:ring-brand border-slate-300" checked>
+                                            <span class="ml-2 text-sm font-semibold text-slate-700">관련학과 기준</span>
+                                        </label>
+                                        <label class="flex items-center cursor-pointer hover:bg-white p-1.5 rounded transition-colors">
+                                            <input type="radio" name="deptGrouping" value="학과" class="h-4 w-4 text-brand focus:ring-brand border-slate-300">
+                                            <span class="ml-2 text-sm font-semibold text-slate-700">학과명 기준</span>
+                                        </label>
+                                    </div>
+                                </fieldset>
+                                
+                                <button onclick="exportToExcel('deptSummaryTable', '학과별_등록금현황')" class="flex items-center px-4 py-2 bg-brand text-white text-sm font-semibold rounded-lg hover:bg-brand-dark transition-colors shadow-sm focus:ring-2 focus:ring-brand focus:ring-offset-2">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                                    엑셀 반출
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="table-container border rounded-xl border-slate-200 shadow-sm">
+                            <table id="deptSummaryTable" class="min-w-full divide-y divide-slate-200">
+                                <thead class="bg-slate-50">
+                                    <tr id="deptSummaryHeadRow">
+                                        <th scope="col" class="py-3.5 px-4 text-left text-sm font-bold text-slate-700 border-r border-slate-200 border-b-2">학과명</th>
+                                        <th scope="col" class="py-3.5 px-4 text-center text-sm font-bold text-slate-700 border-b-2 border-slate-200">-</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="deptSummaryBody" class="divide-y divide-slate-100 bg-white">
+                                    <tr><td colspan="2" class="py-8 text-center text-slate-400 text-sm">데이터를 업로드해 주세요.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- 탭 2: 전국 분석 -->
+            <!-- ============================================== -->
+            <div id="tab-national" class="tab-content hidden">
+                <section class="bg-white p-6 rounded-b-2xl shadow-sm border border-gray-200 mb-8">
+                    <div class="bg-slate-50 rounded-xl p-5 border border-slate-200">
+                        <div class="flex items-center mb-4">
+                            <svg class="w-5 h-5 text-brand mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                            <h3 class="text-sm font-bold text-slate-800">전국 통합 다중 선택 필터 (조건 클릭)</h3>
+                        </div>
+                        <div id="filter-container-nat"></div>
+                    </div>
+                </section>
+
+                <section class="bg-white p-6 rounded-2xl shadow-md border border-slate-200 overflow-hidden relative">
+                    <div class="border-b border-slate-100 pb-4 mb-5 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                        <div>
+                            <h2 class="text-xl font-extrabold text-slate-800 flex items-center gap-3">
+                                <span class="w-1.5 h-6 bg-brand rounded-full inline-block"></span>
+                                전국 연도별/학교종류별 등록금 현황
+                            </h2>
+                            <p id="natSummarySubtitle" class="text-[13px] font-semibold text-brand mt-2.5 mb-1 ml-4"></p>
+                            <p class="text-[11px] text-slate-500 ml-4">※ 이 탭의 필터 조건이 반영된 전체 요약입니다.</p>
+                        </div>
+                        <button onclick="exportToExcel('nationalSummaryTable', '전국_등록금현황')" class="mt-4 sm:mt-0 flex items-center px-4 py-2 bg-brand text-white text-sm font-semibold rounded-lg hover:bg-brand-dark transition-colors shadow-sm focus:ring-2 focus:ring-brand focus:ring-offset-2">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            엑셀 반출
+                        </button>
+                    </div>
+
+                    <div class="table-container border rounded-xl border-slate-200 shadow-sm">
+                        <table id="nationalSummaryTable" class="min-w-full divide-y divide-slate-200 table-fixed">
+                            <thead class="bg-slate-50">
+                                <tr id="nationalSummaryHeadRow">
+                                    <th scope="col" class="py-3.5 px-4 text-left text-sm font-bold text-slate-700 border-r border-slate-200 border-b-2">학교종류</th>
+                                    <th scope="col" class="py-3.5 px-4 text-center text-sm font-bold text-slate-700 border-b-2 border-slate-200">-</th>
+                                </tr>
+                            </thead>
+                            <tbody id="nationalSummaryBody" class="divide-y divide-slate-100 bg-white">
+                                <tr><td colspan="2" class="py-8 text-center text-slate-400 text-sm">데이터를 업로드해 주세요.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="bg-white p-6 rounded-2xl shadow-md border border-slate-200 mt-8 overflow-hidden relative">
+                    <div class="border-b border-slate-100 pb-4 mb-5 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                        <div>
+                            <h2 class="text-xl font-extrabold text-slate-800 flex items-center gap-3">
+                                <span class="w-1.5 h-6 bg-brand rounded-full inline-block"></span>
+                                학교종류간 등록금 격차 분석
+                            </h2>
+                            <p id="natDiffSubtitle" class="text-[13px] font-semibold text-brand mt-2.5 mb-1 ml-4"></p>
+                            <p class="text-[11px] text-slate-500 ml-4">※ 연도별 대학교 및 전문대학 평균과 대구보건대학교 평균 등록금의 차액입니다.</p>
+                        </div>
+                        <button onclick="exportToExcel('nationalDiffTable', '등록금_격차분석')" class="mt-4 sm:mt-0 flex items-center px-4 py-2 bg-brand text-white text-sm font-semibold rounded-lg hover:bg-brand-dark transition-colors shadow-sm focus:ring-2 focus:ring-brand focus:ring-offset-2">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            엑셀 반출
+                        </button>
+                    </div>
+
+                    <div class="table-container border rounded-xl border-slate-200 shadow-sm">
+                        <table id="nationalDiffTable" class="min-w-full divide-y divide-slate-200 table-fixed">
+                            <thead class="bg-slate-50">
+                                <tr>
+                                    <th scope="col" class="py-3.5 px-4 text-left text-sm font-bold text-slate-700 border-r border-slate-200 border-b-2 border-slate-200">연도</th>
+                                    <th scope="col" class="py-3.5 px-4 text-right text-sm font-extrabold text-brand bg-brand/10 border-b-2 border-brand/20">대구보건대학교</th>
+                                    <th scope="col" class="py-3.5 px-4 text-right text-sm font-bold text-slate-700 border-b-2 border-slate-200">대학교 평균</th>
+                                    <th scope="col" class="py-3.5 px-4 text-right text-sm font-bold text-slate-700 bg-slate-100 border-b-2 border-slate-200">격차 (대구보건대 - 대학교)</th>
+                                    <th scope="col" class="py-3.5 px-4 text-right text-sm font-bold text-slate-700 border-b-2 border-slate-200">전문대학 평균</th>
+                                    <th scope="col" class="py-3.5 px-4 text-right text-sm font-bold text-slate-700 bg-slate-100 border-b-2 border-slate-200">격차 (대구보건대 - 전문대학)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="nationalDiffBody" class="divide-y divide-slate-100 bg-white">
+                                <tr><td colspan="6" class="py-8 text-center text-slate-400 text-sm">데이터를 업로드해 주세요.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- 탭 3: 추가 분석 (지역별 평균 등록금 지도) -->
+            <!-- ============================================== -->
+            <div id="tab-extra" class="tab-content hidden">
+                <section class="bg-white p-6 rounded-b-2xl shadow-sm border border-gray-200 mb-8">
+                    <div class="bg-slate-50 rounded-xl p-5 border border-slate-200">
+                        <div class="flex items-center mb-4">
+                            <svg class="w-5 h-5 text-brand mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                            <h3 class="text-sm font-bold text-slate-800">지도 시각화 다중 선택 필터 (조건 클릭)</h3>
+                        </div>
+                        <div id="filter-container-extra"></div>
+                    </div>
+                </section>
+
+                <section class="bg-white p-6 rounded-2xl shadow-md border border-slate-200 overflow-hidden relative">
+                    <div class="border-b border-slate-100 pb-4 mb-6">
+                        <h2 class="text-xl font-extrabold text-slate-800 flex items-center gap-3">
+                            <span class="w-1.5 h-6 bg-brand rounded-full inline-block"></span>
+                            지역별 평균 등록금 현황
+                        </h2>
+                        <p id="extraSummarySubtitle" class="text-[13px] font-semibold text-brand mt-2.5 mb-1 ml-4"></p>
+                        <p class="text-[11px] text-slate-500 ml-4">※ 100만원 단위로 색상이 구분되며, 금액이 높을수록 강렬한 색상으로 표시됩니다.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8" id="mapSection">
+                        <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                            <h3 class="text-lg font-bold text-center text-slate-800 mb-6">전문대학 지역별 평균</h3>
+                            <div id="mapCollege" class="grid grid-cols-4 gap-2 max-w-sm mx-auto">
+                                <p class="col-span-4 text-center text-slate-400 py-12 text-sm">데이터를 업로드해 주세요.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                            <h3 class="text-lg font-bold text-center text-slate-800 mb-6">대학교 지역별 평균</h3>
+                            <div id="mapUniv" class="grid grid-cols-4 gap-2 max-w-sm mx-auto">
+                                <p class="col-span-4 text-center text-slate-400 py-12 text-sm">데이터를 업로드해 주세요.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 pt-6 border-t border-slate-100 flex flex-wrap justify-center items-center gap-4 text-xs font-bold text-slate-700">
+                        <div class="flex items-center gap-2"><span class="w-5 h-5 rounded-md shadow-sm bg-[#bae6fd] border border-[#7dd3fc]"></span> ~400만원대</div>
+                        <div class="flex items-center gap-2"><span class="w-5 h-5 rounded-md shadow-sm bg-[#7dd3fc] border border-[#38bdf8]"></span> 500만원대</div>
+                        <div class="flex items-center gap-2"><span class="w-5 h-5 rounded-md shadow-sm bg-[#60a5fa] border border-[#3b82f6]"></span> 600만원대</div>
+                        <div class="flex items-center gap-2"><span class="w-5 h-5 rounded-md shadow-sm bg-[#5343e4] border border-[#3e32ab]"></span> 700만원대</div>
+                        <div class="flex items-center gap-2"><span class="w-5 h-5 rounded-md shadow-sm bg-[#7e22ce] border border-[#6b21a8]"></span> 800만원대</div>
+                        <div class="flex items-center gap-2"><span class="w-5 h-5 rounded-md shadow-sm bg-[#c026d3] border border-[#a21caf]"></span> 900만원대</div>
+                        <div class="flex items-center gap-2"><span class="w-5 h-5 rounded-md shadow-sm bg-[#e11d48] border border-[#be123c]"></span> 1,000만원 이상</div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- 탭 4: 등록금 인상 시뮬레이션 -->
+            <!-- ============================================== -->
+            <div id="tab-sim" class="tab-content hidden">
+                
+                <section class="bg-white p-6 rounded-b-2xl shadow-sm border border-gray-200 mb-8">
+                    <div class="bg-slate-50 rounded-xl p-5 border border-slate-200 mb-6">
+                        <div class="flex items-center mb-4">
+                            <svg class="w-5 h-5 text-amber-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                            <h3 class="text-sm font-bold text-slate-800">1. 시뮬레이션 필터 (조건 클릭)</h3>
+                        </div>
+                        <div id="filter-container-sim"></div>
+                    </div>
+
+                    <div class="bg-amber-50 rounded-xl p-5 border border-amber-200">
+                        <div class="flex items-center mb-4">
+                            <svg class="w-5 h-5 text-amber-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <h3 class="text-sm font-bold text-amber-900">2. 시뮬레이션 대상 대학 선택 (단일 선택)</h3>
+                        </div>
+                        <select id="simSchoolSelect" class="block w-full md:w-1/2 rounded-lg border-amber-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm p-2.5 border bg-white disabled:opacity-50 text-slate-800 font-bold cursor-pointer">
+                            <option value="">데이터 업로드 후 선택 가능합니다</option>
+                        </select>
+                        <p id="filterResultTextSim" class="mt-3 text-xs font-semibold text-amber-700"></p>
+                    </div>
+                </section>
+
+                <section id="simResultsSection" class="space-y-6" aria-live="polite">
+                    <!-- 시뮬레이션 종합 -->
+                    <div class="bg-white p-6 rounded-2xl shadow-md border border-slate-200 overflow-hidden relative">
+                        <div class="border-b border-slate-100 pb-4 mb-5 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                            <div>
+                                <h2 class="text-xl font-extrabold text-slate-800 flex items-center gap-3">
+                                    <span class="w-1.5 h-6 bg-amber-500 rounded-full inline-block"></span>
+                                    대학 종합 등록금 예산 추이 (시뮬레이션 반영)
+                                </h2>
+                                <p id="simSummarySubtitle" class="text-[13px] font-semibold text-amber-600 mt-2.5 mb-1 ml-4"></p>
+                                <p class="text-[11px] text-slate-500 ml-4">※ 하단 학과별 테이블에서 입력 및 재계산한 <span class="font-bold text-amber-600">예상 연도</span>의 등록금 값을 바탕으로 대학 전체의 평균과 인상률이 산출됩니다.</p>
+                            </div>
+                            <button onclick="exportToExcel('simSummaryTable', '시뮬레이션_종합결과')" class="mt-4 sm:mt-0 flex items-center px-4 py-2 bg-emerald-600 text-white text-sm font-semibold rounded-lg hover:bg-emerald-700 transition-colors shadow-sm focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                                엑셀 반출
+                            </button>
+                        </div>
+                        
+                        <div class="table-container border rounded-xl border-slate-200 shadow-sm">
+                            <table id="simSummaryTable" class="min-w-full divide-y divide-slate-200">
+                                <thead class="bg-slate-50">
+                                    <tr id="simSummaryHeadRow">
+                                        <th scope="col" class="py-3.5 px-4 text-left text-sm font-bold text-slate-700 border-r border-slate-200 border-b-2">대학명</th>
+                                        <th scope="col" class="py-3.5 px-4 text-center text-sm font-bold text-slate-700 border-b-2 border-slate-200">-</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="simSummaryBody" class="divide-y divide-slate-100 bg-white">
+                                    <tr><td colspan="2" class="py-8 text-center text-slate-400 text-sm">데이터를 업로드해 주세요.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 시뮬레이션 학과별 입력 -->
+                    <div class="bg-white p-6 rounded-2xl shadow-md border border-slate-200 overflow-hidden relative">
+                        <div class="border-b border-slate-100 pb-4 mb-5 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
+                            <div>
+                                <h2 class="text-xl font-extrabold text-slate-800 flex items-center gap-3">
+                                    <span class="w-1.5 h-6 bg-amber-500 rounded-full inline-block"></span>
+                                    학과별 예상 등록금 입력
+                                </h2>
+                                <p class="text-[11px] text-slate-500 mt-2.5 ml-4">※ 마지막 칸의 텍스트 박스에 예상 금액/정원을 입력한 후 <span class="font-bold text-amber-600">[재계산]</span> 버튼을 누르시면 적용됩니다.</p>
+                            </div>
+                            
+                            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                                <fieldset class="bg-slate-50 p-1.5 rounded-lg border border-slate-200 shadow-sm">
+                                    <legend class="sr-only">학과 분류 기준 선택</legend>
+                                    <div class="flex space-x-2">
+                                        <label class="flex items-center cursor-pointer hover:bg-white p-1.5 rounded transition-colors">
+                                            <input type="radio" name="simDeptGrouping" value="관련학과" class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-slate-300" checked>
+                                            <span class="ml-2 text-sm font-semibold text-slate-700">관련학과 기준</span>
+                                        </label>
+                                        <label class="flex items-center cursor-pointer hover:bg-white p-1.5 rounded transition-colors">
+                                            <input type="radio" name="simDeptGrouping" value="학과" class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-slate-300">
+                                            <span class="ml-2 text-sm font-semibold text-slate-700">학과명 기준</span>
+                                        </label>
+                                    </div>
+                                </fieldset>
+                                
+                                <!-- 재계산 버튼 -->
+                                <button onclick="applySimulation()" class="flex items-center px-4 py-2 bg-amber-600 text-white text-sm font-semibold rounded-lg hover:bg-amber-700 transition-colors shadow-sm focus:ring-2 focus:ring-amber-500 focus:ring-offset-2">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                                    재계산
+                                </button>
+                                
+                                <button onclick="exportToExcel('simDeptTable', '시뮬레이션_학과별현황')" class="flex items-center px-4 py-2 bg-emerald-600 text-white text-sm font-semibold rounded-lg hover:bg-emerald-700 transition-colors shadow-sm focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                                    엑셀 반출
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="table-container border rounded-xl border-slate-200 shadow-sm">
+                            <table id="simDeptTable" class="min-w-full divide-y divide-slate-200">
+                                <thead class="bg-slate-50">
+                                    <tr id="simDeptHeadRow">
+                                        <th scope="col" class="py-3.5 px-4 text-left text-sm font-bold text-slate-700 border-r border-slate-200 border-b-2">학과명</th>
+                                        <th scope="col" class="py-3.5 px-4 text-center text-sm font-bold text-slate-700 border-b-2 border-slate-200">-</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="simDeptBody" class="divide-y divide-slate-100 bg-white">
+                                    <tr><td colspan="2" class="py-8 text-center text-slate-400 text-sm">데이터를 업로드해 주세요.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- 탭 5: 관련학과 조회 -->
+            <!-- ============================================== -->
+            <div id="tab-dept" class="tab-content hidden">
+                <section class="bg-white p-6 rounded-b-2xl shadow-sm border border-gray-200 mb-8">
+                    <div class="bg-slate-50 rounded-xl p-5 border border-slate-200">
+                        <div class="flex items-center mb-4">
+                            <svg class="w-5 h-5 text-violet-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                            <h3 class="text-sm font-bold text-slate-800">관련학과 다중 선택 필터 (조건 클릭)</h3>
+                        </div>
+                        <div id="filter-container-dept"></div>
+                    </div>
+                </section>
+
+                <section class="bg-white p-6 rounded-2xl shadow-md border border-slate-200 overflow-hidden relative">
+                    <div class="border-b border-slate-100 pb-4 mb-5 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
+                        <div>
+                            <h2 class="text-xl font-extrabold text-slate-800 flex items-center gap-3">
+                                <span class="w-1.5 h-6 bg-violet-500 rounded-full inline-block"></span>
+                                조건별 대학/학과 평균 등록금 현황
+                            </h2>
+                            <p id="deptSummarySubtitle" class="text-[13px] font-semibold text-violet-600 mt-2.5 mb-1 ml-4"></p>
+                            <p class="text-[11px] text-slate-500 ml-4">※ 대구보건대학교가 최상단에 고정되며, 그 외 대학은 가장 최신 연도 등록금이 높은 순서대로 표시됩니다.</p>
+                        </div>
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                            <fieldset class="bg-slate-50 p-1.5 rounded-lg border border-slate-200 shadow-sm">
+                                <div class="flex space-x-2">
+                                    <label class="flex items-center cursor-pointer hover:bg-white p-1.5 rounded transition-colors">
+                                        <input type="radio" name="deptTabGrouping" value="관련학과" class="h-4 w-4 text-violet-600 focus:ring-violet-500 border-slate-300" checked>
+                                        <span class="ml-2 text-sm font-semibold text-slate-700">관련학과 기준</span>
+                                    </label>
+                                    <label class="flex items-center cursor-pointer hover:bg-white p-1.5 rounded transition-colors">
+                                        <input type="radio" name="deptTabGrouping" value="학과" class="h-4 w-4 text-violet-600 focus:ring-violet-500 border-slate-300">
+                                        <span class="ml-2 text-sm font-semibold text-slate-700">학과명 기준</span>
+                                    </label>
+                                </div>
+                            </fieldset>
+                            
+                            <!-- 조회 버튼 추가 -->
+                            <button onclick="executeDeptSearch()" class="flex items-center px-4 py-2 bg-violet-600 text-white text-sm font-semibold rounded-lg hover:bg-violet-700 transition-colors shadow-sm focus:ring-2 focus:ring-violet-500 focus:ring-offset-2">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                조회
+                            </button>
+
+                            <button onclick="exportToExcel('deptTabTable', '관련학과_조회현황')" class="flex items-center px-4 py-2 bg-emerald-600 text-white text-sm font-semibold rounded-lg hover:bg-emerald-700 transition-colors shadow-sm focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                                엑셀 반출
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 컨테이너에 min-h와 relative 적용하여 로딩 화면을 감쌀 수 있게 수정 -->
+                    <div class="table-container border rounded-xl border-slate-200 shadow-sm relative min-h-[300px]">
+                        
+                        <!-- 로딩 오버레이 추가 -->
+                        <div id="deptTabLoading" class="hidden absolute inset-0 bg-white/80 z-10 flex flex-col items-center justify-center rounded-xl backdrop-blur-sm">
+                            <svg class="animate-spin h-10 w-10 text-violet-600 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            <p class="text-violet-800 font-bold text-lg">데이터 조회 및 정렬 중입니다...</p>
+                            <p class="text-slate-500 text-sm mt-1">잠시만 기다려주세요.</p>
+                        </div>
+
+                        <table id="deptTabTable" class="min-w-full divide-y divide-slate-200">
+                            <thead class="bg-slate-50">
+                                <tr id="deptTabHeadRow">
+                                    <th scope="col" class="py-3.5 px-4 text-left text-sm font-bold text-slate-700 border-r border-slate-200 border-b-2 whitespace-nowrap">대학명</th>
+                                    <th scope="col" class="py-3.5 px-4 text-left text-sm font-bold text-slate-700 border-r border-slate-200 border-b-2 whitespace-nowrap">학과명</th>
+                                    <th scope="col" class="py-3.5 px-4 text-left text-sm font-bold text-slate-700 border-r border-slate-200 border-b-2 whitespace-nowrap">지역</th>
+                                    <th scope="col" class="py-3.5 px-4 text-left text-sm font-bold text-slate-700 border-r border-slate-200 border-b-2 whitespace-nowrap">학교종류</th>
+                                    <th scope="col" class="py-3.5 px-4 text-center text-sm font-bold text-slate-700 border-b-2 border-slate-200">-</th>
+                                </tr>
+                            </thead>
+                            <tbody id="deptTabBody" class="divide-y divide-slate-100 bg-white">
+                                <tr><td colspan="5" class="py-8 text-center text-slate-400 text-sm">데이터를 업로드해 주세요.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 관련학과 분석 보고서 컨테이너 추가 -->
+                    <div id="deptAnalysisReportContainer" class="hidden mt-8"></div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // 전역 상태 변수
+        let allData = [];
+        let filteredData = { univ: [], nat: [], extra: [], sim: [], dept: [] }; 
+        let uniqueSchools = [];
+        let selectedSchools = [];
+        let currentSchool = '';
+        
+        let currentSimSchool = '';
+        let simInputData = {}; 
+        let simBaseQuotas = {}; 
+        
+        const koreaMapLayout = [
+            { id: '인천', name: '인천' }, { id: '서울', name: '서울' }, { id: '경기', name: '경기' }, { id: '강원', name: '강원' },
+            { id: '충남', name: '충남' }, { id: '세종', name: '세종' }, { id: '충북', name: '충북' }, { id: '경북', name: '경북' },
+            { id: null },               { id: '대전', name: '대전' }, { id: '대구', name: '대구' }, { id: '울산', name: '울산' },
+            { id: '전북', name: '전북' }, { id: null },               { id: '경남', name: '경남' }, { id: '부산', name: '부산' },
+            { id: '전남', name: '전남' }, { id: '광주', name: '광주' }, { id: null },               { id: null },
+            { id: null },               { id: '제주', name: '제주' }, { id: null },               { id: null }
+        ];
+
+        function getFilterTemplate(prefix, fields) {
+            const titles = {
+                year: '기준연도', schoolType: '학교종류(그룹)', estType: '설립구분', 
+                region: '지역', status: '상태', relDept: '관련학과'
+            };
+            const gridCols = fields.length === 6 ? 'md:grid-cols-3 lg:grid-cols-6' : 'md:grid-cols-5';
+            
+            let chkColor = 'text-brand focus:ring-brand';
+            if (prefix === 'sim') chkColor = 'text-amber-600 focus:ring-amber-500';
+            else if (prefix === 'dept') chkColor = 'text-violet-600 focus:ring-violet-500';
+
+            let html = `<div class="grid grid-cols-1 sm:grid-cols-2 ${gridCols} gap-4">`;
+            
+            fields.forEach(type => {
+                html += `
+                <div class="flex flex-col relative filter-dropdown-container">
+                    <span class="text-xs font-bold text-slate-500 mb-1.5 ml-1">${titles[type]}</span>
+                    <button type="button" class="dropdown-btn w-full bg-white border border-slate-300 rounded-lg shadow-sm px-3.5 py-2.5 text-left text-sm text-slate-700 hover:bg-slate-50 hover:border-slate-400 focus:outline-none focus:ring-2 focus:ring-brand flex justify-between items-center transition-all">
+                        <span class="truncate dropdown-label font-medium">데이터 대기중</span>
+                        <svg class="h-4 w-4 text-slate-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" /></svg>
+                    </button>
+                    <div class="dropdown-menu absolute z-20 top-full left-0 mt-1 w-full bg-white shadow-xl rounded-lg border border-slate-200 py-1 text-sm hidden overflow-hidden">
+                        <div class="p-2 border-b border-slate-100 bg-slate-50">
+                            <label class="flex items-center space-x-2 p-2 hover:bg-white rounded-md cursor-pointer transition-colors shadow-sm border border-transparent hover:border-slate-200">
+                                <input type="checkbox" class="select-all-checkbox h-4 w-4 rounded border-slate-300 ${chkColor}" disabled>
+                                <span class="font-bold text-slate-800">전체 선택</span>
+                            </label>
+                        </div>
+                        <div id="filter-${type}-${prefix}" class="p-2 space-y-1 max-h-56 overflow-y-auto custom-scrollbar">
+                            <p class="text-slate-400 text-xs text-center py-3">데이터 없음</p>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            html += '</div>';
+            return html;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('filter-container-univ').innerHTML = getFilterTemplate('univ', ['year', 'schoolType', 'estType', 'region', 'status']);
+            document.getElementById('filter-container-nat').innerHTML = getFilterTemplate('nat', ['year', 'schoolType', 'estType', 'region', 'status', 'relDept']);
+            document.getElementById('filter-container-extra').innerHTML = getFilterTemplate('extra', ['year', 'schoolType', 'estType', 'region', 'status', 'relDept']);
+            document.getElementById('filter-container-sim').innerHTML = getFilterTemplate('sim', ['year', 'schoolType', 'estType', 'region', 'status']); 
+            document.getElementById('filter-container-dept').innerHTML = getFilterTemplate('dept', ['year', 'schoolType', 'estType', 'region', 'status', 'relDept']);
+            setupDropdowns();
+
+            const deptSchoolSelect = document.getElementById('deptSchoolSelect');
+            if(deptSchoolSelect) {
+                deptSchoolSelect.addEventListener('change', (e) => { selectSchool(e.target.value); });
+            }
+
+            const simSchoolSelect = document.getElementById('simSchoolSelect');
+            if(simSchoolSelect) {
+                simSchoolSelect.addEventListener('change', (e) => {
+                    currentSimSchool = e.target.value;
+                    renderSimDashboards();
+                });
+            }
+        });
+
+        const fileInput = document.getElementById('csvFileInput');
+        const deptRadioButtons = document.getElementsByName('deptGrouping');
+        const simDeptRadioButtons = document.getElementsByName('simDeptGrouping');
+        const deptTabRadioButtons = document.getElementsByName('deptTabGrouping');
+
+        fileInput.addEventListener('change', handleFileUpload);
+        deptRadioButtons.forEach(radio => { radio.addEventListener('change', renderDepartmentSummary); });
+        simDeptRadioButtons.forEach(radio => { radio.addEventListener('change', applySimulation); });
+        // 관련학과 탭 라디오 버튼 자동 조회 이벤트 리스너 제거 (수동 조회로 변경됨)
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.filter-dropdown-container')) {
+                document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.add('hidden'));
+            }
+        });
+
+        function setupDropdowns() {
+            document.querySelectorAll('.dropdown-btn').forEach(btn => {
+                const newBtn = btn.cloneNode(true); 
+                btn.parentNode.replaceChild(newBtn, btn);
+                
+                newBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const menu = newBtn.nextElementSibling;
+                    const isHidden = menu.classList.contains('hidden');
+                    
+                    document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.add('hidden'));
+                    if (isHidden) menu.classList.remove('hidden');
+                });
+            });
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            
+            const targetTab = document.getElementById(tabId);
+            if (targetTab) targetTab.classList.remove('hidden');
+
+            const tabIds = ['tab-university', 'tab-national', 'tab-extra', 'tab-sim', 'tab-dept'];
+            tabIds.forEach(id => {
+                const btn = document.getElementById(`btn-${id}`);
+                const activeClasses = "border-brand text-brand whitespace-nowrap py-4 px-2 border-b-2 font-bold text-base transition-colors flex items-center gap-2";
+                const inactiveClasses = "border-transparent text-slate-500 hover:text-brand hover:border-brand/50 whitespace-nowrap py-4 px-2 border-b-2 font-medium text-base transition-colors flex items-center gap-2";
+                
+                if (btn) {
+                    if(id === tabId) {
+                        btn.className = activeClasses;
+                        btn.setAttribute('aria-current', 'page');
+                    } else {
+                        btn.className = inactiveClasses;
+                        btn.removeAttribute('aria-current');
+                    }
+                }
+            });
+        }
+
+        function exportToExcel(tableId, fileName) {
+            const table = document.getElementById(tableId);
+            if(allData.length === 0) {
+                alert("내보낼 데이터가 없습니다. 먼저 CSV 파일을 업로드해주세요.");
+                return;
+            }
+            
+            let targetTable = table;
+            if (tableId === 'simDeptTable') {
+                targetTable = table.cloneNode(true);
+                const inputs = table.querySelectorAll('input[type="text"]');
+                const cloneInputs = targetTable.querySelectorAll('input[type="text"]');
+                for(let i=0; i<inputs.length; i++) {
+                    const val = inputs[i].value;
+                    const td = cloneInputs[i].parentNode;
+                    if (inputs[i].placeholder === "정원 입력") {
+                        td.innerHTML = val + "명";
+                    } else {
+                        td.innerHTML = val + "원";
+                    }
+                }
+            }
+
+            const wb = XLSX.utils.table_to_book(targetTable, {sheet: "분석결과", raw: true});
+            const today = new Date().toISOString().slice(0,10).replace(/-/g,"");
+            let exportPrefix = (tableId.includes('national') || tableId.includes('extra') || tableId.includes('deptTab')) ? '전국' : (tableId.includes('sim') ? (currentSimSchool || '시뮬레이션') : (currentSchool || '전체'));
+            XLSX.writeFile(wb, `${exportPrefix}_${fileName}_${today}.xlsx`);
+        }
+
+        function handleFileUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            Papa.parse(file, {
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    allData = results.data.filter(row => row['학교'] && row['기준연도']);
+                    if(allData.length === 0) {
+                        alert("유효한 데이터가 없습니다.");
+                        return;
+                    }
+                    
+                    initializeFilters('univ');
+                    initializeFilters('nat');
+                    initializeFilters('extra');
+                    initializeFilters('sim');
+                    initializeFilters('dept');
+                    
+                    applyFilters('univ');
+                    applyFilters('nat');
+                    applyFilters('extra');
+                    applyFilters('sim');
+                    applyFilters('dept');
+                    
+                    // 초기 업로드 시 1회 화면을 그려줌
+                    renderDeptTab();
+                },
+                error: function(error) {
+                    alert('CSV 파싱 오류: ' + error.message);
+                }
+            });
+        }
+
+        function getSchoolGroup(rawType) {
+            if(!rawType) return '기타';
+            const type = rawType.trim();
+            const juniorColleges = ['전문대학', '사이버대학(전문대학)', '기능대학'];
+            return juniorColleges.includes(type) ? '전문대학' : '대학교';
+        }
+
+        function initializeFilters(prefix) {
+            const options = {
+                year: new Set(), schoolType: new Set(), estType: new Set(),
+                region: new Set(), status: new Set(), relDept: new Set()
+            };
+
+            allData.forEach(row => {
+                if(row['기준연도']) options.year.add(row['기준연도'].trim());
+                if(row['학교종류']) options.schoolType.add(row['학교종류'].trim());
+                if(row['설립구분']) options.estType.add(row['설립구분'].trim());
+                if(row['지역']) options.region.add(row['지역'].trim());
+                if(row['상태']) options.status.add(row['상태'].trim());
+                let relDept = row['관련학과']?.trim();
+                if(!relDept) relDept = '미상';
+                options.relDept.add(relDept);
+            });
+
+            const renderCheckboxGroup = (type, optionSet, groupFn = null) => {
+                const containerId = `filter-${type}-${prefix}`;
+                const container = document.getElementById(containerId);
+                if (!container) return; 
+                
+                const opts = Array.from(optionSet).sort();
+                const dropdownContainer = container.closest('.filter-dropdown-container');
+                const selectAllChk = dropdownContainer.querySelector('.select-all-checkbox');
+                const labelSpan = dropdownContainer.querySelector('.dropdown-label');
+                
+                if(opts.length === 0) {
+                    container.innerHTML = '<p class="text-slate-400 text-xs py-2">조건 없음</p>';
+                    selectAllChk.disabled = true;
+                    labelSpan.textContent = '조건 없음';
+                    return;
+                }
+
+                selectAllChk.disabled = false;
+                
+                let chkColor = 'text-brand focus:ring-brand';
+                if (prefix === 'sim') chkColor = 'text-amber-600 focus:ring-amber-500';
+                else if (prefix === 'dept') chkColor = 'text-violet-600 focus:ring-violet-500';
+
+                if (groupFn) {
+                    const groups = {};
+                    opts.forEach(opt => {
+                        const g = groupFn(opt);
+                        if (!groups[g]) groups[g] = [];
+                        groups[g].push(opt);
+                    });
+                    
+                    let html = '';
+                    for (const [gName, gOpts] of Object.entries(groups)) {
+                        html += `<div class="mb-3 border border-slate-100 rounded-lg overflow-hidden shadow-sm"><div class="text-xs font-extrabold text-slate-600 bg-slate-100 px-3 py-2 border-b border-slate-100">${gName}</div><div class="py-1">`;
+                        gOpts.forEach(opt => {
+                            html += `
+                                <label class="flex items-center space-x-2 px-3 py-1.5 hover:bg-slate-50 cursor-pointer transition-colors mx-1 rounded">
+                                    <input type="checkbox" value="${opt}" data-filter="${type}" class="filter-checkbox-${prefix} h-4 w-4 rounded border-slate-300 ${chkColor}" checked>
+                                    <span class="text-slate-700 text-sm font-medium">${opt}</span>
+                                </label>
+                            `;
+                        });
+                        html += `</div></div>`;
+                    }
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = opts.map(opt => `
+                        <label class="flex items-center space-x-2 px-3 py-2 hover:bg-slate-50 rounded-md cursor-pointer transition-colors">
+                            <input type="checkbox" value="${opt}" data-filter="${type}" class="filter-checkbox-${prefix} h-4 w-4 rounded border-slate-300 ${chkColor}" checked>
+                            <span class="text-slate-700 text-sm font-medium">${opt}</span>
+                        </label>
+                    `).join('');
+                }
+
+                const checkboxes = container.querySelectorAll(`.filter-checkbox-${prefix}`);
+
+                const updateLabel = () => {
+                    const checkedCount = container.querySelectorAll(`.filter-checkbox-${prefix}:checked`).length;
+                    
+                    if (checkedCount === opts.length) {
+                        labelSpan.textContent = '전체';
+                        selectAllChk.checked = true;
+                        selectAllChk.indeterminate = false;
+                    } else if (checkedCount === 0) {
+                        labelSpan.textContent = '선택 없음';
+                        selectAllChk.checked = false;
+                        selectAllChk.indeterminate = false;
+                    } else {
+                        const firstChecked = container.querySelector(`.filter-checkbox-${prefix}:checked`).value;
+                        labelSpan.textContent = checkedCount === 1 ? firstChecked : `${firstChecked} 외 ${checkedCount - 1}개`;
+                        selectAllChk.checked = false;
+                        selectAllChk.indeterminate = true;
+                    }
+                };
+
+                const newSelectAllChk = selectAllChk.cloneNode(true);
+                selectAllChk.parentNode.replaceChild(newSelectAllChk, selectAllChk);
+                
+                newSelectAllChk.addEventListener('change', (e) => {
+                    const isChecked = e.target.checked;
+                    checkboxes.forEach(chk => chk.checked = isChecked);
+                    updateLabel();
+                    applyFilters(prefix); 
+                });
+
+                checkboxes.forEach(chk => {
+                    chk.addEventListener('change', () => {
+                        updateLabel();
+                        applyFilters(prefix); 
+                    });
+                });
+
+                updateLabel();
+            };
+
+            renderCheckboxGroup('year', options.year);
+            renderCheckboxGroup('schoolType', options.schoolType, getSchoolGroup);
+            renderCheckboxGroup('estType', options.estType);
+            renderCheckboxGroup('region', options.region);
+            renderCheckboxGroup('status', options.status);
+            
+            if (document.getElementById(`filter-relDept-${prefix}`)) {
+                renderCheckboxGroup('relDept', options.relDept);
+            }
+        }
+
+        function updateSubtitles(prefix) {
+            const fields = (prefix === 'nat' || prefix === 'extra' || prefix === 'dept') ? 
+                ['year', 'schoolType', 'estType', 'region', 'status', 'relDept'] : 
+                ['year', 'schoolType', 'estType', 'region', 'status'];
+                
+            const titles = {year: '기준연도', schoolType: '학교종류', estType: '설립구분', region: '지역', status: '상태', relDept: '관련학과'};
+            
+            const summaryParts = fields.map(field => {
+                const container = document.getElementById(`filter-${field}-${prefix}`);
+                if (!container) return null;
+                
+                const allCheckboxes = container.querySelectorAll(`.filter-checkbox-${prefix}`);
+                const checkedCheckboxes = container.querySelectorAll(`.filter-checkbox-${prefix}:checked`);
+                
+                if (checkedCheckboxes.length === allCheckboxes.length || checkedCheckboxes.length === 0) {
+                    return `${titles[field]}(전체)`;
+                } else if (checkedCheckboxes.length <= 2) {
+                    const vals = Array.from(checkedCheckboxes).map(c => c.value).join(', ');
+                    return `${titles[field]}(${vals})`;
+                } else {
+                    return `${titles[field]}(${checkedCheckboxes[0].value} 외 ${checkedCheckboxes.length - 1}개)`;
+                }
+            }).filter(Boolean);
+
+            const summaryText = `[현재 조회 조건] ${summaryParts.join(' / ')}`;
+
+            let schoolCountText = "";
+            if (prefix === 'nat' || prefix === 'extra' || prefix === 'dept') {
+                const collegeSchools = new Set();
+                const univSchools = new Set();
+                
+                filteredData[prefix].forEach(row => {
+                    const schoolName = row['학교'].trim();
+                    const group = getSchoolGroup(row['학교종류']);
+                    if (group === '전문대학') {
+                        collegeSchools.add(schoolName);
+                    } else {
+                        univSchools.add(schoolName);
+                    }
+                });
+                
+                schoolCountText = ` | 대상: 전문대학 ${collegeSchools.size}교 대학교 ${univSchools.size}교`;
+            }
+
+            if (prefix === 'univ') {
+                const sub1 = document.getElementById('univSummarySubtitle');
+                const sub2 = document.getElementById('univDeptSubtitle');
+                if(sub1) sub1.textContent = summaryText;
+                if(sub2) sub2.textContent = summaryText;
+            } else if (prefix === 'nat') {
+                const sub3 = document.getElementById('natSummarySubtitle');
+                const sub4 = document.getElementById('natDiffSubtitle');
+                if(sub3) sub3.textContent = summaryText + schoolCountText;
+                if(sub4) sub4.textContent = summaryText + schoolCountText;
+            } else if (prefix === 'extra') {
+                const sub5 = document.getElementById('extraSummarySubtitle');
+                if(sub5) sub5.textContent = summaryText + schoolCountText;
+            } else if (prefix === 'sim') {
+                const sub6 = document.getElementById('simSummarySubtitle');
+                if(sub6) sub6.textContent = summaryText;
+            } else if (prefix === 'dept') {
+                const sub7 = document.getElementById('deptSummarySubtitle');
+                if(sub7) sub7.textContent = summaryText + schoolCountText;
+            }
+        }
+
+        function applyFilters(prefix) {
+            const getCheckedValues = (filterName) => {
+                return Array.from(document.querySelectorAll(`.filter-checkbox-${prefix}[data-filter="${filterName}"]:checked`)).map(c => c.value);
+            };
+
+            const selectedYears = getCheckedValues('year');
+            const selectedSchoolTypes = getCheckedValues('schoolType');
+            const selectedEstTypes = getCheckedValues('estType');
+            const selectedRegions = getCheckedValues('region');
+            const selectedStatuses = getCheckedValues('status');
+            
+            const hasRelDeptFilter = document.getElementById(`filter-relDept-${prefix}`) !== null;
+            const selectedRelDepts = hasRelDeptFilter ? getCheckedValues('relDept') : null;
+
+            filteredData[prefix] = allData.filter(row => {
+                const year = row['기준연도']?.trim();
+                const schoolType = row['학교종류']?.trim();
+                const estType = row['설립구분']?.trim();
+                const region = row['지역']?.trim();
+                const status = row['상태']?.trim();
+                let relDept = row['관련학과']?.trim();
+                if(!relDept) relDept = '미상';
+
+                if(!selectedYears.includes(year)) return false;
+                if(!selectedSchoolTypes.includes(schoolType)) return false;
+                if(!selectedEstTypes.includes(estType)) return false;
+                if(!selectedRegions.includes(region)) return false;
+                if(!selectedStatuses.includes(status)) return false;
+                
+                if(hasRelDeptFilter && selectedRelDepts && !selectedRelDepts.includes(relDept)) return false;
+
+                return true;
+            });
+            
+            updateSubtitles(prefix);
+
+            if (prefix === 'univ') {
+                updateUnivListDropdown(); 
+            } else if (prefix === 'nat') {
+                renderNationalSummary(); 
+            } else if (prefix === 'extra') {
+                renderRegionMaps();
+            } else if (prefix === 'sim') {
+                updateSimSchoolSelect();
+            } else if (prefix === 'dept') {
+                // 필터 적용 시 실시간 자동 조회를 막음. 조회 버튼으로만 호출되게 비워둠
+            }
+        }
+
+        function updateUnivListDropdown() {
+            const schoolsSet = new Set(filteredData['univ'].map(row => row['학교'].trim()));
+            uniqueSchools = Array.from(schoolsSet).sort();
+
+            const container = document.getElementById('filter-univList');
+            const selectAllChk = document.getElementById('univSelectAll');
+            const labelSpan = document.getElementById('univSelectLabel');
+            const resultText = document.getElementById('filterResultText');
+
+            if (uniqueSchools.length === 0) {
+                container.innerHTML = '<p class="text-slate-400 text-xs text-center py-3">조건에 맞는 대학이 없습니다</p>';
+                if(selectAllChk) selectAllChk.disabled = true;
+                if(labelSpan) labelSpan.textContent = '선택 없음';
+                if(resultText) resultText.textContent = '검색 결과: 0개 대학';
+                selectedSchools = [];
+                renderDashboards();
+                return;
+            }
+
+            if(selectAllChk) selectAllChk.disabled = false;
+
+            if (selectedSchools.length > 0) {
+                selectedSchools = selectedSchools.filter(s => uniqueSchools.includes(s));
+            }
+            if (selectedSchools.length === 0) {
+                selectedSchools = [...uniqueSchools];
+            }
+
+            container.innerHTML = uniqueSchools.map(school => {
+                const isChecked = selectedSchools.includes(school) ? 'checked' : '';
+                return `
+                    <label class="flex items-center space-x-2 px-3 py-2 hover:bg-slate-50 rounded-md cursor-pointer transition-colors">
+                        <input type="checkbox" value="${school}" class="filter-univ-checkbox h-4 w-4 text-brand rounded border-slate-300 focus:ring-brand" ${isChecked}>
+                        <span class="text-slate-700 text-sm font-medium">${school}</span>
+                    </label>
+                `;
+            }).join('');
+
+            const checkboxes = container.querySelectorAll('.filter-univ-checkbox');
+
+            const updateLabel = () => {
+                const checkedBoxes = container.querySelectorAll('.filter-univ-checkbox:checked');
+                const checkedCount = checkedBoxes.length;
+                selectedSchools = Array.from(checkedBoxes).map(c => c.value);
+
+                if (checkedCount === uniqueSchools.length) {
+                    if(labelSpan) labelSpan.textContent = '전체 선택됨';
+                    if(selectAllChk) { selectAllChk.checked = true; selectAllChk.indeterminate = false; }
+                } else if (checkedCount === 0) {
+                    if(labelSpan) labelSpan.textContent = '선택 없음';
+                    if(selectAllChk) { selectAllChk.checked = false; selectAllChk.indeterminate = false; }
+                } else {
+                    const firstChecked = checkedBoxes[0].value;
+                    if(labelSpan) labelSpan.textContent = checkedCount === 1 ? firstChecked : `${firstChecked} 외 ${checkedCount - 1}개`;
+                    if(selectAllChk) { selectAllChk.checked = false; selectAllChk.indeterminate = true; }
+                }
+                if(resultText) resultText.textContent = `검색 결과: 총 ${uniqueSchools.length}개 중 ${checkedCount}개 선택됨`;
+            };
+
+            if(selectAllChk) {
+                const newSelectAllChk = selectAllChk.cloneNode(true);
+                selectAllChk.parentNode.replaceChild(newSelectAllChk, selectAllChk);
+                newSelectAllChk.addEventListener('change', (e) => {
+                    const isChecked = e.target.checked;
+                    checkboxes.forEach(chk => chk.checked = isChecked);
+                    updateLabel();
+                    renderDashboards();
+                });
+            }
+
+            checkboxes.forEach(chk => {
+                chk.addEventListener('change', () => {
+                    updateLabel();
+                    renderDashboards();
+                });
+            });
+
+            updateLabel();
+            renderDashboards();
+        }
+
+        function updateSimSchoolSelect() {
+            const schoolsSet = new Set(filteredData['sim'].map(row => row['학교'].trim()));
+            const uniqueSimSchools = Array.from(schoolsSet).sort();
+
+            const simSelect = document.getElementById('simSchoolSelect');
+            const resultText = document.getElementById('filterResultTextSim');
+
+            if (uniqueSimSchools.length === 0) {
+                simSelect.innerHTML = '<option value="">조회된 대학이 없습니다</option>';
+                currentSimSchool = '';
+                if(resultText) resultText.textContent = '검색 결과: 0개 대학';
+                renderSimDashboards();
+                return;
+            }
+
+            if (!uniqueSimSchools.includes(currentSimSchool)) {
+                currentSimSchool = uniqueSimSchools.includes('대구보건대학교') ? '대구보건대학교' : uniqueSimSchools[0];
+            }
+
+            simSelect.innerHTML = uniqueSimSchools.map(school => 
+                `<option value="${school}" ${school === currentSimSchool ? 'selected' : ''}>${school}</option>`
+            ).join('');
+            
+            if(resultText) resultText.textContent = `검색 결과: 총 ${uniqueSimSchools.length}개 대학`;
+
+            renderSimDashboards();
+        }
+
+        function parseNumber(str) {
+            if (!str) return 0;
+            return parseFloat(str.toString().replace(/,/g, '')) || 0;
+        }
+
+        function formatCurrency(num) {
+            if (num === 0 || isNaN(num)) return '-';
+            return Math.round(num).toLocaleString('ko-KR') + '원';
+        }
+
+        function formatCurrencyNoUnit(num) {
+            if (num === 0 || isNaN(num)) return '0';
+            return Math.round(num).toLocaleString('ko-KR');
+        }
+
+        function formatPercent(increaseRate) {
+            if (increaseRate === null || isNaN(increaseRate)) return '-';
+            const formatted = increaseRate.toFixed(2) + '%';
+            if (increaseRate > 0) return `▲ ${formatted}`;
+            if (increaseRate < 0) return `▼ ${Math.abs(increaseRate).toFixed(2)}%`;
+            return `- (0.00%)`;
+        }
+
+        function calculateWeightedAverage(rows) {
+            let totalTuitionAmount = 0;
+            let totalQuota = 0;
+            rows.forEach(row => {
+                const tuition = parseNumber(row['등록금']);
+                const quota = parseNumber(row['입학정원']);
+                totalTuitionAmount += (tuition * quota);
+                totalQuota += quota;
+            });
+            return {
+                average: totalQuota === 0 ? 0 : (totalTuitionAmount / totalQuota),
+                totalQuota: totalQuota
+            };
+        }
+
+        function calculateIncrease(currentAvg, prevAvg) {
+            if (!prevAvg || prevAvg === 0 || !currentAvg) return null;
+            return ((currentAvg - prevAvg) / prevAvg) * 100;
+        }
+
+        function selectSchool(schoolName) {
+            currentSchool = schoolName;
+            renderSchoolSummary(); 
+            renderDepartmentSummary();
+            
+            const deptSection = document.getElementById('deptSectionContainer');
+            if (deptSection) {
+                deptSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        function getSortedSelectedYears(prefix) {
+            const yearCheckboxes = document.querySelectorAll(`.filter-checkbox-${prefix}[data-filter="year"]:checked`);
+            if (yearCheckboxes.length === 0) return [2024, 2025, 2026]; 
+            return Array.from(yearCheckboxes).map(c => parseInt(c.value)).sort((a,b) => a - b);
+        }
+
+        function renderDashboards() {
+            if (!selectedSchools.includes(currentSchool)) {
+                if (selectedSchools.includes('대구보건대학교')) {
+                    currentSchool = '대구보건대학교';
+                } else {
+                    currentSchool = selectedSchools.length > 0 ? selectedSchools[0] : '';
+                }
+            }
+            renderSchoolSummary();
+            renderDepartmentSummary();
+        }
+
+        function renderSchoolSummary() {
+            const headTr = document.getElementById('schoolSummaryHeadRow');
+            const tbody = document.getElementById('schoolSummaryBody');
+
+            if (selectedSchools.length === 0) {
+                headTr.innerHTML = `<th scope="col" class="py-3.5 px-4 text-left text-sm font-bold text-slate-700 border-r border-slate-200 border-b-2">대학명</th>`;
+                tbody.innerHTML = `<tr><td class="py-8 text-center text-slate-400 text-sm">선택된 대학이 없습니다.</td></tr>`;
+                return;
+            }
+
+            const sortedYears = getSortedSelectedYears('univ');
+
+            let thHtml = `<th scope="col" class="py-3.5 px-4 text-left text-sm font-bold text-slate-700 border-r border-slate-200 border-b-2 whitespace-nowrap">대학명</th>`;
+            sortedYears.forEach((year, index) => {
+                thHtml += `<th scope="col" class="py-3.5 px-4 text-right text-sm font-bold text-slate-700 border-b-2 border-slate-200 whitespace-nowrap">${year} 평균</th>`;
+                if (index > 0) {
+                    thHtml += `<th scope="col" class="py-3.5 px-4 text-right text-sm font-bold text-brand bg-brand/5 border-b-2 border-brand/20 whitespace-nowrap">전년대비 인상률</th>`;
+                }
+            });
+            headTr.innerHTML = thHtml;
+
+            let tbodyHtml = '';
+            selectedSchools.forEach(schoolName => {
+                const schoolData = filteredData['univ'].filter(row => row['학교'].trim() === schoolName);
+                
+                const isSelected = schoolName === currentSchool;
+                const rowClass = isSelected ? "bg-brand/10 border-l-4 border-brand" : "hover:bg-slate-50 border-l-4 border-transparent";
+                
+                let trHtml = `<td class="py-3.5 px-4 text-sm font-bold text-slate-800 border-r border-slate-200">${schoolName}</td>`;
+                
+                let previousAvg = null;
+                sortedYears.forEach((year, index) => {
+                    const yearData = schoolData.filter(row => parseInt(row['기준연도']) === year);
+                    const avg = yearData.length > 0 ? calculateWeightedAverage(yearData).average : 0;
+                    
+                    trHtml += `<td class="py-3.5 px-4 text-sm font-medium text-slate-700 text-right">${formatCurrency(avg)}</td>`;
+                    
+                    if (index > 0) {
+                        const inc = calculateIncrease(avg, previousAvg);
+                        const rateClass = (inc > 0) ? "text-red-600 font-semibold" : (inc < 0 ? "text-blue-600 font-semibold" : "text-slate-500");
+                        trHtml += `<td class="py-3.5 px-4 text-sm text-right bg-brand/5 ${rateClass}">${formatPercent(inc)}</td>`;
+                    }
+                    previousAvg = avg;
+                });
+
+                tbodyHtml += `
+                    <tr class="${rowClass} transition-colors cursor-pointer" onclick="selectSchool('${schoolName}')" title="클릭하면 아래에서 학과별 정보를 볼 수 있습니다.">
+                        ${trHtml}
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = tbodyHtml;
+        }
+
+        function renderDepartmentSummary() {
+            const headTr = document.getElementById('deptSummaryHeadRow');
+            const tbody = document.getElementById('deptSummaryBody');
+            const deptSchoolSelect = document.getElementById('deptSchoolSelect');
+
+            if (deptSchoolSelect) {
+                deptSchoolSelect.innerHTML = selectedSchools.map(school => 
+                    `<option value="${school}" ${school === currentSchool ? 'selected' : ''}>${school}</option>`
+                ).join('');
+            }
+
+            if (selectedSchools.length === 0 || !currentSchool) {
+                headTr.innerHTML = `<th scope="col" class="py-3.5 px-4 text-left text-sm font-bold text-slate-700 border-r border-slate-200 border-b-2 whitespace-nowrap">학과명</th>`;
+                tbody.innerHTML = `<tr><td class="py-8 text-center text-slate-400 text-sm">선택된 대학이 없습니다.</td></tr>`;
+                return;
+            }
+
+            const sortedYears = getSortedSelectedYears('univ');
+
+            let thHtml = `<th scope="col" class="py-3.5 px-4 text-left text-sm font-bold text-slate-700 border-r border-slate-200 border-b-2 whitespace-nowrap">학과명</th>`;
+            sortedYears.forEach((year, index) => {
+                thHtml += `<th scope="col" class="py-3.5 px-4 text-right text-sm font-bold text-slate-700 border-b-2 border-slate-200 whitespace-nowrap">${year} 평균</th>`;
+                if (index > 0) {
+                    thHtml += `<th scope="col" class="py-3.5 px-4 text-right text-sm font-bold text-brand bg-brand/5 border-b-2 border-brand/20 whitespace-nowrap">전년대비 인상률</th>`;
+                }
+            });
+            headTr.innerHTML = thHtml;
+
+            const schoolData = filteredData['univ'].filter(row => row['학교'].trim() === currentSchool);
+            
+            let groupByMode = '관련학과';
+            const checkedRadio = Array.from(deptRadioButtons).find(r => r.checked);
+            if(checkedRadio) groupByMode = checkedRadio.value;
+            
+            const deptStats = {};
+            schoolData.forEach(row => {
+                let deptName = row[groupByMode] ? row[groupByMode].trim() : (row['학과'] ? row['학과'].trim() : '미상');
+                const year = parseInt(row['기준연도']);
+                if (!deptName || isNaN(year)) return;
+
+                if (!deptStats[deptName]) {
+                    deptStats[deptName] = {};
+                }
+                if(!deptStats[deptName][year]) {
+                    deptStats[deptName][year] = [];
+                }
+                deptStats[deptName][year].push(row);
+            });
+
+            let tbodyHtml = '';
+            const sortedDepts = Object.keys(deptStats).sort();
+
+            sortedDepts.forEach(dept => {
+                let trHtml = `<td class="py-3.5 px-4 text-sm font-bold text-slate-800 border-r border-slate-200">${dept}</td>`;
+                
+                let previousAvg = null;
+                sortedYears.forEach((year, index) => {
+                    const dataYear = deptStats[dept][year] || [];
+                    const avg = dataYear.length > 0 ? calculateWeightedAverage(dataYear).average : 0;
+                    
+                    trHtml += `<td class="py-3.5 px-4 text-sm font-medium text-slate-700 text-right">${formatCurrency(avg)}</td>`;
+                    
+                    if (index > 0) {
+                        const inc = calculateIncrease(avg, previousAvg);
+                        const rateClass = (inc > 0) ? "text-red-600 font-semibold" : (inc < 0 ? "text-blue-600 font-semibold" : "text-slate-500");
+                        trHtml += `<td class="py-3.5 px-4 text-sm text-right bg-brand/5 ${rateClass}">${formatPercent(inc)}</td>`;
+                    }
+                    previousAvg = avg;
+                });
+
+                tbodyHtml += `<tr class="hover:bg-slate-50 transition-colors">${trHtml}</tr>`;
+            });
+
+            const totalCols = 1 + sortedYears.length + Math.max(0, sortedYears.length - 1);
+            if (sortedDepts.length === 0) {
+                tbodyHtml = `<tr><td colspan="${totalCols}" class="py-8 text-center text-slate-400 text-sm">조회 가능한 학과 데이터가 없습니다.</td></tr>`;
+            }
+
+            tbody.innerHTML = tbodyHtml;
+        }
+
+        // ==========================================
+        // 탭 2: 전국 통계
+        // ==========================================
+        function renderNationalSummary() {
+            const sortedYears = getSortedSelectedYears('nat');
+            const groups = ['전문대학', '대학교'];
+
+            const getCheckedValuesNat = (filterName) => {
+                return Array.from(document.querySelectorAll(`.filter-checkbox-nat[data-filter="${filterName}"]:checked`)).map(c => c.value);
+            };
+            const hasRelDeptFilter = document.getElementById('filter-relDept-nat') !== null;
+            const natSelectedRelDepts = hasRelDeptFilter ? getCheckedValuesNat('relDept') : [];
+
+            const daeguStats = {};
+            sortedYears.forEach(year => {
+                const daeguData = allData.filter(row => {
+                    if (row['학교'].trim() !== '대구보건대학교') return false;
+                    if (parseInt(row['기준연도']) !== year) return false;
+                    let relDept = row['관련학과']?.trim();
+                    if (!relDept) relDept = '미상';
+                    if (hasRelDeptFilter && natSelectedRelDepts.length > 0 && !natSelectedRelDepts.includes(relDept)) return false;
+                    return true;
+                });
+                daeguStats[year] = daeguData.length > 0 ? calculateWeightedAverage(daeguData) : null;
+            });
+
+            const stats = {};
+            groups.forEach(group => {
+                stats[group] = {};
+                sortedYears.forEach(year => {
+                    const groupData = filteredData['nat'].filter(row => 
+                        parseInt(row['기준연도']) === year && 
+                        getSchoolGroup(row['학교종류']) === group
+                    );
+                    stats[group][year] = groupData.length > 0 ? calculateWeightedAverage(groupData) : null;
+                });
+            });
+
+            const headTr = document.getElementById('nationalSummaryHeadRow');
+            const tbody = document.getElementById('nationalSummaryBody');
+
+            let thHtml = `<th scope="col" class="py-3.5 px-4 text-left text-sm font-bold text-slate-700 border-r border-slate-200 border-b-2 whitespace-nowrap">학교종류</th>`;
+            sortedYears.forEach((year, index) => {
+                thHtml += `<th scope="col" class="py-3.5 px-4 text-right text-sm font-bold text-slate-700 border-b-2 border-slate-200 whitespace-nowrap">${year} 평균</th>`;
+                if (index > 0) {
+                    thHtml += `<th scope="col" class="py-3.5 px-4 text-right text-sm font-bold text-brand bg-brand/5 border-b-2 border-brand/20 whitespace-nowrap">전년대비 인상률</th>`;
+                }
+            });
+            if(headTr) headTr.innerHTML = thHtml;
+
+            let tbodyHtml = '';
+            let hasData = false;
+            const totalCols = 1 + sortedYears.length + Math.max(0, sortedYears.length - 1);
+
+            let daeguRowHasData = false;
+            let daeguTrHtml = `<td class="py-3.5 px-4 text-sm font-extrabold text-brand border-r border-brand/20">대구보건대학교</td>`;
+            let prevDaeguAvg = null;
+            
+            sortedYears.forEach((year, index) => {
+                const currentStat = daeguStats[year];
+                const avg = currentStat ? currentStat.average : 0;
+                if(avg > 0) { daeguRowHasData = true; hasData = true; }
+                
+                daeguTrHtml += `<td class="py-3.5 px-4 text-sm text-brand text-right font-extrabold">${formatCurrency(avg)}</td>`;
+                
+                if (index > 0) {
+                    const inc = calculateIncrease(avg, prevDaeguAvg);
+                    const rateClass = (inc > 0) ? "text-red-600 font-bold" : (inc < 0 ? "text-blue-600 font-bold" : "text-slate-500");
+                    daeguTrHtml += `<td class="py-3.5 px-4 text-sm text-right bg-brand/5 ${rateClass}">${formatPercent(inc)}</td>`;
+                }
+                prevDaeguAvg = avg;
+            });
+            if (daeguRowHasData) {
+                tbodyHtml += `<tr class="bg-brand/10 hover:bg-brand/20 transition-colors border-b border-brand/20">${daeguTrHtml}</tr>`;
+            }
+
+            groups.forEach(group => {
+                let groupRowHasData = false;
+                let trHtml = `<td class="py-3.5 px-4 text-sm font-bold text-slate-800 border-r border-slate-200">${group}</td>`;
+                let prevGroupAvg = null;
+                
+                sortedYears.forEach((year, index) => {
+                    const currentStat = stats[group][year];
+                    const avg = currentStat ? currentStat.average : 0;
+                    if(avg > 0) { groupRowHasData = true; hasData = true; }
+                    
+                    trHtml += `<td class="py-3.5 px-4 text-sm font-bold text-slate-800 text-right">${formatCurrency(avg)}</td>`;
+                    
+                    if (index > 0) {
+                        const inc = calculateIncrease(avg, prevGroupAvg);
+                        const rateClass = (inc > 0) ? "text-red-600 font-semibold" : (inc < 0 ? "text-blue-600 font-semibold" : "text-slate-500");
+                        trHtml += `<td class="py-3.5 px-4 text-sm text-right bg-brand/5 ${rateClass}">${formatPercent(inc)}</td>`;
+                    }
+                    prevGroupAvg = avg;
+                });
+                if (groupRowHasData) {
+                    tbodyHtml += `<tr class="hover:bg-slate-50 transition-colors border-b border-slate-100">${trHtml}</tr>`;
+                }
+            });
+
+            if (!hasData) {
+                tbodyHtml = `<tr><td colspan="${totalCols}" class="py-8 text-center text-slate-400 text-sm">해당 조건에 부합하는 전국 데이터가 없습니다.</td></tr>`;
+            }
+
+            if(tbody) tbody.innerHTML = tbodyHtml;
+
+            let diffHtml = '';
+            let hasDiff = false;
+            
+            sortedYears.forEach(year => {
+                const univStat = stats['대학교'][year];
+                const collegeStat = stats['전문대학'][year];
+                const daeguStat = daeguStats[year];
+
+                if (daeguStat && daeguStat.average > 0 && ((univStat && univStat.average > 0) || (collegeStat && collegeStat.average > 0))) {
+                    hasDiff = true;
+                    const daeguAvg = daeguStat.average;
+                    
+                    let univText = '-';
+                    let diffUnivHtml = '<td class="py-3.5 px-4 text-sm text-center text-slate-400 bg-slate-100">-</td>';
+                    if (univStat && univStat.average > 0) {
+                        univText = formatCurrency(univStat.average);
+                        const diffUniv = daeguAvg - univStat.average;
+                        const diffUnivClass = diffUniv > 0 ? "text-red-600" : (diffUniv < 0 ? "text-blue-600" : "text-slate-800");
+                        const diffUnivText = diffUniv > 0 ? `+${formatCurrency(diffUniv)}` : formatCurrency(diffUniv);
+                        diffUnivHtml = `<td class="py-3.5 px-4 text-sm font-extrabold text-right bg-slate-50 ${diffUnivClass}">${diffUnivText}</td>`;
+                    }
+
+                    let collegeText = '-';
+                    let diffCollegeHtml = '<td class="py-3.5 px-4 text-sm text-center text-slate-400 bg-slate-100">-</td>';
+                    if (collegeStat && collegeStat.average > 0) {
+                        collegeText = formatCurrency(collegeStat.average);
+                        const diffCollege = daeguAvg - collegeStat.average;
+                        const diffCollegeClass = diffCollege > 0 ? "text-red-600" : (diffCollege < 0 ? "text-blue-600" : "text-slate-800");
+                        const diffCollegeText = diffCollege > 0 ? `+${formatCurrency(diffCollege)}` : formatCurrency(diffCollege);
+                        diffCollegeHtml = `<td class="py-3.5 px-4 text-sm font-extrabold text-right bg-slate-50 ${diffCollegeClass}">${diffCollegeText}</td>`;
+                    }
+
+                    diffHtml += `
+                        <tr class="hover:bg-slate-50 transition-colors border-b border-slate-100">
+                            <td class="py-3.5 px-4 text-sm font-bold text-slate-800 border-r border-slate-200">${year}년</td>
+                            <td class="py-3.5 px-4 text-sm font-extrabold text-brand text-right bg-brand/5">${formatCurrency(daeguAvg)}</td>
+                            <td class="py-3.5 px-4 text-sm font-medium text-slate-700 text-right">${univText}</td>
+                            ${diffUnivHtml}
+                            <td class="py-3.5 px-4 text-sm font-medium text-slate-700 text-right">${collegeText}</td>
+                            ${diffCollegeHtml}
+                        </tr>
+                    `;
+                } else if (hasData) {
+                    diffHtml += `
+                        <tr class="border-b border-slate-100">
+                            <td class="py-3.5 px-4 text-sm font-bold text-slate-800 border-r border-slate-200">${year}년</td>
+                            <td colspan="5" class="py-3.5 px-4 text-sm text-center text-slate-400">비교할 기준값(대구보건대) 또는 전국 평균 데이터가 없습니다.</td>
+                        </tr>
+                    `;
+                }
+            });
+
+            if (!hasData) {
+                diffHtml = `<tr><td colspan="6" class="py-8 text-center text-slate-400 text-sm">데이터를 업로드해 주세요.</td></tr>`;
+            }
+
+            const diffBody = document.getElementById('nationalDiffBody');
+            if(diffBody) diffBody.innerHTML = diffHtml;
+        }
+
+        // ==========================================
+        // 탭 3: 지도 시각화
+        // ==========================================
+        function getMapColorStyle(val) {
+            if (!val || val === 0) return 'background-color: #f8fafc; border-color: #e2e8f0; color: #94a3b8;';
+            const millions = Math.floor(val / 1000000);
+            if (millions <= 4) return 'background-color: #bae6fd; border-color: #7dd3fc; color: #082f49;'; 
+            else if (millions === 5) return 'background-color: #7dd3fc; border-color: #38bdf8; color: #082f49;'; 
+            else if (millions === 6) return 'background-color: #60a5fa; border-color: #3b82f6; color: #ffffff;'; 
+            else if (millions === 7) return 'background-color: #5343e4; border-color: #3e32ab; color: #ffffff;'; 
+            else if (millions === 8) return 'background-color: #7e22ce; border-color: #6b21a8; color: #ffffff;'; 
+            else if (millions === 9) return 'background-color: #c026d3; border-color: #a21caf; color: #ffffff;'; 
+            else return 'background-color: #e11d48; border-color: #be123c; color: #ffffff;'; 
+        }
+
+        function formatMapValue(avg) {
+            if (!avg || avg === 0) return '-';
+            return Math.round(avg / 10000).toLocaleString('ko-KR') + '만';
+        }
+
+        function renderRegionMaps() {
+            const extraData = filteredData['extra'];
+            const groups = ['전문대학', '대학교'];
+            
+            groups.forEach(group => {
+                const groupData = extraData.filter(r => getSchoolGroup(r['학교종류']) === group);
+                const regionStats = {};
+
+                groupData.forEach(row => {
+                    const reg = row['지역']?.trim();
+                    if (!reg) return;
+                    if (!regionStats[reg]) regionStats[reg] = [];
+                    regionStats[reg].push(row);
+                });
+
+                const regionAverages = {};
+                Object.keys(regionStats).forEach(reg => {
+                    const avg = calculateWeightedAverage(regionStats[reg]).average;
+                    if(avg > 0) regionAverages[reg] = avg;
+                });
+
+                const mapContainerId = group === '전문대학' ? 'mapCollege' : 'mapUniv';
+                const container = document.getElementById(mapContainerId);
+                
+                if (Object.keys(regionAverages).length === 0) {
+                    container.innerHTML = `<p class="col-span-4 text-center text-slate-400 py-12 text-sm">조건에 부합하는 데이터가 없습니다.</p>`;
+                    return;
+                }
+
+                let html = '';
+                koreaMapLayout.forEach(tile => {
+                    if (tile.id === null) {
+                        html += `<div></div>`; 
+                    } else {
+                        const avg = regionAverages[tile.name] || 0;
+                        const styleStr = getMapColorStyle(avg);
+                        html += `
+                            <div class="aspect-square flex flex-col items-center justify-center p-1 rounded-xl shadow-sm border transition-transform hover:scale-105" style="${styleStr}" title="${tile.name}: ${avg > 0 ? formatCurrency(avg) : '데이터 없음'}">
+                                <span class="font-bold text-[13px] sm:text-sm drop-shadow-sm">${tile.name}</span>
+                                <span class="text-[10px] sm:text-xs font-semibold opacity-90 drop-shadow-sm mt-0.5">${formatMapValue(avg)}</span>
+                            </div>
+                        `;
+                    }
+                });
+                
+                container.innerHTML = html;
+            });
+        }
+
+        // ==========================================
+        // 탭 4: 시뮬레이션 관련 스크립트
+        // ==========================================
+        function applySimulation() {
+            if (!currentSimSchool) return;
+
+            const quotaInputs = document.querySelectorAll('input[data-dept-quota]');
+            const tuitionInputs = document.querySelectorAll('input[data-dept-tuition]');
+            
+            quotaInputs.forEach(input => {
+                const dept = input.getAttribute('data-dept-quota');
+                simBaseQuotas[dept] = parseNumber(input.value);
+            });
+            
+            tuitionInputs.forEach(input => {
+                const dept = input.getAttribute('data-dept-tuition');
+                simInputData[dept] = parseNumber(input.value);
+            });
+
+            const schoolData = filteredData['sim'].filter(row => row['학교'].trim() === currentSimSchool);
+            const sortedYears = getSortedSelectedYears('sim');
+            
+            if (sortedYears.length === 0 || schoolData.length === 0) return;
+
+            const maxYear = sortedYears[sortedYears.length - 1];
+            const simYear = maxYear + 1;
+
+            let groupByMode = '관련학과';
+            const checkedRadio = Array.from(simDeptRadioButtons).find(r => r.checked);
+            if(checkedRadio) groupByMode = checkedRadio.value;
+
+            const deptStats = {};
+            schoolData.forEach(row => {
+                let deptName = row[groupByMode] ? row[groupByMode].trim() : (row['학과'] ? row['학과'].trim() : '미상');
+                const y = parseInt(row['기준연도']);
+                if (!deptName || isNaN(y)) return;
+
+                if (!deptStats[deptName]) deptStats[deptName] = {};
+                if (!deptStats[deptName][y]) deptStats[deptName][y] = [];
+                deptStats[deptName][y].push(row);
+            });
+            const sortedDepts = Object.keys(deptStats).sort();
+
+            renderSimSummary(sortedYears, maxYear, simYear);
+            renderSimDepartments(sortedYears, maxYear, simYear, sortedDepts, deptStats);
+        }
+
+        function renderSimDashboards() {
+            const headTrSum = document.getElementById('simSummaryHeadRow');
+            const tbodySum = document.getElementById('simSummaryBody');
+            const headTrDept = document.getElementById('simDeptHeadRow');
+            const tbodyDept = document.getElementById('simDeptBody');
+
+            if (!currentSimSchool) {
+                headTrSum.innerHTML = `<th scope="col" class="py-3.5 px-4 text-left text-sm font-bold text-slate-700 border-r border-slate-200 border-b-2">대학명</th>`;
+                tbodySum.innerHTML = `<tr><td class="py-8 text-center text-slate-400 text-sm">선택된 대학이 없습니다.</td></tr>`;
+                headTrDept.innerHTML = `<th scope="col" class="py-3.5 px-4 text-left text-sm font-bold text-slate-700 border-r border-slate-200 border-b-2">학과명</th>`;
+                tbodyDept.innerHTML = `<tr><td class="py-8 text-center text-slate-400 text-sm">선택된 대학이 없습니다.</td></tr>`;
+                return;
+            }
+
+            const schoolData = filteredData['sim'].filter(row => row['학교'].trim() === currentSimSchool);
+            const sortedYears = getSortedSelectedYears('sim');
+            
+            if (sortedYears.length === 0 || schoolData.length === 0) return;
+
+            const maxYear = sortedYears[sortedYears.length - 1];
+            const simYear = maxYear + 1; 
+
+            let groupByMode = '관련학과';
+            const checkedRadio = Array.from(simDeptRadioButtons).find(r => r.checked);
+            if(checkedRadio) groupByMode = checkedRadio.value;
+
+            const deptStats = {};
+            schoolData.forEach(row => {
+                let deptName = row[groupByMode] ? row[groupByMode].trim() : (row['학과'] ? row['학과'].trim() : '미상');
+                const y = parseInt(row['기준연도']);
+                if (!deptName || isNaN(y)) return;
+
+                if (!deptStats[deptName]) deptStats[deptName] = {};
+                if (!deptStats[deptName][y]) deptStats[deptName][y] = [];
+                deptStats[deptName][y].push(row);
+            });
+
+            const sortedDepts = Object.keys(deptStats).sort();
+
+            const simContextKey = currentSimSchool + '_' + groupByMode;
+            if (window.currentSimContext !== simContextKey) {
+                simInputData = {};
+                simBaseQuotas = {};
+                window.currentSimContext = simContextKey;
+            }
+
+            sortedDepts.forEach(dept => {
+                let latestYear = maxYear;
+                while (latestYear >= sortedYears[0] && (!deptStats[dept][latestYear] || deptStats[dept][latestYear].length === 0)) {
+                    latestYear--;
+                }
+                const dataLatest = deptStats[dept][latestYear] || [];
+                const avgLatest = dataLatest.length > 0 ? calculateWeightedAverage(dataLatest).average : 0;
+                const quotaLatest = dataLatest.length > 0 ? calculateWeightedAverage(dataLatest).totalQuota : 0;
+
+                if (simInputData[dept] === undefined) {
+                    simInputData[dept] = avgLatest; 
+                }
+                if (simBaseQuotas[dept] === undefined) {
+                    simBaseQuotas[dept] = quotaLatest; 
+                }
+            });
+
+            renderSimSummary(sortedYears, maxYear, simYear);
+            renderSimDepartments(sortedYears, maxYear, simYear, sortedDepts, deptStats);
+        }
+
+        function renderSimSummary(sortedYears, maxYear, simYear) {
+            const headTr = document.getElementById('simSummaryHeadRow');
+            const tbody = document.getElementById('simSummaryBody');
+
+            let thHtml = `<th scope="col" class="py-3.5 px-4 text-left text-sm font-bold text-slate-700 border-r border-slate-200 border-b-2 whitespace-nowrap">대학명</th>`;
+            sortedYears.forEach((year, index) => {
+                thHtml += `<th scope="col" class="py-3.5 px-4 text-right text-sm font-bold text-slate-700 border-b-2 border-slate-200 whitespace-nowrap">${year} 평균</th>`;
+                if (index > 0) {
+                    thHtml += `<th scope="col" class="py-3.5 px-4 text-right text-sm font-bold text-slate-500 bg-slate-50 border-b-2 border-slate-200 whitespace-nowrap">인상률</th>`;
+                }
+            });
+            thHtml += `<th scope="col" class="py-3.5 px-4 text-right text-sm font-extrabold text-amber-600 bg-amber-50 border-b-2 border-amber-200 whitespace-nowrap">예상 총 정원</th>`;
+            thHtml += `<th scope="col" class="py-3.5 px-4 text-right text-sm font-extrabold text-amber-600 bg-amber-50 border-b-2 border-amber-200 whitespace-nowrap">${simYear} (예상 등록금)</th>`;
+            thHtml += `<th scope="col" class="py-3.5 px-4 text-right text-sm font-extrabold text-amber-700 bg-amber-50 border-b-2 border-amber-200 whitespace-nowrap">예상 인상률</th>`;
+            
+            headTr.innerHTML = thHtml;
+
+            const schoolData = filteredData['sim'].filter(row => row['학교'].trim() === currentSimSchool);
+            let trHtml = `<td class="py-3.5 px-4 text-sm font-bold text-slate-800 border-r border-slate-200">${currentSimSchool}</td>`;
+            
+            let previousAvg = null;
+            let lastRealAvg = null;
+
+            sortedYears.forEach((year, index) => {
+                const yearData = schoolData.filter(row => parseInt(row['기준연도']) === year);
+                const avg = yearData.length > 0 ? calculateWeightedAverage(yearData).average : 0;
+                
+                trHtml += `<td class="py-3.5 px-4 text-sm font-medium text-slate-700 text-right">${formatCurrency(avg)}</td>`;
+                
+                if (index > 0) {
+                    const inc = calculateIncrease(avg, previousAvg);
+                    const rateClass = (inc > 0) ? "text-red-600 font-semibold" : (inc < 0 ? "text-blue-600 font-semibold" : "text-slate-500");
+                    trHtml += `<td class="py-3.5 px-4 text-sm text-right bg-slate-50 ${rateClass}">${formatPercent(inc)}</td>`;
+                }
+                previousAvg = avg;
+                if (year === maxYear) lastRealAvg = avg;
+            });
+
+            let totalSimTuition = 0;
+            let totalSimQuota = 0;
+            Object.keys(simInputData).forEach(dept => {
+                const val = simInputData[dept];
+                const q = simBaseQuotas[dept] || 0;
+                if (val > 0 && q > 0) {
+                    totalSimTuition += val * q;
+                    totalSimQuota += q;
+                }
+            });
+            const simAvg = totalSimQuota > 0 ? totalSimTuition / totalSimQuota : 0;
+            const simInc = calculateIncrease(simAvg, lastRealAvg);
+            const simRateClass = (simInc > 0) ? "text-red-600" : (simInc < 0 ? "text-blue-600" : "text-amber-700");
+
+            trHtml += `<td class="py-3.5 px-4 text-sm font-bold text-amber-600 text-right bg-amber-50 border-r border-amber-100">${formatCurrencyNoUnit(totalSimQuota)}명</td>`;
+            trHtml += `<td class="py-3.5 px-4 text-sm font-extrabold text-amber-700 text-right bg-amber-50">${formatCurrency(simAvg)}</td>`;
+            trHtml += `<td class="py-3.5 px-4 text-sm font-extrabold text-right bg-amber-50/50 ${simRateClass}">${formatPercent(simInc)}</td>`;
+
+            tbody.innerHTML = `<tr class="hover:bg-slate-50 transition-colors">${trHtml}</tr>`;
+        }
+
+        function renderSimDepartments(sortedYears, maxYear, simYear, sortedDepts, deptStats) {
+            const headTr = document.getElementById('simDeptHeadRow');
+            const tbody = document.getElementById('simDeptBody');
+
+            let thHtml = `<th scope="col" class="py-3.5 px-4 text-left text-sm font-bold text-slate-700 border-r border-slate-200 border-b-2 whitespace-nowrap">학과명</th>`;
+            sortedYears.forEach((year, index) => {
+                thHtml += `<th scope="col" class="py-3.5 px-4 text-right text-sm font-bold text-slate-700 border-b-2 border-slate-200 whitespace-nowrap">${year} 평균</th>`;
+                if (index > 0) {
+                    thHtml += `<th scope="col" class="py-3.5 px-4 text-right text-sm font-bold text-slate-500 bg-slate-50 border-b-2 border-slate-200 whitespace-nowrap">인상률</th>`;
+                }
+            });
+            thHtml += `<th scope="col" class="py-3.5 px-4 text-right text-sm font-extrabold text-amber-600 bg-amber-50 border-b-2 border-amber-200 whitespace-nowrap">예상 입학정원</th>`;
+            thHtml += `<th scope="col" class="py-3.5 px-4 text-right text-sm font-extrabold text-amber-600 bg-amber-50 border-b-2 border-amber-200 whitespace-nowrap">${simYear} (예상 등록금)</th>`;
+            thHtml += `<th scope="col" class="py-3.5 px-4 text-right text-sm font-extrabold text-amber-700 bg-amber-50 border-b-2 border-amber-200 whitespace-nowrap">예상 인상률</th>`;
+            headTr.innerHTML = thHtml;
+
+            let tbodyHtml = '';
+
+            sortedDepts.forEach(dept => {
+                let trHtml = `<td class="py-3.5 px-4 text-sm font-bold text-slate-800 border-r border-slate-200">${dept}</td>`;
+                
+                let previousAvg = null;
+                let lastRealAvg = null;
+
+                sortedYears.forEach((year, index) => {
+                    const dataYear = deptStats[dept][year] || [];
+                    const avg = dataYear.length > 0 ? calculateWeightedAverage(dataYear).average : 0;
+                    
+                    trHtml += `<td class="py-3.5 px-4 text-sm font-medium text-slate-700 text-right">${formatCurrency(avg)}</td>`;
+                    
+                    if (index > 0) {
+                        const inc = calculateIncrease(avg, previousAvg);
+                        const rateClass = (inc > 0) ? "text-red-600 font-semibold" : (inc < 0 ? "text-blue-600 font-semibold" : "text-slate-500");
+                        trHtml += `<td class="py-3.5 px-4 text-sm text-right bg-slate-50 ${rateClass}">${formatPercent(inc)}</td>`;
+                    }
+                    previousAvg = avg;
+                    if (year === maxYear) lastRealAvg = avg;
+                });
+
+                const currentQuota = simBaseQuotas[dept] || 0;
+                const currentVal = simInputData[dept] || 0;
+                const simInc = calculateIncrease(currentVal, lastRealAvg);
+                const simRateClass = (simInc > 0) ? "text-red-600" : (simInc < 0 ? "text-blue-600" : "text-amber-700");
+
+                trHtml += `
+                    <td class="py-2 px-4 text-right bg-amber-50 border-r border-amber-100">
+                        <input type="text" 
+                            data-dept-quota="${dept}"
+                            value="${formatCurrencyNoUnit(currentQuota)}" 
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/\\B(?=(\\d{3})+(?!\\d))/g, ',')"
+                            class="w-20 text-right border border-amber-300 focus:ring-amber-500 focus:border-amber-500 rounded px-2 py-1.5 text-sm font-bold text-amber-800 shadow-sm"
+                            placeholder="정원 입력">
+                    </td>
+                `;
+
+                trHtml += `
+                    <td class="py-2 px-4 text-right bg-amber-50">
+                        <input type="text" 
+                            data-dept-tuition="${dept}"
+                            value="${formatCurrencyNoUnit(currentVal)}" 
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/\\B(?=(\\d{3})+(?!\\d))/g, ',')"
+                            class="w-32 text-right border border-amber-300 focus:ring-amber-500 focus:border-amber-500 rounded px-2 py-1.5 text-sm font-extrabold text-amber-800 shadow-sm"
+                            placeholder="금액 입력">
+                    </td>
+                `;
+                trHtml += `<td class="py-3.5 px-4 text-sm font-extrabold text-right bg-amber-50/50 ${simRateClass}">${formatPercent(simInc)}</td>`;
+
+                tbodyHtml += `<tr class="hover:bg-slate-50 transition-colors">${trHtml}</tr>`;
+            });
+
+            if (sortedDepts.length === 0) {
+                const totalCols = 1 + sortedYears.length + Math.max(0, sortedYears.length - 1) + 3;
+                tbodyHtml = `<tr><td colspan="${totalCols}" class="py-8 text-center text-slate-400 text-sm">조회 가능한 학과 데이터가 없습니다.</td></tr>`;
+            }
+
+            tbody.innerHTML = tbodyHtml;
+        }
+
+        // ==========================================
+        // 탭 5: 관련학과 조회 스크립트
+        // ==========================================
+        
+        // 수동 조회 실행 함수 추가 (로딩 애니메이션 처리)
+        function executeDeptSearch() {
+            const loading = document.getElementById('deptTabLoading');
+            if (loading) loading.classList.remove('hidden');
+            
+            // UI가 로딩화면을 그릴 수 있도록 약간의 딜레이 후 무거운 연산을 실행
+            setTimeout(() => {
+                renderDeptTab();
+                if (loading) loading.classList.add('hidden');
+            }, 100);
+        }
+
+        function renderDeptTab() {
+            const headTr = document.getElementById('deptTabHeadRow');
+            const tbody = document.getElementById('deptTabBody');
+            
+            const sortedYears = getSortedSelectedYears('dept');
+            const data = filteredData['dept'];
+            
+            if (sortedYears.length === 0 || data.length === 0) {
+                headTr.innerHTML = `
+                    <th scope="col" class="py-3.5 px-4 text-left text-sm font-bold text-slate-700 border-r border-slate-200 border-b-2 whitespace-nowrap">대학명</th>
+                    <th scope="col" class="py-3.5 px-4 text-left text-sm font-bold text-slate-700 border-r border-slate-200 border-b-2 whitespace-nowrap">학과명</th>
+                    <th scope="col" class="py-3.5 px-4 text-left text-sm font-bold text-slate-700 border-r border-slate-200 border-b-2 whitespace-nowrap">지역</th>
+                    <th scope="col" class="py-3.5 px-4 text-left text-sm font-bold text-slate-700 border-r border-slate-200 border-b-2 whitespace-nowrap">학교종류</th>
+                    <th scope="col" class="py-3.5 px-4 text-center text-sm font-bold text-slate-700 border-b-2 border-slate-200">-</th>
+                `;
+                tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-400 text-sm">해당 조건에 부합하는 데이터가 없습니다.</td></tr>`;
+                return;
+            }
+
+            let thHtml = `
+                <th scope="col" class="py-3.5 px-4 text-left text-sm font-bold text-slate-700 border-r border-slate-200 border-b-2 whitespace-nowrap">대학명</th>
+                <th scope="col" class="py-3.5 px-4 text-left text-sm font-bold text-slate-700 border-r border-slate-200 border-b-2 whitespace-nowrap">학과명</th>
+                <th scope="col" class="py-3.5 px-4 text-left text-sm font-bold text-slate-700 border-r border-slate-200 border-b-2 whitespace-nowrap">지역</th>
+                <th scope="col" class="py-3.5 px-4 text-left text-sm font-bold text-slate-700 border-r border-slate-200 border-b-2 whitespace-nowrap">학교종류</th>
+            `;
+            sortedYears.forEach((year, index) => {
+                thHtml += `<th scope="col" class="py-3.5 px-4 text-right text-sm font-bold text-slate-700 border-b-2 border-slate-200 whitespace-nowrap">${year} 평균</th>`;
+                if (index > 0) {
+                    thHtml += `<th scope="col" class="py-3.5 px-4 text-right text-sm font-bold text-violet-600 bg-violet-50 border-b-2 border-violet-200 whitespace-nowrap">인상률</th>`;
+                }
+            });
+            headTr.innerHTML = thHtml;
+
+            let groupByMode = '관련학과';
+            const checkedRadio = Array.from(deptTabRadioButtons).find(r => r.checked);
+            if(checkedRadio) groupByMode = checkedRadio.value;
+
+            const rowsMap = {};
+            data.forEach(row => {
+                const school = row['학교']?.trim() || '';
+                const deptName = row[groupByMode] ? row[groupByMode].trim() : (row['학과'] ? row['학과'].trim() : '미상');
+                const region = row['지역']?.trim() || '';
+                const sType = getSchoolGroup(row['학교종류']);
+                const y = parseInt(row['기준연도']);
+                
+                if(!school || !deptName || isNaN(y)) return;
+                
+                const key = `${school}|${deptName}|${region}|${sType}`;
+                if (!rowsMap[key]) {
+                    rowsMap[key] = { school, deptName, region, sType, stats: {} };
+                }
+                if (!rowsMap[key].stats[y]) rowsMap[key].stats[y] = [];
+                rowsMap[key].stats[y].push(row);
+            });
+
+            const rowsArr = Object.values(rowsMap).map(item => {
+                const avgs = {};
+                sortedYears.forEach(year => {
+                    if (item.stats[year] && item.stats[year].length > 0) {
+                        avgs[year] = calculateWeightedAverage(item.stats[year]).average;
+                    } else {
+                        avgs[year] = 0;
+                    }
+                });
+                item.avgs = avgs;
+                return item;
+            });
+
+            // 정렬 로직: 대구보건대학교 상단 고정 제거, 전체 데이터 대상 최신연도 평균등록금 내림차순 정렬
+            const latestYear = sortedYears[sortedYears.length - 1];
+            rowsArr.sort((a, b) => {
+                return (b.avgs[latestYear] || 0) - (a.avgs[latestYear] || 0);
+            });
+
+            let tbodyHtml = '';
+            rowsArr.forEach(item => {
+                const isDaegu = item.school === '대구보건대학교';
+                // 색표시를 더 진하게 변경
+                const rowClass = isDaegu ? 'bg-violet-200/80 hover:bg-violet-300 transition-colors' : 'hover:bg-slate-50 transition-colors';
+                const textClass = isDaegu ? 'font-black text-violet-950' : 'font-bold text-slate-800';
+
+                let trHtml = `
+                    <td class="py-3.5 px-4 text-sm ${textClass} border-r border-slate-200">${item.school}</td>
+                    <td class="py-3.5 px-4 text-sm font-medium text-slate-700 border-r border-slate-200">${item.deptName}</td>
+                    <td class="py-3.5 px-4 text-sm font-medium text-slate-700 border-r border-slate-200">${item.region}</td>
+                    <td class="py-3.5 px-4 text-sm font-medium text-slate-700 border-r border-slate-200">${item.sType}</td>
+                `;
+
+                let prevAvg = null;
+                sortedYears.forEach((year, index) => {
+                    const avg = item.avgs[year];
+                    const isDaeguCellClass = isDaegu ? "font-bold text-violet-900" : "font-medium text-slate-700";
+                    trHtml += `<td class="py-3.5 px-4 text-sm ${isDaeguCellClass} text-right">${formatCurrency(avg)}</td>`;
+                    
+                    if (index > 0) {
+                        const inc = calculateIncrease(avg, prevAvg);
+                        const rateClass = (inc > 0) ? "text-red-600 font-semibold" : (inc < 0 ? "text-blue-600 font-semibold" : "text-slate-500");
+                        const bgClass = isDaegu ? "bg-violet-300/30" : "bg-slate-50";
+                        trHtml += `<td class="py-3.5 px-4 text-sm text-right ${bgClass} ${rateClass}">${formatPercent(inc)}</td>`;
+                    }
+                    prevAvg = avg;
+                });
+                tbodyHtml += `<tr class="${rowClass} border-b border-slate-100">${trHtml}</tr>`;
+            });
+            
+            if (rowsArr.length === 0) {
+                const totalCols = 4 + sortedYears.length + Math.max(0, sortedYears.length - 1);
+                tbodyHtml = `<tr><td colspan="${totalCols}" class="py-8 text-center text-slate-400 text-sm">해당 조건에 부합하는 데이터가 없습니다.</td></tr>`;
+            }
+            tbody.innerHTML = tbodyHtml;
+
+            // 표 렌더링 직후 분석 보고서 생성
+            generateDeptAnalysisReport(sortedYears, data, groupByMode);
+        }
+
+        // 글로벌 차트 인스턴스 관리 객체 (재조회 시 차트 캔버스 초기화용)
+        window.reportCharts = window.reportCharts || {};
+
+        // 분석 보고서 및 시각화 렌더링 함수
+        function generateDeptAnalysisReport(sortedYears, data, groupByMode) {
+            const container = document.getElementById('deptAnalysisReportContainer');
+            if (sortedYears.length === 0 || data.length === 0) {
+                container.innerHTML = '';
+                container.classList.add('hidden');
+                return;
+            }
+
+            const latestYear = sortedYears[sortedYears.length - 1];
+            // 조회된 전체 데이터 중 최신 연도의 데이터만 추출
+            const targetData = data.filter(row => parseInt(row['기준연도']) === latestYear);
+
+            if (targetData.length === 0) {
+                container.innerHTML = '';
+                container.classList.add('hidden');
+                return;
+            }
+
+            // 각 분류별 데이터 집합 추출
+            const dhcData = targetData.filter(r => r['학교'].trim() === '대구보건대학교');
+            
+            // 1. 서울/경기 전문대학 및 대학교
+            const sgColData = targetData.filter(r => ['서울', '경기'].includes(r['지역']?.trim()) && getSchoolGroup(r['학교종류']) === '전문대학');
+            const sgUnivData = targetData.filter(r => ['서울', '경기'].includes(r['지역']?.trim()) && getSchoolGroup(r['학교종류']) === '대학교');
+            
+            // 2. 동일권역 (대구/경북) 전문대학 및 대학교 (대구보건대 제외)
+            const srColData = targetData.filter(r => ['대구', '경북'].includes(r['지역']?.trim()) && getSchoolGroup(r['학교종류']) === '전문대학' && r['학교'].trim() !== '대구보건대학교');
+            const srUnivData = targetData.filter(r => ['대구', '경북'].includes(r['지역']?.trim()) && getSchoolGroup(r['학교종류']) === '대학교');
+            
+            // 3. 주요 보건대학
+            const djData = targetData.filter(r => r['학교'].trim().includes('대전보건대'));
+            const gjData = targetData.filter(r => r['학교'].trim().includes('광주보건대'));
+
+            // 가중 평균 계산
+            const dhcAvg = dhcData.length > 0 ? calculateWeightedAverage(dhcData).average : 0;
+            const sgColAvg = sgColData.length > 0 ? calculateWeightedAverage(sgColData).average : 0;
+            const sgUnivAvg = sgUnivData.length > 0 ? calculateWeightedAverage(sgUnivData).average : 0;
+            const srColAvg = srColData.length > 0 ? calculateWeightedAverage(srColData).average : 0;
+            const srUnivAvg = srUnivData.length > 0 ? calculateWeightedAverage(srUnivData).average : 0;
+            const djAvg = djData.length > 0 ? calculateWeightedAverage(djData).average : 0;
+            const gjAvg = gjData.length > 0 ? calculateWeightedAverage(gjData).average : 0;
+
+            if (dhcAvg === 0) {
+                container.innerHTML = `<div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 text-center text-slate-500">현재 조회된 데이터에 대구보건대학교가 포함되어 있지 않아 시각화 분석 보고서를 생성할 수 없습니다.</div>`;
+                container.classList.remove('hidden');
+                return;
+            }
+
+            // 분석 코멘트 생성기
+            const generateComment = (targetAvg, label) => {
+                if (targetAvg === 0) return `<li class="flex items-start"><svg class="w-4 h-4 text-slate-400 mt-0.5 mr-1.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg><span class="text-slate-500">${label} 데이터가 없어 비교 불가</span></li>`;
+                
+                const diff = dhcAvg - targetAvg;
+                if (diff > 0) return `<li class="flex items-start"><svg class="w-4 h-4 text-red-500 mt-0.5 mr-1.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clip-rule="evenodd"></path></svg><span class="text-slate-700">${label} 대비 <span class="text-red-600 font-bold">+${formatCurrencyNoUnit(diff)}원</span> 높음</span></li>`;
+                if (diff < 0) return `<li class="flex items-start"><svg class="w-4 h-4 text-blue-500 mt-0.5 mr-1.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12 13a1 1 0 100 2h5a1 1 0 001-1V9a1 1 0 10-2 0v2.586l-4.293-4.293a1 1 0 00-1.414 0L8 9.586 3.707 5.293a1 1 0 00-1.414 1.414l5 5a1 1 0 001.414 0L11 9.414 14.586 13H12z" clip-rule="evenodd"></path></svg><span class="text-slate-700">${label} 대비 <span class="text-blue-600 font-bold">-${formatCurrencyNoUnit(Math.abs(diff))}원</span> 낮음</span></li>`;
+                return `<li class="flex items-start"><svg class="w-4 h-4 text-emerald-500 mt-0.5 mr-1.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg><span class="text-slate-700">${label}와 동일 수준</span></li>`;
+            };
+
+            const html = `
+                <div class="bg-violet-50/30 p-6 rounded-2xl border border-violet-200 shadow-sm">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-violet-200 pb-4 mb-6">
+                        <h3 class="text-xl font-extrabold text-violet-950 flex items-center gap-2">
+                            <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                            [${latestYear}년 기준] 대구보건대학교 다각적 시각화 보고서
+                        </h3>
+                        <div class="mt-2 md:mt-0 bg-white px-4 py-2 rounded-lg shadow-sm border border-violet-100 text-sm font-bold text-slate-600">
+                            대구보건대 평균: <span class="text-brand text-lg ml-1">${formatCurrency(dhcAvg)}</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        
+                        <!-- 1. 서울/경기 비교 -->
+                        <div class="bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col h-full overflow-hidden">
+                            <div class="bg-slate-50 px-4 py-3 border-b border-slate-200">
+                                <h4 class="font-bold text-slate-800 text-center">서울/경기 권역 비교</h4>
+                            </div>
+                            <div class="p-4 flex-1 flex flex-col justify-center">
+                                <canvas id="chartSeoulGyeonggi" class="w-full" style="max-height: 200px;"></canvas>
+                            </div>
+                            <div class="bg-slate-50/50 p-4 border-t border-slate-100 text-[13px]">
+                                <ul class="space-y-2">
+                                    ${generateComment(sgColAvg, '서울/경기 전문대')}
+                                    ${generateComment(sgUnivAvg, '서울/경기 대학교')}
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 2. 동일 권역 비교 -->
+                        <div class="bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col h-full overflow-hidden">
+                            <div class="bg-slate-50 px-4 py-3 border-b border-slate-200">
+                                <h4 class="font-bold text-slate-800 text-center">동일 권역(대구/경북) 비교</h4>
+                            </div>
+                            <div class="p-4 flex-1 flex flex-col justify-center">
+                                <canvas id="chartSameRegion" class="w-full" style="max-height: 200px;"></canvas>
+                            </div>
+                            <div class="bg-slate-50/50 p-4 border-t border-slate-100 text-[13px]">
+                                <ul class="space-y-2">
+                                    ${generateComment(srColAvg, '동일권역 전문대')}
+                                    ${generateComment(srUnivAvg, '동일권역 대학교')}
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 3. 주요 보건대학 비교 -->
+                        <div class="bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col h-full overflow-hidden">
+                            <div class="bg-slate-50 px-4 py-3 border-b border-slate-200">
+                                <h4 class="font-bold text-slate-800 text-center">주요 보건대학교 비교</h4>
+                            </div>
+                            <div class="p-4 flex-1 flex flex-col justify-center">
+                                <canvas id="chartHealthColleges" class="w-full" style="max-height: 200px;"></canvas>
+                            </div>
+                            <div class="bg-slate-50/50 p-4 border-t border-slate-100 text-[13px]">
+                                <ul class="space-y-2">
+                                    ${generateComment(djAvg, '대전보건대학교')}
+                                    ${generateComment(gjAvg, '광주보건대학교')}
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            `;
+            container.innerHTML = html;
+            container.classList.remove('hidden');
+
+            // DOM 렌더링 완료 후 차트 생성
+            setTimeout(() => {
+                // 기존 차트 파괴 (Canvas 재사용 오류 방지)
+                if (window.reportCharts.chartSG) window.reportCharts.chartSG.destroy();
+                if (window.reportCharts.chartSR) window.reportCharts.chartSR.destroy();
+                if (window.reportCharts.chartHC) window.reportCharts.chartHC.destroy();
+
+                const commonOptions = {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return formatCurrencyNoUnit(context.raw) + '원';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            ticks: {
+                                callback: function(value) { return Math.round(value/10000) + '만'; }
+                            }
+                        }
+                    }
+                };
+
+                const brandColor = '#5343e4';
+                const colColor = '#94a3b8'; // slate-400
+                const univColor = '#cbd5e1'; // slate-300
+
+                // Chart 1: 서울/경기
+                const ctxSG = document.getElementById('chartSeoulGyeonggi').getContext('2d');
+                window.reportCharts.chartSG = new Chart(ctxSG, {
+                    type: 'bar',
+                    data: {
+                        labels: ['대구보건대', '서/경 전문대', '서/경 대학교'],
+                        datasets: [{
+                            data: [dhcAvg, sgColAvg, sgUnivAvg],
+                            backgroundColor: [brandColor, colColor, univColor],
+                            borderRadius: 4
+                        }]
+                    },
+                    options: commonOptions
+                });
+
+                // Chart 2: 동일 권역
+                const ctxSR = document.getElementById('chartSameRegion').getContext('2d');
+                window.reportCharts.chartSR = new Chart(ctxSR, {
+                    type: 'bar',
+                    data: {
+                        labels: ['대구보건대', '동일 전문대', '동일 대학교'],
+                        datasets: [{
+                            data: [dhcAvg, srColAvg, srUnivAvg],
+                            backgroundColor: [brandColor, colColor, univColor],
+                            borderRadius: 4
+                        }]
+                    },
+                    options: commonOptions
+                });
+
+                // Chart 3: 주요 보건대학
+                const ctxHC = document.getElementById('chartHealthColleges').getContext('2d');
+                window.reportCharts.chartHC = new Chart(ctxHC, {
+                    type: 'bar',
+                    data: {
+                        labels: ['대구보건대', '대전보건대', '광주보건대'],
+                        datasets: [{
+                            data: [dhcAvg, djAvg, gjAvg],
+                            backgroundColor: [brandColor, colColor, colColor],
+                            borderRadius: 4
+                        }]
+                    },
+                    options: commonOptions
+                });
+            }, 100);
+        }
+    </script>
+</body>
+</html>
