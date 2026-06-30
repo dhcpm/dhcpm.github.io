@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026년 4월 공시항목 공시 현황</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts: Pretendard -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Pretendard', 'sans-serif'],
+                    },
+                    colors: {
+                        spring: {
+                            50: '#fff5f7',
+                            100: '#ffe5ed',
+                            200: '#ffcce0',
+                            300: '#ffa3cc',
+                            400: '#ff66a3',
+                            500: '#ed4882',
+                            green: '#e6f4ea',
+                            text: '#2d3748',
+                            muted: '#718096'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: #fcfcfc;
+        }
+        /* 벚꽃잎 흩날리는 배경 효과를 위한 커스텀 클래스 */
+        .spring-bg {
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 204, 224, 0.4) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(230, 244, 234, 0.6) 0%, transparent 20%),
+                radial-gradient(circle at 50% 50%, rgba(255, 229, 237, 0.3) 0%, transparent 50%);
+            background-color: #fff5f7;
+        }
+        /* 테이블 접근성 숨김 텍스트 */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+        /* 테이블 호버 애니메이션 */
+        tbody tr {
+            transition: background-color 0.2s ease-in-out;
+        }
+    </style>
+</head>
+<body class="text-spring-text antialiased selection:bg-spring-300 selection:text-white relative">
+
+    <!-- 상단 네비게이션 (Sticky Menu) -->
+    <header class="fixed top-0 w-full bg-white/80 backdrop-blur-md shadow-sm z-50 border-b border-spring-100">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <nav class="flex justify-end h-16 items-center" aria-label="메인 네비게이션">
+                <ul class="flex space-x-6 text-sm sm:text-base font-medium">
+                    <li><a href="#cover" class="hover:text-spring-500 transition-colors py-2">표지</a></li>
+                    <li><a href="#tuition" class="hover:text-spring-500 transition-colors py-2">등록금 현황</a></li>
+                    <li><a href="#social" class="hover:text-spring-500 transition-colors py-2">사회봉사 역량</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="pt-16">
+        <!-- 1. 표지 섹션 -->
+        <section id="cover" class="spring-bg min-h-[90vh] flex flex-col justify-center items-center text-center px-4 relative overflow-hidden">
+            <div class="z-10 bg-white/60 backdrop-blur-sm p-8 md:p-16 rounded-3xl shadow-xl max-w-3xl w-full border border-white">
+                <p class="text-spring-500 font-semibold mb-4 tracking-wider">2026년 4월 현황 보고</p>
+                <h1 class="text-4xl md:text-5xl font-extrabold mb-6 leading-tight text-gray-900">
+                    2026년 4월 <br class="hidden md:block" />공시항목 공시 현황
+                </h1>
+                <p class="text-gray-600 mb-10 text-lg">작성기준일 : 2026. 4. 6.(월)</p>
+                
+                <div class="bg-white rounded-2xl p-6 mb-8 text-left shadow-inner border border-spring-100">
+                    <h2 class="text-xl font-bold mb-4 text-spring-500 border-b pb-2">목차</h2>
+                    <ol class="list-decimal list-inside space-y-3 text-lg font-medium text-gray-700">
+                        <li><a href="#tuition" class="hover:text-spring-500 underline decoration-spring-200 underline-offset-4">등록금 현황</a></li>
+                        <li><a href="#social" class="hover:text-spring-500 underline decoration-spring-200 underline-offset-4">대학의 사회봉사 역량</a></li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. 등록금 현황 섹션 -->
+        <section id="tuition" class="max-w-5xl mx-auto py-20 px-4 sm:px-6 lg:px-8">
+            <header class="mb-10 text-center md:text-left">
+                <h2 class="text-3xl font-bold flex items-center justify-center md:justify-start gap-3 text-gray-900">
+                    <span class="bg-spring-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-lg">1</span>
+                    등록금 현황
+                </h2>
+                <p class="mt-2 text-gray-500">(단위 : 천원)</p>
+            </header>
+
+            <div class="grid lg:grid-cols-2 gap-10 items-start">
+                <!-- 그래프 영역 -->
+                <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 w-full">
+                    <div class="relative h-72 w-full">
+                        <canvas id="tuitionChart" aria-label="연도별 등록금 현황 그래프" role="img"></canvas>
+                    </div>
+                </div>
+
+                <!-- 데이터 테이블 및 정보 영역 -->
+                <div class="space-y-6">
+                    <div class="bg-spring-50 p-5 rounded-2xl border-l-4 border-spring-400">
+                        <p class="text-sm text-gray-700">
+                            <strong class="text-spring-500">참고사항:</strong> 2023학년도 정보공시부터 입학금은 수업료와 함께 공시함.
+                        </p>
+                    </div>
+
+                    <div class="overflow-x-auto bg-white rounded-2xl shadow-lg border border-gray-100">
+                        <table class="w-full text-left border-collapse">
+                            <caption class="sr-only">기준연도별 등록금(입학금 포함) 현황 표</caption>
+                            <thead>
+                                <tr class="bg-gray-50 text-gray-700 border-b-2 border-spring-200">
+                                    <th scope="col" class="py-4 px-6 font-semibold whitespace-nowrap">기준연도</th>
+                                    <th scope="col" class="py-4 px-6 font-semibold text-right whitespace-nowrap">등록금(입학금 포함)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-600 divide-y divide-gray-100">
+                                <tr class="hover:bg-spring-50">
+                                    <td class="py-3 px-6">2021</td>
+                                    <td class="py-3 px-6 text-right font-mono">6,490.1</td>
+                                </tr>
+                                <tr class="hover:bg-spring-50">
+                                    <td class="py-3 px-6">2022</td>
+                                    <td class="py-3 px-6 text-right font-mono">6,362.5</td>
+                                </tr>
+                                <tr class="hover:bg-spring-50">
+                                    <td class="py-3 px-6">2023</td>
+                                    <td class="py-3 px-6 text-right font-mono">6,227.0</td>
+                                </tr>
+                                <tr class="hover:bg-spring-50">
+                                    <td class="py-3 px-6">2024</td>
+                                    <td class="py-3 px-6 text-right font-mono">6,259.6</td>
+                                </tr>
+                                <tr class="hover:bg-spring-50">
+                                    <td class="py-3 px-6">2025</td>
+                                    <td class="py-3 px-6 text-right font-mono">6,600.3</td>
+                                </tr>
+                                <tr class="bg-spring-100/50 hover:bg-spring-100 text-gray-900 font-bold">
+                                    <td class="py-3 px-6 flex items-center gap-2">
+                                        2026 <span class="bg-spring-500 text-white text-xs px-2 py-0.5 rounded-full">당해연도</span>
+                                    </td>
+                                    <td class="py-3 px-6 text-right font-mono">6,797.9</td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="bg-gray-50 font-semibold text-gray-800">
+                                <tr>
+                                    <th scope="row" class="py-4 px-6 border-t">전년 대비 증감</th>
+                                    <td class="py-4 px-6 border-t text-right text-spring-500">
+                                        197.6 <span class="text-sm text-gray-500 font-normal">(약 20만원 / 2.99% 증가)</span>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <!-- 관련 지표 -->
+                    <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+                        <h3 class="text-lg font-bold mb-3 text-gray-800">관련지표</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm">기관평가인증</span>
+                            <span class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm">장학금 지급률</span>
+                            <span class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm">교육비 환원율</span>
+                            <span class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm">등록금 대비 교원 인건비 비율</span>
+                            <span class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm">등록금 대비 직원 인건비 비율</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. 사회봉사 역량 섹션 -->
+        <section id="social" class="bg-white max-w-5xl mx-auto py-20 px-4 sm:px-6 lg:px-8 border-t border-gray-100">
+            <header class="mb-10 text-center md:text-left">
+                <h2 class="text-3xl font-bold flex items-center justify-center md:justify-start gap-3 text-gray-900">
+                    <span class="bg-spring-green text-green-700 w-8 h-8 rounded-full flex items-center justify-center text-lg shadow-sm border border-green-200">2</span>
+                    대학의 사회봉사 역량
+                </h2>
+                <p class="mt-2 text-gray-500">(단위 : 명)</p>
+            </header>
+
+            <div class="grid lg:grid-cols-2 gap-10 items-start">
+                
+                <!-- 데이터 테이블 -->
+                <div class="space-y-6 lg:order-2">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">사회봉사 교과목 외 프로그램 참여 현황</h3>
+                    <div class="overflow-x-auto bg-white rounded-2xl shadow-lg border border-gray-100">
+                        <table class="w-full text-center border-collapse">
+                            <caption class="sr-only">연도별 사회봉사 교과목 외 프로그램 수강 및 이수 학생수 표</caption>
+                            <thead>
+                                <tr class="bg-gray-50 text-gray-700 border-b-2 border-green-200">
+                                    <th scope="col" class="py-4 px-4 font-semibold whitespace-nowrap">기준년도</th>
+                                    <th scope="col" class="py-4 px-4 font-semibold whitespace-nowrap">구분</th>
+                                    <th scope="col" class="py-4 px-4 font-semibold whitespace-nowrap">수강학생수</th>
+                                    <th scope="col" class="py-4 px-4 font-semibold whitespace-nowrap">이수학생수</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-600 divide-y divide-gray-100 text-sm">
+                                <tr class="hover:bg-spring-green">
+                                    <td class="py-3 px-4">2018</td>
+                                    <td class="py-3 px-4 text-left">사회봉사교과목 외 프로그램</td>
+                                    <td class="py-3 px-4 font-mono">1,096</td>
+                                    <td class="py-3 px-4 font-mono">1,096</td>
+                                </tr>
+                                <tr class="hover:bg-spring-green">
+                                    <td class="py-3 px-4">2019</td>
+                                    <td class="py-3 px-4 text-left">사회봉사교과목 외 프로그램</td>
+                                    <td class="py-3 px-4 font-mono">1,516</td>
+                                    <td class="py-3 px-4 font-mono">1,516</td>
+                                </tr>
+                                <tr class="hover:bg-spring-green">
+                                    <td class="py-3 px-4">2020</td>
+                                    <td class="py-3 px-4 text-left">사회봉사교과목 외 프로그램</td>
+                                    <td class="py-3 px-4 font-mono">454</td>
+                                    <td class="py-3 px-4 font-mono">454</td>
+                                </tr>
+                                <tr class="hover:bg-spring-green">
+                                    <td class="py-3 px-4">2021</td>
+                                    <td class="py-3 px-4 text-left">사회봉사교과목 외 프로그램</td>
+                                    <td class="py-3 px-4 font-mono">453</td>
+                                    <td class="py-3 px-4 font-mono">453</td>
+                                </tr>
+                                <tr class="hover:bg-spring-green">
+                                    <td class="py-3 px-4">2022</td>
+                                    <td class="py-3 px-4 text-left">사회봉사교과목 외 프로그램</td>
+                                    <td class="py-3 px-4 font-mono">369</td>
+                                    <td class="py-3 px-4 font-mono">369</td>
+                                </tr>
+                                <tr class="hover:bg-spring-green">
+                                    <td class="py-3 px-4">2023</td>
+                                    <td class="py-3 px-4 text-left">사회봉사교과목 외 프로그램</td>
+                                    <td class="py-3 px-4 font-mono">439</td>
+                                    <td class="py-3 px-4 font-mono">439</td>
+                                </tr>
+                                <tr class="hover:bg-spring-green">
+                                    <td class="py-3 px-4">2024</td>
+                                    <td class="py-3 px-4 text-left">사회봉사교과목 외 프로그램</td>
+                                    <td class="py-3 px-4 font-mono">544</td>
+                                    <td class="py-3 px-4 font-mono">544</td>
+                                </tr>
+                                <tr class="bg-green-50 hover:bg-green-100 text-gray-900 font-bold border-b-0">
+                                    <td class="py-3 px-4">2025</td>
+                                    <td class="py-3 px-4 text-left">사회봉사교과목 외 프로그램</td>
+                                    <td class="py-3 px-4 font-mono">572</td>
+                                    <td class="py-3 px-4 font-mono">572</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="bg-green-50 p-5 rounded-2xl border-l-4 border-green-400 flex items-center justify-between">
+                        <span class="font-semibold text-gray-700">전년대비 증감률 (2025년 기준)</span>
+                        <span class="text-xl font-bold text-green-600">5.1% 상승 <span class="text-sm">↑</span></span>
+                    </div>
+                </div>
+
+                <!-- 그래프 영역 -->
+                <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 w-full lg:order-1">
+                    <div class="relative h-80 w-full">
+                        <canvas id="socialChart" aria-label="연도별 사회봉사 프로그램 이수 학생수 그래프" role="img"></canvas>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-900 text-gray-400 py-10 text-center">
+        <div class="max-w-5xl mx-auto px-4">
+            <p class="text-sm text-gray-500">본 보고서는 2026년 4월 6일 기준으로 작성된 공시항목 공시 현황입니다.</p>
+        </div>
+    </footer>
+
+    <!-- 차트 그리기 스크립트 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 폰트 설정
+            Chart.defaults.font.family = "'Pretendard', sans-serif";
+            Chart.defaults.color = '#718096';
+
+            // 1. 등록금 현황 차트
+            const ctxTuition = document.getElementById('tuitionChart').getContext('2d');
+            new Chart(ctxTuition, {
+                type: 'bar',
+                data: {
+                    labels: ['2020', '2021', '2022', '2023', '2024', '2025', '2026'],
+                    datasets: [{
+                        label: '등록금 (천원)',
+                        data: [6601.6, 6490.1, 6362.5, 6227.0, 6259.6, 6600.3, 6797.9],
+                        backgroundColor: function(context) {
+                            const index = context.dataIndex;
+                            // 2026년(마지막 인덱스)만 강조색 적용
+                            return index === 6 ? '#5fa0ed' : '#e2e8f0'; // PDF 원본과 유사한 블루톤 및 회색
+                        },
+                        borderRadius: 4,
+                        barPercentage: 0.6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                            titleColor: '#1a202c',
+                            bodyColor: '#1a202c',
+                            borderColor: '#e2e8f0',
+                            borderWidth: 1,
+                            padding: 10,
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed.y.toLocaleString() + ' 천원';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 6000, // 데이터가 잘 보이도록 최소값 조정
+                            grid: {
+                                color: '#edf2f7',
+                                drawBorder: false
+                            }
+                        },
+                        x: {
+                            grid: { display: false, drawBorder: false }
+                        }
+                    },
+                    animation: { duration: 1500, easing: 'easeOutQuart' }
+                }
+            });
+
+            // 2. 사회봉사 역량 차트
+            const ctxSocial = document.getElementById('socialChart').getContext('2d');
+            new Chart(ctxSocial, {
+                type: 'bar',
+                data: {
+                    labels: ['2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'],
+                    datasets: [{
+                        label: '이수학생수 (명)',
+                        data: [1096, 1516, 454, 453, 369, 439, 544, 572],
+                        backgroundColor: function(context) {
+                            const index = context.dataIndex;
+                            // 2025년(마지막 인덱스)만 강조색 적용
+                            return index === 7 ? '#5fa0ed' : '#cbd5e1'; 
+                        },
+                        borderRadius: 4,
+                        barPercentage: 0.5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                            titleColor: '#1a202c',
+                            bodyColor: '#1a202c',
+                            borderColor: '#e2e8f0',
+                            borderWidth: 1,
+                            padding: 10,
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed.y.toLocaleString() + ' 명';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#edf2f7',
+                                drawBorder: false
+                            }
+                        },
+                        x: {
+                            grid: { display: false, drawBorder: false }
+                        }
+                    },
+                    animation: { duration: 1500, easing: 'easeOutQuart', delay: 300 }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

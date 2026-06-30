@@ -244,7 +244,7 @@
         </div>
     </footer>
 
-    <script>
+    <!--<script>
         document.addEventListener('DOMContentLoaded', function () {
             // Mobile menu toggle
             const mobileMenuButton = document.getElementById('mobile-menu-button');
@@ -294,6 +294,59 @@
 
             // Removed previous event listeners that blocked navigation
         });
+    </script>-->
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        if(mobileMenuButton) {
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+
+        // Elements
+        const yearSelect = document.getElementById('year-select');
+        const guideBtns = document.querySelectorAll('.guide-btn');
+        const statusBtns = document.querySelectorAll('.status-btn');
+
+        // Function to update all links based on selected year
+        function updateLinks() {
+            const selectedYear = yearSelect.value;
+            
+            // 1. Update Guide Links (시기별 공시 안내)
+            // Format: /gongsi/{year}_{month}.html
+            guideBtns.forEach(btn => {
+                const month = btn.dataset.month; // e.g., "04"
+                const href = `../gongsi/${selectedYear}_${month}.html`;
+                
+                btn.setAttribute('href', href); // Set actual href
+                btn.setAttribute('title', `새창 열기: ${href}`); // '이동'에서 '새창 열기'로 텍스트 변경
+                btn.setAttribute('target', '_blank'); // 새 창에서 열기
+                btn.setAttribute('rel', 'noopener noreferrer'); // 보안을 위한 속성 추가
+            });
+
+            // 2. Update Status Links (교내 주요 현황)
+            // Format: /gongsi/result/{year}_{month}.html
+            statusBtns.forEach(btn => {
+                const month = btn.dataset.month; // e.g., "04", "12"
+                const href = `../gongsi/result/${selectedYear}_${month}.html`;
+                
+                btn.setAttribute('href', href); // Set actual href
+                btn.setAttribute('title', `새창 열기: ${href}`); // '이동'에서 '새창 열기'로 텍스트 변경
+                btn.setAttribute('target', '_blank'); // 새 창에서 열기
+                btn.setAttribute('rel', 'noopener noreferrer'); // 보안을 위한 속성 추가
+            });
+        }
+
+        // Event Listeners
+        yearSelect.addEventListener('change', updateLinks);
+        
+        // Initial call
+        updateLinks();
+    });
     </script>
 </body>
 </html>
