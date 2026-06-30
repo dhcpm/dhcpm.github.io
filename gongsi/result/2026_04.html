@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
     <!-- Google Fonts: Pretendard -->
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
     
@@ -299,6 +300,9 @@
             Chart.defaults.font.family = "'Pretendard', sans-serif";
             Chart.defaults.color = '#718096';
 
+            // 데이터 라벨 플러그인 등록
+            Chart.register(ChartDataLabels);
+
             // 1. 등록금 현황 차트
             const ctxTuition = document.getElementById('tuitionChart').getContext('2d');
             new Chart(ctxTuition, {
@@ -318,12 +322,29 @@
                     }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        top: 25 // 레이블이 잘리지 않도록 상단 여백 추가
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'top',
+                        color: '#4a5568',
+                        font: {
+                            weight: '600',
+                            size: 11
+                        },
+                        formatter: function(value) {
+                            return value.toLocaleString();
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
                             titleColor: '#1a202c',
                             bodyColor: '#1a202c',
                             borderColor: '#e2e8f0',
@@ -372,12 +393,29 @@
                     }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        top: 25 // 레이블이 잘리지 않도록 상단 여백 추가
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'top',
+                        color: '#4a5568',
+                        font: {
+                            weight: '600',
+                            size: 12
+                        },
+                        formatter: function(value) {
+                            return value.toLocaleString();
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
                             titleColor: '#1a202c',
                             bodyColor: '#1a202c',
                             borderColor: '#e2e8f0',
