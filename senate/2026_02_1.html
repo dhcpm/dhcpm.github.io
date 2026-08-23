@@ -311,35 +311,28 @@
          * 모달 다운로드 기능을 처리합니다.
          */
         function handleAction(action, department) {
-            const modal = document.getElementById('message-modal');
-            const titleEl = document.getElementById('modal-title');
-            const textEl = document.getElementById('modal-text');
-            const iconEl = document.getElementById('modal-icon');
+            if (action === 'download') {
+                const link = document.createElement('a');
+                let fileName = '';
+                let filePath = '';
 
-            let actionText = action === 'view' ? '열람' : '다운로드';
-            
-            // Set modal content based on action
-            titleEl.textContent = `${department} 자료 ${actionText}`;
-            textEl.innerHTML = `이 창은 파일 다운로드 시뮬레이션입니다.<br>실제 서비스에서는 <b>${department}</b>의 PDF 원본 파일 <b>${actionText}</b>가 시작됩니다.`;
-            
-            // Set icon
-            if (action === 'view') {
-                iconEl.innerHTML = '<i class="fa-regular fa-file-pdf text-blue-500"></i>';
-            } else {
-                iconEl.innerHTML = '<i class="fa-solid fa-cloud-arrow-down text-green-500"></i>';
+                if (department === '직업교육혁신센터') {
+                    fileName = '직업교육혁신센터 - 회의자료(평의원회).pdf';
+                    filePath = '/senate/pdf/' + fileName;
+                } else if (department === '교무지원팀') {
+                    fileName = '교무지원팀 - 회의자료(평의원회).pdf';
+                    filePath = '/senate/pdf/' + fileName;
+                }
+
+                // 가상의 링크를 만들어 클릭 이벤트를 발생시켜 다운로드 실행
+                link.href = filePath;
+                link.download = fileName; // 다운로드 시 저장될 파일명
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                return; // 다운로드 실행 후 함수 종료 (모달창 띄우지 않음)
             }
 
-            // Show modal
-            modal.style.display = "block";
-        }
-
-        // Close the modal
-        function closeModal() {
-            document.getElementById('message-modal').style.display = "none";
-        }
-
-        // Close modal if user clicks outside of it
-        window.onclick = function(event) {
             const modal = document.getElementById('message-modal');
             if (event.target == modal) {
                 modal.style.display = "none";
