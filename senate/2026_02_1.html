@@ -84,30 +84,52 @@
                 </div>
             </div>
 
-            <div class="border-b border-gray-200 mb-6">
-                <ul class="flex flex-nowrap overflow-x-auto -mb-px text-sm md:text-base font-medium text-center whitespace-nowrap hide-scrollbar" role="tablist">
-                    <li class="mr-2" role="presentation">
-                        <button class="tab-btn inline-flex items-center p-4 border-b-2 rounded-t-lg transition-colors text-blue-600 border-blue-600 bg-blue-50" id="btn-innovation" type="button" role="tab" onclick="switchTab('innovation')">
-                            <span class="bg-indigo-100 text-indigo-800 text-xs font-semibold px-2.5 py-0.5 rounded mr-3">#1 보고</span>
-                            <i class="fa-solid fa-lightbulb mr-2"></i> 직업교육혁신센터
-                        </button>
-                    </li>
-                    <li class="mr-2" role="presentation">
-                        <button class="tab-btn inline-flex items-center p-4 border-b-2 border-transparent rounded-t-lg transition-colors text-gray-500 hover:text-gray-700 hover:border-gray-300" id="btn-academic" type="button" role="tab" onclick="switchTab('academic')">
-                            <span class="bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded mr-3">#2 심의</span>
-                            <i class="fa-solid fa-book-open mr-2"></i> 교무지원팀
-                        </button>
-                    </li>
-                    <li role="presentation">
-                        <button class="tab-btn inline-flex items-center p-4 border-b-2 border-transparent rounded-t-lg transition-colors text-gray-500 hover:text-gray-700 hover:border-gray-300" id="btn-discussion" type="button" role="tab" onclick="switchTab('discussion')">
-                            <span class="bg-amber-100 text-amber-800 text-xs font-semibold px-2.5 py-0.5 rounded mr-3">#3 논의</span>
-                            <i class="fa-solid fa-users-viewfinder mr-2"></i> 대학평의원회
-                        </button>
-                    </li>
-                </ul>
+            <!-- 모바일 친화적인 카드형 네비게이션 버튼 -->
+            <div class="flex flex-col md:flex-row gap-3 mb-8" role="tablist">
+                <!-- 1. 직업교육혁신센터 -->
+                <button class="tab-btn w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all text-left border-blue-600 bg-blue-50 ring-1 ring-blue-600 shadow-md" id="btn-innovation" type="button" role="tab" onclick="switchTab('innovation')">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold flex-shrink-0">
+                            #1
+                        </div>
+                        <div>
+                            <span class="block text-xs font-bold text-gray-500 mb-1">보고 안건</span>
+                            <span class="block font-bold text-gray-900 text-base md:text-lg"><i class="fa-solid fa-lightbulb text-indigo-500 mr-1"></i> 직업교육혁신센터</span>
+                        </div>
+                    </div>
+                    <i class="status-icon fa-solid fa-circle-check text-2xl text-blue-600"></i>
+                </button>
+
+                <!-- 2. 교무지원팀 -->
+                <button class="tab-btn w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all text-left border-gray-200 bg-white hover:bg-gray-50 shadow-sm" id="btn-academic" type="button" role="tab" onclick="switchTab('academic')">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-teal-100 flex items-center justify-center text-teal-600 font-bold flex-shrink-0">
+                            #2
+                        </div>
+                        <div>
+                            <span class="block text-xs font-bold text-gray-500 mb-1">심의 안건</span>
+                            <span class="block font-bold text-gray-900 text-base md:text-lg"><i class="fa-solid fa-book-open text-teal-500 mr-1"></i> 교무지원팀</span>
+                        </div>
+                    </div>
+                    <i class="status-icon fa-solid fa-chevron-right text-xl text-gray-300"></i>
+                </button>
+
+                <!-- 3. 대학평의원회 -->
+                <button class="tab-btn w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all text-left border-gray-200 bg-white hover:bg-gray-50 shadow-sm" id="btn-discussion" type="button" role="tab" onclick="switchTab('discussion')">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 font-bold flex-shrink-0">
+                            #3
+                        </div>
+                        <div>
+                            <span class="block text-xs font-bold text-gray-500 mb-1">논의 안건</span>
+                            <span class="block font-bold text-gray-900 text-base md:text-lg"><i class="fa-solid fa-users-viewfinder text-amber-500 mr-1"></i> 대학평의원회</span>
+                        </div>
+                    </div>
+                    <i class="status-icon fa-solid fa-chevron-right text-xl text-gray-300"></i>
+                </button>
             </div>
 
-            <div id="tab-contents" class="bg-white border border-gray-200 rounded-b-xl rounded-tr-xl shadow-sm p-6 md:p-10 transition-all duration-300 min-h-[500px]">
+            <div id="tab-contents" class="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 md:p-10 transition-all duration-300 min-h-[500px]">
                 
                 <!-- 1. 직업교육혁신센터 탭 내용 -->
                 <div id="tab-innovation" class="tab-pane block text-gray-800 text-sm md:text-base leading-relaxed animate-fade-in">
@@ -372,18 +394,36 @@
                 activePane.classList.add('block');
             }
 
-            // 3. 모든 탭 버튼 스타일 초기화
+            // 3. 버튼 스타일 클래스 정의 (반응형 카드 스타일)
+            const activeClasses = ['border-blue-600', 'bg-blue-50', 'ring-1', 'ring-blue-600', 'shadow-md'];
+            const inactiveClasses = ['border-gray-200', 'bg-white', 'hover:bg-gray-50', 'shadow-sm'];
+
+            // 4. 모든 버튼 스타일 초기화
             const buttons = document.querySelectorAll('.tab-btn');
             buttons.forEach(btn => {
-                btn.classList.remove('text-blue-600', 'border-blue-600', 'bg-blue-50');
-                btn.classList.add('text-gray-500', 'border-transparent', 'hover:text-gray-700', 'hover:border-gray-300');
+                btn.classList.remove(...activeClasses);
+                btn.classList.add(...inactiveClasses);
+                
+                // 아이콘 비활성화 처리
+                const icon = btn.querySelector('.status-icon');
+                if(icon) {
+                    icon.classList.remove('fa-circle-check', 'text-blue-600', 'text-2xl');
+                    icon.classList.add('fa-chevron-right', 'text-gray-300', 'text-xl');
+                }
             });
 
-            // 4. 선택된 탭 버튼 스타일 강조
+            // 5. 선택된 버튼 스타일 강조
             const activeBtn = document.getElementById('btn-' + tabId);
             if(activeBtn) {
-                activeBtn.classList.remove('text-gray-500', 'border-transparent', 'hover:text-gray-700', 'hover:border-gray-300');
-                activeBtn.classList.add('text-blue-600', 'border-blue-600', 'bg-blue-50');
+                activeBtn.classList.remove(...inactiveClasses);
+                activeBtn.classList.add(...activeClasses);
+                
+                // 아이콘 활성화 처리
+                const icon = activeBtn.querySelector('.status-icon');
+                if(icon) {
+                    icon.classList.remove('fa-chevron-right', 'text-gray-300', 'text-xl');
+                    icon.classList.add('fa-circle-check', 'text-blue-600', 'text-2xl');
+                }
             }
         }
 
