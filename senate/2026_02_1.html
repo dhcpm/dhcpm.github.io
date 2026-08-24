@@ -45,7 +45,7 @@
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
 
-    <main class="bg-white rounded-2xl shadow-xl w-full max-w-3xl overflow-hidden">
+    <main class="bg-white rounded-2xl shadow-xl w-full max-w-5xl overflow-hidden">
         
         <header class="bg-blue-800 text-white p-8 text-center relative overflow-hidden">
             <div class="absolute inset-0 opacity-20">
@@ -60,86 +60,89 @@
         </header>
 
         <div class="p-8">
-            <p class="text-gray-600 text-center mb-8 text-lg">
-                아래 버튼을 클릭하여 각 부서의 회의 자료를 확인하고 다운로드하실 수 있습니다.
-            </p>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-
-                <div class="document-card bg-gray-50 border border-gray-200 rounded-xl p-6 flex flex-col h-full">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
-                            <i class="fa-solid fa-lightbulb text-xl"></i>
+            <div class="bg-blue-50 border-l-4 border-blue-600 rounded-r-xl p-6 mb-8 shadow-sm">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                    <div class="flex items-center gap-4 w-full md:w-1/2">
+                        <div class="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 flex-shrink-0 shadow-inner">
+                            <i class="fa-regular fa-calendar-check text-2xl"></i>
                         </div>
-                        <span class="bg-indigo-100 text-indigo-800 text-xs font-semibold px-2.5 py-0.5 rounded">#1 보고 안건</span>
+                        <div>
+                            <span class="block text-sm font-bold text-blue-600 mb-1">일시</span>
+                            <span class="block text-lg font-bold text-gray-800">2026. 8. 28(금요일) 오전 10시</span>
+                        </div>
                     </div>
-                    <h2 class="text-xl font-bold text-gray-800 mb-2">직업교육혁신센터</h2>
-                    <p class="text-gray-500 text-sm mb-6 flex-grow">전공 교육과정 운영 정책 및 편성 지침 개정안 자문</p>
-                    
-                    <div class="flex flex-col sm:flex-row gap-3 mt-auto">
-                        <button onclick="viewDocument('innovation', '직업교육혁신센터 회의자료')" class="flex-1 bg-white hover:bg-gray-100 text-indigo-700 font-semibold py-2 px-4 border border-indigo-300 rounded shadow-sm transition-colors flex items-center justify-center gap-2">
-                            <i class="fa-regular fa-eye"></i> 열람하기
-                        </button>
-                        <button onclick="handleAction('download', '직업교육혁신센터')" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded shadow-sm transition-colors flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-download"></i> 다운로드
-                        </button>
+                    <div class="hidden md:block w-px h-16 bg-blue-200"></div>
+                    <div class="flex items-center gap-4 w-full md:w-1/2 md:pl-4">
+                        <div class="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 flex-shrink-0 shadow-inner">
+                            <i class="fa-solid fa-location-dot text-2xl"></i>
+                        </div>
+                        <div>
+                            <span class="block text-sm font-bold text-blue-600 mb-1">장소</span>
+                            <span class="block text-lg font-bold text-gray-800">본관 9층 글로컬대학회의실 (소회의실)</span>
+                        </div>
                     </div>
                 </div>
-
-                <div class="document-card bg-gray-50 border border-gray-200 rounded-xl p-6 flex flex-col h-full">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="w-12 h-12 rounded-full bg-teal-100 flex items-center justify-center text-teal-600">
-                            <i class="fa-solid fa-book-open text-xl"></i>
-                        </div>
-                        <span class="bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded">#2 심의 안건</span>
-                    </div>
-                    <h2 class="text-xl font-bold text-gray-800 mb-2">교무지원팀</h2>
-                    <p class="text-gray-500 text-sm mb-6 flex-grow">대구보건대학교 학칙 개정(안) 심의 건</p>
-                    
-                    <div class="flex flex-col sm:flex-row gap-3 mt-auto">
-                        <button onclick="viewDocument('academic', '교무지원팀 회의자료')" class="flex-1 bg-white hover:bg-gray-100 text-teal-700 font-semibold py-2 px-4 border border-teal-300 rounded shadow-sm transition-colors flex items-center justify-center gap-2">
-                            <i class="fa-regular fa-eye"></i> 열람하기
-                        </button>
-                        <button onclick="handleAction('download', '교무지원팀')" class="flex-1 bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2 px-4 rounded shadow-sm transition-colors flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-download"></i> 다운로드
-                        </button>
-                    </div>
-                </div>
-
             </div>
 
-            <div id="viewer-container" class="hidden border-t-2 border-gray-200 pt-8 mt-6 transition-all duration-500">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-xl md:text-2xl font-bold text-gray-800 flex items-center gap-3">
-                        <i class="fa-regular fa-file-lines text-blue-600"></i>
-                        <span id="viewer-title">문서 열람</span>
-                    </h3>
-                    <button onclick="closeViewer()" class="text-gray-500 hover:text-gray-800 bg-gray-100 hover:bg-gray-200 rounded-full w-10 h-10 flex items-center justify-center transition-colors">
-                        <i class="fa-solid fa-xmark text-lg"></i>
-                    </button>
-                </div>
+            <div class="border-b border-gray-200 mb-6">
+                <ul class="flex flex-nowrap overflow-x-auto -mb-px text-sm md:text-base font-medium text-center whitespace-nowrap hide-scrollbar" role="tablist">
+                    <li class="mr-2" role="presentation">
+                        <button class="tab-btn inline-flex items-center p-4 border-b-2 rounded-t-lg transition-colors text-blue-600 border-blue-600 bg-blue-50" id="btn-innovation" type="button" role="tab" onclick="switchTab('innovation')">
+                            <span class="bg-indigo-100 text-indigo-800 text-xs font-semibold px-2.5 py-0.5 rounded mr-3">#1 보고</span>
+                            <i class="fa-solid fa-lightbulb mr-2"></i> 직업교육혁신센터
+                        </button>
+                    </li>
+                    <li class="mr-2" role="presentation">
+                        <button class="tab-btn inline-flex items-center p-4 border-b-2 border-transparent rounded-t-lg transition-colors text-gray-500 hover:text-gray-700 hover:border-gray-300" id="btn-academic" type="button" role="tab" onclick="switchTab('academic')">
+                            <span class="bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded mr-3">#2 심의</span>
+                            <i class="fa-solid fa-book-open mr-2"></i> 교무지원팀
+                        </button>
+                    </li>
+                    <li role="presentation">
+                        <button class="tab-btn inline-flex items-center p-4 border-b-2 border-transparent rounded-t-lg transition-colors text-gray-500 hover:text-gray-700 hover:border-gray-300" id="btn-discussion" type="button" role="tab" onclick="switchTab('discussion')">
+                            <span class="bg-amber-100 text-amber-800 text-xs font-semibold px-2.5 py-0.5 rounded mr-3">#3 논의</span>
+                            <i class="fa-solid fa-users-viewfinder mr-2"></i> 대학평의원회
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+            <div id="tab-contents" class="bg-white border border-gray-200 rounded-b-xl rounded-tr-xl shadow-sm p-6 md:p-10 transition-all duration-300 min-h-[500px]">
                 
-                <!-- 문서 내용 렌더링 컨테이너 -->
-                <div class="bg-white border border-gray-300 rounded-xl shadow-inner p-6 md:p-10 overflow-x-auto">
-                    
-                    <!-- 직업교육혁신센터 문서 -->
-                    <div id="doc-innovation" class="hidden text-gray-800 text-sm md:text-base leading-relaxed">
-                        <div class="text-center mb-10 pb-6 border-b border-gray-200">
-                            <h4 class="text-2xl font-extrabold mb-3">대구보건대학교평의원회 회의자료 (자문 안건)</h4>
-                            <p class="text-gray-600 mb-1">일시: 2026년 8월 28일(10시) | 장소: 본관9층 소회의실</p>
-                            <p class="font-bold text-xl mt-6">안건 1. 전공 교육과정 운영 정책 및 편성 지침 개정안 자문</p>
-                            <p class="text-right text-gray-500 mt-4 text-sm font-semibold">대구보건대학교 직업교육혁신센터</p>
+                <!-- 1. 직업교육혁신센터 탭 내용 -->
+                <div id="tab-innovation" class="tab-pane block text-gray-800 text-sm md:text-base leading-relaxed animate-fade-in">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 pb-6 border-b border-gray-200 gap-4">
+                        <div>
+                            <h4 class="text-2xl font-extrabold mb-2">전공 교육과정 운영 정책 및 편성 지침 개정안 자문</h4>
+                            <p class="text-gray-500 text-sm font-semibold">대구보건대학교 직업교육혁신센터</p>
                         </div>
+                        <button onclick="handleAction('download', '직업교육혁신센터')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-5 rounded-lg shadow-sm transition-all flex items-center justify-center gap-2 flex-shrink-0">
+                            <i class="fa-solid fa-download"></i> 원문 PDF 다운로드
+                        </button>
+                    </div>
 
-                        <h5 class="font-bold text-lg mb-4 flex items-center gap-2"><i class="fa-solid fa-square-check text-indigo-600"></i> 개정 사유</h5>
-                        <ul class="list-disc pl-6 mb-10 space-y-2 text-gray-700 bg-gray-50 p-5 rounded-lg border border-gray-100">
-                            <li>학칙 개정에 따른 관련 내용 개정</li>
-                            <li>2026년 전문대학 기관평가인증 기준 충족</li>
-                            <li>산업계 변화 및 디지털 대전환(DX) 반영</li>
-                            <li>전문대학 학사 구조 고도화</li>
-                        </ul>
+                    <div class="bg-indigo-50/50 rounded-lg p-5 mb-8 flex items-start gap-4 border border-indigo-100">
+                        <div class="mt-0.5 bg-white p-2 rounded-md shadow-sm text-indigo-400 flex-shrink-0">
+                            <i class="fa-solid fa-quote-left text-lg"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs font-bold text-indigo-500 uppercase tracking-wider mb-1 block">안건 요지</span>
+                            <p class="text-gray-800 font-bold text-base leading-relaxed">
+                                "산업 생태계 변화와 디지털 대전환(DX)에 선제적으로 대응하기 위한 전공 교육과정 편성 지침의 전면 개정 및 학사 구조 고도화 방안을 보고합니다."
+                            </p>
+                        </div>
+                    </div>
 
-                        <h5 class="font-bold text-lg mb-4 flex items-center gap-2"><i class="fa-solid fa-table text-indigo-600"></i> 주요 신·구조문 대비표 (발췌)</h5>
+                    <h5 class="font-bold text-lg mb-4 flex items-center gap-2"><i class="fa-solid fa-square-check text-indigo-600"></i> 개정 사유</h5>
+                    <ul class="list-disc pl-6 mb-10 space-y-2 text-gray-700 bg-gray-50 p-5 rounded-lg border border-gray-100">
+                        <li>학칙 개정에 따른 관련 내용 개정</li>
+                        <li>2026년 전문대학 기관평가인증 기준 충족</li>
+                        <li>산업계 변화 및 디지털 대전환(DX) 반영</li>
+                        <li>전문대학 학사 구조 고도화</li>
+                    </ul>
+
+                    <h5 class="font-bold text-lg mb-4 flex items-center gap-2"><i class="fa-solid fa-table text-indigo-600"></i> 주요 신·구조문 대비표 (발췌)</h5>
+                    <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-300 border border-gray-300 mb-8 bg-white">
                             <thead class="bg-gray-100">
                                 <tr>
@@ -172,25 +175,42 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
 
-                    <!-- 교무지원팀 문서 -->
-                    <div id="doc-academic" class="hidden text-gray-800 text-sm md:text-base leading-relaxed">
-                        <div class="text-center mb-10 pb-6 border-b border-gray-200">
-                            <h4 class="text-2xl font-extrabold mb-3">2026학년도 평의원회 회의자료</h4>
-                            <p class="text-gray-600 mb-1">요청일: 2026.8.7</p>
-                            <p class="font-bold text-xl mt-6">심의·의결 안건 : 대구보건대학교 학칙 개정(안) 심의 건</p>
-                            <p class="text-right text-gray-500 mt-4 text-sm font-semibold">대구보건대학교 교무지원팀</p>
+                <!-- 2. 교무지원팀 탭 내용 -->
+                <div id="tab-academic" class="tab-pane hidden text-gray-800 text-sm md:text-base leading-relaxed animate-fade-in">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 pb-6 border-b border-gray-200 gap-4">
+                        <div>
+                            <h4 class="text-2xl font-extrabold mb-2">대구보건대학교 학칙 개정(안) 심의 건</h4>
+                            <p class="text-gray-500 text-sm font-semibold">대구보건대학교 교무지원팀</p>
                         </div>
+                        <button onclick="handleAction('download', '교무지원팀')" class="bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2.5 px-5 rounded-lg shadow-sm transition-all flex items-center justify-center gap-2 flex-shrink-0">
+                            <i class="fa-solid fa-download"></i> 원문 PDF 다운로드
+                        </button>
+                    </div>
 
-                        <h5 class="font-bold text-lg mb-4 flex items-center gap-2"><i class="fa-solid fa-square-check text-teal-600"></i> 학칙 개정 발의 사유</h5>
-                        <ul class="list-disc pl-6 mb-10 space-y-2 text-gray-700 bg-gray-50 p-5 rounded-lg border border-gray-100">
-                            <li>2027학년도 전공명(정원 외) 개편 내용 추가 (미식카페베이커리전공 → 외식조리베이커리전공 변경)</li>
-                            <li>외국인 교환학생 등 타교생 수학의 세부규정 마련 근거와 규정 항목 추가</li>
-                            <li>외국인 유학생 졸업기준 제정 근거 마련</li>
-                            <li>[별표 1] 2027학년도 전공명(정원 외) 개편에 따른 학위종별 개정</li>
-                        </ul>
+                    <div class="bg-teal-50/50 rounded-lg p-5 mb-8 flex items-start gap-4 border border-teal-100">
+                        <div class="mt-0.5 bg-white p-2 rounded-md shadow-sm text-teal-400 flex-shrink-0">
+                            <i class="fa-solid fa-quote-left text-lg"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs font-bold text-teal-500 uppercase tracking-wider mb-1 block">안건 요지</span>
+                            <p class="text-gray-800 font-bold text-base leading-relaxed">
+                                "2027학년도 전공명 개편 사항을 반영하고, 외국인 유학생 수학 및 졸업 기준 등 학사 운영의 제도적 근거를 명확히 정비하기 위한 학칙 개정안을 심의하고자 합니다."
+                            </p>
+                        </div>
+                    </div>
 
-                        <h5 class="font-bold text-lg mb-4 flex items-center gap-2"><i class="fa-solid fa-table text-teal-600"></i> 학칙 개정(안) 신·구조문 대비표</h5>
+                    <h5 class="font-bold text-lg mb-4 flex items-center gap-2"><i class="fa-solid fa-square-check text-teal-600"></i> 학칙 개정 발의 사유</h5>
+                    <ul class="list-disc pl-6 mb-10 space-y-2 text-gray-700 bg-gray-50 p-5 rounded-lg border border-gray-100">
+                        <li>2027학년도 전공명(정원 외) 개편 내용 추가 (미식카페베이커리전공 → 외식조리베이커리전공 변경)</li>
+                        <li>외국인 교환학생 등 타교생 수학의 세부규정 마련 근거와 규정 항목 추가</li>
+                        <li>외국인 유학생 졸업기준 제정 근거 마련</li>
+                        <li>[별표 1] 2027학년도 전공명(정원 외) 개편에 따른 학위종별 개정</li>
+                    </ul>
+
+                    <h5 class="font-bold text-lg mb-4 flex items-center gap-2"><i class="fa-solid fa-table text-teal-600"></i> 학칙 개정(안) 신·구조문 대비표</h5>
+                    <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-300 border border-gray-300 mb-8 bg-white">
                             <thead class="bg-gray-100">
                                 <tr>
@@ -235,11 +255,77 @@
                         </table>
                     </div>
                 </div>
-                
-                <div class="mt-6 flex justify-end">
-                    <button id="download-current-btn" class="bg-gray-800 hover:bg-gray-900 text-white font-semibold py-2.5 px-6 rounded-lg shadow-md transition-all hover:shadow-lg flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-file-pdf"></i> <span id="download-btn-text">원문 PDF 다운로드</span>
-                    </button>
+
+                <!-- 3. 대학평의원회 탭 내용 (다운로드 버튼 없음) -->
+                <div id="tab-discussion" class="tab-pane hidden text-gray-800 text-sm md:text-base leading-relaxed animate-fade-in">
+                    <div class="mb-6 pb-6 border-b border-gray-200">
+                        <h4 class="text-2xl font-extrabold mb-2">대학평의원회 구성원 추천 지침(안)</h4>
+                        <p class="text-gray-500 text-sm font-semibold">대학평의원회 논의 안건</p>
+                    </div>
+
+                    <div class="bg-amber-50/50 rounded-lg p-5 mb-8 flex items-start gap-4 border border-amber-100">
+                        <div class="mt-0.5 bg-white p-2 rounded-md shadow-sm text-amber-400 flex-shrink-0">
+                            <i class="fa-solid fa-quote-left text-lg"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs font-bold text-amber-500 uppercase tracking-wider mb-1 block">안건 요지</span>
+                            <p class="text-gray-800 font-bold text-base leading-relaxed">
+                                "대학평의원회 구성의 민주성과 투명성 제고를 위해 교원, 직원, 학생 등 각 신분별 대표 위원 추천 주체 지정안에 대하여 논의하고자 합니다."
+                            </p>
+                        </div>
+                    </div>
+
+                    <h5 class="font-bold text-lg mb-4 flex items-center gap-2"><i class="fa-solid fa-sitemap text-amber-600"></i> 구성원별 추천 주체(안)</h5>
+                    <p class="mb-4 text-gray-700">대학평의원회 구성을 위한 각 신분별 대표 위원 추천 주체 지정을 위하여 평의원회 구성원의 고견을 청취하고자 합니다.</p>
+                    
+                    <div class="bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm mb-8">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-center text-sm font-bold text-gray-900 border-r border-gray-200 w-1/3">구성원 구분</th>
+                                        <th class="px-6 py-3 text-center text-sm font-bold text-gray-900 w-2/3">추천 주체 (단체 및 부서)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-6 py-4 text-center text-sm font-bold text-gray-800 border-r border-gray-200 bg-gray-50">교원</td>
+                                        <td class="px-6 py-4 text-sm text-gray-700 font-semibold">교수회</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50 transition-colors border-t border-gray-200">
+                                        <td class="px-6 py-4 text-center text-sm font-bold text-gray-800 border-r border-gray-200 bg-gray-50">직원</td>
+                                        <td class="px-6 py-4 text-sm text-gray-700 font-semibold">직원노동조합</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50 transition-colors border-t border-gray-200">
+                                        <td class="px-6 py-4 text-center text-sm font-bold text-gray-800 border-r border-gray-200 bg-gray-50">학생</td>
+                                        <td class="px-6 py-4 text-sm text-gray-700 font-semibold">총학생회</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50 transition-colors border-t border-gray-200">
+                                        <td class="px-6 py-4 text-center text-sm font-bold text-gray-800 border-r border-gray-200 bg-gray-50">조교</td>
+                                        <td class="px-6 py-4 text-sm text-gray-700 font-semibold">인사부서장 혹은 사무처장</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50 transition-colors border-t border-gray-200">
+                                        <td class="px-6 py-4 text-center text-sm font-bold text-gray-800 border-r border-gray-200 bg-gray-50">외부인사</td>
+                                        <td class="px-6 py-4 text-sm text-gray-700 font-semibold">총동창회, DHCTOP 동문회</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <i class="fa-solid fa-circle-info text-amber-500 mt-0.5"></i>
+                            </div>
+                            <div class="ml-3">
+                                <h3 class="text-sm font-bold text-amber-800">논의 요망 사항</h3>
+                                <div class="mt-2 text-sm text-amber-700">
+                                    <p>위 추천 주체 지정안에 대한 평의원님들의 다각적인 의견을 수렴하여 최종 지침 수립의 방향성을 모색하고자 합니다.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -269,75 +355,80 @@
 
     <script>
         /**
-         * 문서 열람 기능을 처리합니다. 페이지 아래쪽 뷰어에 문서를 표시합니다.
+         * 탭 전환 기능을 처리합니다.
          */
-        function viewDocument(deptKey, title) {
-            const container = document.getElementById('viewer-container');
-            const docInnovation = document.getElementById('doc-innovation');
-            const docAcademic = document.getElementById('doc-academic');
-            const viewerTitle = document.getElementById('viewer-title');
-            const downloadBtn = document.getElementById('download-current-btn');
-            
-            // 초기화 (모두 숨기기)
-            docInnovation.classList.add('hidden');
-            docAcademic.classList.add('hidden');
-            
-            // 선택된 부서 문서 표시
-            if (deptKey === 'innovation') {
-                docInnovation.classList.remove('hidden');
-                viewerTitle.textContent = title;
-                downloadBtn.onclick = () => handleAction('download', '직업교육혁신센터');
-            } else if (deptKey === 'academic') {
-                docAcademic.classList.remove('hidden');
-                viewerTitle.textContent = title;
-                downloadBtn.onclick = () => handleAction('download', '교무지원팀');
+        function switchTab(tabId) {
+            // 1. 모든 탭 컨텐츠 숨기기
+            const panes = document.querySelectorAll('.tab-pane');
+            panes.forEach(pane => {
+                pane.classList.remove('block');
+                pane.classList.add('hidden');
+            });
+
+            // 2. 선택된 탭 컨텐츠 보이기
+            const activePane = document.getElementById('tab-' + tabId);
+            if(activePane) {
+                activePane.classList.remove('hidden');
+                activePane.classList.add('block');
             }
-            
-            // 컨테이너 보이기 및 부드러운 스크롤 이동
-            container.classList.remove('hidden');
-            setTimeout(() => {
-                container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 100);
+
+            // 3. 모든 탭 버튼 스타일 초기화
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('text-blue-600', 'border-blue-600', 'bg-blue-50');
+                btn.classList.add('text-gray-500', 'border-transparent', 'hover:text-gray-700', 'hover:border-gray-300');
+            });
+
+            // 4. 선택된 탭 버튼 스타일 강조
+            const activeBtn = document.getElementById('btn-' + tabId);
+            if(activeBtn) {
+                activeBtn.classList.remove('text-gray-500', 'border-transparent', 'hover:text-gray-700', 'hover:border-gray-300');
+                activeBtn.classList.add('text-blue-600', 'border-blue-600', 'bg-blue-50');
+            }
         }
 
         /**
-         * 문서 뷰어를 닫습니다.
-         */
-        function closeViewer() {
-            document.getElementById('viewer-container').classList.add('hidden');
-        }
-
-        /**
-         * 모달 다운로드 기능을 처리합니다.
+         * 파일 다운로드 기능을 처리합니다.
          */
         function handleAction(action, department) {
             if (action === 'download') {
                 const link = document.createElement('a');
                 let fileName = '';
-                let filePath = '';
 
                 if (department === '직업교육혁신센터') {
                     fileName = '직업교육혁신센터 - 회의자료(평의원회).pdf';
-                    filePath = '/senate/pdf/' + fileName;
                 } else if (department === '교무지원팀') {
                     fileName = '교무지원팀 - 회의자료(평의원회).pdf';
-                    filePath = '/senate/pdf/' + fileName;
                 }
 
-                // 가상의 링크를 만들어 클릭 이벤트를 발생시켜 다운로드 실행
+                // 절대 경로 지정
+                const filePath = '/senate/pdf/' + fileName;
+
+                // 다운로드 실행
                 link.href = filePath;
-                link.download = fileName; // 다운로드 시 저장될 파일명
+                link.download = fileName; 
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-                return; // 다운로드 실행 후 함수 종료 (모달창 띄우지 않음)
-            }
-
-            const modal = document.getElementById('message-modal');
-            if (event.target == modal) {
-                modal.style.display = "none";
             }
         }
     </script>
+    <style>
+        /* 추가 스타일: 페이드인 효과 및 스크롤바 숨김 */
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+    </style>
 </body>
 </html>
