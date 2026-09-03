@@ -361,6 +361,7 @@
             .data-row { flex-direction: column; gap: 5px; }
             .q-box { padding-left: 20px; padding-top: 50px; }
             .q-mark { top: 15px; }
+            .action-btn-group { flex-direction: column; gap: 10px; }
         }
     </style>
 </head>
@@ -706,7 +707,8 @@
 
     // PDF 다운로드 이벤트 (조건에 맞게 출력물 제어)
     document.getElementById('downloadPdfBtn').addEventListener('click', function() {
-        const btn = this;
+        const btn = document.querySelector('.action-btn-group'); // 버튼 그룹 전체를 숨깁니다
+        //const btn = this;
         const body = document.body;
         const tabNav = document.getElementById('tab-nav');
         
