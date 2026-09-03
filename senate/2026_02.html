@@ -12,7 +12,7 @@
             --text-dark: #0f172a;
             --text-light: #64748b;
             --primary: #1e3a8a; 
-            --secondary: #ea580c; 
+            --secondary: #ea580c; /* 주황색 포인트 컬러 */
             --tertiary: #059669; 
             --danger: #ef4444;
             --card-bg: #ffffff;
@@ -237,7 +237,7 @@
             font-size: 0.95rem;
         }
 
-        /* Data Table Styles (추가됨) */
+        /* Data Table Styles */
         .data-table {
             width: 100%;
             border-collapse: collapse;
@@ -316,6 +316,15 @@
             page-break-inside: auto;
         }
 
+        /* 헤더 버튼 그룹 (PDF, 회의록 보러가기) */
+        .action-btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 25px;
+        }
+
         .pdf-btn {
             background-color: var(--primary);
             color: white;
@@ -325,7 +334,6 @@
             font-size: 1rem;
             font-weight: 700;
             cursor: pointer;
-            margin-top: 25px;
             box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
             transition: all 0.2s ease;
             display: inline-flex;
@@ -340,10 +348,33 @@
             box-shadow: 0 6px 8px rgba(37, 99, 235, 0.3);
         }
 
+        .minutes-btn {
+            background-color: var(--secondary);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 700;
+            box-shadow: 0 4px 6px rgba(234, 88, 12, 0.2);
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .minutes-btn:hover {
+            background-color: #c2410c;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(234, 88, 12, 0.3);
+        }
+
         @media (max-width: 600px) {
             .tab-btn { padding: 10px 15px; font-size: 1rem; }
             .q-box { padding-left: 20px; padding-top: 50px; }
             .q-mark { top: 15px; }
+            .action-btn-group { flex-direction: column; gap: 10px; }
         }
     </style>
 </head>
@@ -365,12 +396,22 @@
             </p>
         </div>
         <p class="subtitle">총 안건 수 3건 (직업교육혁신센터 1건, 교무지원팀 1건, 대학평의원회 1건)</p>
-        <button id="downloadPdfBtn" class="pdf-btn">
-            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-            </svg>
-            PDF로 저장 (전체 포함)
-        </button>
+        
+        <!-- 액션 버튼 영역 추가 -->
+        <div class="action-btn-group">
+            <button id="downloadPdfBtn" class="pdf-btn">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                </svg>
+                PDF로 저장 (전체 포함)
+            </button>
+            <a href="2026.html" class="minutes-btn">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                회의록 보러가기
+            </a>
+        </div>
     </header>
 
     <!-- PDF 전용 표지 -->
@@ -661,7 +702,7 @@
 
     // PDF 다운로드 이벤트
     document.getElementById('downloadPdfBtn').addEventListener('click', function() {
-        const btn = this;
+        const btn = document.querySelector('.action-btn-group'); // 버튼 그룹 전체를 숨깁니다
         const body = document.body;
         const tabNav = document.getElementById('tab-nav');
         
@@ -700,7 +741,7 @@
 
         // PDF 생성 완료 후 화면 원상복구
         html2pdf().set(opt).from(element).save().then(() => {
-            btn.style.display = 'inline-flex';
+            btn.style.display = 'flex';
             tabNav.style.display = 'flex';
             
             body.classList.remove('exporting-pdf');
