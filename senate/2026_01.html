@@ -373,12 +373,25 @@
             </p>
         </div>
         <p class="subtitle">총 안건 수 6건 (통합예산팀 3건, 재무팀 2건, 교무지원팀 1건)</p>
-        <button id="downloadPdfBtn" class="pdf-btn">
+
+        
+        <!-- 액션 버튼 영역 추가 -->
+        <div class="action-btn-group">
+            <button id="downloadPdfBtn" class="pdf-btn">
             <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
             </svg>
             PDF로 저장 (전체 포함)
-        </button>
+            </button>
+            <a href="2026.html" class="minutes-btn">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                회의록 보러가기
+            </a>
+        </div>
+
+        
     </header>
 
     <!-- PDF 전용 표지 (웹에서는 숨김, PDF 변환 시 나타남) -->
