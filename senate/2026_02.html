@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>대구보건대학교 평의원회 (2026학년도 2차) 회의 안건 요약</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --text-main: #334155;
+            --text-dark: #0f172a;
+            --text-light: #64748b;
+            --primary: #1e3a8a; 
+            --secondary: #ea580c; 
+            --tertiary: #059669; 
+            --danger: #ef4444;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            color: var(--text-dark);
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            line-height: 1.35;
+        }
+
+        .icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        /* Tabs Styles */
+        .tab-container {
+            display: flex;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-light);
+            cursor: pointer;
+            border-bottom: 4px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary);
+            background-color: #f1f5f9;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* PDF 전용 클래스들 */
+        .no-animation {
+            animation: none !important;
+            transition: none !important;
+            opacity: 1 !important;
+            transform: none !important;
+        }
+
+        .pdf-only-flex, .pdf-only-block { display: none; }
+        
+        body.exporting-pdf #web-header,
+        body.exporting-pdf #tab-nav {
+            display: none !important;
+        }
+        
+        body.exporting-pdf .pdf-only-flex { display: flex !important; }
+        body.exporting-pdf .pdf-only-block { display: block !important; }
+
+        /* 표지 전용 디자인 */
+        #pdf-cover {
+            height: 250mm;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            page-break-after: always;
+            break-after: page;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .cover-inner {
+            border: 5px solid var(--primary);
+            padding: 60px 40px;
+            border-radius: 15px;
+            width: 90%;
+            margin: 0 auto;
+            background: #ffffff;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            box-sizing: border-box;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 10px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Department Group Styles */
+        .dept-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 30px 0 15px 0;
+            padding: 8px 15px;
+            background: #eef2ff;
+            border-left: 5px solid var(--primary);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            page-break-after: avoid;
+            break-after: avoid;
+        }
+
+        /* Card Styles */
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border-left: 6px solid var(--primary);
+            transition: transform 0.2s ease;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        .card.orange { border-left-color: var(--secondary); }
+        .card.green { border-left-color: var(--tertiary); }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .badge {
+            background: var(--bg-color);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-right: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .desc-box {
+            margin-top: 15px;
+            background: var(--bg-color);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        /* Data Table Styles (추가됨) */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            background: #ffffff;
+        }
+        .data-table th, .data-table td {
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        .data-table th {
+            background-color: #f1f5f9;
+            font-weight: 700;
+            color: var(--text-dark);
+            text-align: center;
+        }
+
+        /* Questions Styles */
+        .q-group {
+            margin-bottom: 30px;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        .q-group-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+            display: inline-block;
+            background: #e0e7ff;
+            padding: 5px 15px;
+            border-radius: 6px;
+        }
+
+        .q-box {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            position: relative;
+            padding-left: 50px;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        .q-mark {
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        .q-text {
+            font-size: 1rem;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        /* 회의 순서 전용 스타일 */
+        .script-box {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 40px 50px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            page-break-inside: auto;
+        }
+
+        .pdf-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 25px;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .pdf-btn:hover {
+            background-color: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(37, 99, 235, 0.3);
+        }
+
+        @media (max-width: 600px) {
+            .tab-btn { padding: 10px 15px; font-size: 1rem; }
+            .q-box { padding-left: 20px; padding-top: 50px; }
+            .q-mark { top: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="pdf-content">
+    
+    <!-- 웹 헤더 -->
+    <header id="web-header">
+        <h1>
+            대구보건대학교 평의원회 (2026학년도 2차)<br>회의 안건 요약
+        </h1>
+        <div style="margin: 20px auto 25px; padding: 15px; background: #ffffff; border: 1px solid var(--border-color); border-radius: 8px; display: inline-block; text-align: left; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+            <p style="font-size: 1.05rem; color: var(--text-dark); line-height: 1.6; margin-bottom: 5px;">
+                <strong style="color: var(--primary); display: inline-block; width: 50px;">일시 :</strong> 2026. 8. 28(금) 10:00 ~
+            </p>
+            <p style="font-size: 1.05rem; color: var(--text-dark); line-height: 1.6;">
+                <strong style="color: var(--primary); display: inline-block; width: 50px;">장소 :</strong> 대구보건대학교 본관 9층 글로컬회의실 (소회의실)
+            </p>
+        </div>
+        <p class="subtitle">총 안건 수 3건 (직업교육혁신센터 1건, 교무지원팀 1건, 대학평의원회 1건)</p>
+        <button id="downloadPdfBtn" class="pdf-btn">
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+            </svg>
+            PDF로 저장 (전체 포함)
+        </button>
+    </header>
+
+    <!-- PDF 전용 표지 -->
+    <div id="pdf-cover" class="pdf-only-flex">
+        <div class="cover-inner">
+            <p style="font-size: 1.8rem; color: var(--primary); font-weight: 700; margin-bottom: 30px;">2026학년도 2차</p>
+            <h1 style="font-size: 3.8rem; color: var(--text-dark); margin-bottom: 15px; line-height: 1.2;">대구보건대학교</h1>
+            <h1 style="font-size: 3.8rem; color: var(--text-dark); margin-bottom: 40px; line-height: 1.2;">평의원회</h1>
+            <div style="height: 5px; background: var(--primary); width: 100px; margin: 40px auto;"></div>
+            <p style="font-size: 2.8rem; font-weight: 700; color: var(--text-main); margin-bottom: 60px;">회의 안건 및 진행 순서</p>
+            
+            <!-- 표지용 회의 일시/장소 -->
+            <div style="display: inline-block; text-align: left; margin-top: 10px;">
+                <p style="font-size: 1.4rem; color: var(--text-dark); margin-bottom: 12px;">
+                    <strong style="color: var(--primary); display: inline-block; width: 60px;">일시 :</strong> 2026. 8. 28(금) 10:00 ~
+                </p>
+                <p style="font-size: 1.4rem; color: var(--text-dark);">
+                    <strong style="color: var(--primary); display: inline-block; width: 60px;">장소 :</strong> 대구보건대학교 본관 9층 글로컬회의실 (소회의실)
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 탭 내비게이션 -->
+    <div class="tab-container" id="tab-nav">
+        <button class="tab-btn active" onclick="openTab(event, 'tab-summary')">
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            안건
+        </button>
+        <button class="tab-btn" onclick="openTab(event, 'tab-qa')">
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+            평의원회 질의 리스트
+        </button>
+        <button class="tab-btn" onclick="openTab(event, 'tab-scenario')">
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+            회의 진행 순서
+        </button>
+    </div>
+
+    <!-- 탭 1: 안건 요약 -->
+    <div id="tab-summary" class="tab-content active">
+        
+        <h2 class="section-title pdf-only-flex" style="margin-top: 20px; border-bottom: 3px solid var(--primary); color: var(--primary);">
+            <svg class="icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            부서별 회의 안건
+        </h2>
+
+        <!-- 직업교육혁신센터 (1건) -->
+        <div class="dept-title">
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            팀명 : 직업교육혁신센터
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <span class="badge" style="border-color:var(--primary); color:var(--primary);">보고 안건</span>
+                <div class="card-title">전공 교육과정 운영 정책 및 편성 지침 개정안 자문</div>
+            </div>
+            <div class="desc-box">
+                <strong>[안건 요지]</strong><br>
+                산업 생태계 변화와 디지털 대전환(DX)에 선제적으로 대응하기 위한 전공 교육과정 편성 지침의 전면 개정 및 학사 구조 고도화 방안을 보고합니다.<br><br>
+                <strong>[개정 사유]</strong>
+                <ul style="margin-top: 5px; margin-bottom: 15px; padding-left: 20px; font-size: 0.95em; color: #475569; line-height: 1.5;">
+                    <li>학칙 개정에 따른 관련 내용 개정</li>
+                    <li>2026년 전문대학 기관평가인증 기준 충족</li>
+                    <li>산업계 변화 및 디지털 대전환(DX) 반영</li>
+                    <li>전문대학 학사 구조 고도화</li>
+                </ul>
+                <strong>[주요 신·구조문 대비표 (발췌)]</strong>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50%;">현행</th>
+                            <th style="width: 50%;">개정(안)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <strong>제3조(전공 교육과정 편성 방향)</strong><br>
+                                ② 2. <u>수요자중심</u>: 산업현장에 효과적으로 투입될 수 있도록 산업체의 교육적 요구를 반영한 교육과정<br><br>
+                                4. <u>창의·융복합</u>: 다학제간 협력을 통한 문제해결력 및 통합적 직무능력 습득을 위한 교육과정
+                            </td>
+                            <td>
+                                <strong>제3조(전공 교육과정 편성 방향)</strong><br>
+                                ② 2. <strong>미래 사회 변화 주도</strong>: 산업 생태계와 대외 교육 수요(학생, 산업체, 지역사회)의 요구 분석을 유기적으로 반영한 현장 밀착형 교육과정<br><br>
+                                4. <strong>디지털 신기술 기반</strong>: 다학제간 협업을 통한 문제해결 역량 및 디지털 신기술 기반의 통합적 직무 수행 능력을 함양하는 교육과정
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>제4조(책임과 권한)</strong> ① 전공 교육과정 운영 정책 및 편성 관련 제반 업무는 교무처에서 주관하고, <strong>교육과정개발위원회</strong>의 심의를 거쳐 대학평의원회의 자문을 받는다.
+                            </td>
+                            <td>
+                                <strong>제4조(책임과 권한)</strong> ① ... <strong>교육과정심의위원회</strong>의 심의를 거쳐...<br>
+                                <span style="font-size: 0.85em; color: var(--text-light);">* 제4조의1, 제7조, 제9조 등 관련 위원회 명칭 일괄 개정</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 교무지원팀 (1건) -->
+        <div class="dept-title">
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            팀명 : 교무지원팀
+        </div>
+
+        <div class="card orange">
+            <div class="card-header">
+                <span class="badge" style="border-color:var(--secondary); color:var(--secondary);">심의 안건</span>
+                <div class="card-title">대구보건대학교 학칙 개정(안) 심의 건</div>
+            </div>
+            <div class="desc-box">
+                <strong>[안건 요지]</strong><br>
+                2027학년도 전공명 개편 사항을 반영하고, 외국인 유학생 수학 및 졸업 기준 등 학사 운영의 제도적 근거를 명확히 정비하기 위한 학칙 개정안을 심의하고자 합니다.<br><br>
+                <strong>[학칙 개정 발의 사유]</strong>
+                <ul style="margin-top: 5px; margin-bottom: 15px; padding-left: 20px; font-size: 0.95em; color: #475569; line-height: 1.5;">
+                    <li>2027학년도 전공명(정원 외) 개편 내용 추가 (미식카페베이커리전공 → 외식조리베이커리전공 변경)</li>
+                    <li>외국인 교환학생 등 타교생 수학의 세부규정 마련 근거와 규정 항목 추가</li>
+                    <li>외국인 유학생 졸업기준 제정 근거 마련</li>
+                    <li>[별표 1] 2027학년도 전공명(정원 외) 개편에 따른 학위종별 개정</li>
+                </ul>
+                <strong>[학칙 개정(안) 신·구조문 대비표]</strong>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 40%;">현행</th>
+                            <th style="width: 40%;">개정(안)</th>
+                            <th style="width: 20%;">비고(사유)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <strong>제4조(설치대학·학과계열 학부 및 입학 정원)</strong><br>
+                                호텔제과제빵학과 <u>미식카페베이커리전공</u> (정원 외)
+                            </td>
+                            <td>
+                                <strong>제4조(설치대학·학과·계열 학부 및 입학 정원)</strong><br>
+                                호텔제과제빵학과 <strong>외식조리베이커리전공</strong> (정원 외)
+                            </td>
+                            <td style="text-align: center; vertical-align: middle;">2027학년도 전공명 개편</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>제35조의4(타교생의 수학)</strong> 국내·외의 대학에서 재학중인 학생이 본 대학교에서 수학하고자 할 경우 이를 허가할 수 있으며, 수학기간 등 운영에 관한 사항은 관계 대학과의 학술교류협정 등에 의한다.
+                            </td>
+                            <td>
+                                <strong>제35조의4(타교생의 수학)</strong> ... 학생의 <strong>선발방법, 수학기간, 학점인정, 등록금 책정 및 장학금 지급 등에 관한 세부사항</strong>은 관계 대학과의 학술교류협정의 범위 내에서 총장이 따로 정한다.
+                            </td>
+                            <td style="text-align: center; vertical-align: middle;">외국인 교환학생 수학 세부규정 마련</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>제41조(졸업 및 수료)</strong><br>
+                                &lt;신 설&gt;
+                            </td>
+                            <td>
+                                <strong>제41조(졸업 및 수료)</strong><br>
+                                <strong>⑥ 외국인 유학생은 재학기간 중 한국어 능력 요건을 갖추어야 한다. 이에 관한 세부 사항은 총장이 따로 정한다.</strong>
+                            </td>
+                            <td style="text-align: center; vertical-align: middle;">외국인 유학생 졸업기준 근거</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 대학평의원회 (1건) -->
+        <div class="dept-title">
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            팀명 : 대학평의원회
+        </div>
+
+        <div class="card green">
+            <div class="card-header">
+                <span class="badge" style="border-color:var(--tertiary); color:var(--tertiary);">논의 안건</span>
+                <div class="card-title">대학평의원회 구성원 추천 지침(안)</div>
+            </div>
+            <div class="desc-box">
+                <strong>[안건 요지]</strong><br>
+                대학평의원회 구성의 민주성과 투명성 제고를 위해 교원, 직원, 학생 등 각 신분별 대표 위원 추천 주체 지정안에 대하여 논의하고자 합니다.<br><br>
+                
+                <strong>[구성원별 추천 주체(안)]</strong>
+                <p style="margin-top: 5px; margin-bottom: 10px; font-size: 0.95em; color: #475569;">대학평의원회 구성을 위한 각 신분별 대표 위원 추천 주체 지정을 위하여 평의원회 구성원의 고견을 청취하고자 합니다.</p>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">구성원 구분</th>
+                            <th style="width: 70%;">추천 주체 (단체 및 부서)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="text-align: center; font-weight: 700;">교원</td>
+                            <td>교수회</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center; font-weight: 700;">직원</td>
+                            <td>직원노동조합</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center; font-weight: 700;">학생</td>
+                            <td>총학생회</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center; font-weight: 700;">조교</td>
+                            <td>인사부서장 혹은 사무처장</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center; font-weight: 700;">외부인사</td>
+                            <td>총동창회, DHCTOP 동문회</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 탭 2: 질의 리스트 -->
+    <div id="tab-qa" class="tab-content">
+        <div class="pdf-only-block" style="page-break-before: always; break-before: page; height: 1px;"></div>
+        
+        <h2 class="section-title">
+            <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            대학평의원회 집행부 질의 리스트
+        </h2>
+
+        <div class="q-group" style="margin-top: 40px;">
+            <div class="q-box" style="padding-left: 20px; text-align: center; padding-top: 40px; padding-bottom: 40px;">
+                <div class="q-text" style="color: var(--text-light);">사전 등록된 질의가 없습니다. 안건별 질의 응답은 본 회의 중 현장 질의로 진행됩니다.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 탭 3: 회의 진행 순서 -->
+    <div id="tab-scenario" class="tab-content">
+        <div class="pdf-only-block" style="page-break-before: always; break-before: page; height: 1px;"></div>
+        <h2 class="section-title pdf-only-flex" style="margin-top: 20px; border-bottom: 3px solid var(--primary); color: var(--primary);">
+            <svg class="icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+            회의 진행 순서
+        </h2>
+
+        <div class="script-box" style="padding: 40px 50px;">
+            <ol style="list-style-type: decimal; font-size: 1.3rem; font-weight: 700; color: var(--text-dark); padding-left: 20px; line-height: 2.5;">
+                <li style="margin-bottom: 10px;">성원보고 <span style="font-weight: 500; color: var(--text-light); font-size: 1.1rem;">(부의장)</span></li>
+                <li style="margin-bottom: 10px;">개회선언 <span style="font-weight: 500; color: var(--text-light); font-size: 1.1rem;">(의장)</span></li>
+                <li style="margin-bottom: 10px;">인사말씀 <span style="font-weight: 500; color: var(--text-light); font-size: 1.1rem;">(의장)</span></li>
+                <li style="margin-bottom: 10px;">전차회의록 보고 및 안건 안내 <span style="font-weight: 500; color: var(--text-light); font-size: 1.1rem;">(부의장)</span></li>
+                <li style="margin-bottom: 10px;">심의 자문 진행 <span style="font-weight: 500; color: var(--text-light); font-size: 1.1rem;">(의장)</span>
+                    <div style="font-size: 1.15rem; font-weight: 500; color: var(--text-main); padding-left: 15px; margin-top: 5px; line-height: 2;">
+                        (안건에 대한 질의 응답) <span style="color: var(--text-light); font-size: 1.05rem;">(의원)</span><br>
+                        (동의 및 제청) <span style="color: var(--text-light); font-size: 1.05rem;">(의원)</span>
+                    </div>
+                </li>
+                <li>폐회선언 <span style="font-weight: 500; color: var(--text-light); font-size: 1.1rem;">(의장)</span></li>
+            </ol>
+        </div>
+
+    </div>
+</div>
+
+<!-- 스크립트 영역 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+    // 탭 전환 함수
+    function openTab(evt, tabName) {
+        let i, tabcontent, tablinks;
+        
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+            tabcontent[i].classList.remove("active");
+        }
+        
+        tablinks = document.getElementsByClassName("tab-btn");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        
+        document.getElementById(tabName).style.display = "block";
+        document.getElementById(tabName).classList.add("active");
+        evt.currentTarget.className += " active";
+    }
+
+    // PDF 다운로드 이벤트
+    document.getElementById('downloadPdfBtn').addEventListener('click', function() {
+        const btn = this;
+        const body = document.body;
+        const tabNav = document.getElementById('tab-nav');
+        
+        const tabSummary = document.getElementById('tab-summary');
+        const tabQa = document.getElementById('tab-qa');
+        const tabScenario = document.getElementById('tab-scenario');
+        
+        // 버튼 및 탭 내비게이션 숨기기
+        btn.style.display = 'none';
+        tabNav.style.display = 'none';
+        
+        // PDF 출력용 클래스 부여
+        body.classList.add('exporting-pdf');
+        
+        // 모든 탭 내용을 노출하여 PDF에 담음
+        tabSummary.style.display = "block";
+        tabSummary.classList.add("no-animation");
+        
+        tabQa.style.display = "block";
+        tabQa.classList.add("no-animation");
+        
+        tabScenario.style.display = "block";
+        tabScenario.classList.add("no-animation");
+
+        const element = document.getElementById('pdf-content');
+        
+        // PDF 변환 옵션
+        const opt = {
+            margin:       [10, 10, 10, 10], 
+            filename:     '대구보건대학교_평의원회_2차회의_전체자료.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+            pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+        };
+
+        // PDF 생성 완료 후 화면 원상복구
+        html2pdf().set(opt).from(element).save().then(() => {
+            btn.style.display = 'inline-flex';
+            tabNav.style.display = 'flex';
+            
+            body.classList.remove('exporting-pdf');
+            
+            // 애니메이션 방지 클래스 제거
+            tabSummary.classList.remove("no-animation");
+            tabQa.classList.remove("no-animation");
+            tabScenario.classList.remove("no-animation");
+            
+            // 탭 초기화
+            tabSummary.style.display = "none";
+            tabQa.style.display = "none";
+            tabScenario.style.display = "none";
+            
+            // 현재 활성화되어 있던 탭만 다시 표시
+            const activeBtn = document.querySelector('.tab-btn.active');
+            activeBtn.click();
+        });
+    });
+</script>
+
+</body>
+</html>
