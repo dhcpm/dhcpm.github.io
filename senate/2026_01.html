@@ -356,6 +356,28 @@
             box-shadow: 0 6px 8px rgba(37, 99, 235, 0.3);
         }
 
+        .minutes-btn {
+            background-color: var(--secondary);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 700;
+            box-shadow: 0 4px 6px rgba(234, 88, 12, 0.2);
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .minutes-btn:hover {
+            background-color: #c2410c;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(234, 88, 12, 0.3);
+        }
+
         @media (max-width: 600px) {
             .tab-btn { padding: 10px 15px; font-size: 1rem; }
             .data-row { flex-direction: column; gap: 5px; }
