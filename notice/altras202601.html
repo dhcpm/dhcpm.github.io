@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026학년도 제1기 DHC 아틀라스 모니터링단 모집</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- SheetJS for Excel export -->
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <style>
+        body {
+            font-family: 'Inter', 'Pretendard', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .step-active {
+            color: #4f46e5;
+            font-weight: 700;
+        }
+        .step-inactive {
+            color: #9ca3af;
+        }
+        .step-line-active {
+            background-color: #4f46e5;
+        }
+        .step-line-inactive {
+            background-color: #e5e7eb;
+        }
+        /* Custom Scrollbar for textareas */
+        textarea::-webkit-scrollbar {
+            width: 8px;
+        }
+        textarea::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+            border-radius: 4px;
+        }
+        textarea::-webkit-scrollbar-thumb {
+            background: #c7c7cc; 
+            border-radius: 4px;
+        }
+        textarea::-webkit-scrollbar-thumb:hover {
+            background: #a1a1aa; 
+        }
+        /* Hide sections by default */
+        .view-section {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .view-section.active {
+            display: block;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="text-gray-800 antialiased min-h-screen flex flex-col">
+
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-center">
+            <div class="flex items-center gap-2 mb-4 sm:mb-0">
+                <i class="ph-fill ph-student text-indigo-600 text-3xl"></i>
+                <h1 class="text-xl font-bold text-gray-900 tracking-tight">DHC 아틀라스 모니터링단 모집 안내</h1>
+            </div>
+            
+            <!-- Progress Tracker -->
+            <div class="flex items-center space-x-2 sm:space-x-4 text-sm">
+                <div id="nav-step-1" class="flex items-center step-active transition-colors">
+                    <span class="w-6 h-6 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-600 font-bold mr-2">1</span>
+                    <span class="hidden sm:inline">모집안내</span>
+                </div>
+                <div id="line-1" class="w-4 sm:w-8 h-1 rounded step-line-inactive transition-colors"></div>
+                
+                <div id="nav-step-2" class="flex items-center step-inactive transition-colors">
+                    <span class="w-6 h-6 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 font-bold mr-2 step-num">2</span>
+                    <span class="hidden sm:inline">신청서 작성</span>
+                </div>
+                <div id="line-2" class="w-4 sm:w-8 h-1 rounded step-line-inactive transition-colors"></div>
+                
+                <div id="nav-step-3" class="flex items-center step-inactive transition-colors">
+                    <span class="w-6 h-6 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 font-bold mr-2 step-num">3</span>
+                    <span class="hidden sm:inline">미리보기 및 제출</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        
+        <!-- VIEW 1: Information Page -->
+        <section id="view-info" class="view-section active">
+            <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden">
+                <div class="bg-indigo-600 px-6 py-8 text-center text-white">
+                    <h2 class="text-2xl sm:text-3xl font-bold mb-2">2026학년도 제1기 DHC 아틀라스 모니터링단 모집 공고</h2>
+                    <p class="text-indigo-100">전문대학혁신지원사업 구성원 참여형 소통 채널</p>
+                </div>
+                
+                <div class="p-6 sm:p-10 space-y-8">
+                    <!-- I. 운영개요 -->
+                    <div>
+                        <h3 class="text-lg font-bold text-indigo-700 flex items-center gap-2 mb-3 border-b pb-2">
+                            <i class="ph-bold ph-info"></i> I. 운영 개요
+                        </h3>
+                        <ul class="list-disc pl-5 space-y-2 text-gray-700 leading-relaxed">
+                            <li>전문대학혁신지원사업에 참여하는 구성원이 교육, 행정 시설 전반을 상시 모니터링하고 개선을 제안하는 구성원 참여형 소통 채널을 제도화 하여, 수요자 중심의 교육환경 개선과 구성원 참여 확대 실현</li>
+                            <li>재학생, 졸업생, 지도교수, 사업 담당 교직원 등으로 구성된 팀 구성</li>
+                        </ul>
+                    </div>
+
+                    <!-- II. 활동내용 -->
+                    <div>
+                        <h3 class="text-lg font-bold text-indigo-700 flex items-center gap-2 mb-3 border-b pb-2">
+                            <i class="ph-bold ph-clipboard-text"></i> II. 활동 내용
+                        </h3>
+                        <ul class="list-disc pl-5 space-y-2 text-gray-700 leading-relaxed">
+                            <li><strong>활동기간:</strong> 2026년 10월 ~ 2027년 2월 중순까지(5개월)</li>
+                            <li><strong>활동내용:</strong> 
+                                <br>① 대구보건대학교의 전반적인 혁신지원사업 모니터링
+                                <br>② 모니터링 내용을 기반으로 모니터링 결과보고서 및 발표자료 작성
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- III. 활동일정 -->
+                    <div>
+                        <h3 class="text-lg font-bold text-indigo-700 flex items-center gap-2 mb-3 border-b pb-2">
+                            <i class="ph-bold ph-calendar"></i> III. 활동 일정
+                        </h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full text-sm text-left border-collapse border border-gray-200">
+                                <thead class="bg-gray-50 text-gray-700 text-center">
+                                    <tr>
+                                        <th class="border border-gray-200 px-4 py-2 font-semibold">일정</th>
+                                        <th class="border border-gray-200 px-4 py-2 font-semibold">구분</th>
+                                        <th class="border border-gray-200 px-4 py-2 font-semibold">내용</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="border border-gray-200 px-4 py-2 text-center whitespace-nowrap">2026.9.22.(화) ~ 2026.9.30.(수)</td>
+                                        <td class="border border-gray-200 px-4 py-2 text-center">모니터링단 모집 공고</td>
+                                        <td class="border border-gray-200 px-4 py-2">- 팀별 신청서 접수</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-gray-200 px-4 py-2 text-center whitespace-nowrap">2026.10.6.(화)~</td>
+                                        <td class="border border-gray-200 px-4 py-2 text-center">모니터링단 확정</td>
+                                        <td class="border border-gray-200 px-4 py-2">- 내부 심사 후 합격자 개별통보</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-gray-200 px-4 py-2 text-center whitespace-nowrap">발표 후 일정 확정</td>
+                                        <td class="border border-gray-200 px-4 py-2 text-center">모니터링단 발대식 및 OT실시</td>
+                                        <td class="border border-gray-200 px-4 py-2">- OT 실시</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-gray-200 px-4 py-2 text-center whitespace-nowrap">2026.10 ~ 2027.2</td>
+                                        <td class="border border-gray-200 px-4 py-2 text-center">모니터링단 활동</td>
+                                        <td class="border border-gray-200 px-4 py-2">- 전문대학혁신지원사업 모니터링 활동<br>- 예산 집행 관련 서류 제출</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-gray-200 px-4 py-2 text-center whitespace-nowrap">2월 중순</td>
+                                        <td class="border border-gray-200 px-4 py-2 text-center">모니터링 결과보고서 제출 및 시상</td>
+                                        <td class="border border-gray-200 px-4 py-2">- 결과보고서 평가 및 시상</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p class="text-xs text-gray-500 mt-2">※ 상기 일정은 부서사정에 따라 변경될 수 있음</p>
+                        </div>
+                    </div>
+
+                    <!-- IV. 모집안내 -->
+                    <div>
+                        <h3 class="text-lg font-bold text-indigo-700 flex items-center gap-2 mb-3 border-b pb-2">
+                            <i class="ph-bold ph-megaphone"></i> IV. 모집 안내
+                        </h3>
+                        <ul class="list-disc pl-5 space-y-2 text-gray-700 leading-relaxed">
+                            <li><strong>모집대상:</strong> 전문대학혁신지원사업에 관심이 있는 재학생, 졸업생, 교직원</li>
+                            <li><strong>모집기간:</strong> 2026년 9월 30일(수)까지</li>
+                            <li><strong>모집인원:</strong> 4개팀/팀별 4명 (총 16명)<br>
+                                <span class="text-sm text-gray-500">- 1개팀당 지도교수 1명, 재학생 2명, 졸업생 1명 또는 교직원 4명(동일 팀 중복 안됨)</span>
+                            </li>
+                            <li><strong>지원방법:</strong> 하단 신청서 작성 후 엑셀 다운로드 ➔ 이메일 접수 (김동균 kimdg82@dhc.ac.kr)</li>
+                        </ul>
+                    </div>
+
+                    <!-- V. 신청 유의사항 -->
+                    <div>
+                        <h3 class="text-lg font-bold text-indigo-700 flex items-center gap-2 mb-3 border-b pb-2">
+                            <i class="ph-bold ph-warning-circle"></i> V. 신청 유의사항
+                        </h3>
+                        <div class="bg-amber-50 border border-amber-200 rounded-lg p-5">
+                            <ul class="list-disc pl-5 space-y-2 text-gray-800 leading-relaxed text-sm">
+                                <li><strong>대표자 지정:</strong> 재학생 팀의 대표자는 반드시 <span class="font-bold text-amber-700">재학생 중 1명</span>으로 지정해 주세요. (지도교수님의 지도를 받더라도 대표는 학생이어야 합니다.) 반면 교직원 팀은 팀원 자율로 대표를 지정하실 수 있습니다.</li>
+                                <li><strong>지도교수 배정:</strong> 재학생 팀은 원활한 활동을 위해 반드시 <span class="font-bold text-amber-700">지도교수 1명</span>을 포함하여 팀을 구성해 주세요.</li>
+                                <li><strong>선발 규모 변동:</strong> 전체 모집 현황에 따라 재학생 팀과 교직원 팀의 최종 선발 팀 수가 상황에 맞게 조정될 수 있습니다.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- VI. 활동 혜택 -->
+                    <div>
+                        <h3 class="text-lg font-bold text-indigo-700 flex items-center gap-2 mb-3 border-b pb-2">
+                            <i class="ph-bold ph-gift"></i> VI. 활동 혜택
+                        </h3>
+                        <div class="space-y-5 text-gray-700 leading-relaxed">
+                            <!-- 공통 혜택 -->
+                            <div class="bg-indigo-50/50 p-4 sm:p-5 rounded-lg border border-indigo-100">
+                                <h4 class="font-bold text-indigo-800 mb-2 flex items-center gap-1.5"><i class="ph-fill ph-check-circle"></i> 공통 혜택</h4>
+                                <ul class="list-disc pl-5 space-y-1">
+                                    <li>사업단장 명의 위촉장 수여</li>
+                                    <li><strong>활동비 지원:</strong> 1팀당 총 4회 회의경비 480,000원 지원</li>
+                                </ul>
+                            </div>
+                            
+                            <!-- 특별 혜택 -->
+                            <div class="bg-yellow-50/50 p-4 sm:p-5 rounded-lg border border-yellow-100">
+                                <h4 class="font-bold text-yellow-800 mb-2 flex items-center gap-1.5"><i class="ph-fill ph-star"></i> 특별 혜택 (우수활동자 시상)</h4>
+                                <p class="mb-2">활동우수팀(2팀)에 대한 시상: <strong class="text-red-600">대상 100만원, 우수상 80만원</strong></p>
+                                <p class="text-sm mb-3 text-gray-600">- 평가내용: 전문대학혁신지원사업 관련 데이터 및 이해관계자 의견 수렴 분석을 통한 개선사항 도출</p>
+                                
+                                <div class="overflow-x-auto mt-4">
+                                    <table class="min-w-full text-sm text-left border-collapse border border-yellow-200 bg-white">
+                                        <thead class="bg-yellow-100/60 text-gray-800 text-center">
+                                            <tr>
+                                                <th class="border border-yellow-200 px-3 py-2 font-semibold whitespace-nowrap">평가항목</th>
+                                                <th class="border border-yellow-200 px-3 py-2 font-semibold">평가기준</th>
+                                                <th class="border border-yellow-200 px-3 py-2 font-semibold whitespace-nowrap">배점</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="border border-yellow-200 px-3 py-3 text-center font-medium text-gray-700">수시, 정기 모니터링</td>
+                                                <td class="border border-yellow-200 px-3 py-3">
+                                                    <ul class="list-disc pl-4 space-y-1 text-gray-600">
+                                                        <li>모니터링 활동보고서 내용 성실도</li>
+                                                        <li>모니터링 활동 다양성 (프로그램 만족도 조사, 사업관계자 인터뷰 등 의견수렴 등)</li>
+                                                    </ul>
+                                                </td>
+                                                <td class="border border-yellow-200 px-3 py-3 text-center text-yellow-700 font-bold">50점</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="border border-yellow-200 px-3 py-3 text-center font-medium text-gray-700">결과보고서</td>
+                                                <td class="border border-yellow-200 px-3 py-3">
+                                                    <ul class="list-disc pl-4 space-y-1 text-gray-600">
+                                                        <li>우수사례, 개선사항, 제언 등을 포함한 발표자료 작성 및 PT</li>
+                                                        <li>차년도 사업 개선사항 도출</li>
+                                                    </ul>
+                                                </td>
+                                                <td class="border border-yellow-200 px-3 py-3 text-center text-yellow-700 font-bold">50점</td>
+                                            </tr>
+                                            <tr class="bg-yellow-50">
+                                                <td class="border border-yellow-200 px-3 py-2 text-center font-bold text-gray-800" colspan="2">합계</td>
+                                                <td class="border border-yellow-200 px-3 py-2 text-center text-red-600 font-bold">100점</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- VII. 활동 제출자료 -->
+                    <div>
+                        <h3 class="text-lg font-bold text-indigo-700 flex items-center gap-2 mb-3 border-b pb-2">
+                            <i class="ph-bold ph-folder-open"></i> VII. 활동 제출자료
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="bg-gray-50 border border-gray-200 rounded-lg p-5 flex items-start gap-3">
+                                <i class="ph-fill ph-file-text text-2xl text-indigo-500 mt-1"></i>
+                                <div>
+                                    <h4 class="font-bold text-gray-800 mb-1">수시 제출</h4>
+                                    <p class="text-sm text-gray-600">모니터링 활동 보고서, 예산사용관련 서류 및 증빙자료</p>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 border border-gray-200 rounded-lg p-5 flex items-start gap-3">
+                                <i class="ph-fill ph-presentation-chart text-2xl text-indigo-500 mt-1"></i>
+                                <div>
+                                    <h4 class="font-bold text-gray-800 mb-1">최종 제출</h4>
+                                    <p class="text-sm text-gray-600">모니터링 최종 결과보고서 및 발표자료 (10분 분량)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 p-6 border-t border-gray-100 text-center">
+                    <button onclick="goToForm()" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-indigo-600 text-white font-bold rounded-xl shadow-lg hover:bg-indigo-700 hover:shadow-xl transition-all transform hover:-translate-y-1">
+                        신청서 작성 시작하기 <i class="ph-bold ph-arrow-right"></i>
+                    </button>
+                    <p class="text-sm text-gray-500 mt-3"><i class="ph-fill ph-warning-circle text-amber-500"></i> 작성 중 페이지를 닫으면 내용이 사라집니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 2: Application Form -->
+        <section id="view-form" class="view-section">
+            <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-6 sm:p-10">
+                <h2 class="text-2xl font-bold text-center mb-8 border-b pb-4">[붙임 1] 2026년도 DHC 아틀라스 모니터링단 신청서</h2>
+                
+                <form id="application-form" class="space-y-8">
+                    
+                    <!-- Team Type Selection -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">팀 유형 <span class="text-red-500">*</span></label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <label class="inline-flex items-start sm:items-center cursor-pointer">
+                                <input type="radio" name="teamType" value="student" checked class="form-radio h-5 w-5 text-indigo-600 mt-0.5 sm:mt-0" onchange="updateTeamRoles()">
+                                <span class="ml-2 text-gray-800 font-medium">재학생 팀 <span class="block sm:inline text-xs sm:text-sm text-gray-500 font-normal">(지도교수, 재학생 2명, 전공심화/졸업생)</span></span>
+                            </label>
+                            <label class="inline-flex items-start sm:items-center cursor-pointer">
+                                <input type="radio" name="teamType" value="staff" class="form-radio h-5 w-5 text-indigo-600 mt-0.5 sm:mt-0" onchange="updateTeamRoles()">
+                                <span class="ml-2 text-gray-800 font-medium">교직원 팀 <span class="block sm:inline text-xs sm:text-sm text-gray-500 font-normal">(리더 및 팀원 3명 - 모두 다른 소속)</span></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Team Basic Info -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2" for="teamName">팀명 <span class="text-red-500">*</span></label>
+                            <input type="text" id="teamName" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" placeholder="[예시문] DHC혁신리더스">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2" for="repName">대표자 성명 <span class="text-red-500">*</span></label>
+                            <input type="text" id="repName" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" placeholder="[예시문] 홍길동">
+                            <p class="text-xs text-gray-500 mt-1">※ 재학생 팀은 반드시 '재학생'을, 교직원 팀은 자율적으로 대표를 입력해 주세요.</p>
+                        </div>
+                    </div>
+
+                    <!-- Team Members Table -->
+                    <div>
+                        <div class="flex justify-between items-end mb-2">
+                            <label class="block text-sm font-semibold text-gray-700">팀원 구성 (총 4명) <span class="text-red-500">*</span></label>
+                            <span class="text-xs text-gray-500">팀 유형에 맞게 구성원 정보를 입력해주세요</span>
+                        </div>
+                        <div class="overflow-x-auto border border-gray-200 rounded-lg">
+                            <table class="min-w-full divide-y divide-gray-200 text-sm">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-3 py-3 text-left font-medium text-gray-500 tracking-wider">구분</th>
+                                        <th class="px-3 py-3 text-left font-medium text-gray-500 tracking-wider">성명</th>
+                                        <th class="px-3 py-3 text-left font-medium text-gray-500 tracking-wider">소속(학과/부서)</th>
+                                        <th class="px-3 py-3 text-left font-medium text-gray-500 tracking-wider">학년/학번(사번)</th>
+                                        <th class="px-3 py-3 text-left font-medium text-gray-500 tracking-wider">연락처</th>
+                                        <th class="px-3 py-3 text-left font-medium text-gray-500 tracking-wider">이메일</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <!-- Member 1 -->
+                                    <tr>
+                                        <td class="px-3 py-2 font-bold text-center bg-indigo-50 whitespace-nowrap" id="role1_text">지도교수</td>
+                                        <td class="px-3 py-2"><input type="text" id="mem1_name" required class="w-full border-gray-300 rounded focus:ring-indigo-500 min-w-[80px]" placeholder="[예시문] 김보건"></td>
+                                        <td class="px-3 py-2"><input type="text" id="mem1_dept" required class="w-full border-gray-300 rounded focus:ring-indigo-500 min-w-[100px]" placeholder="[예시문] 간호학과"></td>
+                                        <td class="px-3 py-2"><input type="text" id="mem1_id" required class="w-full border-gray-300 rounded focus:ring-indigo-500 min-w-[120px]" placeholder="[예시문] 교수/20251234"></td>
+                                        <td class="px-3 py-2"><input type="text" id="mem1_phone" required class="w-full border-gray-300 rounded focus:ring-indigo-500 min-w-[120px]" placeholder="[예시문] 010-1234-5678"></td>
+                                        <td class="px-3 py-2"><input type="email" id="mem1_email" required class="w-full border-gray-300 rounded focus:ring-indigo-500 min-w-[140px]" placeholder="[예시문] abc@dhc.ac.kr"></td>
+                                    </tr>
+                                    <!-- Member 2 -->
+                                    <tr>
+                                        <td class="px-3 py-2 text-center text-gray-600 font-medium whitespace-nowrap" id="role2_text">재학생</td>
+                                        <td class="px-3 py-2"><input type="text" id="mem2_name" required class="w-full border-gray-300 rounded focus:ring-indigo-500 min-w-[80px]" placeholder="[예시문] 이혁신"></td>
+                                        <td class="px-3 py-2"><input type="text" id="mem2_dept" required class="w-full border-gray-300 rounded focus:ring-indigo-500 min-w-[100px]" placeholder="[예시문] 물리치료과"></td>
+                                        <td class="px-3 py-2"><input type="text" id="mem2_id" required class="w-full border-gray-300 rounded focus:ring-indigo-500 min-w-[120px]" placeholder="[예시문] 1학년/20269876"></td>
+                                        <td class="px-3 py-2"><input type="text" id="mem2_phone" required class="w-full border-gray-300 rounded focus:ring-indigo-500 min-w-[120px]" placeholder="[예시문] 010-8765-4321"></td>
+                                        <td class="px-3 py-2"><input type="email" id="mem2_email" required class="w-full border-gray-300 rounded focus:ring-indigo-500 min-w-[140px]" placeholder="[예시문] def@dhc.ac.kr"></td>
+                                    </tr>
+                                    <!-- Member 3 -->
+                                    <tr>
+                                        <td class="px-3 py-2 text-center text-gray-600 font-medium whitespace-nowrap" id="role3_text">재학생</td>
+                                        <td class="px-3 py-2"><input type="text" id="mem3_name" required class="w-full border-gray-300 rounded focus:ring-indigo-500 min-w-[80px]" placeholder="이름"></td>
+                                        <td class="px-3 py-2"><input type="text" id="mem3_dept" required class="w-full border-gray-300 rounded focus:ring-indigo-500 min-w-[100px]" placeholder="학과/부서"></td>
+                                        <td class="px-3 py-2"><input type="text" id="mem3_id" required class="w-full border-gray-300 rounded focus:ring-indigo-500 min-w-[120px]" placeholder="학번/사번"></td>
+                                        <td class="px-3 py-2"><input type="text" id="mem3_phone" required class="w-full border-gray-300 rounded focus:ring-indigo-500 min-w-[120px]" placeholder="연락처"></td>
+                                        <td class="px-3 py-2"><input type="email" id="mem3_email" required class="w-full border-gray-300 rounded focus:ring-indigo-500 min-w-[140px]" placeholder="이메일"></td>
+                                    </tr>
+                                    <!-- Member 4 -->
+                                    <tr>
+                                        <td class="px-3 py-2 text-center text-gray-600 font-medium whitespace-nowrap" id="role4_text">전공심화(졸업생)</td>
+                                        <td class="px-3 py-2"><input type="text" id="mem4_name" required class="w-full border-gray-300 rounded focus:ring-indigo-500 min-w-[80px]" placeholder="이름"></td>
+                                        <td class="px-3 py-2"><input type="text" id="mem4_dept" required class="w-full border-gray-300 rounded focus:ring-indigo-500 min-w-[100px]" placeholder="학과/부서"></td>
+                                        <td class="px-3 py-2"><input type="text" id="mem4_id" required class="w-full border-gray-300 rounded focus:ring-indigo-500 min-w-[120px]" placeholder="학번/사번"></td>
+                                        <td class="px-3 py-2"><input type="text" id="mem4_phone" required class="w-full border-gray-300 rounded focus:ring-indigo-500 min-w-[120px]" placeholder="연락처"></td>
+                                        <td class="px-3 py-2"><input type="email" id="mem4_email" required class="w-full border-gray-300 rounded focus:ring-indigo-500 min-w-[140px]" placeholder="이메일"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Long text inputs -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2" for="motivation">1. 지원 동기 <span class="text-red-500">*</span></label>
+                        <textarea id="motivation" required rows="4" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" placeholder="[예시문] 대학 혁신지원사업의 방향성을 이해하고, 실제 학생들의 체감도를 높일 수 있는 실질적인 아이디어를 제안하고자 지원하게 되었습니다. 특히 학내 편의시설 및 교육 프로그램의 개선점을 사용자 입장에서 도출하고 싶습니다..."></textarea>
+                        <p class="text-xs text-gray-500 mt-1">DHC 아틀라스 모니터링단의 활동을 이해하고 명확한 동기를 작성해주세요.</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-3">2. 활동 계획 <span class="text-red-500">*</span></label>
+                        <div class="space-y-3 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                                <label class="w-16 font-bold text-gray-700">10월</label>
+                                <input type="text" id="plan_10" required class="flex-grow px-3 py-2 rounded border border-gray-300 focus:ring-2 focus:ring-indigo-500" placeholder="[예시문] 팀원 역할 분담 및 혁신지원사업 세부 프로그램 분석">
+                            </div>
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                                <label class="w-16 font-bold text-gray-700">11월</label>
+                                <input type="text" id="plan_11" required class="flex-grow px-3 py-2 rounded border border-gray-300 focus:ring-2 focus:ring-indigo-500" placeholder="[예시문] 재학생 대상 프로그램 만족도 온라인 설문조사 실시">
+                            </div>
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                                <label class="w-16 font-bold text-gray-700">12월</label>
+                                <input type="text" id="plan_12" required class="flex-grow px-3 py-2 rounded border border-gray-300 focus:ring-2 focus:ring-indigo-500" placeholder="[예시문] 학내 휴게공간 시설 점검 및 사진 자료 수집">
+                            </div>
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                                <label class="w-16 font-bold text-gray-700">1월</label>
+                                <input type="text" id="plan_1" required class="flex-grow px-3 py-2 rounded border border-gray-300 focus:ring-2 focus:ring-indigo-500" placeholder="[예시문] 수집된 데이터 기반 개선안 도출 및 회의">
+                            </div>
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                                <label class="w-16 font-bold text-gray-700">2월</label>
+                                <input type="text" id="plan_2" readonly value="성과공유회 및 결과발표" class="flex-grow px-3 py-2 rounded border border-gray-300 bg-gray-200 text-gray-600 font-bold cursor-not-allowed select-none">
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">프로그램 전반에 걸친 활동계획을 구체적이고 실행 가능하게 월별로 작성해주세요. (2월은 결과발표로 고정됩니다.)</p>
+                    </div>
+
+                    <!-- Interests Checkboxes -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-3">3. 관심분야 (중복 선택 가능) <span class="text-red-500">*</span></label>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-3 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" name="interest" value="교육과정 수업" class="form-checkbox h-5 w-5 text-indigo-600 rounded">
+                                <span class="ml-2 text-gray-700">교육과정 수업</span>
+                            </label>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" name="interest" value="학생지원 프로그램" class="form-checkbox h-5 w-5 text-indigo-600 rounded">
+                                <span class="ml-2 text-gray-700">학생지원 프로그램</span>
+                            </label>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" name="interest" value="시설·환경" class="form-checkbox h-5 w-5 text-indigo-600 rounded">
+                                <span class="ml-2 text-gray-700">시설·환경</span>
+                            </label>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" name="interest" value="행정서비스" class="form-checkbox h-5 w-5 text-indigo-600 rounded">
+                                <span class="ml-2 text-gray-700">행정서비스</span>
+                            </label>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" name="interest" value="산학협력" class="form-checkbox h-5 w-5 text-indigo-600 rounded">
+                                <span class="ml-2 text-gray-700">산학협력</span>
+                            </label>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" name="interest" value="글로벌" class="form-checkbox h-5 w-5 text-indigo-600 rounded">
+                                <span class="ml-2 text-gray-700">글로벌</span>
+                            </label>
+                            <div class="col-span-2 md:col-span-3 flex items-center mt-2">
+                                <label class="inline-flex items-center cursor-pointer mr-2">
+                                    <input type="checkbox" id="interest_other_check" name="interest" value="기타" class="form-checkbox h-5 w-5 text-indigo-600 rounded">
+                                    <span class="ml-2 text-gray-700">기타</span>
+                                </label>
+                                <input type="text" id="interest_other_text" class="flex-grow border-b border-gray-400 bg-transparent focus:outline-none focus:border-indigo-600 px-2 py-1 text-sm disabled:opacity-50" placeholder="기타 관심분야 입력" disabled>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Consents -->
+                    <div class="space-y-4 border-t pt-6">
+                        <div class="bg-blue-50 p-5 rounded-lg border border-blue-100">
+                            <h4 class="font-bold text-blue-800 mb-2">개인정보 수집 이용에 대한 동의</h4>
+                            <ul class="text-sm text-blue-700 list-disc pl-5 mb-4 space-y-1">
+                                <li><strong>수집항목:</strong> 성명, 학년, 학번, 연락처, 이메일, 은행명, 계좌번호 등</li>
+                                <li><strong>목적:</strong> DHC 아틀라스 모니터링단 관련 선발 심사, 안내, 활동, 상금지급 등</li>
+                                <li><strong>보유 및 이용기간:</strong> 사업 종료 후 5년</li>
+                            </ul>
+                            <div class="flex items-center gap-6">
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="radio" name="privacy" value="agree" required class="form-radio h-5 w-5 text-indigo-600">
+                                    <span class="ml-2 font-medium text-gray-800">동의함</span>
+                                </label>
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="radio" name="privacy" value="disagree" class="form-radio h-5 w-5 text-red-500">
+                                    <span class="ml-2 font-medium text-gray-800">동의하지 않음</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-100 p-4 rounded-lg flex items-start">
+                            <div class="flex items-center h-5">
+                                <input id="submit_agreement" type="checkbox" required class="form-checkbox h-5 w-5 text-indigo-600 rounded">
+                            </div>
+                            <div class="ml-3 text-sm">
+                                <label for="submit_agreement" class="font-medium text-gray-800 cursor-pointer">위 내용을 확인하였으며, 기재된 사항은 사실과 다름이 없음을 확인하고 신청서를 제출합니다.</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="flex justify-between items-center pt-4">
+                        <button type="button" onclick="goBackToInfo()" class="px-6 py-3 rounded-lg font-medium text-gray-600 bg-gray-200 hover:bg-gray-300 transition-colors">
+                            <i class="ph-bold ph-arrow-left mr-1"></i> 이전 안내페이지
+                        </button>
+                        <button type="button" onclick="validateAndPreview()" class="px-8 py-3 rounded-lg font-bold text-white bg-indigo-600 hover:bg-indigo-700 shadow-md transition-colors flex items-center">
+                            작성내용 확인 <i class="ph-bold ph-magnifying-glass ml-2"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- VIEW 3: Preview -->
+        <section id="view-preview" class="view-section">
+            <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-6 sm:p-10 mb-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 border-b pb-4">
+                    <h2 class="text-2xl font-bold text-gray-900">신청서 미리보기</h2>
+                    <span class="px-3 py-1 bg-yellow-100 text-yellow-800 text-sm font-semibold rounded-full mt-2 sm:mt-0">제출 전 확인 단계입니다.</span>
+                </div>
+                
+                <!-- Preview Content Injected via JS -->
+                <div id="preview-content" class="bg-gray-50 border border-gray-200 rounded-lg p-6 space-y-6 text-sm">
+                    <!-- Dynamic content goes here -->
+                </div>
+
+                <!-- Final Action Buttons -->
+                <div class="flex flex-col mt-8 space-y-4">
+                    <div class="bg-blue-50 border border-blue-100 rounded-lg p-4 text-center">
+                        <p class="text-blue-800 font-medium"><i class="ph-fill ph-info mr-1"></i> 제출 안내: 엑셀 파일 다운로드 후 아래 이메일로 첨부하여 제출해주시기 바랍니다.</p>
+                        <p class="text-xl font-bold text-blue-900 mt-1 select-all"><i class="ph-fill ph-envelope-simple mr-1"></i> kimdg82@dhc.ac.kr</p>
+                    </div>
+                    
+                    <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <button type="button" onclick="editForm()" class="w-full sm:w-auto px-6 py-3 rounded-lg font-medium text-indigo-700 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 transition-colors">
+                            <i class="ph-bold ph-pencil-simple mr-1"></i> 내용 수정하기
+                        </button>
+                        <button type="button" onclick="exportToExcelAndFinish()" class="w-full sm:w-auto px-8 py-3 rounded-lg font-bold text-white bg-green-600 hover:bg-green-700 shadow-lg shadow-green-600/30 transition-all flex items-center justify-center">
+                            <i class="ph-bold ph-file-xls mr-2 text-xl"></i> 엑셀로 다운로드 후 이메일로 제출
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 4: Success/Instructions -->
+        <section id="view-success" class="view-section text-center py-12">
+            <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-10 max-w-2xl mx-auto">
+                <div class="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="ph-bold ph-check text-4xl"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">엑셀 파일이 다운로드 되었습니다!</h2>
+                <p class="text-gray-600 mb-8 text-lg">신청이 아직 <span class="font-bold text-red-500">완료된 것이 아닙니다.</span><br>다운로드된 엑셀 파일을 아래 이메일로 꼭 전송해 주세요.</p>
+                
+                <div class="bg-gray-50 border border-gray-200 rounded-xl p-6 mb-8 text-left inline-block w-full">
+                    <h3 class="font-bold text-gray-800 mb-3 border-b pb-2">제출 안내</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <i class="ph-fill ph-file-xls text-green-600 text-xl mr-3 mt-0.5"></i>
+                            <div>
+                                <span class="block font-semibold text-gray-700">첨부 파일</span>
+                                <span class="text-sm text-gray-600">다운로드 된 `DHC_모니터링단_신청서_팀명.xlsx`</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="ph-fill ph-envelope-simple text-indigo-600 text-xl mr-3 mt-0.5"></i>
+                            <div>
+                                <span class="block font-semibold text-gray-700">제출처 (담당자 김동균)</span>
+                                <span class="text-lg font-bold text-indigo-600 select-all">kimdg82@dhc.ac.kr</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <p class="text-sm text-gray-500 mb-6">모니터링단에 지원해 주셔서 감사합니다.<br>서류 심사 후 개별 통보될 예정입니다.</p>
+                
+                <button onclick="location.reload()" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors">
+                    처음으로 돌아가기
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Custom Modal/Toast for validation messages -->
+    <div id="toast-modal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-[100] opacity-0 transition-opacity">
+        <div class="bg-white rounded-xl shadow-2xl p-6 max-w-sm w-full mx-4 transform scale-95 transition-transform" id="toast-box">
+            <div class="flex items-center text-amber-500 mb-4">
+                <i class="ph-fill ph-warning-circle text-3xl mr-3"></i>
+                <h3 class="text-lg font-bold text-gray-900">확인 필요</h3>
+            </div>
+            <p id="toast-message" class="text-gray-600 mb-6 leading-relaxed"></p>
+            <div class="flex justify-end">
+                <button onclick="closeToast()" class="px-5 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State variables
+        let isFormDirty = false;
+        let formData = {};
+
+        // Track changes to warn before unload
+        document.getElementById('application-form').addEventListener('input', () => {
+            isFormDirty = true;
+        });
+        document.getElementById('application-form').addEventListener('change', () => {
+            isFormDirty = true;
+        });
+
+        // Unload warning mechanism
+        window.addEventListener('beforeunload', (e) => {
+            if (isFormDirty) {
+                const msg = "작성 중인 내용이 저장되지 않고 소실됩니다. 정말 나가시겠습니까?";
+                e.returnValue = msg; 
+                return msg;
+            }
+        });
+
+        // Update Table Roles dynamically based on selected Team Type
+        function updateTeamRoles() {
+            const teamType = document.querySelector('input[name="teamType"]:checked').value;
+            const r1 = document.getElementById('role1_text');
+            const r2 = document.getElementById('role2_text');
+            const r3 = document.getElementById('role3_text');
+            const r4 = document.getElementById('role4_text');
+            
+            if (teamType === 'student') {
+                r1.innerText = '지도교수';
+                r2.innerText = '재학생';
+                r3.innerText = '재학생';
+                r4.innerText = '전공심화(졸업생)';
+            } else {
+                r1.innerText = '리더';
+                r2.innerText = '팀원 1';
+                r3.innerText = '팀원 2';
+                r4.innerText = '팀원 3';
+            }
+        }
+
+        // Other Checkbox logic
+        const otherCheckbox = document.getElementById('interest_other_check');
+        const otherText = document.getElementById('interest_other_text');
+        
+        otherCheckbox.addEventListener('change', function() {
+            otherText.disabled = !this.checked;
+            if(this.checked) {
+                otherText.focus();
+            } else {
+                otherText.value = '';
+            }
+        });
+
+        // Navigation Functions
+        function switchView(viewId, stepNumber) {
+            // Hide all
+            document.querySelectorAll('.view-section').forEach(el => {
+                el.classList.remove('active');
+                setTimeout(() => { if(!el.classList.contains('active')) el.style.display = 'none'; }, 300);
+            });
+
+            // Update Steps UI
+            for(let i=1; i<=3; i++) {
+                const nav = document.getElementById(`nav-step-${i}`);
+                const line = document.getElementById(`line-${i}`);
+                const num = nav?.querySelector('span:first-child');
+                
+                if (nav) {
+                    if (i <= stepNumber) {
+                        nav.classList.add('step-active');
+                        nav.classList.remove('step-inactive');
+                        num.classList.add('bg-indigo-100', 'text-indigo-600');
+                        num.classList.remove('bg-gray-100', 'text-gray-500');
+                    } else {
+                        nav.classList.remove('step-active');
+                        nav.classList.add('step-inactive');
+                        num.classList.remove('bg-indigo-100', 'text-indigo-600');
+                        num.classList.add('bg-gray-100', 'text-gray-500');
+                    }
+                }
+                
+                if (line) {
+                    if (i < stepNumber) {
+                        line.classList.add('step-line-active');
+                        line.classList.remove('step-line-inactive');
+                    } else {
+                        line.classList.remove('step-line-active');
+                        line.classList.add('step-line-inactive');
+                    }
+                }
+            }
+
+            // Show target
+            const target = document.getElementById(viewId);
+            target.style.display = 'block';
+            setTimeout(() => target.classList.add('active'), 10);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function goToForm() {
+            switchView('view-form', 2);
+        }
+
+        function goBackToInfo() {
+            switchView('view-info', 1);
+        }
+
+        function editForm() {
+            switchView('view-form', 2);
+        }
+
+        // Custom UI Alert
+        function showToast(message) {
+            const modal = document.getElementById('toast-modal');
+            const box = document.getElementById('toast-box');
+            document.getElementById('toast-message').innerText = message;
+            
+            modal.classList.remove('hidden');
+            // Trigger reflow
+            void modal.offsetWidth;
+            modal.classList.remove('opacity-0');
+            box.classList.remove('scale-95');
+        }
+
+        function closeToast() {
+            const modal = document.getElementById('toast-modal');
+            const box = document.getElementById('toast-box');
+            
+            modal.classList.add('opacity-0');
+            box.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function validateAndPreview() {
+            const form = document.getElementById('application-form');
+            
+            // Basic HTML5 validation trigger
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            // Custom validations
+            const teamType = document.querySelector('input[name="teamType"]:checked').value;
+            
+            // Staff Team Department Validation
+            if (teamType === 'staff') {
+                const depts = [
+                    document.getElementById('mem1_dept').value.trim(),
+                    document.getElementById('mem2_dept').value.trim(),
+                    document.getElementById('mem3_dept').value.trim(),
+                    document.getElementById('mem4_dept').value.trim()
+                ].filter(d => d !== '');
+                
+                const uniqueDepts = new Set(depts);
+                if (uniqueDepts.size !== 4) {
+                    showToast("교직원 팀은 모든 구성원이 서로 다른 소속(부서)이어야 지원이 가능합니다. 중복된 소속이 있는지 확인해주세요.");
+                    return;
+                }
+            }
+
+            const interests = document.querySelectorAll('input[name="interest"]:checked');
+            if (interests.length === 0) {
+                showToast("관심분야를 최소 1개 이상 선택해주세요.");
+                return;
+            }
+
+            if (otherCheckbox.checked && otherText.value.trim() === '') {
+                showToast("기타 관심분야를 입력해주세요.");
+                otherText.focus();
+                return;
+            }
+
+            const privacy = document.querySelector('input[name="privacy"]:checked');
+            if (!privacy || privacy.value === 'disagree') {
+                showToast("개인정보 수집 이용에 동의해야 신청이 가능합니다.");
+                return;
+            }
+
+            // Collect Data
+            const collectedInterests = Array.from(interests).map(cb => {
+                if (cb.value === '기타') return `기타(${otherText.value.trim()})`;
+                return cb.value;
+            });
+
+            const plan10 = document.getElementById('plan_10').value.trim();
+            const plan11 = document.getElementById('plan_11').value.trim();
+            const plan12 = document.getElementById('plan_12').value.trim();
+            const plan1 = document.getElementById('plan_1').value.trim();
+            const plan2 = document.getElementById('plan_2').value.trim();
+            const combinedPlan = `[10월] ${plan10}\n[11월] ${plan11}\n[12월] ${plan12}\n[1월] ${plan1}\n[2월] ${plan2}`;
+
+            formData = {
+                teamType: teamType === 'student' ? '재학생 팀' : '교직원 팀',
+                teamName: document.getElementById('teamName').value.trim(),
+                repName: document.getElementById('repName').value.trim(),
+                members: [
+                    {
+                        role: document.getElementById('role1_text').innerText,
+                        name: document.getElementById('mem1_name').value.trim(),
+                        dept: document.getElementById('mem1_dept').value.trim(),
+                        id: document.getElementById('mem1_id').value.trim(),
+                        phone: document.getElementById('mem1_phone').value.trim(),
+                        email: document.getElementById('mem1_email').value.trim(),
+                    },
+                    {
+                        role: document.getElementById('role2_text').innerText,
+                        name: document.getElementById('mem2_name').value.trim(),
+                        dept: document.getElementById('mem2_dept').value.trim(),
+                        id: document.getElementById('mem2_id').value.trim(),
+                        phone: document.getElementById('mem2_phone').value.trim(),
+                        email: document.getElementById('mem2_email').value.trim(),
+                    },
+                    {
+                        role: document.getElementById('role3_text').innerText,
+                        name: document.getElementById('mem3_name').value.trim(),
+                        dept: document.getElementById('mem3_dept').value.trim(),
+                        id: document.getElementById('mem3_id').value.trim(),
+                        phone: document.getElementById('mem3_phone').value.trim(),
+                        email: document.getElementById('mem3_email').value.trim(),
+                    },
+                    {
+                        role: document.getElementById('role4_text').innerText,
+                        name: document.getElementById('mem4_name').value.trim(),
+                        dept: document.getElementById('mem4_dept').value.trim(),
+                        id: document.getElementById('mem4_id').value.trim(),
+                        phone: document.getElementById('mem4_phone').value.trim(),
+                        email: document.getElementById('mem4_email').value.trim(),
+                    }
+                ],
+                motivation: document.getElementById('motivation').value.trim(),
+                plan: combinedPlan,
+                interests: collectedInterests.join(', '),
+                date: new Date().toISOString().split('T')[0]
+            };
+
+            buildPreviewContent();
+            switchView('view-preview', 3);
+        }
+
+        function buildPreviewContent() {
+            const container = document.getElementById('preview-content');
+            
+            let memberRows = '';
+            formData.members.forEach(m => {
+                memberRows += `
+                    <tr>
+                        <td class="border px-3 py-2 text-center bg-gray-100 font-medium text-gray-700">${m.role}</td>
+                        <td class="border px-3 py-2">${m.name}</td>
+                        <td class="border px-3 py-2">${m.dept}</td>
+                        <td class="border px-3 py-2">${m.id}</td>
+                        <td class="border px-3 py-2">${m.phone}</td>
+                        <td class="border px-3 py-2">${m.email}</td>
+                    </tr>
+                `;
+            });
+
+            const html = `
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 bg-white p-5 rounded-lg border shadow-sm">
+                    <div><span class="font-bold text-gray-600">유형:</span> <span class="font-medium ml-2 text-indigo-700">${formData.teamType}</span></div>
+                    <div><span class="font-bold text-gray-600">팀명:</span> <span class="text-lg text-indigo-700 font-bold ml-2">${formData.teamName}</span></div>
+                    <div><span class="font-bold text-gray-600">대표자:</span> <span class="ml-2">${formData.repName}</span></div>
+                </div>
+                
+                <h4 class="font-bold text-gray-800 mb-2 border-b pb-1">팀원 구성</h4>
+                <div class="overflow-x-auto mb-6 bg-white">
+                    <table class="w-full border-collapse border border-gray-300">
+                        <thead>
+                            <tr class="bg-gray-200">
+                                <th class="border px-3 py-2">구분</th>
+                                <th class="border px-3 py-2">성명</th>
+                                <th class="border px-3 py-2">소속</th>
+                                <th class="border px-3 py-2">학번/사번</th>
+                                <th class="border px-3 py-2">연락처</th>
+                                <th class="border px-3 py-2">이메일</th>
+                            </tr>
+                        </thead>
+                        <tbody>${memberRows}</tbody>
+                    </table>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="bg-white p-4 rounded border">
+                        <h4 class="font-bold text-gray-800 mb-2">1. 지원 동기</h4>
+                        <p class="whitespace-pre-wrap text-gray-700 leading-relaxed">${formData.motivation}</p>
+                    </div>
+                    <div class="bg-white p-4 rounded border">
+                        <h4 class="font-bold text-gray-800 mb-2">2. 활동 계획</h4>
+                        <p class="whitespace-pre-wrap text-gray-700 leading-relaxed">${formData.plan}</p>
+                    </div>
+                    <div class="bg-white p-4 rounded border">
+                        <h4 class="font-bold text-gray-800 mb-2">3. 관심 분야</h4>
+                        <p class="text-indigo-600 font-medium">${formData.interests}</p>
+                    </div>
+                </div>
+            `;
+            container.innerHTML = html;
+        }
+
+        function exportToExcelAndFinish() {
+            try {
+                // --- 엑셀 스타일 서식 정의 ---
+                const borderStyle = {
+                    top: {style: "thin", color: {rgb: "000000"}},
+                    bottom: {style: "thin", color: {rgb: "000000"}},
+                    left: {style: "thin", color: {rgb: "000000"}},
+                    right: {style: "thin", color: {rgb: "000000"}}
+                };
+                const headerStyle = {
+                    font: {bold: true, sz: 11, name: "맑은 고딕"},
+                    alignment: {horizontal: "center", vertical: "center"},
+                    fill: {fgColor: {rgb: "EFEFEF"}},
+                    border: borderStyle
+                };
+                const cellCenter = { alignment: {horizontal: "center", vertical: "center"}, border: borderStyle, font: {sz: 10, name: "맑은 고딕"} };
+                const cellLeftTop = { alignment: {horizontal: "left", vertical: "top", wrapText: true}, border: borderStyle, font: {sz: 10, name: "맑은 고딕"} };
+                const titleStyle = { font: {bold: true, sz: 18, name: "맑은 고딕"}, alignment: {horizontal: "center", vertical: "center"} };
+                
+                const splitDate = formData.date.split('-');
+                const formattedDate = `${splitDate[0]}년 ${splitDate[1]}월 ${splitDate[2]}일`;
+
+                // --- 엑셀 데이터 매핑 (셀 단위로 스타일 객체 적용) ---
+                const wsData = [
+                    [{v: "2026년도 DHC 아틀라스 모니터링단 신청서", s: titleStyle}, null, null, null, null, null],
+                    [], // 공백 행 (Row 1)
+                    [{v: "■ 팀 기본 정보", s: {font: {bold: true, sz: 11, name: "맑은 고딕"}}}], // Row 2
+                    [ // Row 3
+                        {v: "지원유형", s: headerStyle}, {v: formData.teamType, s: cellCenter}, 
+                        {v: "팀명", s: headerStyle}, {v: formData.teamName, s: cellCenter}, 
+                        {v: "대표자", s: headerStyle}, {v: formData.repName, s: cellCenter}
+                    ],
+                    [], // 공백 행 (Row 4)
+                    [{v: "■ 팀원 구성", s: {font: {bold: true, sz: 11, name: "맑은 고딕"}}}], // Row 5
+                    [ // Row 6 (헤더)
+                        {v: "구분", s: headerStyle}, {v: "성명", s: headerStyle}, 
+                        {v: "소속(학과/부서)", s: headerStyle}, {v: "학년/학번(사번)", s: headerStyle}, 
+                        {v: "연락처", s: headerStyle}, {v: "이메일", s: headerStyle}
+                    ]
+                ];
+
+                // 팀원 데이터 추가 (Row 7 ~ 10)
+                formData.members.forEach(m => {
+                    wsData.push([
+                        {v: m.role, s: cellCenter}, {v: m.name, s: cellCenter},
+                        {v: m.dept, s: cellCenter}, {v: m.id, s: cellCenter},
+                        {v: m.phone, s: cellCenter}, {v: m.email, s: cellCenter}
+                    ]);
+                });
+
+                wsData.push([]); // 공백 행 (Row 11)
+                
+                // 1. 지원 동기 (Row 12, 13) - 셀 병합을 위해 테두리가 적용된 빈 객체를 삽입
+                wsData.push([
+                    {v: "1. 지원 동기", s: headerStyle}, {s: headerStyle}, {s: headerStyle}, {s: headerStyle}, {s: headerStyle}, {s: headerStyle}
+                ]);
+                wsData.push([
+                    {v: formData.motivation, s: cellLeftTop}, {s: borderStyle}, {s: borderStyle}, {s: borderStyle}, {s: borderStyle}, {s: borderStyle}
+                ]);
+
+                wsData.push([]); // 공백 행 (Row 14)
+
+                // 2. 활동 계획 (Row 15, 16)
+                wsData.push([
+                    {v: "2. 활동 계획", s: headerStyle}, {s: headerStyle}, {s: headerStyle}, {s: headerStyle}, {s: headerStyle}, {s: headerStyle}
+                ]);
+                wsData.push([
+                    {v: formData.plan, s: cellLeftTop}, {s: borderStyle}, {s: borderStyle}, {s: borderStyle}, {s: borderStyle}, {s: borderStyle}
+                ]);
+
+                wsData.push([]); // 공백 행 (Row 17)
+
+                // 3. 관심분야 (Row 18)
+                wsData.push([
+                    {v: "3. 관심분야", s: headerStyle}, 
+                    {v: formData.interests, s: cellLeftTop}, {s: borderStyle}, {s: borderStyle}, {s: borderStyle}, {s: borderStyle}
+                ]);
+
+                wsData.push([]); // 공백 행 (Row 19)
+                wsData.push([]); // 공백 행 (Row 20)
+
+                // 개인정보 동의 및 서명부 (Row 21 ~ 24)
+                wsData.push([null, null, null, {v: "개인정보 수집 이용 동의: 동의함", s: {alignment: {horizontal: "right"}, font: {bold: true, sz: 11, name: "맑은 고딕"}}}, null, null]);
+                wsData.push([{v: "위와 같이 지원을 신청합니다.", s: {alignment: {horizontal: "center"}, font: {bold: true, sz: 12, name: "맑은 고딕"}}}, null, null, null, null, null]);
+                wsData.push([{v: formattedDate, s: {alignment: {horizontal: "center"}, font: {sz: 11, name: "맑은 고딕"}}}, null, null, null, null, null]);
+                wsData.push([null, null, null, {v: `신청인(대표): ${formData.repName} (서명 생략)`, s: {alignment: {horizontal: "right"}, font: {bold: true, sz: 12, name: "맑은 고딕"}}}, null, null]);
+
+                // 시트 생성
+                const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+                // 열 너비 지정 (!cols)
+                ws['!cols'] = [
+                    {wch: 15}, // A (구분)
+                    {wch: 12}, // B (성명)
+                    {wch: 22}, // C (소속)
+                    {wch: 22}, // D (학번/사번)
+                    {wch: 18}, // E (연락처)
+                    {wch: 28}  // F (이메일)
+                ];
+
+                // 다중 텍스트를 위한 행 높이 지정 (!rows)
+                ws['!rows'] = [];
+                ws['!rows'][13] = {hpt: 120}; // 지원 동기 작성란 높이
+                ws['!rows'][16] = {hpt: 160}; // 활동 계획 작성란 높이
+                ws['!rows'][18] = {hpt: 40};  // 관심분야 작성란 높이
+
+                // 셀 병합 지정 (!merges) - {s: 시작 셀, e: 끝 셀} (r:행, c:열)
+                ws['!merges'] = [
+                    {s: {r:0, c:0}, e: {r:0, c:5}},   // 제목 병합
+                    {s: {r:12, c:0}, e: {r:12, c:5}}, // 지원 동기 타이틀 병합
+                    {s: {r:13, c:0}, e: {r:13, c:5}}, // 지원 동기 내용칸 병합
+                    {s: {r:15, c:0}, e: {r:15, c:5}}, // 활동 계획 타이틀 병합
+                    {s: {r:16, c:0}, e: {r:16, c:5}}, // 활동 계획 내용칸 병합
+                    {s: {r:18, c:1}, e: {r:18, c:5}}, // 관심분야 내용칸 병합
+                    {s: {r:21, c:3}, e: {r:21, c:5}}, // 개인정보 동의 병합
+                    {s: {r:22, c:0}, e: {r:22, c:5}}, // 신청 문구 병합
+                    {s: {r:23, c:0}, e: {r:23, c:5}}, // 날짜 병합
+                    {s: {r:24, c:3}, e: {r:24, c:5}}, // 대표자 서명 병합
+                ];
+
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "신청서");
+                
+                // Export file
+                const safeTeamName = formData.teamName.replace(/[^a-z0-9가-힣]/gi, '_');
+                const fileName = `DHC_모니터링단_신청서_${safeTeamName}.xlsx`;
+                
+                XLSX.writeFile(wb, fileName);
+
+                // Disable dirty flag so user can leave without warning
+                isFormDirty = false;
+
+                // Move to success screen
+                switchView('view-success', 3);
+
+            } catch (error) {
+                console.error("Excel Export Error:", error);
+                showToast("엑셀 파일 생성 중 오류가 발생했습니다.");
+            }
+        }
+    </script>
+</body>
+</html>
