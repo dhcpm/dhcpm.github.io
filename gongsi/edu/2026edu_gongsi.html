@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>2026 대학정보공시 온라인 직무교육 | 대학성과관리팀</title>
+  <title>2026 대학정보공시 교육 (온라인) | 대학성과관리팀</title>
   <!-- Google Fonts for Korean Accessibility & Professionalism -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -561,6 +561,19 @@
       padding: 2px 8px;
       border-radius: 4px;
       height: fit-content;
+      white-space: nowrap;
+    }
+    .quiz-badge {
+      background: #DBEAFE;
+      color: #1E40AF;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 2px 9px;
+      border-radius: 20px;
+      height: fit-content;
+      white-space: nowrap;
+      margin-left: auto;
+      flex-shrink: 0;
     }
 
     .quiz-options {
@@ -771,6 +784,170 @@
     }
     footer p { margin-bottom: 6px; }
 
+    /* 10분 학습시간 타이머 & 퀴즈 잠금 관련 스타일 */
+    .quiz-timer-card {
+      background: linear-gradient(135deg, #0F2038 0%, #1E293B 100%);
+      color: #FFFFFF;
+      padding: 24px 28px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 20px -5px rgba(15, 32, 56, 0.25);
+      border: 1px solid #334155;
+      position: relative;
+      transition: all 0.4s ease;
+    }
+    .quiz-timer-card.unlocked {
+      background: linear-gradient(135deg, #064E3B 0%, #0F382A 100%);
+      border: 1px solid #10B981;
+      box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.25);
+    }
+    .timer-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .timer-label-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .timer-label-box .badge-lock {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      background: #FEF3C7;
+      color: #92400E;
+    }
+    .timer-label-box .badge-lock.unlocked {
+      background: #DCFCE7;
+      color: #15803D;
+    }
+    .timer-clock-display {
+      font-size: 2.2rem;
+      font-weight: 800;
+      font-family: 'Pretendard', monospace, sans-serif;
+      letter-spacing: 1px;
+      color: #FBBF24;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .timer-clock-display.unlocked {
+      color: #4ADE80;
+    }
+    .timer-progress-wrap {
+      width: 100%;
+      height: 12px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 6px;
+      overflow: hidden;
+      margin: 10px 0 14px;
+    }
+    .timer-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #F59E0B, #10B981);
+      transition: width 1s linear;
+      border-radius: 6px;
+    }
+    .timer-warning-box {
+      background: rgba(220, 38, 38, 0.15);
+      border: 1px solid rgba(248, 113, 113, 0.4);
+      color: #FECACA;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.86rem;
+      line-height: 1.5;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    /* 플로팅 실시간 타이머 바 (상시 고정) */
+    .floating-timer-bar {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: rgba(15, 32, 56, 0.95);
+      backdrop-filter: blur(8px);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 50px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 0 0 2px rgba(255, 255, 255, 0.15);
+      z-index: 99;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.92rem;
+      transition: all 0.3s ease;
+    }
+    .floating-timer-bar.unlocked {
+      background: rgba(22, 101, 52, 0.95);
+      box-shadow: 0 10px 25px -5px rgba(22, 101, 52, 0.4), 0 0 0 2px rgba(74, 222, 128, 0.3);
+    }
+    .floating-timer-bar .btn-jump-quiz {
+      background: #F59E0B;
+      color: #78350F;
+      border: none;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.15s;
+    }
+    .floating-timer-bar.unlocked .btn-jump-quiz {
+      background: #4ADE80;
+      color: #064E3B;
+    }
+
+    /* 퀴즈 폼 잠금 상태 스타일 */
+    .quiz-form-locked {
+      opacity: 0.45;
+      pointer-events: none;
+      filter: grayscale(0.5);
+      user-select: none;
+      transition: all 0.4s ease;
+    }
+    .quiz-locked-notice {
+      background: #FFFBEB;
+      border: 2px solid #F59E0B;
+      color: #92400E;
+      padding: 16px 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      line-height: 1.5;
+    }
+    .quiz-unlocked-banner {
+      background: #ECFDF5;
+      border: 2px solid #10B981;
+      color: #065F46;
+      padding: 16px 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-weight: 700;
+      display: none;
+      align-items: center;
+      gap: 14px;
+      line-height: 1.5;
+    }
+    .btn-submit-quiz:disabled {
+      background: #94A3B8 !important;
+      cursor: not-allowed !important;
+      box-shadow: none !important;
+      transform: none !important;
+      opacity: 0.75;
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
       .header-container { flex-direction: column; align-items: flex-start; }
@@ -779,6 +956,7 @@
       .quiz-container { padding: 20px; }
       .modal-card { padding: 24px; }
       .video-toolbar { flex-direction: column; align-items: flex-start; }
+      .floating-timer-bar { bottom: 12px; right: 12px; left: 12px; justify-content: space-between; border-radius: 12px; padding: 10px 14px; font-size: 0.85rem; }
     }
   </style>
 </head>
@@ -791,8 +969,8 @@
   <header>
     <div class="header-container">
       <div class="logo-area">
-        <h1>🏛️ 2026 대학정보공시 온라인 직무교육</h1>
-        <p>대학성과관리팀 김동균 (총괄담당자) 주관 · 40~45분 핵심 완성 코스</p>
+        <h1>🏛️ 2026 대학정보공시 교육 (온라인)</h1>
+        <p>대학성과관리팀 김동균 (총괄담당자) 주관</p>
       </div>
       <div class="header-actions">
         <!-- PDF Download Button -->
@@ -820,7 +998,7 @@
 
     <!-- Hero Introduction -->
     <section class="hero-banner" id="sec-intro">
-      <h2>🎓 2026학년도 대학정보공시 담당자 온라인 연수</h2>
+      <h2>🎓 2026 대학정보공시 교육 (온라인)</h2>
       <p>
         본 온라인 과정은 2026년 대학정보공시 총괄 및 항목별 실무자의 직무 역량 제고를 위해 제작되었습니다.
         각 주제별 <strong>공식 영상 시청</strong>과 <strong>핵심 요약</strong>을 학습한 후,
@@ -829,20 +1007,16 @@
       </p>
       <div class="hero-grid">
         <div class="hero-stat-card">
-          <div class="label">총 교육 소요시간</div>
-          <div class="value">약 40~45분</div>
+          <div class="label">최소 필수 이수시간</div>
+          <div class="value">10분 이상 수강 필수</div>
         </div>
         <div class="hero-stat-card">
           <div class="label">평가 문항</div>
-          <div class="value">객관식/OX 총 6문항</div>
+          <div class="value">OX·선택형 총 11문항 (100점 만점)</div>
         </div>
         <div class="hero-stat-card">
           <div class="label">결과 제출처 (총괄담당자)</div>
           <div class="value" style="font-size: 0.95rem; color: #1E40AF;">김동균 (kimdg82@dhc.ac.kr)</div>
-        </div>
-        <div class="hero-stat-card">
-          <div class="label">우리 대학 현장점검 상태</div>
-          <div class="value" style="color: #059669;">유예 대학 자격 유지 중</div>
         </div>
       </div>
     </section>
@@ -851,7 +1025,6 @@
     <section class="section-card" id="sec-plan">
       <div class="section-header">
         <h3><span>1️⃣</span> 2026 대학정보공시 운영계획</h3>
-        <span class="section-badge">소요시간 약 10분</span>
       </div>
 
       <!-- Video Direct Toolbar (For Local file:// security compatibility) -->
@@ -911,7 +1084,6 @@
     <section class="section-card" id="sec-guide">
       <div class="section-header">
         <h3><span>2️⃣</span> 2026 대학정보공시 변경내역</h3>
-        <span class="section-badge">소요시간 약 12분</span>
       </div>
 
       <!-- Video Direct Toolbar -->
@@ -991,7 +1163,6 @@
     <section class="section-card" id="sec-privacy">
       <div class="section-header">
         <h3><span>3️⃣</span> 대학정보공시와 개인정보보호</h3>
-        <span class="section-badge">소요시간 약 10분</span>
       </div>
 
       <!-- Video Direct Toolbar -->
@@ -1136,188 +1307,381 @@
     <!-- SECTION 5: 온라인 실무 평가 (QUIZ) & 엑셀 제출 -->
     <section class="section-card quiz-container" id="sec-quiz">
       <div class="section-header">
-        <h3><span>5️⃣</span> 2026 대학정보공시 온라인 직무교육 평가 (퀴즈)</h3>
+        <h3><span>5️⃣</span> 2026 대학정보공시 교육 (온라인) 실무 평가 (퀴즈)</h3>
         <span class="section-badge" style="background: #FEF3C7; color: #92400E;">필수 이수 과정</span>
       </div>
 
       <p style="color: #475569; font-size: 0.95rem; margin-bottom: 20px;">
-        모든 강의 내용을 숙지하셨다면 아래 수험자 정보를 입력하고 퀴즈를 풀어주세요.<br>
+        본 평가는 창을 열고 <strong>최소 10분 이상 교육 내용을 충실히 학습하신 후 응시</strong>하실 수 있습니다.<br>
+        10분 경과 후 수험자 정보를 입력하고 퀴즈를 풀어주세요.<br>
         <strong>[평가 제출하기]</strong> 후 <strong>[엑셀 파일 다운로드]를 받아야 교육 이수가 최종 완료</strong>됩니다.
         다운로드된 결과 파일은 <strong>대학성과관리팀 김동균 (총괄담당자) 이메일(kimdg82@dhc.ac.kr)로 발송</strong>해 주시기 바랍니다.
       </p>
+
+      <!-- 10분 학습 시간 타이머 & 실시간 시계 카드 -->
+      <div class="quiz-timer-card" id="quizTimerCard">
+        <div class="timer-top-row">
+          <div class="timer-label-box">
+            <span style="font-weight: 700; font-size: 1.05rem;">⏱️ 필수 교육 이수 시간 타이머</span>
+            <span class="badge-lock" id="badgeLockStatus">🔒 10분 수강 대기 중</span>
+          </div>
+          <div class="timer-clock-display" id="quizClockDisplay">
+            00:00 <span style="font-size: 1.1rem; color: #94A3B8; font-weight: 500;">/ 10:00</span>
+          </div>
+        </div>
+
+        <div class="timer-progress-wrap">
+          <div class="timer-progress-bar" id="quizTimerProgressBar"></div>
+        </div>
+
+        <div style="font-size: 0.92rem; margin-bottom: 12px; color: #E2E8F0;" id="quizTimerStatusDesc">
+          ⏳ 현재 수강 시간: <strong>00분 00초</strong> / 최소 10분 00초 충족 필요 (남은 시간: 10분 00초)
+        </div>
+
+        <div class="timer-warning-box">
+          <span style="font-size: 1.1rem;">⚠️</span>
+          <div>
+            <strong>[주의: 페이지 이탈 시 시간 초기화 알림]</strong><br>
+            본 페이지를 벗어나거나 새로고침할 경우 <strong>수강 시간(10분)이 즉시 0초로 초기화</strong>되어 퀴즈 응시 대기시간이 다시 시작됩니다. 모든 평가 및 엑셀 결과 제출이 끝날 때까지 창을 유지해 주시기 바랍니다.
+          </div>
+        </div>
+      </div>
 
       <!-- Live Completion Status Bar -->
       <div class="completion-status-bar" id="liveCompletionBar">
         <div>
           <span style="font-size: 0.85rem; color: #64748B; font-weight: 600;">현재 나의 직무교육 이수 상태:</span>
           <div style="font-weight: 800; font-size: 1.05rem; margin-top: 2px;" id="liveStatusText">
-            미이수 (평가 응시 및 파일 다운로드 대기 중)
+            미이수 (10분 수강 대기 및 평가 응시 대기 중)
           </div>
         </div>
         <span class="status-badge pending" id="liveStatusBadge">⏳ 이수 대기</span>
+      </div>
+
+      <!-- 퀴즈 잠금 안내 배너 (10분 전 노출) -->
+      <div class="quiz-locked-notice" id="quizLockedNotice">
+        <span style="font-size: 1.6rem;">🔒</span>
+        <div>
+          <strong>현재 퀴즈 응시가 잠겨 있습니다 (최소 10분 수강 필수).</strong><br>
+          창을 연 시점부터 <strong>10분이 경과해야 수험자 정보 입력 및 퀴즈 응시가 활성화</strong>됩니다. 상단의 핵심 요약과 영상을 충분히 복습해 주세요.
+        </div>
+      </div>
+
+      <!-- 퀴즈 활성화 축하 배너 (10분 경과 후 노출) -->
+      <div class="quiz-unlocked-banner" id="quizUnlockedAlert">
+        <span style="font-size: 1.6rem;">🎉</span>
+        <div>
+          <strong>최소 교육시간(10분)을 충족하여 퀴즈 응시가 활성화되었습니다!</strong><br>
+          아래 수험자 정보를 입력하시고 퀴즈를 풀어주세요.
+        </div>
       </div>
 
       <!-- User Info Form -->
       <div class="user-info-bar">
         <div class="form-group">
           <label for="userName">성명 (이름) <span style="color:red">*</span></label>
-          <input type="text" id="userName" placeholder="예: 홍길동" required autocomplete="name">
+          <input type="text" id="userName" placeholder="예: 홍길동 (10분 후 입력 가능)" required autocomplete="name" disabled>
         </div>
         <div class="form-group">
           <label for="userDept">소속 부서 <span style="color:red">*</span></label>
-          <input type="text" id="userDept" placeholder="예: 교무처 학사지원팀" required>
+          <input type="text" id="userDept" placeholder="예: 교무처 학사지원팀 (10분 후 입력 가능)" required disabled>
         </div>
       </div>
 
-      <!-- Quiz Form -->
-      <form id="quizForm" onsubmit="return false;">
+      <!-- Quiz Form (10분 전 locked 클래스 부여) -->
+      <form id="quizForm" class="quiz-form-locked" onsubmit="return false;">
 
-        <!-- Q1 -->
-        <fieldset class="quiz-item" id="item-q1">
+        <!-- ── 넌센스 문항 ── -->
+        <div class="quiz-section-label" style="background:#EDE9FE;color:#5B21B6;border-left:4px solid #7C3AED;padding:8px 16px;border-radius:6px;margin-bottom:12px;font-weight:700;font-size:0.92rem;">🎉 넌센스 문항 (Q1)</div>
+
+        <!-- Q1 넌센스 -->
+        <fieldset class="quiz-item" id="item-q1" data-points="5">
           <legend class="quiz-question">
-            <span class="quiz-num">Q1</span>
-            <span>[운영계획 OX] 2026년 4주기 양정제도부터는 최종확인완료일까지 공시자료 입력을 누락(미공시)하더라도, 사후 적발 전까지는 벌점이 부과되지 않는다?</span>
+            <span class="quiz-num" style="background:#7C3AED;">Q1</span>
+            <span>[넌센스] 공시 담당자가 가장 무서워하는 날짜는? (힌트: 이날이 지나면 벌점이 쌓이기 시작합니다!)</span>
+            <span class="quiz-badge" style="background:#EDE9FE;color:#5B21B6;">5점</span>
           </legend>
           <div class="quiz-options">
             <label class="quiz-option">
-              <input type="radio" name="q1" value="O">
-              <span>① O (부과되지 않는다)</span>
+              <input type="radio" name="q1" value="1">
+              <span>① 생일 (이날부터 한 살 더 먹으니까)</span>
             </label>
             <label class="quiz-option">
-              <input type="radio" name="q1" value="X">
-              <span>② X (적발과 동일하게 즉시 벌점 부과)</span>
+              <input type="radio" name="q1" value="2">
+              <span>② 최종확인완료일 (이날까지 미입력 시 즉시 벌점 부과!)</span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q1" value="3">
+              <span>③ 월급날 (세금 공제가 무섭다)</span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q1" value="4">
+              <span>④ 연말정산일 (복잡해서 무섭다)</span>
             </label>
           </div>
           <div class="quiz-feedback" id="fb-q1"></div>
         </fieldset>
 
-        <!-- Q2 -->
-        <fieldset class="quiz-item" id="item-q2">
+        <!-- ── OX 퀴즈 ── -->
+        <div class="quiz-section-label" style="background:#DBEAFE;color:#1E40AF;border-left:4px solid #2563EB;padding:8px 16px;border-radius:6px;margin:16px 0 12px;font-weight:700;font-size:0.92rem;">⭕❌ OX 퀴즈 (Q2 ~ Q6) — 각 6점 (난이도 하)</div>
+
+        <!-- Q2 OX -->
+        <fieldset class="quiz-item" id="item-q2" data-points="6">
           <legend class="quiz-question">
             <span class="quiz-num">Q2</span>
-            <span>[운영계획 OX] 2026년 8월 공시부터는 고등교육통계 데이터가 7월 말에 최종 1회만 연계되므로, 연계 이후 대학이 원자료를 수정하여 재연계하는 것이 불가능하다?</span>
+            <span>[운영계획 OX] 대학정보공시는 「교육관련기관의 정보공개에 관한 특례법」에 따라 고등교육기관이 보유·관리하는 정보를 '대학알리미'를 통해 국민에게 제공하는 제도이다.</span>
+            <span class="quiz-badge">6점</span>
           </legend>
           <div class="quiz-options">
             <label class="quiz-option">
               <input type="radio" name="q2" value="O">
-              <span>① O (재연계 불가, 7월말 1회 연계)</span>
+              <span>① O (맞다)</span>
             </label>
             <label class="quiz-option">
               <input type="radio" name="q2" value="X">
-              <span>② X (종전처럼 8월까지 수정 재연계 가능)</span>
+              <span>② X (틀리다)</span>
             </label>
           </div>
           <div class="quiz-feedback" id="fb-q2"></div>
         </fieldset>
 
-        <!-- Q3 -->
-        <fieldset class="quiz-item" id="item-q3">
+        <!-- Q3 OX -->
+        <fieldset class="quiz-item" id="item-q3" data-points="6">
           <legend class="quiz-question">
             <span class="quiz-num">Q3</span>
-            <span>[지침변경 객관식] 2026년도 등록금 공시에서 자율전공학부처럼 학과별 입학정원이 학칙상 정해지지 않은 총정원제 학과의 학과별 입학정원 산정 방식은?</span>
+            <span>[운영계획 OX] 2026년부터 미공시 제재가 신설되어, 합당한 사유 없이 최종확인완료일까지 공시 정보를 입력하지 않으면 현장점검 적발과 동일한 수준의 벌점이 부과된다.</span>
+            <span class="quiz-badge">6점</span>
           </legend>
           <div class="quiz-options">
             <label class="quiz-option">
-              <input type="radio" name="q3" value="1">
-              <span>① 전년도 학과별 재학생 수 비율로 안분한다.</span>
+              <input type="radio" name="q3" value="O">
+              <span>① O (맞다)</span>
             </label>
             <label class="quiz-option">
-              <input type="radio" name="q3" value="2">
-              <span>② 총입학정원을 진학 가능한 총 학과 수로 나누어 균등 배분한다.</span>
-            </label>
-            <label class="quiz-option">
-              <input type="radio" name="q3" value="3">
-              <span>③ 가장 등록금이 비싼 학과에 전원 배분한다.</span>
-            </label>
-            <label class="quiz-option">
-              <input type="radio" name="q3" value="4">
-              <span>④ 단과대학별 평균 인원으로 배분한다.</span>
+              <input type="radio" name="q3" value="X">
+              <span>② X (틀리다)</span>
             </label>
           </div>
           <div class="quiz-feedback" id="fb-q3"></div>
         </fieldset>
 
-        <!-- Q4 -->
-        <fieldset class="quiz-item" id="item-q4">
+        <!-- Q4 OX -->
+        <fieldset class="quiz-item" id="item-q4" data-points="6">
           <legend class="quiz-question">
             <span class="quiz-num">Q4</span>
-            <span>[개인정보보호 OX] 엑셀 파일에서 개인정보가 들어있는 열(Column)이나 시트(Sheet)를 '숨기기(Hide)' 처리한 후 저장하여 홈페이지에 게시하면 안전하다?</span>
+            <span>[운영계획 OX] 2026년 8월 공시부터 고등교육통계 데이터는 7월 말에 최종 1회만 연계되므로, 연계 이후에는 대학이 원자료를 수정하여 재연계하는 것이 불가능하다.</span>
+            <span class="quiz-badge">6점</span>
           </legend>
           <div class="quiz-options">
             <label class="quiz-option">
               <input type="radio" name="q4" value="O">
-              <span>① O (화면에 안 보이므로 안전하다)</span>
+              <span>① O (맞다)</span>
             </label>
             <label class="quiz-option">
               <input type="radio" name="q4" value="X">
-              <span>② X (숨기기 취소 시 노출되므로 유출에 해당)</span>
+              <span>② X (틀리다)</span>
             </label>
           </div>
           <div class="quiz-feedback" id="fb-q4"></div>
         </fieldset>
 
-        <!-- Q5 -->
-        <fieldset class="quiz-item" id="item-q5">
+        <!-- Q5 OX -->
+        <fieldset class="quiz-item" id="item-q5" data-points="6">
           <legend class="quiz-question">
             <span class="quiz-num">Q5</span>
-            <span>[우리 대학 사례 객관식] 우리 대학의 2025년 14-라(교사시설 확보율) 정정 사례에서, 기준면적이 과소 산출(+10㎡)되었던 근본 원인은 무엇이었을까요?</span>
+            <span>[개인정보보호 OX] 엑셀 파일에서 개인정보가 담긴 열(Column)을 '숨기기(Hide)' 처리하면, 홈페이지에 게시해도 외부에서 해당 정보에 접근할 수 없으므로 개인정보 유출에 해당하지 않는다.</span>
+            <span class="quiz-badge">6점</span>
           </legend>
           <div class="quiz-options">
             <label class="quiz-option">
-              <input type="radio" name="q5" value="1">
-              <span>① 신축 건물이 건축물대장에 등록되지 않아서</span>
+              <input type="radio" name="q5" value="O">
+              <span>① O (안전하다)</span>
             </label>
             <label class="quiz-option">
-              <input type="radio" name="q5" value="2">
-              <span>② 자연과학계열 재학생 데이터 추출 시 주/야간 코드 매핑 실수로 주간 학생 1명이 야간으로 오분류되어서</span>
-            </label>
-            <label class="quiz-option">
-              <input type="radio" name="q5" value="3">
-              <span>③ 대학원 학생 수가 누락되어서</span>
-            </label>
-            <label class="quiz-option">
-              <input type="radio" name="q5" value="4">
-              <span>④ 교지 면적과 교사 면적을 혼동하여서</span>
+              <input type="radio" name="q5" value="X">
+              <span>② X (유출에 해당한다)</span>
             </label>
           </div>
           <div class="quiz-feedback" id="fb-q5"></div>
         </fieldset>
 
-        <!-- Q6 -->
-        <fieldset class="quiz-item" id="item-q6">
+        <!-- Q6 OX -->
+        <fieldset class="quiz-item" id="item-q6" data-points="6">
           <legend class="quiz-question">
             <span class="quiz-num">Q6</span>
-            <span>[현장점검 객관식] 겸임교원을 공시할 때 전임교원 확보율 산정 대상(비전임교원)으로 인정받기 위해 반드시 충족해야 하는 필수 요건이 아닌 것은?</span>
+            <span>[개인정보보호 OX] 가명처리된 정보(가명정보)는 개인을 직접 식별할 수 없으므로 개인정보보호법상 개인정보에 해당하지 않는다.</span>
+            <span class="quiz-badge">6점</span>
           </legend>
           <div class="quiz-options">
             <label class="quiz-option">
-              <input type="radio" name="q6" value="1">
-              <span>① 본직기관이 국가기관, 공공단체 또는 민간 산업체일 것</span>
+              <input type="radio" name="q6" value="O">
+              <span>① O (개인정보 아님)</span>
             </label>
             <label class="quiz-option">
-              <input type="radio" name="q6" value="2">
-              <span>② 담당 전공과 관련된 실무 경력이 3년 이상일 것</span>
-            </label>
-            <label class="quiz-option">
-              <input type="radio" name="q6" value="3">
-              <span>③ 당해연도 4월 1일 현재 본직기관에 재직 중일 것 (퇴직/폐업자 제외)</span>
-            </label>
-            <label class="quiz-option">
-              <input type="radio" name="q6" value="4">
-              <span>④ 대학에서 1학기에 강의를 담당하지 않아도 2학기에 강의하면 인정된다.</span>
+              <input type="radio" name="q6" value="X">
+              <span>② X (개인정보에 해당)</span>
             </label>
           </div>
           <div class="quiz-feedback" id="fb-q6"></div>
         </fieldset>
 
-        <!-- Submit Button -->
-        <button type="button" class="btn-submit-quiz" id="btnSubmitQuiz">
-          📝 평가 제출 및 채점하기
+        <!-- ── 4지선다 ── -->
+        <div class="quiz-section-label" style="background:#FEF3C7;color:#92400E;border-left:4px solid #D97706;padding:8px 16px;border-radius:6px;margin:16px 0 12px;font-weight:700;font-size:0.92rem;">📝 4지선다 퀴즈 (Q7 ~ Q11) — 차등 배점 (10~20점)</div>
+
+        <!-- Q7 (10점) -->
+        <fieldset class="quiz-item" id="item-q7" data-points="10">
+          <legend class="quiz-question">
+            <span class="quiz-num" style="background:#D97706;">Q7</span>
+            <span>[운영계획 선택형] 2026년 대학정보공시는 몇 개 분야, 몇 개 항목, 몇 개 세부항목으로 구성되어 있는가?</span>
+            <span class="quiz-badge" style="background:#FEF3C7;color:#92400E;">10점</span>
+          </legend>
+          <div class="quiz-options">
+            <label class="quiz-option">
+              <input type="radio" name="q7" value="1">
+              <span>① 12개 분야, 60개 항목, 90개 세부항목</span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q7" value="2">
+              <span>② 14개 분야, 65개 항목, 103개 세부항목</span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q7" value="3">
+              <span>③ 14개 분야, 70개 항목, 110개 세부항목</span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q7" value="4">
+              <span>④ 16개 분야, 65개 항목, 100개 세부항목</span>
+            </label>
+          </div>
+          <div class="quiz-feedback" id="fb-q7"></div>
+        </fieldset>
+
+        <!-- Q8 (10점) -->
+        <fieldset class="quiz-item" id="item-q8" data-points="10">
+          <legend class="quiz-question">
+            <span class="quiz-num" style="background:#D97706;">Q8</span>
+            <span>[운영계획 선택형] 4주기 양정제도에서 단순 위반 벌점은 기존 20점에서 몇 점으로 상향되었는가?</span>
+            <span class="quiz-badge" style="background:#FEF3C7;color:#92400E;">10점</span>
+          </legend>
+          <div class="quiz-options">
+            <label class="quiz-option">
+              <input type="radio" name="q8" value="1">
+              <span>① 22점</span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q8" value="2">
+              <span>② 23점</span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q8" value="3">
+              <span>③ 25점</span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q8" value="4">
+              <span>④ 30점</span>
+            </label>
+          </div>
+          <div class="quiz-feedback" id="fb-q8"></div>
+        </fieldset>
+
+        <!-- Q9 (10점) -->
+        <fieldset class="quiz-item" id="item-q9" data-points="10">
+          <legend class="quiz-question">
+            <span class="quiz-num" style="background:#D97706;">Q9</span>
+            <span>[개인정보보호 선택형] 대학정보공시 업무에서 개인정보 사고가 가장 빈번하게 발생하는 경로는 무엇인가?</span>
+            <span class="quiz-badge" style="background:#FEF3C7;color:#92400E;">10점</span>
+          </legend>
+          <div class="quiz-options">
+            <label class="quiz-option">
+              <input type="radio" name="q9" value="1">
+              <span>① 대학알리미에 공개된 통계 수치 데이터</span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q9" value="2">
+              <span>② 공시 입력시스템 해킹</span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q9" value="3">
+              <span>③ PDF 첨부파일 (규정집, 회의록, 증빙서류 등)</span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q9" value="4">
+              <span>④ 대학 내부 전산망 바이러스 감염</span>
+            </label>
+          </div>
+          <div class="quiz-feedback" id="fb-q9"></div>
+        </fieldset>
+
+        <!-- Q10 (15점) -->
+        <fieldset class="quiz-item" id="item-q10" data-points="15">
+          <legend class="quiz-question">
+            <span class="quiz-num" style="background:#B45309;">Q10</span>
+            <span>[운영계획 선택형] 4주기 자체진단에서 '업무담당자 관리 및 대학 내 자체교육' 배점이 3주기 대비 몇 점에서 몇 점으로 상향되었는가?</span>
+            <span class="quiz-badge" style="background:#FEF3C7;color:#92400E;">15점</span>
+          </legend>
+          <div class="quiz-options">
+            <label class="quiz-option">
+              <input type="radio" name="q10" value="1">
+              <span>① 10점 → 20점</span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q10" value="2">
+              <span>② 15점 → 25점</span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q10" value="3">
+              <span>③ 17점 → 29점</span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q10" value="4">
+              <span>④ 20점 → 35점</span>
+            </label>
+          </div>
+          <div class="quiz-feedback" id="fb-q10"></div>
+        </fieldset>
+
+        <!-- Q11 (20점 심화) -->
+        <fieldset class="quiz-item" id="item-q11" data-points="20">
+          <legend class="quiz-question">
+            <span class="quiz-num" style="background:#DC2626;">Q11</span>
+            <span>[운영계획+개인정보 복합 심화] 다음 중 2026년 대학정보공시 운영 및 개인정보보호 관련 설명으로 가장 옳은 것은?</span>
+            <span class="quiz-badge" style="background:#FEE2E2;color:#B91C1C;">20점 ★심화★</span>
+          </legend>
+          <div class="quiz-options">
+            <label class="quiz-option">
+              <input type="radio" name="q11" value="1">
+              <span>① 2026년부터 자체진단 지표가 20개에서 12개로 축소되었으며, 현장점검 대상에서 장학금·교지·안전관리 항목은 그대로 유지된다.</span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q11" value="2">
+              <span>② 8월 공시용 고등교육통계 데이터는 7월 말 1회 연계되며, 연계 후 원자료 수정이 필요할 경우 공시시스템에서 즉시 재연계할 수 있다.</span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q11" value="3">
+              <span>③ 개인정보 유출 사고 발생 시 법적 '개인정보처리자'는 대학 기관(학교법인) 자체이며, 정보주체에게는 72시간 이내에 통지해야 한다.</span>
+            </label>
+            <label class="quiz-option">
+              <input type="radio" name="q11" value="4">
+              <span>④ 허위광고는 기존 '허위·과장광고'에서 '허위광고'로 명칭이 변경되었으나, 과소광고(실제보다 낮게 표시)는 허위광고로 판단하지 않는다.</span>
+            </label>
+          </div>
+          <div class="quiz-feedback" id="fb-q11"></div>
+        </fieldset>
+
+        <!-- Submit Button (10분 경과 후 활성화) -->
+        <button type="button" class="btn-submit-quiz" id="btnSubmitQuiz" disabled>
+          🔒 필수 교육시간(10분) 수강 후 제출 가능 (남은 시간: 10분 00초)
         </button>
       </form>
     </section>
 
   </main>
+
+  <!-- Floating Timer Widget (상시 고정 실시간 시계) -->
+  <div class="floating-timer-bar" id="floatingTimerWidget" role="timer" aria-live="polite">
+    <span id="floatingTimerText">⏱️ 수강 시간: <strong>00:00</strong> / 10:00 🔒</span>
+    <a href="#sec-quiz" class="btn-jump-quiz" id="floatingQuizLink">퀴즈로 이동</a>
+  </div>
 
   <!-- Result Modal Dialog -->
   <div class="modal-overlay" id="resultModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
@@ -1396,50 +1760,255 @@
     });
 
     // 2. Quiz Configuration & Master Answers
+    // 배점: Q1(넌센스)=5점 | Q2~Q6(OX)=각 6점(30점) | Q7~Q9(선택형)=각 10점(30점) | Q10(선택형)=15점 | Q11(심화)=20점 → 총 100점 만점
     const quizData = [
       {
-        id: 'q1',
-        title: 'Q1. [운영계획 OX] 최종확인완료일까지 공시자료 입력을 누락(미공시)한 경우 벌점 부과 여부',
-        correct: 'X',
-        correctText: '② X (적발과 동일하게 즉시 벌점 부과)',
-        exp: '2026년 4주기 양정제도 개편으로 미공시 제재가 신설되어, 최종확인완료일까지 공시정보 미입력 시 적발과 동일한 벌점(단순 25점 / 중대 70점)이 부과됩니다.'
+        id: 'q1', points: 5,
+        title: 'Q1. [넌센스] 공시 담당자가 가장 무서워하는 날짜는?',
+        correct: '2',
+        correctText: '② 최종확인완료일 (이날까지 미입력 시 즉시 벌점 부과!)',
+        exp: '2026년부터 미공시 제재가 신설되어 합당한 사유 없이 최종확인완료일까지 공시 정보를 입력하지 않으면 현장점검 적발과 동일한 벌점(단순 25점/중대 70점)이 즉시 부과됩니다!'
       },
       {
-        id: 'q2',
-        title: 'Q2. [운영계획 OX] 8월 공시 고등교육통계 데이터 연계 방식 (7월말 1회 연계)',
+        id: 'q2', points: 6,
+        title: 'Q2. [운영계획 OX] 대학정보공시 법적 근거 및 대학알리미 제공 여부',
         correct: 'O',
-        correctText: '① O (재연계 불가, 7월말 1회 연계)',
-        exp: '2026년부터 8월 공시 고등교육통계는 7월 말 최종 1회만 연계되므로, 연계 이후 원자료 수정이 일체 불가합니다.'
+        correctText: '① O (맞다)',
+        exp: '대학정보공시는 「교육관련기관의 정보공개에 관한 특례법」 제2조·제3조에 근거하며, \'대학알리미\' 시스템을 통해 정기공시(4·6·8·10월)·수시공시·별도공시 형태로 국민에게 공개합니다.'
       },
       {
-        id: 'q3',
-        title: 'Q3. [지침변경 객관식] 자율전공학부 등 총정원제 등록금 입학정원 산정 방식',
-        correct: '2',
-        correctText: '② 총입학정원을 진학 가능한 총 학과 수로 나누어 균등 배분한다.',
-        exp: '2026년 지침 개정으로 복잡한 재학생 안분 비율 공식이 폐지되고, 총정원을 진학 가능한 총 학과수로 나누어 균등 배분하는 방식으로 간소화되었습니다.'
+        id: 'q3', points: 6,
+        title: 'Q3. [운영계획 OX] 2026년 미공시 제재 신설 및 벌점 부과 여부',
+        correct: 'O',
+        correctText: '① O (맞다)',
+        exp: '4주기 양정제도 개편으로 미공시 제재가 추가되었습니다. 단순 미공시 25점, 중대 미공시 70점으로 현장 적발과 동일한 벌점이 부과되므로 최종확인완료일 준수가 절대적으로 중요합니다.'
       },
       {
-        id: 'q4',
-        title: 'Q4. [개인정보보호 OX] 엑셀 시트 숨기기(Hide) 후 웹사이트 업로드 시 개인정보 유출 해당 여부',
+        id: 'q4', points: 6,
+        title: 'Q4. [운영계획 OX] 8월 공시 고등교육통계 7월말 1회 연계, 재연계 불가 여부',
+        correct: 'O',
+        correctText: '① O (맞다)',
+        exp: '기존에는 5월·7월 두 차례 연계 및 수정 재연계가 가능했으나, 2026년부터는 7월 말 최종 데이터를 단 1회만 연계합니다. 연계 이후 원자료 수정은 공시 이후 공식 오류 정정 절차를 통해서만 가능합니다.'
+      },
+      {
+        id: 'q5', points: 6,
+        title: 'Q5. [개인정보보호 OX] 엑셀 열 숨기기 처리 후 업로드 시 유출 해당 여부',
         correct: 'X',
-        correctText: '② X (숨기기 취소 시 노출되므로 유출에 해당)',
-        exp: '엑셀 숨기기는 보안조치가 아니며 누구나 숨기기 취소로 열람할 수 있습니다. 반드시 새 파일에 값으로 붙여넣기 해야 합니다.'
+        correctText: '② X (유출에 해당한다)',
+        exp: '엑셀의 \'숨기기\'는 단순 화면 가림 기능일 뿐, 파일을 다운로드한 누구든 \'숨기기 취소\'로 즉시 내용을 볼 수 있습니다. 반드시 새 파일에 \'값으로 붙여넣기\'하여 원본 데이터가 없는 파일만 업로드해야 합니다.'
       },
       {
-        id: 'q5',
-        title: 'Q5. [우리 대학 사례 객관식] 우리 대학 2025년 14-라 교사시설 기준면적 과소 산출의 원인',
+        id: 'q6', points: 6,
+        title: 'Q6. [개인정보보호 OX] 가명정보의 개인정보보호법상 개인정보 해당 여부',
+        correct: 'X',
+        correctText: '② X (개인정보에 해당)',
+        exp: '가명정보는 추가 정보와 결합하면 개인 식별이 가능하므로 개인정보보호법상 명백히 개인정보에 해당합니다. 가명정보는 통계 작성·연구 등 특정 목적 범위 내에서만 활용 가능하며 일반 개인정보와 동일하게 보호해야 합니다.'
+      },
+      {
+        id: 'q7', points: 10,
+        title: 'Q7. [운영계획 선택형] 2026년 대학정보공시 분야·항목·세부항목 수',
         correct: '2',
-        correctText: '② 자연과학계열 재학생 데이터 추출 시 주/야간 코드 매핑 실수로 주간 학생 1명이 야간으로 오분류되어서',
-        exp: '주간 학생 1명이 야간으로 오분류되어 기준면적 산출에서 누락(+10㎡)되었습니다. 성과관리팀의 자체 점검으로 조기 발견하여 자체정정(벌점 3점)으로 완결함으로써 현장점검 유예 자격을 성공적으로 지켜냈습니다.'
+        correctText: '② 14개 분야, 65개 항목, 103개 세부항목',
+        exp: '2026년 대학정보공시는 교육여건·학생·교원·재정·연구·산학협력 등 14개 분야, 65개 항목, 103개 세부항목으로 구성됩니다. 공시 대상은 총 403개교(대학 222, 전문대학 137, 대학원대학 44)입니다.'
       },
       {
-        id: 'q6',
-        title: 'Q6. [현장점검 객관식] 겸임교원 인정 필수 요건 (1학기 실제 강의 담당 필수)',
-        correct: '4',
-        correctText: '④ 대학에서 1학기에 강의를 담당하지 않아도 2학기에 강의하면 인정된다.',
-        exp: '겸임교원은 조사 당해연도 1학기(4.1 기준)에 실제 강의를 담당하고 있어야 하며, 1학기 무강의자는 겸임교원으로 인정되지 않아 현장점검 단골 적발 대상입니다.'
+        id: 'q8', points: 10,
+        title: 'Q8. [운영계획 선택형] 4주기 양정제도 단순 위반 벌점 상향 수치',
+        correct: '3',
+        correctText: '③ 25점',
+        exp: '4주기 양정제도 개편에 따라 벌점이 전반적으로 상향되었습니다. 단순 위반 20→25점, 단순 미이행 80→85점, 중대 위반 60→70점, 중대 미이행 240→250점으로 조정되었습니다.'
+      },
+      {
+        id: 'q9', points: 10,
+        title: 'Q9. [개인정보보호 선택형] 대학정보공시 업무에서 개인정보 사고 빈발 경로',
+        correct: '3',
+        correctText: '③ PDF 첨부파일 (규정집, 회의록, 증빙서류 등)',
+        exp: '대학알리미의 수치 데이터는 통계값이므로 개인 식별이 어렵지만, PDF 첨부파일(학칙, 등록금심의위원회 회의록, 교원 임용 증빙 등)에는 학생 주민번호·계좌번호·자필서명 등 민감 정보가 그대로 포함된 경우가 많습니다.'
+      },
+      {
+        id: 'q10', points: 15,
+        title: 'Q10. [운영계획 선택형] 4주기 자체진단 업무담당자 관리 배점 변경',
+        correct: '3',
+        correctText: '③ 17점 → 29점',
+        exp: '4주기 자체진단은 기존 정량 14개·정성 6개(총 20개 지표)에서 정량 10개 지표로 슬림화되었습니다. 부가 지표(체크리스트 수기작성 등)가 삭제되고, \'업무담당자 관리 및 대학 내 자체교육\' 배점이 17점에서 29점으로 크게 상향되었습니다.'
+      },
+      {
+        id: 'q11', points: 20,
+        title: 'Q11. [운영계획+개인정보 복합 심화] 2026년 공시 운영 및 개인정보보호 관련 옳은 설명',
+        correct: '3',
+        correctText: '③ 개인정보 유출 사고 발생 시 법적 \'개인정보처리자\'는 대학 기관(학교법인) 자체이며, 정보주체에게는 72시간 이내에 통지해야 한다.',
+        exp: '① 오답: 자체진단 지표는 20개→10개로 축소, 현장점검에서 장학금·교지·안전관리 항목은 제외됨. ② 오답: 7월 말 1회 연계 이후 재연계 불가. ③ 정답: 법적 개인정보처리자는 학교법인(대학 기관)이며, 개인정보 유출 시 72시간 이내 통지 의무. ④ 오답: 2026년 개편에서 과소광고도 허위광고로 엄격히 판단하도록 강화됨.'
       }
     ];
+
+    // ── 3. 10분 학습 시간 타이머 및 퀴즈 잠금/해제 로직 ──
+    const REQUIRED_SECONDS = 600; // 필수 교육 수강 시간: 10분 = 600초
+    let elapsedSeconds = 0;
+    let isQuizUnlocked = false;
+    let timerInterval = null;
+    let isTimerInitialized = false;
+
+    // 페이지 로드 시 즉시 퀴즈 인풋 비활성화 및 타이머 시작
+    function initQuizLockAndTimer() {
+      if (isTimerInitialized) return;
+      isTimerInitialized = true;
+
+      // 퀴즈 폼 내 모든 라디오 버튼 초기 비활성화
+      const radioInputs = document.querySelectorAll('#quizForm input[type="radio"]');
+      radioInputs.forEach(input => {
+        input.disabled = true;
+      });
+
+      // 1초 단위 타이머 가동
+      timerInterval = setInterval(() => {
+        elapsedSeconds++;
+        updateTimerDisplay();
+
+        if (elapsedSeconds >= REQUIRED_SECONDS && !isQuizUnlocked) {
+          unlockQuiz();
+        }
+      }, 1000);
+
+      // 초기 1회 표시
+      updateTimerDisplay();
+    }
+
+    // 타이머 디스플레이 업데이트 (시계, 프로그레스 바, 플로팅 위젯, 제출 버튼)
+    function updateTimerDisplay() {
+      const curMin = Math.floor(elapsedSeconds / 60);
+      const curSec = elapsedSeconds % 60;
+      const curTimeStr = `${String(curMin).padStart(2, '0')}:${String(curSec).padStart(2, '0')}`;
+      
+      const percent = Math.min(100, (elapsedSeconds / REQUIRED_SECONDS) * 100);
+
+      // 퀴즈 카드 디지털 시계
+      const clockEl = document.getElementById('quizClockDisplay');
+      if (clockEl) {
+        if (elapsedSeconds < REQUIRED_SECONDS) {
+          clockEl.innerHTML = `${curTimeStr} <span style="font-size: 1.1rem; color: #94A3B8; font-weight: 500;">/ 10:00</span>`;
+        } else {
+          clockEl.innerHTML = `${curTimeStr} <span style="font-size: 1.1rem; color: #86EFAC; font-weight: 600;">(10분 충족 완료 ✅)</span>`;
+        }
+      }
+
+      // 프로그레스 바
+      const progressEl = document.getElementById('quizTimerProgressBar');
+      if (progressEl) {
+        progressEl.style.width = percent + '%';
+      }
+
+      // 퀴즈 카드 상태 설명 텍스트
+      const statusDesc = document.getElementById('quizTimerStatusDesc');
+      if (statusDesc) {
+        if (elapsedSeconds < REQUIRED_SECONDS) {
+          const remSec = REQUIRED_SECONDS - elapsedSeconds;
+          const remM = Math.floor(remSec / 60);
+          const remS = remSec % 60;
+          statusDesc.innerHTML = `⏳ 현재 수강 시간: <strong>${curMin}분 ${String(curSec).padStart(2, '0')}초</strong> / 최소 10분 00초 충족 필요 (남은 시간: <strong>${remM}분 ${String(remS).padStart(2, '0')}초</strong>)`;
+        } else {
+          statusDesc.innerHTML = `🎉 <strong>최소 교육시간(10분)을 충족하였습니다!</strong> (${curMin}분 ${String(curSec).padStart(2, '0')}초 수강 중) 아래 퀴즈에 응시하실 수 있습니다.`;
+          statusDesc.style.color = '#86EFAC';
+        }
+      }
+
+      // 플로팅 타이머 위젯
+      const floatingText = document.getElementById('floatingTimerText');
+      if (floatingText) {
+        if (elapsedSeconds < REQUIRED_SECONDS) {
+          const remSec = REQUIRED_SECONDS - elapsedSeconds;
+          const remM = Math.floor(remSec / 60);
+          const remS = remSec % 60;
+          floatingText.innerHTML = `⏱️ 수강 시간: <strong>${curTimeStr}</strong> / 10:00 <span style="opacity:0.85; font-size:0.82rem;">(남은 시간 ${String(remM).padStart(2, '0')}:${String(remS).padStart(2, '0')})</span> 🔒`;
+        } else {
+          floatingText.innerHTML = `⏱️ 수강 시간: <strong>${curTimeStr}</strong> (10분 충족 완료 ✅) 🔓`;
+        }
+      }
+
+      // 제출 버튼 텍스트 (10분 이전)
+      if (!isQuizUnlocked) {
+        const remSec = REQUIRED_SECONDS - elapsedSeconds;
+        const remM = Math.floor(remSec / 60);
+        const remS = remSec % 60;
+        const submitBtn = document.getElementById('btnSubmitQuiz');
+        if (submitBtn) {
+          submitBtn.innerHTML = `🔒 필수 교육시간(10분) 수강 후 제출 가능 (남은 시간: ${String(remM).padStart(2, '0')}분 ${String(remS).padStart(2, '0')}초)`;
+        }
+      }
+    }
+
+    // 10분 도달 시 퀴즈 잠금 해제 함수
+    function unlockQuiz() {
+      isQuizUnlocked = true;
+
+      // 퀴즈 카드 UI 전환
+      const timerCard = document.getElementById('quizTimerCard');
+      if (timerCard) timerCard.classList.add('unlocked');
+
+      const clockEl = document.getElementById('quizClockDisplay');
+      if (clockEl) clockEl.classList.add('unlocked');
+
+      const badgeLock = document.getElementById('badgeLockStatus');
+      if (badgeLock) {
+        badgeLock.textContent = '🔓 10분 충족 완료 (응시 가능)';
+        badgeLock.className = 'badge-lock unlocked';
+      }
+
+      // 잠금 안내 배너 숨기고 활성화 배너 표시
+      const lockedNotice = document.getElementById('quizLockedNotice');
+      if (lockedNotice) lockedNotice.style.display = 'none';
+
+      const alertBanner = document.getElementById('quizUnlockedAlert');
+      if (alertBanner) alertBanner.style.display = 'flex';
+
+      // 퀴즈 폼 잠금 해제
+      const quizForm = document.getElementById('quizForm');
+      if (quizForm) quizForm.classList.remove('quiz-form-locked');
+
+      // 수험자 성명 / 부서 인풋 활성화
+      const userNameInput = document.getElementById('userName');
+      if (userNameInput) {
+        userNameInput.disabled = false;
+        userNameInput.placeholder = '예: 홍길동';
+      }
+      const userDeptInput = document.getElementById('userDept');
+      if (userDeptInput) {
+        userDeptInput.disabled = false;
+        userDeptInput.placeholder = '예: 교무처 학사지원팀';
+      }
+
+      // 모든 퀴즈 라디오 버튼 활성화
+      const radioInputs = document.querySelectorAll('#quizForm input[type="radio"]');
+      radioInputs.forEach(input => {
+        input.disabled = false;
+      });
+
+      // 제출 버튼 활성화
+      const submitBtn = document.getElementById('btnSubmitQuiz');
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '📝 평가 제출 및 채점하기';
+      }
+
+      // 플로팅 위젯 스타일 전환
+      const floatingWidget = document.getElementById('floatingTimerWidget');
+      if (floatingWidget) floatingWidget.classList.add('unlocked');
+    }
+
+    // ── 4. 페이지 이탈 방지 알림 (새로고침 / 창 닫기 시 시간 초기화 경고) ──
+    window.addEventListener('beforeunload', function (e) {
+      if (!isFileDownloaded) {
+        const msg = '페이지를 이탈하거나 새로고침할 경우, 필수 교육 수강 시간(10분)이 0초로 초기화되어 퀴즈 응시 대기시간이 다시 시작됩니다. 계속 진행하시겠습니까?';
+        e.preventDefault();
+        e.returnValue = msg;
+        return msg;
+      }
+    });
+
+    // 페이지 진입 즉시 타이머 가동
+    window.addEventListener('DOMContentLoaded', initQuizLockAndTimer);
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      initQuizLockAndTimer();
+    }
 
     let currentSessionData = null;
     let isFileDownloaded = false;
@@ -1462,10 +2031,19 @@
       return `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}_${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
     }
 
-    // 3. Quiz Submission & Grading
+    // ── 5. Quiz Submission & Grading ──
     document.getElementById('btnSubmitQuiz').addEventListener('click', handleQuizSubmit);
 
     function handleQuizSubmit() {
+      // [보안 점검] 10분 미만일 경우 제출 차단
+      if (elapsedSeconds < REQUIRED_SECONDS) {
+        const remSec = REQUIRED_SECONDS - elapsedSeconds;
+        const remM = Math.floor(remSec / 60);
+        const remS = remSec % 60;
+        alert(`⚠️ 아직 필수 교육 수강시간(10분)을 충족하지 못했습니다.\n\n- 남은 시간: ${remM}분 ${remS}초\n\n본 교육은 10분 이상 충실히 수강하신 후 퀴즈 제출이 가능합니다. 상단 강의와 요약본을 충분히 학습해 주세요.`);
+        return;
+      }
+
       const name = document.getElementById('userName').value.trim();
       const dept = document.getElementById('userDept').value.trim();
 
@@ -1498,13 +2076,17 @@
       const timeFileSuffix = formatDateForFileName(completionTime);
 
       // Grade
+      let totalScore = 0;
       let correctCount = 0;
       let detailedResults = [];
 
       quizData.forEach((q, idx) => {
         const selectedVal = document.querySelector(`input[name="${q.id}"]:checked`).value;
         const isCorrect = (selectedVal === q.correct);
-        if (isCorrect) correctCount++;
+        if (isCorrect) {
+          correctCount++;
+          totalScore += q.points;
+        }
 
         const itemEl = document.getElementById(`item-${q.id}`);
         const fbEl = document.getElementById(`fb-${q.id}`);
@@ -1515,7 +2097,7 @@
 
         fbEl.className = 'quiz-feedback show ' + (isCorrect ? 'correct-text' : 'wrong-text');
         fbEl.innerHTML = `
-          <strong>${isCorrect ? '⭕ 정답입니다!' : '❌ 오답입니다.'}</strong> (정답: ${q.correctText})<br>
+          <strong>${isCorrect ? '⭕ 정답입니다!' : '❌ 오답입니다.'}</strong> (정답: ${q.correctText}) <span style="color:#94A3B8;font-size:0.82rem;">[${q.points}점]</span><br>
           <span style="font-size:0.88rem; margin-top:4px; display:inline-block;">💡 해설: ${q.exp}</span>
         `;
 
@@ -1524,14 +2106,16 @@
         detailedResults.push({
           num: `Q${idx + 1}`,
           title: q.title,
+          points: `${q.points}점`,
           userChoice: selectedOptionEl,
           correctAnswer: q.correctText,
           isCorrect: isCorrect ? '정답 (O)' : '오답 (X)',
+          earnedPoints: isCorrect ? q.points : 0,
           explanation: q.exp
         });
       });
 
-      const score = Math.round((correctCount / quizData.length) * 100);
+      const score = totalScore; // 배점 합산 = 100점 만점
 
       // Save Current Session Data
       currentSessionData = {
@@ -1549,7 +2133,7 @@
 
       // Update Modal
       document.getElementById('modalUserSummary').textContent = `${dept} · ${name} 님`;
-      document.getElementById('modalScoreDisplay').textContent = `${score}점 (${correctCount}/${quizData.length} 정답)`;
+      document.getElementById('modalScoreDisplay').textContent = `${score}점 / 100점 만점 (${correctCount}/${quizData.length} 정답)`;
       document.getElementById('modalTimeDisplay').textContent = `평가 완료 및 파일 생성 일시: ${timeStr}`;
 
       const banner = document.getElementById('modalCompletionBanner');
@@ -1558,7 +2142,7 @@
 
       // Update Mailto Link
       const mailSubject = encodeURIComponent(`[2026 대학정보공시 교육이수] ${dept} ${name} 평가결과 제출`);
-      const mailBody = encodeURIComponent(`대학성과관리팀 김동균 (총괄담당자)님 귀하,\n\n2026 대학정보공시 온라인 직무교육 평가를 완료하여 결과를 제출합니다.\n\n- 소속 부서: ${dept}\n- 성명: ${name}\n- 평가 완료 및 파일 생성 시간: ${timeStr}\n- 취득 점수: ${score}점 (${correctCount}/${quizData.length} 정답)\n- 교육 이수 상태: 이수 완료 (엑셀 파일 다운로드 완료)\n\n※ 다운로드된 엑셀 평가결과 파일을 첨부합니다.\n감사합니다.`);
+      const mailBody = encodeURIComponent(`대학성과관리팀 김동균 (총괄담당자)님 귀하,\n\n2026 대학정보공시 온라인 직무교육 평가를 완료하여 결과를 제출합니다.\n\n- 소속 부서: ${dept}\n- 성명: ${name}\n- 평가 완료 및 파일 생성 시간: ${timeStr}\n- 취득 점수: ${score}점 / 100점 만점 (${correctCount}/${quizData.length} 정답)\n- 교육 이수 상태: 이수 완료 (엑셀 파일 다운로드 완료)\n\n※ 다운로드된 엑셀 평가결과 파일을 첨부합니다.\n감사합니다.`);
       document.getElementById('btnSendMailAction').href = `mailto:kimdg82@dhc.ac.kr?subject=${mailSubject}&body=${mailBody}`;
 
       // Show Modal
@@ -1605,20 +2189,24 @@
             [],
             ["■ 수험자 및 평가 정보"],
             ["성명", data.name, "소속 부서", data.dept],
-            ["평가 완료 및 파일 생성 일시", data.date, "취득 점수", `${data.score}점 (${data.correctCount}/${data.totalCount} 정답)`],
+            ["평가 완료 및 파일 생성 일시", data.date, "취득 점수", `${data.score}점 / 100점 만점 (${data.correctCount}/${data.totalCount} 정답)`],
             ["교육 이수 상태", "이수 완료 (파일 다운로드 완료)", "결과 수신처", "대학성과관리팀 김동균 (총괄담당자) 앞 (kimdg82@dhc.ac.kr)"],
             [],
+            ["■ 배점 안내: Q1 넌센스(5점) | Q2~Q6 OX(각 6점, 총 30점) | Q7~Q9 선택형(각 10점, 총 30점) | Q10 선택형(15점) | Q11 심화(20점) | 총 100점 만점"],
+            [],
             ["■ 문항별 상세 채점 내역"],
-            ["문항 번호", "문제 요약", "제출 답안", "정답", "채점 결과", "상세 해설"]
+            ["문항 번호", "문제 요약", "배점", "제출 답안", "정답", "채점 결과", "획득 점수", "상세 해설"]
           ];
 
           data.details.forEach(item => {
             wsData.push([
               item.num,
               item.title,
+              item.points,
               item.userChoice,
               item.correctAnswer,
               item.isCorrect,
+              item.earnedPoints + '점',
               item.explanation
             ]);
           });
@@ -1631,11 +2219,13 @@
           // Column Widths
           ws['!cols'] = [
             { wch: 10 },
-            { wch: 45 },
+            { wch: 50 },
+            { wch: 8  },
             { wch: 35 },
             { wch: 35 },
-            { wch: 15 },
-            { wch: 60 }
+            { wch: 12 },
+            { wch: 10 },
+            { wch: 65 }
           ];
 
           XLSX.utils.book_append_sheet(wb, ws, "평가결과");
@@ -1651,13 +2241,14 @@
       csvContent += "2026 대학정보공시 온라인 직무교육 평가 결과서\n\n";
       csvContent += "■ 수험자 및 평가 정보\n";
       csvContent += `성명,${csvEscape(data.name)},소속 부서,${csvEscape(data.dept)}\n`;
-      csvContent += `평가 완료 및 파일 생성 일시,${csvEscape(data.date)},취득 점수,${data.score}점\n`;
+      csvContent += `평가 완료 및 파일 생성 일시,${csvEscape(data.date)},취득 점수,${data.score}점 / 100점 만점\n`;
       csvContent += `교육 이수 상태,이수 완료 (파일 다운로드 완료),결과 수신처,대학성과관리팀 김동균 (총괄담당자) 앞 (kimdg82@dhc.ac.kr)\n\n`;
+      csvContent += "■ 배점: Q1 넌센스(5점) | Q2~Q6 OX(각 6점, 총 30점) | Q7~Q9 선택형(각 10점, 총 30점) | Q10(15점) | Q11 심화(20점) | 총 100점 만점\n\n";
       csvContent += "■ 문항별 상세 채점 내역\n";
-      csvContent += "문항 번호,문제 요약,제출 답안,정답,채점 결과,상세 해설\n";
+      csvContent += "문항 번호,문제 요약,배점,제출 답안,정답,채점 결과,획득 점수,상세 해설\n";
 
       data.details.forEach(item => {
-        csvContent += `${item.num},${csvEscape(item.title)},${csvEscape(item.userChoice)},${csvEscape(item.correctAnswer)},${csvEscape(item.isCorrect)},${csvEscape(item.explanation)}\n`;
+        csvContent += `${item.num},${csvEscape(item.title)},${item.points},${csvEscape(item.userChoice)},${csvEscape(item.correctAnswer)},${csvEscape(item.isCorrect)},${item.earnedPoints}점,${csvEscape(item.explanation)}\n`;
       });
 
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
