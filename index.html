@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting...</title>
+    <script>
+        // 새롭게 연결할 AWS S3 도메인
+        var newDomain = "https://s3-dhcpm.s3.dualstack.ap-southeast-2.amazonaws.com";
+        
+        // 사용자가 원래 접속하려던 경로(Path), 쿼리(?), 해시(#) 추출
+        var path = window.location.pathname;
+        var search = window.location.search;
+        var hash = window.location.hash;
+        
+        // 새 URL 조합
+        var redirectUrl = newDomain + path + search + hash;
+        
+        // 페이지 리다이렉션 (히스토리를 남기지 않기 위해 replace 사용)
+        window.location.replace(redirectUrl);
+    </script>
+</head>
+<body>
+    <p>새로운 주소로 이동 중입니다. 잠시만 기다려주세요.</p>
+    <p>자동으로 이동되지 않는다면 <a id="fallback-link" href="#">여기</a>를 클릭하세요.</p>
+    
+    <script>
+        // 자바스크립트 리다이렉션이 실패할 경우를 대비한 수동 링크 설정
+        document.getElementById('fallback-link').href = redirectUrl;
+    </script>
+</body>
+</html>
